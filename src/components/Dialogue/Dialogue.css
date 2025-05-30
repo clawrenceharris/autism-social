@@ -1,0 +1,14 @@
+li.option {
+  box-shadow: 0 3px 3px 3px #3a3a3a10;
+  border-radius: 10px;
+  width: 100%;
+  margin: 25px 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+li.option button {
+  width: 100%;
+  text-align: left;
+}

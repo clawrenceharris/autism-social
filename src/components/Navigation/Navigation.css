@@ -1,0 +1,80 @@
+nav ul li a {
+  display: block;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 20px;
+  width: 100%;
+  overflow: hidden;
+}
+.logo {
+  width: 90px;
+  height: 90px;
+}
+
+.nav-top div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+ul li {
+  flex: 1;
+  background-color: white;
+  border-top-right-radius: 100px;
+  border-bottom-right-radius: 100px;
+  max-height: 50px;
+  transition: 0.3s ease-out;
+}
+nav ul {
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+nav {
+  left: 0;
+  z-index: 9;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  max-width: 300px;
+  box-shadow: 0 0 20px 10px #00000020;
+  padding-right: 5px;
+  text-align: center;
+  overflow: hidden;
+  bottom: 0;
+  top: 0;
+  display: flex;
+  background-color: white;
+  flex-direction: column;
+}
+
+nav li:hover a,
+nav li:has(.active) a {
+  color: white;
+}
+
+nav li:hover,
+nav li:has(.active) {
+  background-color: var(--primary-color);
+}
+
+nav .icon {
+  filter: invert(1);
+}
+nav .nav-top {
+  display: flex;
+  padding: 10px;
+  gap: 10px;
+
+  color: gray;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media screen and (min-width: 720px) {
+}

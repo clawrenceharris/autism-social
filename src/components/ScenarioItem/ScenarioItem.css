@@ -1,0 +1,13 @@
+.scenario-item-container {
+  max-width: 300px;
+  display: block;
+  border-radius: 16px;
+  padding: 20px;
+  height: 190px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  box-shadow: 0 3px 3px 3px #3a3a3a10;
+  background-color: white;
+}
