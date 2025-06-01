@@ -12,13 +12,19 @@ export interface Step {
 }
 
 export interface Scenario {
-  description: string;
+  id?: string;
   title: string;
-  variationId: string;
-  variationTitle: string;
-  difficulty: "easy" | "medium" | "hard" | "extra hard";
-  scoringCategories: string[];
+  description: string;
+  created_at?: string;
+}
+
+export interface Dialogue {
+  id?: string;
+  scenario_id: string;
+  title: string;
+  persona_tags: string[];
+  user_fields: string[];
   steps: Step[];
-  personaTags: string[];
-  userFields: string[];
+  scoring_categories: string[];
+  created_at?: string;
 }
