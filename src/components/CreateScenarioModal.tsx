@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Modal } from './Modal';
+import Modal from './Modal';
 import { SCENARIO_CATEGORIES } from './ScenarioForm';
 import { createScenario } from '../services/scenarios';
 
