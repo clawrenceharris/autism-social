@@ -5,7 +5,7 @@ import { HomePage } from './pages/HomePage';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50">
+      <div className="container">
         <TaskBar />
         <Routes>
           <Route path="/" element={<HomePage />} />

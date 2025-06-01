@@ -1,39 +1,34 @@
 import { useState } from 'react';
 import { CreateScenarioModal } from '../components/CreateScenarioModal';
+import '../styles/HomePage.css';
 
 export function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="max-w-7xl mx-auto p-8">
-      <h1 className="text-4xl font-bold mb-6">Scenario Builder</h1>
-      <p className="text-lg text-gray-600 mb-8">
+    <div className="home-container">
+      <h1 className="home-title">Scenario Builder</h1>
+      <p className="home-description">
         Welcome to the Scenario Builder. Create and manage interactive dialogue scenarios compatible with XState.
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Create New Scenario</h2>
-          <p className="text-gray-600 mb-4">
-            Start building a new interactive dialogue scenario from scratch.
-          </p>
+      <div className="home-grid">
+        <div className="card">
+          <h2>Create New Scenario</h2>
+          <p>Start building a new interactive dialogue scenario from scratch.</p>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            className="btn btn-primary"
           >
             Create Scenario
           </button>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Manage Scenarios</h2>
-          <p className="text-gray-600 mb-4">
-            View, edit, and organize your existing scenarios.
-          </p>
+        <div className="card">
+          <h2>Manage Scenarios</h2>
+          <p>View, edit, and organize your existing scenarios.</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Settings</h2>
-          <p className="text-gray-600 mb-4">
-            Configure your preferences and manage your account.
-          </p>
+        <div className="card">
+          <h2>Settings</h2>
+          <p>Configure your preferences and manage your account.</p>
         </div>
       </div>
 
