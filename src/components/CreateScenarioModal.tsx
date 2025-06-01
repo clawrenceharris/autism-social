@@ -40,15 +40,13 @@ export function CreateScenarioModal({ isOpen, onClose }: CreateScenarioModalProp
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Create New Scenario">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Category
-          </label>
+      <form onSubmit={handleSubmit} className="form-group">
+        <div className="form-group">
+          <label className="form-label">Category</label>
           <select
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="form-select"
           >
             {SCENARIO_CATEGORIES.map((category) => (
               <option key={category} value={category}>
@@ -59,49 +57,45 @@ export function CreateScenarioModal({ isOpen, onClose }: CreateScenarioModalProp
         </div>
 
         {title === 'Custom' && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Custom Category
-            </label>
+          <div className="form-group">
+            <label className="form-label">Custom Category</label>
             <input
               type="text"
               value={customTitle}
               onChange={(e) => setCustomTitle(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="form-input"
               required
             />
           </div>
         )}
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Description
-          </label>
+        <div className="form-group">
+          <label className="form-label">Description</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="form-textarea"
             required
           />
         </div>
 
         {error && (
-          <p className="text-red-600 text-sm">{error}</p>
+          <p className="error-text">{error}</p>
         )}
 
-        <div className="mt-6 flex justify-end">
+        <div className="modal-footer">
           <button
             type="button"
             onClick={onClose}
-            className="mr-3 px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-500"
+            className="btn"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isSubmitting || (title === 'Custom' && !customTitle)}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-300"
+            className="btn btn-primary"
           >
             {isSubmitting ? 'Creating...' : 'Create Scenario'}
           </button>

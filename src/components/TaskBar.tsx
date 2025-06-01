@@ -1,20 +1,21 @@
 import { Link } from 'react-router-dom';
 import { Home, FolderOpen, Settings } from 'lucide-react';
+import '../styles/TaskBar.css';
 
 export function TaskBar() {
   return (
-    <nav className="bg-gray-800 text-white p-4">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <div className="flex items-center space-x-8">
-          <Link to="/" className="flex items-center space-x-2 hover:text-gray-300">
+    <nav className="taskbar">
+      <div className="taskbar-container">
+        <div className="taskbar-nav">
+          <Link to="/" className="taskbar-link">
             <Home size={20} />
             <span>Home</span>
           </Link>
-          <Link to="/scenarios" className="flex items-center space-x-2 hover:text-gray-300">
+          <Link to="/scenarios" className="taskbar-link">
             <FolderOpen size={20} />
             <span>Scenarios</span>
           </Link>
-          <Link to="/settings" className="flex items-center space-x-2 hover:text-gray-300">
+          <Link to="/settings" className="taskbar-link">
             <Settings size={20} />
             <span>Settings</span>
           </Link>
