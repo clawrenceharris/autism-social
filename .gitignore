@@ -15,10 +15,6 @@ dist-ssr
 # Vite files
 .vite
 .env
-<<<<<<< HEAD
-=======
-
->>>>>>> 626edc9 (initial commit)
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
