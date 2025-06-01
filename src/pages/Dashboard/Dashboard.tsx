@@ -14,7 +14,7 @@ const Dashboard = () => {
         <h2>Recent Scenarios</h2>
         <div>
           {scenarios.map((item) => (
-            <ScenarioItem dialogue={item} />
+            <ScenarioItem key={item.id} dialogue={item} />
           ))}
         </div>
       </section>

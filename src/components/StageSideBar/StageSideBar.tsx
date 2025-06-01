@@ -9,7 +9,7 @@ const StageSideBar = () => {
         <h2>More Scenarios</h2>
         <div>
           {scenarios.map((item) => (
-            <ScenarioItem dialogue={item} />
+            <ScenarioItem key={item.id} dialogue={item} />
           ))}
         </div>
       </div>
