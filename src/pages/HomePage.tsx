@@ -1,4 +1,9 @@
+import { useState } from 'react';
+import { CreateScenarioModal } from '../components/CreateScenarioModal';
+
 export function HomePage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="max-w-7xl mx-auto p-8">
       <h1 className="text-4xl font-bold mb-6">Scenario Builder</h1>
@@ -11,6 +16,12 @@ export function HomePage() {
           <p className="text-gray-600 mb-4">
             Start building a new interactive dialogue scenario from scratch.
           </p>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          >
+            Create Scenario
+          </button>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Manage Scenarios</h2>
@@ -25,6 +36,11 @@ export function HomePage() {
           </p>
         </div>
       </div>
+
+      <CreateScenarioModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
