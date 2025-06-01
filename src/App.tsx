@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { TaskBar } from './components/TaskBar';
-import { HomePage } from './pages/';
+import { HomePage } from './pages';
 
 function App() {
   return (
