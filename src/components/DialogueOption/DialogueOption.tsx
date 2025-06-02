@@ -11,14 +11,14 @@ interface DialogueOptionProps {
   onUpdateScore: (category: string, value: number) => void;
 }
 
-export function DialogueOption({
+const DialogueOption = ({
   option,
   optionIndex,
   scoringCategories,
   onRemove,
   onUpdate,
   onUpdateScore,
-}: DialogueOptionProps) {
+}: DialogueOptionProps) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
   return (
@@ -95,4 +95,6 @@ export function DialogueOption({
       )}
     </div>
   );
-}
+};
+
+export default DialogueOption;

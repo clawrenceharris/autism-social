@@ -1,6 +1,6 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { TaskBar } from './components';
-import { HomePage } from './pages';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { RootLayout, TaskBar } from "./components";
+import { HomePage, Scenarios } from "./pages";
 
 function App() {
   return (
@@ -8,7 +8,10 @@ function App() {
       <div className="container">
         <TaskBar />
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route element={<RootLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/scenarios" element={<Scenarios />} />
+          </Route>
           {/* Other routes will be added later */}
         </Routes>
       </div>

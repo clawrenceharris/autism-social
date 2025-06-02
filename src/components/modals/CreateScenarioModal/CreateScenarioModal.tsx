@@ -9,7 +9,7 @@ interface CreateScenarioModalProps {
   onClose: () => void;
 }
 
-function CreateScenarioModal({ isOpen, onClose }: CreateScenarioModalProps) {
+const CreateScenarioModal = ({ isOpen, onClose }: CreateScenarioModalProps) => {
   const [title, setTitle] = useState<string>(SCENARIO_CATEGORIES[0]);
   const [customTitle, setCustomTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -98,6 +98,6 @@ function CreateScenarioModal({ isOpen, onClose }: CreateScenarioModalProps) {
       </form>
     </Modal>
   );
-}
+};
 
 export default CreateScenarioModal;

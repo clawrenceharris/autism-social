@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CreateScenarioModal } from "../../components/modals";
 import "./HomePage.css";
 
-function HomePage() {
+const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -35,6 +35,6 @@ function HomePage() {
       />
     </div>
   );
-}
+};
 
 export default HomePage;

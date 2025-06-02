@@ -2,6 +2,10 @@
   background-color: var(--color-gray-800);
   color: var(--color-white);
   padding: 1rem;
+  position: fixed;
+  width: 100%;
+  left: 0;
+  top: 0;
 }
 
 .taskbar-container {
