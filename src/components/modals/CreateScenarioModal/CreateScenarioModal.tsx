@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Modal } from '..';
-import { SCENARIO_CATEGORIES } from '../../constants';
-import { createScenario } from '../../services/scenarios';
-import './CreateScenarioModal.css';
+import { useState } from "react";
+import { Modal } from "../";
+import { SCENARIO_CATEGORIES } from "../../../constants";
+import { createScenario } from "../../../services/scenarios";
+import "./CreateScenarioModal.css";
 
 interface CreateScenarioModalProps {
   isOpen: boolean;
@@ -10,29 +10,29 @@ interface CreateScenarioModalProps {
 }
 
 function CreateScenarioModal({ isOpen, onClose }: CreateScenarioModalProps) {
-  const [title, setTitle] = useState(SCENARIO_CATEGORIES[0]);
-  const [customTitle, setCustomTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  const [title, setTitle] = useState<string>(SCENARIO_CATEGORIES[0]);
+  const [customTitle, setCustomTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError('');
+    setError("");
 
     try {
-      const finalTitle = title === 'Custom' ? customTitle : title;
       await createScenario({
-        title: finalTitle,
+        title: title === "Custom" ? customTitle : title,
         description,
       });
       onClose();
       setTitle(SCENARIO_CATEGORIES[0]);
-      setCustomTitle('');
-      setDescription('');
+      setCustomTitle("");
+      setDescription("");
+      alert("Scenario Added!");
     } catch (err) {
-      setError('Failed to create scenario. Please try again.');
+      setError("Failed to create scenario. Please try again.");
       console.error(err);
     } finally {
       setIsSubmitting(false);
@@ -57,7 +57,7 @@ function CreateScenarioModal({ isOpen, onClose }: CreateScenarioModalProps) {
           </select>
         </div>
 
-        {title === 'Custom' && (
+        {title === "Custom" && (
           <div className="form-group">
             <label className="form-label">Custom Category</label>
             <input
@@ -81,24 +81,18 @@ function CreateScenarioModal({ isOpen, onClose }: CreateScenarioModalProps) {
           />
         </div>
 
-        {error && (
-          <p className="error-text">{error}</p>
-        )}
+        {error && <p className="error-text">{error}</p>}
 
         <div className="modal-footer">
-          <button
-            type="button"
-            onClick={onClose}
-            className="btn"
-          >
+          <button type="button" onClick={onClose} className="btn">
             Cancel
           </button>
           <button
             type="submit"
-            disabled={isSubmitting || (title === 'Custom' && !customTitle)}
+            disabled={isSubmitting || (title === "Custom" && !customTitle)}
             className="btn btn-primary"
           >
-            {isSubmitting ? 'Creating...' : 'Create Scenario'}
+            {isSubmitting ? "Creating..." : "Create Scenario"}
           </button>
         </div>
       </form>
