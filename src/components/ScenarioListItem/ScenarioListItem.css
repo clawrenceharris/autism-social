@@ -1,6 +1,14 @@
 .description {
-  white-space: wrap;
+  white-space: nowrap;
   text-overflow: ellipsis;
-  overflow: hidden;
   max-width: 50%;
+  overflow: hidden;
+}
+
+.scenario-item {
+  margin: 1rem;
+  border: 1px solid #00000020;
+  padding: 2rem;
+  border-radius: 1.1rem;
+  height: 190px;
 }

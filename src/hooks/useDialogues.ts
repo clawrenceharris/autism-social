@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import type { Dialogue } from "../types";
-import { getDialogues } from "../services/scenarios";
+import { getAllDialogues } from "../services/scenarios";
 
-const useDialogues = (scenarioId: string) => {
+const useDialogues = () => {
   const [dialogues, setDialogues] = useState<Dialogue[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchVariations = async () => {
+    const fetchDialogues = async () => {
       try {
         setLoading(true);
-        const dialogues = await getDialogues(scenarioId);
+        const dialogues = await getAllDialogues();
 
         setDialogues(dialogues || []);
         setLoading(false);
@@ -20,7 +20,8 @@ const useDialogues = (scenarioId: string) => {
         setLoading(false);
       }
     };
-    fetchVariations();
+
+    fetchDialogues();
   }, []);
 
   return { dialogues, loading, error };

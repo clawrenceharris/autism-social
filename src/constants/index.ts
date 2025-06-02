@@ -25,3 +25,27 @@ export const DIFFICULTY_LEVELS = [
   "hard",
   "extra hard",
 ] as const;
+
+export const PERSONA_TAGS = [
+  "friendly",
+  "formal",
+  "awkward",
+  "curious",
+  "sarcastic",
+  "blunt",
+  "encouraging",
+  "distracted",
+  "impatient",
+] as const;
+
+export const TONE_TAGS = [
+  "supportive",
+  "nervous",
+  "annoyed",
+  "confused",
+  "neutral",
+  "shy",
+  "excited",
+  "frustrated",
+  "cheerful",
+] as const;

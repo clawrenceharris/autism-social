@@ -1,7 +1,7 @@
-import { supabase } from '../lib/supabase';
-import type { PostgrestError } from '@supabase/supabase-js';
+import { supabase } from "../lib/supabase";
+import type { PostgrestError } from "@supabase/supabase-js";
 
-export type Table = 'scenarios' | 'dialogues';
+export type Table = "scenarios" | "dialogues";
 
 export interface DatabaseResult<T> {
   data: T | null;
@@ -11,7 +11,7 @@ export interface DatabaseResult<T> {
 export class DatabaseService {
   static async create<T extends object>(
     table: Table,
-    data: T,
+    data: T
   ): Promise<DatabaseResult<T>> {
     const { data: result, error } = await supabase
       .from(table)
@@ -31,7 +31,7 @@ export class DatabaseService {
       foreignValue?: string;
     }
   ): Promise<DatabaseResult<T[]>> {
-    let queryBuilder = supabase.from(table).select('*');
+    let queryBuilder = supabase.from(table).select("*");
 
     if (query?.column && query?.value) {
       queryBuilder = queryBuilder.eq(query.column, query.value);
@@ -53,7 +53,7 @@ export class DatabaseService {
     const { data: result, error } = await supabase
       .from(table)
       .update(data)
-      .eq('id', id)
+      .eq("id", id)
       .select()
       .single();
 
@@ -64,10 +64,7 @@ export class DatabaseService {
     table: Table,
     id: string
   ): Promise<{ error: PostgrestError | null }> {
-    const { error } = await supabase
-      .from(table)
-      .delete()
-      .eq('id', id);
+    const { error } = await supabase.from(table).delete().eq("id", id);
 
     return { error };
   }

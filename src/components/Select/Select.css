@@ -1,0 +1,45 @@
+.select-container {
+  position: relative;
+}
+
+.option-item:last-child {
+  border-radius: 0 0 15px 15px;
+}
+.option-item:first-child {
+  border-radius: 15px 15px 0 0;
+}
+.option-item:only-child {
+  border-radius: 15px;
+}
+.option-item {
+  transition: 0.17s;
+  padding: 15px;
+  width: 100%;
+  border-bottom: 1px solid var(--color-gray-300);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+.option-item:last-child {
+  border: none;
+}
+.options-list {
+  position: absolute;
+  width: 100%;
+  box-shadow: var(--box-shadow);
+  overflow: hidden;
+
+  border-radius: 10px;
+  background: var(--color-gray-100);
+  max-height: 200px;
+  overflow-y: auto;
+
+  list-style: none;
+  z-index: 1000;
+}
+
+.option-item:hover {
+  background: #00000010;
+}

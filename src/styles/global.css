@@ -1,7 +1,8 @@
-/* Reset and base styles */
+@import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
+
 :root {
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
+  --color-primary: rgb(84, 203, 226);
+  --color-primary-hover: #5f88fa;
   --color-gray-50: #f9fafb;
   --color-gray-100: #f3f4f6;
   --color-gray-200: #e5e7eb;
@@ -15,6 +16,7 @@
   --color-white: #ffffff;
   --color-red-600: #dc2626;
   --color-red-700: #b91c1c;
+  --box-shadow: 0 10px 10px rgba(0, 0, 0, 0.15);
 }
 
 * {
@@ -24,20 +26,35 @@
   position: relative;
 }
 
+html,
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif;
+  height: 100%;
+  font-size: 16px;
+}
+body {
+  font-family: "Lexend Deca", sans-serif;
+
   line-height: 1.5;
   background-color: var(--color-gray-50);
 }
 main {
-  margin-top: 70px;
+  margin-top: 100px;
 }
 /* Layout */
 .container {
-  max-width: 80rem;
-  margin: 0 auto;
-  padding: 0 1rem;
+  max-width: 50rem;
+  padding: 1rem 2rem;
+}
+.margin-y {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.content-body {
+  width: 100%;
+
+  position: relative;
+  margin-top: 30px;
+  max-width: 500px;
 }
 .justify-between {
   justify-content: space-between;
@@ -87,11 +104,20 @@ main {
   padding: 0 0 8px;
   display: flex;
 }
-
+input,
+select {
+  background-color: var(--color-gray-200);
+  border: none;
+  padding: 15px;
+  border-radius: 6px;
+  background: var(--color-gray-200);
+  outline: none;
+  border: none;
+}
 .flex-column {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 .flex-content {
   display: flex;
@@ -109,7 +135,7 @@ main {
 h1 {
   font-size: 2.25rem;
   font-weight: bold;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 h2 {
@@ -122,18 +148,24 @@ h2 {
   color: var(--color-gray-600);
   margin-bottom: 2rem;
 }
-
 /* Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
-  padding: 0.5rem 1rem;
-  border-radius: 1rem;
-  font-weight: 500;
+  justify-content: center;
+  padding: 0.2rem 1.5rem;
+  gap: 0.8rem;
+  font-size: 1.8rem;
+  border-radius: 100px;
+  font-family: "Dongle", sans-serif;
   cursor: pointer;
   border: none;
-  transition: background-color 0.2s;
+  transition: 0.2s ease-out;
+  text-align: center;
+  max-width: 250px;
+  transform: scale(1);
 }
+
 button {
   border: none;
   background: none;
@@ -142,9 +174,14 @@ button {
   background-color: var(--color-primary);
   color: var(--color-white);
 }
-
-.btn-primary:hover {
+.btn-primary.special:hover {
+  box-shadow: 0 0 10px 2px var(--color-primary);
   background-color: var(--color-primary-hover);
+}
+.btn-primary:hover {
+  transform: scale(1.03);
+
+  background-color: rgb(95, 197, 217);
 }
 
 .btn-primary:disabled {
@@ -153,32 +190,25 @@ button {
 }
 
 /* Forms */
+input {
+  font-family: "Lexend Deca";
+}
+::-webkit-input-placeholder {
+  color: #00000050;
+  font-weight: bold;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+}
+
+form {
+  max-width: 500px;
+}
 .form-group {
-  margin-bottom: 1rem;
+  max-width: 400px;
 }
-
-.form-label {
-  display: block;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-gray-700);
-  margin-bottom: 0.5rem;
-}
-
-.form-input,
-.form-select,
-.form-textarea {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid var(--color-gray-300);
-  border-radius: 0.375rem;
-  background-color: var(--color-white);
-  font-size: 1rem;
-}
-
-.form-input:focus,
-.form-select:focus,
-.form-textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);

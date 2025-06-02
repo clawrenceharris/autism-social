@@ -1,7 +1,7 @@
 import { useScenarios } from "../../hooks";
 import ScenarioListItem from "../../components/ScenarioListItem/ScenarioListItem";
-
-const Scenarios = () => {
+import "./ScenariosPage.css";
+const ScenariosPage = () => {
   const { scenarios, loading, error } = useScenarios();
   if (loading) {
     return <div>Loading...</div>;
@@ -13,12 +13,12 @@ const Scenarios = () => {
   return (
     <div>
       <div className="flex-column">
-        {scenarios.map((item) => (
-          <ScenarioListItem scenario={item} />
+        {Object.entries(scenarios).map(([key, value]) => (
+          <ScenarioListItem key={key} scenario={value} />
         ))}
       </div>
     </div>
   );
 };
 
-export default Scenarios;
+export default ScenariosPage;

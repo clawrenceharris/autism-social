@@ -12,14 +12,14 @@ export interface Step {
 }
 
 export interface Scenario {
-  id?: string;
+  id: string;
   title: string;
   description: string;
-  created_at?: string;
+  createdAt?: string;
 }
 
 export interface Dialogue {
-  id?: string;
+  id: string;
   scenario_id: string;
   title: string;
   persona_tags: string[];
@@ -27,4 +27,24 @@ export interface Dialogue {
   steps: Step[];
   scoring_categories: string[];
   created_at?: string;
+}
+
+export interface DialogueContext {
+  clarity: number;
+  empathy: number;
+  assertiveness: number;
+  selfAdvocacy: number;
+  socialAwareness: number;
+}
+
+export interface DialogueStep {
+  id: string;
+  npc: string;
+  options: DialogueOption[];
+}
+export interface DialogueOption {
+  label: string;
+  event: string;
+  scoreChanges?: Partial<DialogueContext>;
+  next: string;
 }

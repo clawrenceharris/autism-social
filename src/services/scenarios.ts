@@ -16,7 +16,10 @@ export interface CreateDialogueData {
 }
 
 export async function createScenario(data: CreateScenarioData) {
-  const result = await DatabaseService.create<Scenario>("scenarios", data);
+  const result = await DatabaseService.create<Partial<Scenario>>(
+    "scenarios",
+    data
+  );
   if (result.error) throw result.error;
   return result.data;
 }
@@ -38,6 +41,12 @@ export async function getDialogues(scenarioId: string) {
     foreignKey: "scenario_id",
     foreignValue: scenarioId,
   });
+  if (result.error) throw result.error;
+  return result.data;
+}
+
+export async function getAllDialogues() {
+  const result = await DatabaseService.get<Dialogue>("dialogues");
   if (result.error) throw result.error;
   return result.data;
 }
