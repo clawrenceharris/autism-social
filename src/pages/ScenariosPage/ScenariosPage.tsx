@@ -8,7 +8,9 @@ const ScenariosPage = () => {
   if (loading) {
     return (
       <div role="status" aria-live="polite" className="scenarios-container">
-        <p className="text-center">Loading scenarios...</p>
+        <div className="loading-spinner">
+          <p>Loading scenarios...</p>
+        </div>
       </div>
     );
   }
@@ -16,31 +18,39 @@ const ScenariosPage = () => {
   if (error) {
     return (
       <div role="alert" className="scenarios-container">
-        <p className="text-center text-red-600">An error occurred: {error}</p>
+        <div className="error-message">
+          <p>An error occurred: {error}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="scenarios-container">
+    <main className="scenarios-container">
       <header className="scenarios-header">
-        <h1>Scenarios</h1>
+        <h1>Your Scenarios</h1>
         <p className="description">Browse and manage your dialogue scenarios.</p>
       </header>
 
       {scenarios.length === 0 ? (
-        <div className="no-scenarios">
+        <div className="no-scenarios" role="status">
           <p>No scenarios found. Create your first scenario to get started.</p>
         </div>
       ) : (
-        <div className="scenarios-grid">
+        <div 
+          className="scenarios-grid"
+          role="list"
+          aria-label="List of scenarios"
+        >
           {scenarios.map((scenario) => (
-            <ScenarioListItem key={scenario.id} scenario={scenario} />
+            <div key={scenario.id} role="listitem">
+              <ScenarioListItem scenario={scenario} />
+            </div>
           ))}
         </div>
       )}
-    </div>
+    </main>
   );
-}
+};
 
 export default ScenariosPage;
