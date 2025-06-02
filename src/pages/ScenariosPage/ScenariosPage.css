@@ -1,0 +1,37 @@
+.scenarios-container {
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.scenarios-header {
+  margin-bottom: 2rem;
+}
+
+.scenarios-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .scenarios-container {
+    padding: 2rem;
+  }
+  
+  .scenarios-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .scenarios-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.no-scenarios {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-gray-600);
+}
