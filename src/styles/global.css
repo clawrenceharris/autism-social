@@ -24,7 +24,8 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
   line-height: 1.5;
   background-color: var(--color-gray-50);
 }
@@ -49,6 +50,12 @@ h2 {
   margin-bottom: 1rem;
 }
 
+.description {
+  font-size: 1.125rem;
+  color: var(--color-gray-600);
+  margin-bottom: 2rem;
+}
+
 /* Buttons */
 .btn {
   display: inline-flex;
@@ -60,7 +67,10 @@ h2 {
   border: none;
   transition: background-color 0.2s;
 }
-
+button {
+  border: none;
+  background: none;
+}
 .btn-primary {
   background-color: var(--color-primary);
   color: var(--color-white);
@@ -127,6 +137,7 @@ h2 {
 
 /* Card */
 .card {
+  cursor: pointer;
   background-color: var(--color-white);
   border-radius: 0.5rem;
   padding: 1.5rem;
