@@ -2,6 +2,7 @@
   padding: 2rem 1rem;
   max-width: 1200px;
   margin: 0 auto;
+  min-height: 100vh;
 }
 
 .scenarios-header {
@@ -20,13 +21,7 @@
   }
   
   .scenarios-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .scenarios-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
 }
 
@@ -34,4 +29,17 @@
   text-align: center;
   padding: 2rem;
   color: var(--color-gray-600);
+  background: var(--color-white);
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.loading-spinner,
+.error-message {
+  text-align: center;
+  padding: 2rem;
+}
+
+.error-message {
+  color: var(--color-red-600);
 }
