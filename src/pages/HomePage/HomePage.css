@@ -4,18 +4,6 @@
   padding: 2rem;
 }
 
-.home-title {
-  font-size: 2.25rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-}
-
-.home-description {
-  font-size: 1.125rem;
-  color: var(--color-gray-600);
-  margin-bottom: 2rem;
-}
-
 .home-grid {
   display: grid;
   gap: 1.5rem;

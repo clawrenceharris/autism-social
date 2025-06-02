@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { CreateScenarioModal } from '../../components';
-import './HomePage.css';
+import { useState } from "react";
+import { CreateScenarioModal } from "../../components/modals";
+import "./HomePage.css";
 
 function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -8,20 +8,17 @@ function HomePage() {
   return (
     <div className="home-container">
       <h1 className="home-title">Scenario Builder</h1>
-      <p className="home-description">
-        Welcome to the Scenario Builder. Create and manage interactive dialogue scenarios compatible with XState.
+      <p className="description">
+        Welcome to the Scenario Builder. Create and manage interactive dialogue
+        scenarios compatible with XState.
       </p>
       <div className="home-grid">
-        <div className="card">
+        <button onClick={() => setIsModalOpen(true)} className="card">
           <h2>Create New Scenario</h2>
-          <p>Start building a new interactive dialogue scenario from scratch.</p>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="btn btn-primary"
-          >
-            Create Scenario
-          </button>
-        </div>
+          <p>
+            Start building a new interactive dialogue scenario from scratch.
+          </p>
+        </button>
         <div className="card">
           <h2>Manage Scenarios</h2>
           <p>View, edit, and organize your existing scenarios.</p>
