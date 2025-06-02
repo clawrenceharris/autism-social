@@ -1,9 +1,10 @@
 import "./ScenarioPage.css";
 import { useScenario } from "../../context";
 import { ScenarioForm } from "../../components";
+import type {Dialogue} from "../../types"
 const ScenarioPage = () => {
   const { scenario, loading, error } = useScenario();
-
+  const [dialogue, setDialogue] = useState<Dialogue |null>(null);
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -13,6 +14,7 @@ const ScenarioPage = () => {
   if (!scenario) {
     return <div>404 Error: Scenario not found.</div>;
   }
+  if(!dialogue)
   return (
     <div>
       <div>
