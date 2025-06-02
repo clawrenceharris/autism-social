@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
-import { Home, FolderOpen, Settings } from 'lucide-react';
-import './TaskBar.css';
+import { Link } from "react-router-dom";
+import { Home, FolderOpen, Settings } from "lucide-react";
+import "./TaskBar.css";
 
-function TaskBar() {
+const TaskBar = () => {
   return (
     <nav className="taskbar">
       <div className="taskbar-container">
@@ -23,6 +23,6 @@ function TaskBar() {
       </div>
     </nav>
   );
-}
+};
 
 export default TaskBar;

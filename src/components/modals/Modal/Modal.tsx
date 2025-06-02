@@ -1,6 +1,6 @@
-import { useEffect, type ReactNode } from 'react';
-import { X } from 'lucide-react';
-import './Modal.css';
+import { useEffect, type ReactNode } from "react";
+import { X } from "lucide-react";
+import "./Modal.css";
 
 interface ModalProps {
   isOpen: boolean;
@@ -9,20 +9,20 @@ interface ModalProps {
   children: ReactNode;
 }
 
-function Modal({ isOpen, onClose, title, children }: ModalProps) {
+const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
 
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
     };
   }, [isOpen, onClose]);
 
@@ -44,6 +44,6 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
       </div>
     </div>
   );
-}
+};
 
 export default Modal;

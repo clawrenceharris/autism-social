@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChevronDown, ChevronRight, Trash2 } from "lucide-react";
 import type { Step, Option } from "../../types";
-import { DialogueOption } from "../DialogueOption/DialogueOption";
+import { DialogueOption } from "../";
 
 interface DialogueStepProps {
   step: Step;
@@ -19,7 +19,7 @@ interface DialogueStepProps {
   onUpdateScore: (optionIndex: number, category: string, value: number) => void;
 }
 
-export function DialogueStep({
+const DialogueStep = ({
   step,
   stepIndex,
   scoringCategories,
@@ -29,7 +29,7 @@ export function DialogueStep({
   onRemoveOption,
   onUpdateOption,
   onUpdateScore,
-}: DialogueStepProps) {
+}: DialogueStepProps) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
   return (
@@ -94,4 +94,6 @@ export function DialogueStep({
       )}
     </div>
   );
-}
+};
+
+export default DialogueStep;

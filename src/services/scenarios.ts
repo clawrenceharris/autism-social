@@ -1,5 +1,5 @@
-import { DatabaseService } from './database';
-import type { Scenario, Dialogue } from '../types';
+import { DatabaseService } from "./database";
+import type { Scenario, Dialogue } from "../types";
 
 export interface CreateScenarioData {
   title: string;
@@ -16,26 +16,26 @@ export interface CreateDialogueData {
 }
 
 export async function createScenario(data: CreateScenarioData) {
-  const result = await DatabaseService.create<Scenario>('scenarios', data);
+  const result = await DatabaseService.create<Scenario>("scenarios", data);
   if (result.error) throw result.error;
   return result.data;
 }
 
 export async function createDialogue(data: CreateDialogueData) {
-  const result = await DatabaseService.create<Dialogue>('dialogues', data);
+  const result = await DatabaseService.create<Dialogue>("dialogues", data);
   if (result.error) throw result.error;
   return result.data;
 }
 
 export async function getScenarios() {
-  const result = await DatabaseService.get<Scenario>('scenarios');
+  const result = await DatabaseService.get<Scenario>("scenarios");
   if (result.error) throw result.error;
   return result.data;
 }
 
 export async function getDialogues(scenarioId: string) {
-  const result = await DatabaseService.get<Dialogue>('dialogues', {
-    foreignKey: 'scenario_id',
+  const result = await DatabaseService.get<Dialogue>("dialogues", {
+    foreignKey: "scenario_id",
     foreignValue: scenarioId,
   });
   if (result.error) throw result.error;
@@ -43,25 +43,25 @@ export async function getDialogues(scenarioId: string) {
 }
 
 export async function updateScenario(id: string, data: Partial<Scenario>) {
-  const result = await DatabaseService.update<Scenario>('scenarios', id, data);
+  const result = await DatabaseService.update<Scenario>("scenarios", id, data);
   if (result.error) throw result.error;
   return result.data;
 }
 
 export async function updateDialogue(id: string, data: Partial<Dialogue>) {
-  const result = await DatabaseService.update<Dialogue>('dialogues', id, data);
+  const result = await DatabaseService.update<Dialogue>("dialogues", id, data);
   if (result.error) throw result.error;
   return result.data;
 }
 
 export async function deleteScenario(id: string) {
-  const result = await DatabaseService.delete('scenarios', id);
+  const result = await DatabaseService.delete("scenarios", id);
   if (result.error) throw result.error;
   return true;
 }
 
 export async function deleteDialogue(id: string) {
-  const result = await DatabaseService.delete('dialogues', id);
+  const result = await DatabaseService.delete("dialogues", id);
   if (result.error) throw result.error;
   return true;
 }
