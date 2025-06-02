@@ -29,7 +29,16 @@ export async function createDialogue(data: CreateDialogueData) {
   if (result.error) throw result.error;
   return result.data;
 }
-
+export async function getScenarioById(id: string) {
+  const result = await DatabaseService.getSingle<Scenario>("scenarios", id);
+  if (result.error) throw result.error;
+  return result.data;
+}
+export async function getDialogueById(id: string) {
+  const result = await DatabaseService.getSingle<Dialogue>("dialogues", id);
+  if (result.error) throw result.error;
+  return result.data;
+}
 export async function getScenarios() {
   const result = await DatabaseService.get<Scenario>("scenarios");
   if (result.error) throw result.error;
