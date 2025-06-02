@@ -23,7 +23,7 @@ const ScenarioPage = () => {
         </p>
       </div>
       <div className="content-body">
-        <ScenarioForm scenario={scenario} />
+        <ScenarioForm dialogue={dialogue} scenario={scenario} />
       </div>
     </div>
   );
