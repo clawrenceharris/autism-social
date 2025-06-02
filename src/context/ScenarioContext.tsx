@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { Scenario } from "../types";
-import { useParams } from "react-router-dom";
-import { fetchScenarioById } from "../api/scenario";
+import type { Scenario } from "../types";
+import { supabase } from "../lib/supabase";
+
 interface AuthContextProps {
   children: React.ReactNode;
   scenarioId: string;
@@ -17,23 +17,25 @@ const ScenarioContext = createContext<AuthContextType | undefined>(undefined);
 
 const ScenarioProvider = ({ children, scenarioId }: AuthContextProps) => {
   const [scenario, setScenario] = useState<Scenario | null>(null);
-
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
+    if (!scenarioId) {
+      setLoading(false);
+      return;
+    }
     const fetchScenario = async () => {
-      if (!scenarioId) {
-        console.log("No Id");
-        setLoading(false);
-        return;
-      }
       try {
-        setLoading(true);
-        const scenario = await fetchScenarioById(scenarioId);
-        setScenario(scenario);
+        const { data: scenario } = await supabase
+          .from("scenarios")
+          .select("*")
+          .eq("id", scenarioId)
+          .single();
         setLoading(false);
-      } catch (error: any) {
-        setError(error);
+        setScenario(scenario);
+      } catch (error) {
+        setError(error as string);
         setLoading(false);
       }
     };
@@ -44,7 +46,6 @@ const ScenarioProvider = ({ children, scenarioId }: AuthContextProps) => {
       value={{
         scenario,
         loading,
-
         error,
       }}
     >
@@ -57,7 +58,7 @@ function useScenario() {
   const context = useContext(ScenarioContext);
 
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error("useScenario must be used within an ScenarioProvider");
   }
   return context;
 }

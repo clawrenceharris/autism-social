@@ -1,0 +1,27 @@
+.input-container {
+  position: relative;
+}
+
+.text-input::placeholder {
+  color: var(--dark-gray);
+}
+.input-container .icon {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.5;
+  cursor: pointer;
+}
+.text-input {
+  margin: 8px 0;
+
+  position: relative;
+
+  width: 100%;
+  flex: 1;
+}
+
+.input-container .description {
+  text-align: left !important;
+}
