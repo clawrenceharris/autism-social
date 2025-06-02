@@ -4,12 +4,15 @@ import { DIFFICULTY_LEVELS, SCENARIO_CATEGORIES } from "../../constants";
 import { type Dialogue, type Scenario } from "../../types";
 import { Select } from "../";
 import { generateScenarioSteps } from "../../lib/gemini";
+import {useScenarioDialogues} = 
 import "./ScenarioForm.css";
 interface ScenarioFormProps {
   scenario: Scenario;
+  dialogue: Dialogue
 }
 
-const ScenarioForm = ({ scenario }: ScenarioFormProps) => {
+const ScenarioForm = ({ scenario, dialogue }: ScenarioFormProps) => {
+  
   const [form, setForm] = useState<{
     title: string;
     description: string;
@@ -17,11 +20,11 @@ const ScenarioForm = ({ scenario }: ScenarioFormProps) => {
     difficulty: string;
     personaTags: string[];
   }>({
-    title: "",
-    description: "",
-    dialogueTitle: "",
-    difficulty: "easy",
-    personaTags: [],
+    title: scenario.title || "",
+    description: scenario.description || "",
+    dialogueTitle: dialogue.title || "",
+    difficulty: dialogue.difficulty || "",
+    personaTags: dialogue.personaTags || [],
   });
   const [dialogueSteps, setDialogueSteps] = useState<object>([]);
 
