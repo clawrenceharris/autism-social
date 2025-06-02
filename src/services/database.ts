@@ -44,7 +44,18 @@ export class DatabaseService {
     const { data, error } = await queryBuilder;
     return { data: data as T[], error };
   }
+ static async getSingle<T>(
+    table: Table,
+    id: string
+  ): Promise<DatabaseResult<T>> {
+    const { data, error } = await supabase
+      .from(table)
+      .select("*")
+      .eq("id", id)
+      .single();
 
+    return { data: data as T, error };
+  }
   static async update<T extends object>(
     table: Table,
     id: string,
