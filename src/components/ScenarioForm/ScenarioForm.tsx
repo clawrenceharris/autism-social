@@ -4,7 +4,6 @@ import { DIFFICULTY_LEVELS, SCENARIO_CATEGORIES } from "../../constants";
 import { type Dialogue, type Scenario } from "../../types";
 import { Select } from "../";
 import { generateScenarioSteps } from "../../lib/gemini";
-import {useScenarioDialogues} = 
 import "./ScenarioForm.css";
 interface ScenarioFormProps {
   scenario: Scenario;
