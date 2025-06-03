@@ -121,7 +121,6 @@ select {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  flex:1;
   background-color:blue;
 }
 .flex-content {
