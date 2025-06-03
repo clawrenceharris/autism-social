@@ -22,7 +22,7 @@ const useScenarioDialogues = (scenarioId: string) => {
     fetchScenarioDialogues();
   }, []);
 
-  return { dialogues, loading, error };
+  return { scenarioDialogues, loading, error };
 };
 
 export default useScenarioDialogues;
