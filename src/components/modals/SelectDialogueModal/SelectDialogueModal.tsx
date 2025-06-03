@@ -3,7 +3,7 @@ import { SCENARIO_CATEGORIES } from "../../../constants";
 import { createScenario } from "../../../services/scenarios";
 import { useModal } from "../../../context";
 import {useDialogueScenarios} from "../../../hooks";
-import "./CreateScenarioModal.css";
+import "./SelectDialogueModal.css";
 
 const SelectDialogueModal = () => {
   const { closeModal } = useModal();
