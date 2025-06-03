@@ -17,7 +17,7 @@
 .modal-content {
   position: relative;
   width: 100%;
-  max-width: 35rem;
+  max-width: 40rem;
   min-height: 400px;
   background-color: var(--color-white);
   border-radius: 0.5rem;
