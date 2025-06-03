@@ -193,7 +193,7 @@ main {
   background-color: var(--color-white);
   border-radius: 0.75rem;
   width: 100%;
-  max-width: 32rem;
+  max-width: 50vw;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
