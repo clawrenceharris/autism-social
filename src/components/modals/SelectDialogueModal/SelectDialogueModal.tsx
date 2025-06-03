@@ -18,7 +18,7 @@ const SelectDialogueModal = () => {
     </div>);
   }
   return (
-    <div className="outlined container">
+    <div className="outlined content-body">
      <div>
       {scenarioDialogues.map((item) =>(
       <button className="card">
