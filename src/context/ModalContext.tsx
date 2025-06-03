@@ -34,7 +34,7 @@ export function ModalProvider({ children }: { children: ReactNode }) {
       {children}
       {isOpen && modalContent && (
         <div className="modal-overlay">
-          <div className="modal-backdrop" onClick={closeModal} />
+          <div className="modal-backdrop\" onClick={closeModal} />
           <div className="modal-container">
             <div className="modal-content">
               <div className="modal-header">
