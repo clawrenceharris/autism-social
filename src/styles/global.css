@@ -364,15 +364,3 @@ a {
     transform: rotate(360deg);
   }
 }
-
-/* Responsive Adjustments */
-@media (max-width: 640px) {
-  .modal-content {
-    margin: 0.5rem;
-    max-height: calc(100vh - 1rem);
-  }
-
-  .btn {
-    width: 100%;
-  }
-}
