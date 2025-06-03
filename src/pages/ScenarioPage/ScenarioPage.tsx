@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import "./ScenarioPage.css";
 import { useScenario,useModal } from "../../context";
 import { ScenarioForm } from "../../components";
