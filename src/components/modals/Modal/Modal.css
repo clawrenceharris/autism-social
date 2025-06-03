@@ -16,6 +16,7 @@
 .modal-close svg{
   width: 24px;
   height: 24px;
+  font-size: 24px;
 }
 .modal-content {
   position: relative;
