@@ -15,7 +15,7 @@ console.log(dialogues);
   if(error){
     return <div>
     <h1>An Error occurred</h1>
-      <p>{error.message}</p>
+      <p>{error?.message}</p>
     </div>
   }
   return (
