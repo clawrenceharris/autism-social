@@ -4,6 +4,7 @@ import { useScenario } from "../../context";
 import { ScenarioForm } from "../../components";
 import type {Dialogue} from "../../types";
 import {SelectDialogueModal} from "../../components/modals";
+import {useModal} from "../../hooks";
 const ScenarioPage = () => {
   const { scenario, loading, error } = useScenario();
   const { openModal } = useModal();
