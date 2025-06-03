@@ -121,6 +121,7 @@ select {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  height: 100%;
 }
 .flex-content {
   display: flex;
