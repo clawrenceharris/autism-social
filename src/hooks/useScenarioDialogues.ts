@@ -12,7 +12,7 @@ const useScenarioDialogues = (scenarioId: string) => {
       try {
         setLoading(true);
         const dialogues = await getDialogues(scenarioId);
-        console.log({dialoges})
+        console.log({dialogues})
         setScenarioDialogues(dialogues || []);
         setLoading(false);
       } catch (error: any) {
