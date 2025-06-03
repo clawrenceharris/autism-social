@@ -34,12 +34,8 @@ const ScenarioPage = () => {
           <small>ID: {scenario.id}</small>
         </p>
       </div>
-      {dialogue ? <div className="content-body">
         <ScenarioForm dialogue={dialogue} scenario={scenario} />
-      </div>
-      :
-        <button onClick={handleOpenModal} className="btn btn-primary">Select a Dialogue</button>
-      }
+     
     </div>
   );
 };
