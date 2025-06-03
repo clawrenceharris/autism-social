@@ -224,6 +224,10 @@ main {
 }
 
 /* Button Styles */
+button{
+  border: none;
+  background: none;
+}
 .btn {
   display: inline-flex;
   align-items: center;
