@@ -23,7 +23,7 @@ const ScenarioPage = () => {
     return <div className="content-centered-absolute">404 Error: Scenario not found.</div>;
   }
   if(!dialogue){
-    <SelectDialogueModal/>
+    return <SelectDialogueModal/>
   }
   return (
     <div>
