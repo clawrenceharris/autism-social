@@ -18,7 +18,7 @@ const SelectDialogueModal = () => {
     </div>);
   }
   return (
-    <div className="outlined dialogues-container">
+    <div className="outlined flex-column dialogues-container">
      
       
         {scenarioDialogues.length > 0 ? 
