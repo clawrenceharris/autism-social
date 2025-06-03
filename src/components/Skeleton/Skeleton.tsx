@@ -2,7 +2,7 @@ import { CSSProperties } from "react";
 import "./Skeleton.css";
 
 interface SkeletonProps {
-  variant?: "text" | "title" | "button" | "card";
+  variant?: "text" | "title" | "squircle-button" | "button" | "card";
   width?: string | number;
   height?: string | number;
   style?: CSSProperties;
