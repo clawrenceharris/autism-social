@@ -43,7 +43,7 @@ const SelectDialogueModal = () => {
       </div>}
       <div className="dialogue-actions">
           <div className="content-row">
-            <button>
+            <button className="squircle-btn">
               <Minus/>
             </button>
              <button>
