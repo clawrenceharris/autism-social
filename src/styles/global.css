@@ -159,7 +159,7 @@ h2 {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.5rem;
-  border-radius: 0.6rem;
+  border-radius: 0.5rem;
   transition: background-color 0.2s;
   cursor: pointer;
   border: none;
