@@ -6,7 +6,6 @@ import "./SelectDialogueModal.css";
 
 const SelectDialogueModal = () => {
   const { scenarioDialogues, loading, error } = useScenarioDialogues();
-console.log(scenarioDialogues);
   if(loading){
      return <div>
     <p>Loading...</p>
