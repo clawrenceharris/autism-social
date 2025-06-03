@@ -6,19 +6,13 @@ import type {Dialogue} from "../../types";
 import {SelectDialogueModal} from "../../components/modals";
 const ScenarioPage = () => {
   const { scenario, loading, error } = useScenario();
-  const { openModal } = useModal();
 
   const [dialogue, setDialogue] = useState<Dialogue | null>(null);
   useEffect(()=>{
-    if(!dialogue){
-      handleOpenModal();
-    }
+    
   }, []);
 
-  const handleOpenModal = () =>{
-    openModal(<SelectDialogueModal />, "Select Dialogue");
-
-  }
+ 
   if (loading) {
     return <div className="content-centered-absolute">Loading...</div>;
   }
