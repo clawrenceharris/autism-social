@@ -7,7 +7,7 @@ const ScenarioPage = () => {
   const { scenario, loading, error } = useScenario();
   const [dialogue, setDialogue] = useState<Dialogue | null>(null);
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="content-centered-absolute">Loading...</div>;
   }
   if (error) {
     return <div className="content-centered-absolute">An error occured: {error}</div>;
