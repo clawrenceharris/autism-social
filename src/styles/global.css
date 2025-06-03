@@ -176,7 +176,7 @@ h2 {
 
 .squircle-btn.primary:hover {
   background-color: #e0f2fe;
-  border: none;
+  border-color: #e0f2fe;
 }
 
 .squircle-btn.danger {
@@ -185,7 +185,7 @@ h2 {
 
 .squircle-btn.danger:hover {
   background-color: #fee2e2;
-  border: none;
+  border-color: #fee2e2;
 }
 
 /* Buttons */
