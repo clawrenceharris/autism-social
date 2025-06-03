@@ -200,6 +200,9 @@ h2 {
   transform: scale(1);
 }
 
+.outlined {
+  border: 1px solid lightgray;
+}
 button {
   border: none;
   background: none;
