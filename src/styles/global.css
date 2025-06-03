@@ -188,6 +188,54 @@ button {
   background-color: var(--color-gray-400);
   cursor: not-allowed;
 }
+.squircle-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--color-white);
+}
+
+.squircle-btn.primary {
+  background-color: var(--color-primary);
+}
+
+.squircle-btn.primary:hover {
+  background-color: var(--color-primary-hover);
+  box-shadow: 0 0 10px rgba(84, 203, 226, 0.3);
+}
+
+.squircle-btn.danger {
+  background-color: var(--color-danger);
+}
+
+.squircle-btn.danger:hover {
+  background-color: var(--color-danger-hover);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+}
+
+.squircle-btn.success {
+  background-color: var(--color-success);
+}
+
+.squircle-btn.success:hover {
+  background-color: var(--color-success-hover);
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+}
+
+.squircle-btn.warning {
+  background-color: var(--color-warning);
+}
+
+.squircle-btn.warning:hover {
+  background-color: var(--color-warning-hover);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
 
 /* Forms */
 input {
