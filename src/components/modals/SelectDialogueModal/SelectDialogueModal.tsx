@@ -21,23 +21,23 @@ const SelectDialogueModal = () => {
     <div className="outlined dialogues-container">
      
       <div>
-     {scenarioDialogues.length > 0 ? <div>
+       {scenarioDialogues.length > 0 ? <div>
        
-      {scenarioDialogues.map((item) =>(
-      <button className="card">
-      <div>
-        <h2>{item.title}</h2>
-        <p><small>ID: {item.id}</small></p>
-      </div>
+        {scenarioDialogues.map((item) =>(
+          <button className="card">
+            <div>
+              <h2>{item.title}</h2>
+              <p><small>ID: {item.id}</small></p>
+            </div>
         
-      </button>
-      ))}
+          </button>
+        ))}
        
-     </div>
+      </div>
      
-     :
+      :
 
- <div className="dialogue-actions">
+     <div className="dialogue-actions">
         <div>
           <button>
             <Minus/>
@@ -46,15 +46,11 @@ const SelectDialogueModal = () => {
             <Plus/>
           </button>
         </div>
-      </div>
-        
-       
-     }
+    </div>}
       
-      </div>
       
      
-    </div>
+  </div>
   );
 };
 
