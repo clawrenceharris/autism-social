@@ -20,7 +20,7 @@ const SelectDialogueModal = () => {
   return (
     <div className="outlined dialogues-container">
      
-      <div>
+      <div className="flex-column">
         {scenarioDialogues.length > 0 ? 
          
           <div>
@@ -38,7 +38,10 @@ const SelectDialogueModal = () => {
      
         :
 
-       <div className="dialogue-actions">
+       <div className="">
+          <p>There are no Dialogues yet</p>
+      </div>}
+      <div className="dialogue-actions">
           <div>
             <button>
               <Minus/>
@@ -47,8 +50,7 @@ const SelectDialogueModal = () => {
               <Plus/>
             </button>
           </div>
-      </div>}
-      
+      </div>
     </div>
       
      
