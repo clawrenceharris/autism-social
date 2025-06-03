@@ -1,0 +1,41 @@
+/* Skeleton Loading Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-gray-200) 25%,
+    var(--color-gray-100) 37%,
+    var(--color-gray-200) 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 0.5rem;
+}
+
+.skeleton-text {
+  height: 1.2em;
+}
+
+.skeleton-title {
+  height: 2em;
+}
+
+.skeleton-button {
+  height: 2.5rem;
+  width: 8rem;
+}
+
+.skeleton-card {
+  padding: 1.5rem;
+  background-color: var(--color-white);
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
