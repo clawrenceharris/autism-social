@@ -372,12 +372,6 @@ a {
     max-height: calc(100vh - 1rem);
   }
 
-  .modal-header,
-  .modal-body,
-  .modal-footer {
-    padding: 1rem;
-  }
-
   .btn {
     width: 100%;
   }
