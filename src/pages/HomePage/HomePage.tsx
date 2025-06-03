@@ -1,9 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import { CreateScenarioModal } from "../../components/modals";
 import { useModal } from "../../context";
 import "./HomePage.css";
 
 const HomePage = () => {
   const { openModal } = useModal();
+  const navigate = useNavigate();
   const handleCreateScenario = () => {
     openModal(<CreateScenarioModal />, "Create New Scenario");
   };
@@ -18,15 +20,21 @@ const HomePage = () => {
       <div className="home-grid">
         <button onClick={handleCreateScenario} className="card">
           <h2>Create New Scenario</h2>
-          <p className="description">Start building a new interactive dialogue scenario from scratch.</p>
+          <p className="description">
+            Start building a new interactive dialogue scenario from scratch.
+          </p>
         </button>
-        <button className="card">
+        <button onClick={() => navigate("/scenarios")} className="card">
           <h2>Manage Scenarios</h2>
-          <p className="description">View, edit, and organize your existing scenarios.</p>
+          <p className="description">
+            View, edit, and organize your existing scenarios.
+          </p>
         </button>
         <button className="card">
           <h2>Settings</h2>
-          <p className="description">Configure your preferences and manage your account.</p>
+          <p className="description">
+            Configure your preferences and manage your account.
+          </p>
         </button>
       </div>
     </div>
