@@ -16,10 +16,6 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.scenario-content {
-  flex: 1;
-}
-
 .scenario-title {
   font-size: 1.25rem;
   font-weight: 600;
@@ -39,42 +35,6 @@
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
-}
-
-.scenario-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  transition: background-color 0.2s;
-  cursor: pointer;
-}
-
-.scenario-button:hover {
-  background-color: var(--color-gray-100);
-}
-
-.scenario-button:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
-.delete-button {
-  color: var(--color-red-600);
-}
-
-.delete-button:hover {
-  background-color: #fee2e2;
-}
-
-.edit-button {
-  color: var(--color-primary);
-}
-
-.edit-button:hover {
-  background-color: #e0f2fe;
 }
 
 @media (max-width: 640px) {
