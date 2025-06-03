@@ -7,3 +7,4 @@ export { default as TextInput } from "./TextInput";
 export { default as Select } from "./Select";
 export { default as ScenarioLayout } from "./ScenarioLayout";
 export { default as DialogueForm } from "./DialogueForm";
+export { default as Skeleton } from "./Skeleton";

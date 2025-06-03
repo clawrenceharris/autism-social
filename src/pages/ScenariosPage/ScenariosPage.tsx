@@ -1,17 +1,28 @@
 import { useScenarios } from "../../hooks";
 import ScenarioListItem from "../../components/ScenarioListItem/ScenarioListItem";
+import { Skeleton } from "../../components";
 import "./ScenariosPage.css";
 
 const SkeletonScenario = () => (
   <div className="scenario-item">
     <div className="scenario-content">
-      <div className="skeleton skeleton-title" />
-      <div className="skeleton skeleton-text" style={{ width: '70%' }} />
-      <div className="skeleton skeleton-text" style={{ width: '85%' }} />
+      <Skeleton variant="title" width="80%" />
+      <Skeleton variant="text" width="70%" style={{ marginBottom: "0.5rem" }} />
+      <Skeleton variant="text" width="85%" />
     </div>
     <div className="scenario-actions">
-      <div className="skeleton skeleton-button" style={{ width: '40px', height: '40px', borderRadius: '8px' }} />
-      <div className="skeleton skeleton-button" style={{ width: '40px', height: '40px', borderRadius: '8px' }} />
+      <Skeleton 
+        variant="button" 
+        width={40} 
+        height={40} 
+        style={{ borderRadius: "8px" }} 
+      />
+      <Skeleton 
+        variant="button" 
+        width={40} 
+        height={40} 
+        style={{ borderRadius: "8px" }} 
+      />
     </div>
   </div>
 );
@@ -23,8 +34,8 @@ const ScenariosPage = () => {
     return (
       <div role="status" aria-live="polite" className="scenarios-container">
         <header className="scenarios-header">
-          <div className="skeleton skeleton-title" />
-          <div className="skeleton skeleton-text" />
+          <Skeleton variant="title" width="60%" />
+          <Skeleton variant="text" width="80%" />
         </header>
         <div className="scenarios-grid">
           {[...Array(6)].map((_, index) => (
