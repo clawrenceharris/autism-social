@@ -46,7 +46,7 @@ const SelectDialogueModal = () => {
             <button className="squircle-btn danger outlined">
               <Minus/>
             </button>
-             <button className="squircle-btn danger outlined">
+             <button className="squircle-btn primary outlined">
               <Plus/>
             </button>
           </div>
