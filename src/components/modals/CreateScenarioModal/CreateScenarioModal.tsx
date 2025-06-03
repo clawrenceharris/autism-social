@@ -60,7 +60,7 @@ const CreateScenarioModal = () => {
         />
       </div>
 
-      {error && <p className="error-text">{error}</p>}
+      {error && <p className="danger">{error}</p>}
 
       <div className="modal-footer">
         <button type="button" onClick={closeModal} className="btn">
