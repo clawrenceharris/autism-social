@@ -60,7 +60,7 @@ const CreateScenarioModal = () => {
         />
       </div>
 
-      {<p className="danger">{error}</p>}
+      {<p className="danger">{"An error occured"}</p>}
 
       <div className="modal-footer">
         <button type="button" onClick={closeModal} className="btn">
