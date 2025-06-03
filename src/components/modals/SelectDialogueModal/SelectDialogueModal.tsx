@@ -7,6 +7,12 @@ import "./SelectDialogueModal.css";
 const SelectDialogueModal = () => {
   const { dialogues, loading, error } = useScenarioDialogues();
 console.log(dialogues);
+  if(error){
+    return <div>
+    <h1>An Error occurred</h1>
+      <p>{error}</p>
+    </div>
+  }
   return (
     <div>
      <div>
