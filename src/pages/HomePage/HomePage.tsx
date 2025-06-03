@@ -21,14 +21,14 @@ const HomePage = () => {
           <h2>Create New Scenario</h2>
           <p className="description">Start building a new interactive dialogue scenario from scratch.</p>
         </button>
-        <div className="card">
+        <button className="card">
           <h2>Manage Scenarios</h2>
           <p className="description">View, edit, and organize your existing scenarios.</p>
-        </div>
-        <div className="card">
+        </button>
+        <button className="card">
           <h2>Settings</h2>
           <p className="description">Configure your preferences and manage your account.</p>
-        </div>
+        </button>
       </div>
     </div>
   );
