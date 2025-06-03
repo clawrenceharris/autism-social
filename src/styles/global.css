@@ -249,6 +249,40 @@ button{
   max-width: 250px;
   transform: scale(1);
 }
+.squircle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+  cursor: pointer;
+  border: none;
+}
+
+.squircle-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.primary {
+  color: var(--color-primary);
+}
+
+.squircle-btn.primary:hover {
+  background-color: #e0f2fe;
+  border-color: #e0f2fe;
+}
+
+.danger {
+  color: var(--color-red-600);
+}
+
+.squircle-btn.danger:hover {
+  background-color: #fee2e2;
+  border-color: #fee2e2;
+}
 
 .btn-primary {
   background-color: var(--color-primary);
