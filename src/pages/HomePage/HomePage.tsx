@@ -1,9 +1,13 @@
-import { useState } from "react";
 import { CreateScenarioModal } from "../../components/modals";
+import { useModal } from "../../context";
 import "./HomePage.css";
 
 const HomePage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { openModal } = useModal();
+
+  const handleCreateScenario = () => {
+    openModal(<CreateScenarioModal />, "Create New Scenario");
+  };
 
   return (
     <div className="home-container">
@@ -13,11 +17,9 @@ const HomePage = () => {
         scenarios compatible with XState.
       </p>
       <div className="home-grid">
-        <button onClick={() => setIsModalOpen(true)} className="card">
+        <button onClick={handleCreateScenario} className="card">
           <h2>Create New Scenario</h2>
-          <p>
-            Start building a new interactive dialogue scenario from scratch.
-          </p>
+          <p>Start building a new interactive dialogue scenario from scratch.</p>
         </button>
         <div className="card">
           <h2>Manage Scenarios</h2>
@@ -28,11 +30,6 @@ const HomePage = () => {
           <p>Configure your preferences and manage your account.</p>
         </div>
       </div>
-
-      <CreateScenarioModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
     </div>
   );
 };
