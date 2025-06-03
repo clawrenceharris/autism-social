@@ -23,7 +23,7 @@ const HomePage = () => {
         </button>
         <div className="card">
           <h2>Manage Scenarios</h2>
-          <p>View, edit, and organize your existing scenarios.</p>
+          <p className="description"">View, edit, and organize your existing scenarios.</p>
         </div>
         <div className="card">
           <h2>Settings</h2>
