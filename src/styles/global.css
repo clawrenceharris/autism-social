@@ -296,5 +296,6 @@ textarea:focus {
   border-radius: 1rem;
   padding: 1.5rem;
   text-align:left;
+  width: 100%;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
