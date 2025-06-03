@@ -33,13 +33,13 @@ body {
 }
 body {
   font-family: "Lexend Deca", sans-serif;
-
   line-height: 1.5;
   background-color: var(--color-gray-50);
 }
 main {
   margin-top: 100px;
 }
+
 /* Layout */
 .container {
   max-width: 50rem;
@@ -51,7 +51,6 @@ main {
 }
 .content-body {
   width: 100%;
-
   position: relative;
   margin-top: 30px;
   max-width: 500px;
@@ -148,6 +147,41 @@ h2 {
   color: var(--color-gray-600);
   margin-bottom: 2rem;
 }
+
+/* Squircle Button Styles */
+.squircle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+  cursor: pointer;
+  border: none;
+}
+
+.squircle-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.squircle-btn.primary {
+  color: var(--color-primary);
+}
+
+.squircle-btn.primary:hover {
+  background-color: #e0f2fe;
+}
+
+.squircle-btn.danger {
+  color: var(--color-red-600);
+}
+
+.squircle-btn.danger:hover {
+  background-color: #fee2e2;
+}
+
 /* Buttons */
 .btn {
   display: inline-flex;
@@ -180,61 +214,12 @@ button {
 }
 .btn-primary:hover {
   transform: scale(1.03);
-
   background-color: rgb(95, 197, 217);
 }
 
 .btn-primary:disabled {
   background-color: var(--color-gray-400);
   cursor: not-allowed;
-}
-.squircle-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: var(--color-white);
-}
-
-.squircle-btn.primary {
-  background-color: var(--color-primary);
-}
-
-.squircle-btn.primary:hover {
-  background-color: var(--color-primary-hover);
-  box-shadow: 0 0 10px rgba(84, 203, 226, 0.3);
-}
-
-.squircle-btn.danger {
-  background-color: var(--color-danger);
-}
-
-.squircle-btn.danger:hover {
-  background-color: var(--color-danger-hover);
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
-}
-
-.squircle-btn.success {
-  background-color: var(--color-success);
-}
-
-.squircle-btn.success:hover {
-  background-color: var(--color-success-hover);
-  box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
-}
-
-.squircle-btn.warning {
-  background-color: var(--color-warning);
-}
-
-.squircle-btn.warning:hover {
-  background-color: var(--color-warning-hover);
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
 }
 
 /* Forms */
