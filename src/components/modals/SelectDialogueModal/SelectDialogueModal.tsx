@@ -20,7 +20,7 @@ const SelectDialogueModal = () => {
   return (
     <div className="outlined dialogues-container">
      
-      <div >
+      
         {scenarioDialogues.length > 0 ? 
          
           <div>
@@ -54,7 +54,6 @@ const SelectDialogueModal = () => {
     </div>
       
      
-  </div>
   );
 };
 
