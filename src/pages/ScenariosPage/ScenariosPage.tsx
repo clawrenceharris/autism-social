@@ -30,7 +30,7 @@ const SkeletonScenario = () => (
 const ScenariosPage = () => {
   const { scenarios, loading, error } = useScenarios();
 
-  if (loading) {
+  if (true) {
     return (
       <div role="status" aria-live="polite" className="scenarios-container">
         <header className="scenarios-header">
