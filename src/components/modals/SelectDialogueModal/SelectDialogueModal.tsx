@@ -19,7 +19,10 @@ const SelectDialogueModal = () => {
   }
   return (
     <div className="outlined dialogues-container">
-     <div>
+     
+      <div>
+     {scenarioDialogues.length > 0 ? <div>
+       
       {scenarioDialogues.map((item) =>(
       <button className="card">
       <div>
@@ -31,7 +34,10 @@ const SelectDialogueModal = () => {
       ))}
        
      </div>
-      <div className="dialogue-actions">
+     
+     :
+
+ <div className="dialogue-actions">
         <div>
           <button>
             <Minus/>
@@ -41,6 +47,13 @@ const SelectDialogueModal = () => {
           </button>
         </div>
       </div>
+        
+       
+     }
+      
+      </div>
+      
+     
     </div>
   );
 };
