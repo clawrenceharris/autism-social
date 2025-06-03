@@ -42,7 +42,7 @@ const SelectDialogueModal = () => {
           <p>There are no Dialogues yet</p>
       </div>}
       <div className="dialogue-actions">
-          <div>
+          <div className="content-row">
             <button>
               <Minus/>
             </button>
