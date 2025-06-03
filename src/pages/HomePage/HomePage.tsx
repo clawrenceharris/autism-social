@@ -10,7 +10,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="home-container">
+    <div className="container">
       <h1>Scenario Builder</h1>
       <p className="description">
         Welcome to the Scenario Builder. Create and manage interactive dialogue
