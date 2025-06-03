@@ -1,12 +1,12 @@
 .taskbar {
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  padding: 1.5rem;
+  background-color: var(--color-white);
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: fixed;
-  border-radius: 100px;
-  margin: 1rem;
-  left: 0;
+  width: 100%;
   top: 0;
+  z-index: 50;
+  transition: all 0.3s ease;
 }
 
 .taskbar-container {
@@ -20,17 +20,60 @@
 .taskbar-nav {
   display: flex;
   gap: 2rem;
+  align-items: center;
 }
 
 .taskbar-link {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--color-white);
+  color: var(--color-gray-600);
   text-decoration: none;
-  transition: color 0.2s;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
 }
 
 .taskbar-link:hover {
-  color: var(--color-gray-300);
+  color: var(--color-primary);
+  background-color: var(--color-gray-50);
+}
+
+.taskbar-link svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform 0.2s ease;
+}
+
+.taskbar-link:hover svg {
+  transform: scale(1.1);
+}
+
+.taskbar-brand {
+  font-weight: 600;
+  color: var(--color-gray-900);
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .taskbar {
+    padding: 0.75rem 1rem;
+  }
+  
+  .taskbar-link span {
+    display: none;
+  }
+  
+  .taskbar-nav {
+    gap: 1rem;
+  }
+  
+  .taskbar-brand {
+    font-size: 1.1rem;
+  }
 }
