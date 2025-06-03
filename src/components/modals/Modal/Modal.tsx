@@ -29,14 +29,13 @@ const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-backdrop" onClick={onClose} />
+    <div className="modal-overlay" onClick={onClose}>
       <div className="modal-container">
         <div className="modal-content">
           <div className="modal-header">
-            <h3 className="modal-title">{title}</h3>
+            <h2 className="modal-title">{title}</h2>
             <button onClick={onClose} className="modal-close">
-              <X size={20} />
+              <X style={{ width: 20 }} />
             </button>
           </div>
           {children}

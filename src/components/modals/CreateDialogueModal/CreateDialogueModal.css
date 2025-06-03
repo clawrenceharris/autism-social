@@ -1,0 +1,6 @@
+.tags {
+  max-height: 120px;
+  overflow-y: visible;
+  overflow-x: scroll;
+  gap: 1rem;
+}

@@ -1,3 +1,17 @@
+export interface CreateScenarioData {
+  title: string;
+  description: string;
+}
+
+export interface CreateDialogueData {
+  scenario_id: string;
+  title: string;
+  steps: any[];
+  user_fields: string[];
+  persona_tags: string[];
+  scoring_categories: string[];
+}
+
 export interface Option {
   responseLabel: string;
   eventType: string;
@@ -25,6 +39,7 @@ export interface Dialogue {
   persona_tags: string[];
   user_fields: string[];
   steps: Step[];
+  difficulty: string;
   scoring_categories: string[];
   created_at?: string;
 }
