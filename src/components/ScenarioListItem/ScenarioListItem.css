@@ -16,13 +16,6 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.scenario-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-gray-900);
-  margin-bottom: 0.5rem;
-}
-
 .scenario-description {
   color: var(--color-gray-600);
   display: -webkit-box;
