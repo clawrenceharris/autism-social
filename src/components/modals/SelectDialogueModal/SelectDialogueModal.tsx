@@ -5,8 +5,8 @@ import {useScenarioDialogues} from "../../../hooks";
 import "./SelectDialogueModal.css";
 
 const SelectDialogueModal = () => {
-  const { dialogues, loading, error } = useScenarioDialogues();
-console.log(dialogues);
+  const { scenarioDialogues, loading, error } = useScenarioDialogues();
+console.log(scenarioDialogues);
   if(loading){
      return <div>
     <p>Loading...</p>
@@ -21,7 +21,7 @@ console.log(dialogues);
   return (
     <div>
      <div>
-      {/* {dialogues.map((item) =>(
+      {scenarioDialogues.map((item) =>(
       <button className="card">
       <div>
         <h2>{item.title}</h2>
@@ -29,7 +29,7 @@ console.log(dialogues);
       </div>
         
       </button>
-      ))} */}
+      ))}
      </div>
     </div>
   );
