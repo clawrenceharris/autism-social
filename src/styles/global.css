@@ -193,7 +193,6 @@ main {
   background-color: var(--color-white);
   border-radius: 0.75rem;
   width: 100%;
-  margin-top: 3rem;
   max-width: 32rem;
   max-height: 90vh;
   overflow-y: auto;
@@ -217,6 +216,8 @@ main {
 
 .modal-body {
   padding: 1.5rem;
+    margin-top: 3rem;
+
 }
 
 .modal-footer {
