@@ -38,7 +38,7 @@ const SelectDialogueModal = () => {
      
         :
 
-       <div className="">
+       <div className="content-centered">
           <p>There are no Dialogues yet</p>
       </div>}
       <div className="dialogue-actions">
