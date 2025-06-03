@@ -69,6 +69,7 @@ main {
 .content-centered {
   display: flex;
   flex: 1;
+  background:red;
   height: 100%;
   width: 100%;
   margin: auto;
