@@ -8,10 +8,10 @@ import "./CreateScenarioModal.css";
 const SelectDialogueModal = () => {
   const { closeModal } = useModal();
   const { dialogues, loading, error } = useDialogueScenarios();
-
+console.log(dialogues);
   return (
     <div>
-      {dialogues.map((item) =>(
+      {/* {dialogues.map((item) =>(
       <button className="card">
       <div>
         <h2>{item.title}</h2>
@@ -19,7 +19,7 @@ const SelectDialogueModal = () => {
       </div>
         
       </button>
-      ))}
+      ))} */}
     </div>
   );
 };
