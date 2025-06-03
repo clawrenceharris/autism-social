@@ -26,14 +26,14 @@ const ScenarioListItem = ({ scenario }: { scenario: Scenario }) => {
       <div className="scenario-actions">
         <button
           onClick={handleEditClick}
-          className="scenario-button edit-button"
+          className="squircle-btn primary"
           aria-label={`Edit ${scenario.title}`}
         >
           <Pencil size={20} aria-hidden="true" />
         </button>
         <button
           onClick={handleDeleteClick}
-          className="scenario-button delete-button"
+          className="squircle-btn danger"
           aria-label={`Delete ${scenario.title}`}
         >
           <Trash2 size={20} aria-hidden="true" />
