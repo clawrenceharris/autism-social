@@ -40,12 +40,7 @@ const ScenarioPage = () => {
     );
   }
   if (!dialogue) {
-    return (
-      <DialoguesPanel
-        onDialogueClick={(dialogue) => setDialogue(dialogue)}
-        scenario={scenario}
-      />
-    );
+    return <DialoguesPanel scenario={scenario} />;
   }
   return (
     <div>

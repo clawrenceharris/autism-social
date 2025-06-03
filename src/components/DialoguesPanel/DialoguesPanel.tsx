@@ -1,15 +1,14 @@
 import { useScenarioDialogues } from "../../hooks";
 import "./DialoguesPanel.css";
-import { ChevronRight, ChevronRightIcon, Minus, Plus } from "lucide-react";
-import type { Dialogue, Scenario } from "../../types";
+import { ChevronRight, Minus, Plus } from "lucide-react";
+import type { Scenario } from "../../types";
 import { useModal } from "../../context";
 import CreateDialogueModal from "../modals/CreateDialogueModal";
 import { Link } from "react-router-dom";
 interface DialoguesPanelProps {
   scenario: Scenario;
-  onDialogueClick: (dialogue: Dialogue) => void;
 }
-const DialoguesPanel = ({ scenario, onDialogueClick }: DialoguesPanelProps) => {
+const DialoguesPanel = ({ scenario }: DialoguesPanelProps) => {
   const { scenarioDialogues, loading, error } = useScenarioDialogues(
     scenario.id
   );
