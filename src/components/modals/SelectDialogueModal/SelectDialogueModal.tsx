@@ -3,7 +3,7 @@ import { SCENARIO_CATEGORIES } from "../../../constants";
 import { createScenario } from "../../../services/scenarios";
 import {useScenarioDialogues} from "../../../hooks";
 import "./SelectDialogueModal.css";
-
+import {Minus, Plus} from "lucide-react"
 const SelectDialogueModal = () => {
   const { scenarioDialogues, loading, error } = useScenarioDialogues();
   if(loading){
@@ -31,6 +31,16 @@ const SelectDialogueModal = () => {
       ))}
        
      </div>
+      <div className="dialogue-actions">
+        <div>
+          <button>
+            <Minus/>
+          </button>
+           <button>
+            <Plus/>
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
