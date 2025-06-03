@@ -12,7 +12,8 @@ const SkeletonScenario = () => (
     </div>
     <div className="scenario-actions">
       <Skeleton 
-        variant="button" 
+        variant="button"
+        
         width={40} 
         height={40} 
         style={{ borderRadius: "8px" }} 
