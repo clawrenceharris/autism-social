@@ -10,7 +10,7 @@ const ScenarioPage = () => {
     return <div>Loading...</div>;
   }
   if (error) {
-    return <div>An error occured: {error}</div>;
+    return <div className="content-centered-absolute">An error occured: {error}</div>;
   }
   if (!scenario) {
     return <div>404 Error: Scenario not found.</div>;
