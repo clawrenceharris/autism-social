@@ -148,7 +148,7 @@ h2 {
 p {
   font-family: "Lexend Deca";
 }
-.description, .card p{
+.description{
   color: var(--color-gray-500);
   margin-bottom: 2rem;
 }
