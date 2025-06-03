@@ -7,15 +7,15 @@ import "./SelectDialogueModal.css";
 const SelectDialogueModal = () => {
   const { scenarioDialogues, loading, error } = useScenarioDialogues();
   if(loading){
-     return <div>
+     return (<div className="content-centered-absolute">
     <p>Loading...</p>
-    </div>
+    </div>);
   }
   if(error){
-    return <div>
+     return (<div className="content-centered-absolute">
     <h1>An Error occurred</h1>
       <p>{error}</p>
-    </div>
+    </div>);
   }
   return (
     <div>
