@@ -11,6 +11,7 @@ const SelectDialogueModal = () => {
 console.log(dialogues);
   return (
     <div>
+     <div>
       {/* {dialogues.map((item) =>(
       <button className="card">
       <div>
@@ -20,6 +21,7 @@ console.log(dialogues);
         
       </button>
       ))} */}
+     </div>
     </div>
   );
 };
