@@ -16,6 +16,10 @@ function App() {
             </Route>
             <Route element={<ScenarioLayout />}>
               <Route path="/scenario/:scenarioId" element={<ScenarioPage />} />
+              <Route
+                path="/scenario/:scenarioId/dialogue/:dialogueId"
+                element={<ScenarioPage />}
+              />
             </Route>
           </Routes>
         </div>

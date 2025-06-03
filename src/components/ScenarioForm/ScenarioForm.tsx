@@ -5,13 +5,13 @@ import { type Dialogue, type Scenario } from "../../types";
 import { Select } from "../";
 import { generateScenarioSteps } from "../../lib/gemini";
 import "./ScenarioForm.css";
+import { updateScenario } from "../../services/scenarios";
 interface ScenarioFormProps {
   scenario: Scenario;
-  dialogue: Dialogue
+  dailogue: Dialogue;
 }
 
-const ScenarioForm = ({ scenario, dialogue }: ScenarioFormProps) => {
-  
+const ScenarioForm = ({ scenario, dailogue }: ScenarioFormProps) => {
   const [form, setForm] = useState<{
     title: string;
     description: string;
@@ -19,13 +19,14 @@ const ScenarioForm = ({ scenario, dialogue }: ScenarioFormProps) => {
     difficulty: string;
     personaTags: string[];
   }>({
-    title: scenario.title || "",
-    description: scenario.description || "",
-    dialogueTitle: dialogue.title || "",
-    difficulty: dialogue.difficulty || "",
-    personaTags: dialogue.personaTags || [],
+    title: scenario.title,
+    description: scenario.description,
+    dialogueTitle: dailogue.title,
+    difficulty: dailogue.difficulty,
+    personaTags: dailogue.persona_tags,
   });
   const [dialogueSteps, setDialogueSteps] = useState<object>([]);
+  const [error, setError] = useState<string | null>();
 
   const [dialoguesByScenario, _] = useState<{
     [key: string]: Dialogue[];
@@ -71,60 +72,67 @@ const ScenarioForm = ({ scenario, dialogue }: ScenarioFormProps) => {
   ) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    try {
+      await updateScenario(scenario.id, form);
+      alert("Sceario updated successfully!");
+    } catch (err) {
+      const error =
+        typeof err === "string" ? err : err instanceof Error ? err.message : "";
+      setError("Could not update scenario. " + error);
+    }
   };
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex-column form-group">
-        <div>
-          {/* Scenario Title */}
-          <label>Scenario Title</label>
-          <Select
-            name="title"
-            value={form.title}
-            onChange={handleChange}
-            options={SCENARIO_CATEGORIES.map((item, i) => ({
-              key: i,
-              value: item,
-            }))}
-            placeholder="Enter a Scenario title"
-          />
-        </div>
+      {/* Scenario Title */}
 
-        {/* Dialogue Title */}
-
-        <div>
-          <label>Dialogue Title</label>
-          <Select
-            name="dialogueTitle"
-            value={form.dialogueTitle}
-            onChange={handleChange}
-            options={(dialoguesByScenario[form.title] || []).map((item) => ({
-              value: item.title,
-              key: item.id,
-            }))}
-            placeholder="Enter a Dialogue title"
-          />
-        </div>
-
-        {/* Difficulty */}
-        <div>
-          <label>Difficulty Level: </label>
-          <select
-            name="difficulty"
-            value={form.difficulty}
-            onChange={handleChange}
-          >
-            {DIFFICULTY_LEVELS.map((level) => (
-              <option key={level} value={level}>
-                {level.charAt(0).toUpperCase() + level.slice(1)}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="form-group">
+        <label>Scenario Title</label>
+        <Select
+          name="title"
+          value={form.title}
+          onChange={handleChange}
+          options={SCENARIO_CATEGORIES.map((item, i) => ({
+            key: i,
+            value: item,
+          }))}
+          placeholder="Enter a Scenario title"
+        />
       </div>
 
+      {/* Dialogue Title */}
+
+      <div className="form-group">
+        <label>Dialogue Title</label>
+        <Select
+          name="dialogueTitle"
+          value={form.dialogueTitle}
+          onChange={handleChange}
+          options={(dialoguesByScenario[form.title] || []).map((item) => ({
+            value: item.title,
+            key: item.id,
+          }))}
+          placeholder="Enter a Dialogue title"
+        />
+      </div>
+
+      {/* Difficulty */}
+      <div className="form-group">
+        <label>Difficulty Level: </label>
+        <select
+          name="difficulty"
+          value={form.difficulty}
+          onChange={handleChange}
+        >
+          {DIFFICULTY_LEVELS.map((level) => (
+            <option key={level} value={level}>
+              {level.charAt(0).toUpperCase() + level.slice(1)}
+            </option>
+          ))}
+        </select>
+      </div>
+      {error && <p className="danger">{error}</p>}
       <div className="margin-y flex-content">
         {dialogueSteps && (
           <button

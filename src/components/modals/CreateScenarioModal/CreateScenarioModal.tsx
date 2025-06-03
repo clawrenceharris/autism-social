@@ -3,11 +3,11 @@ import { SCENARIO_CATEGORIES } from "../../../constants";
 import { createScenario } from "../../../services/scenarios";
 import { useModal } from "../../../context";
 import "./CreateScenarioModal.css";
+import Select from "../../Select";
 
 const CreateScenarioModal = () => {
   const { closeModal } = useModal();
-  const [title, setTitle] = useState<string>(SCENARIO_CATEGORIES[0]);
-  const [customTitle, setCustomTitle] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,16 +19,15 @@ const CreateScenarioModal = () => {
 
     try {
       await createScenario({
-        title: title === "Custom" ? customTitle : title,
+        title,
         description,
       });
       closeModal();
-      setTitle(SCENARIO_CATEGORIES[0]);
-      setCustomTitle("");
-      setDescription("");
+      setTitle("");
+
       alert("Scenario Added!");
     } catch (err) {
-      setError("Failed to create scenario. Please try again.");
+      setError("Failed to create Scenario. Please try again.");
       console.error(err);
     } finally {
       setIsSubmitting(false);
@@ -39,31 +38,16 @@ const CreateScenarioModal = () => {
     <form onSubmit={handleSubmit} className="form-group">
       <div className="form-group">
         <label className="form-label">Category</label>
-        <select
+        <Select
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="form-select"
-        >
-          {SCENARIO_CATEGORIES.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-        </select>
+          options={SCENARIO_CATEGORIES.map((item, idx) => ({
+            key: idx,
+            value: item,
+          }))}
+        />
       </div>
-
-      {title === "Custom" && (
-        <div className="form-group">
-          <label className="form-label">Custom Category</label>
-          <input
-            type="text"
-            value={customTitle}
-            onChange={(e) => setCustomTitle(e.target.value)}
-            className="form-input"
-            required
-          />
-        </div>
-      )}
 
       <div className="form-group">
         <label className="form-label">Description</label>
@@ -84,7 +68,7 @@ const CreateScenarioModal = () => {
         </button>
         <button
           type="submit"
-          disabled={isSubmitting || (title === "Custom" && !customTitle)}
+          disabled={isSubmitting}
           className="btn btn-primary"
         >
           {isSubmitting ? "Creating..." : "Create Scenario"}

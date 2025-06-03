@@ -42,7 +42,10 @@ const Select = forwardRef<HTMLInputElement, SelectProps>(
       setInputValue(option.value);
       onOptionSelect && onOptionSelect(option);
     };
-
+    const handleClose = () => {
+      setShowOptions(false);
+      setInputValue("");
+    };
     return (
       <div style={style} className="select-container">
         <TextInput
@@ -53,9 +56,7 @@ const Select = forwardRef<HTMLInputElement, SelectProps>(
           onFocus={() => setShowOptions(true)}
           icon={<X />}
           iconSize={13}
-          onIconClick={() =>
-            !props.disabled && handleOptionChange({ value: "", key: "" })
-          }
+          onIconClick={handleClose}
         />
         {showOptions && (
           <div ref={optionsRef} className="options-list">

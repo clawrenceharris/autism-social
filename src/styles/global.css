@@ -5,7 +5,7 @@
   --color-primary-hover: #5f88fa;
   --color-gray-50: #f9fafb;
   --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
+  --color-gray-200: #edeff1;
   --color-gray-300: #d1d5db;
   --color-gray-400: #9ca3af;
   --color-gray-500: #6b7280;
@@ -44,7 +44,6 @@ main {
 .container {
   max-width: 50rem;
   padding: 1rem 2rem;
-  
 }
 .margin-y {
   margin-top: 1.5rem;
@@ -52,7 +51,7 @@ main {
 }
 .content-body {
   width: 100%;
-  flex:1;
+  flex: 1;
   position: relative;
   margin-top: 30px;
   max-width: 500px;
@@ -69,7 +68,7 @@ main {
 .content-centered {
   display: flex;
   flex: 1;
- 
+
   height: 100%;
   width: 100%;
   margin: auto;
@@ -125,7 +124,6 @@ select {
   display: flex;
   gap: 10px;
   flex-direction: column;
-  align-items: center;
 }
 .content-row {
   display: flex;
@@ -145,13 +143,23 @@ h2 {
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1rem;
+  font-family: "Lexend Deca";
 }
-
+p {
+  font-family: "Lexend Deca";
+}
 .description {
   color: var(--color-gray-600);
   margin-bottom: 2rem;
 }
 
+a {
+  font-family: "Dongle", Verdana, Geneva, Tahoma, sans-serif;
+  text-decoration: none;
+  color: black;
+  font-family: "Lexend Deca";
+  font-size: 1.1rem;
+}
 /* Squircle Button Styles */
 .squircle-btn {
   display: inline-flex;
@@ -170,7 +178,7 @@ h2 {
   outline-offset: 2px;
 }
 
-.squircle-btn.primary {
+.primary {
   color: var(--color-primary);
 }
 
@@ -179,7 +187,7 @@ h2 {
   border-color: #e0f2fe;
 }
 
-.squircle-btn.danger {
+.danger {
   color: var(--color-red-600);
 }
 
@@ -207,11 +215,12 @@ h2 {
 }
 
 .outlined {
-  border: 1px solid lightgray;
+  border: 1px solid var(--color-gray-200);
 }
 button {
   border: none;
   background: none;
+  cursor: pointer;
 }
 .btn-primary {
   background-color: var(--color-primary);
@@ -234,6 +243,7 @@ button {
 /* Forms */
 input {
   font-family: "Lexend Deca";
+  margin: 5px 0;
 }
 ::-webkit-input-placeholder {
   color: #00000050;
@@ -242,11 +252,9 @@ input {
   font-weight: 400;
 }
 
-form {
-  max-width: 500px;
-}
 .form-group {
   max-width: 400px;
+  margin: 2rem 0;
 }
 input:focus,
 select:focus,
@@ -255,7 +263,11 @@ textarea:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
-
+.tag {
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--color-gray-200);
+}
 /* Grid */
 .grid {
   display: grid;

@@ -1,0 +1,18 @@
+.dialogues-container {
+  min-height: 50vh;
+  border-radius: 0.5rem;
+}
+
+.dialogue-item {
+  border-bottom: 1px solid var(--color-gray-200);
+  width: 100%;
+  text-align: left;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dialogue-actions {
+  padding: 1rem;
+}

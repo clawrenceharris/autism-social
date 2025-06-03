@@ -32,7 +32,7 @@
   overflow: hidden;
 
   border-radius: 10px;
-  background: var(--color-gray-100);
+  background: #fff;
   max-height: 200px;
   overflow-y: auto;
 
@@ -41,5 +41,5 @@
 }
 
 .option-item:hover {
-  background: #00000010;
+  background: #00000007;
 }
