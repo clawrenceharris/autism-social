@@ -11,7 +11,7 @@ const HomePage = () => {
 
   return (
     <div className="home-container">
-      <h1 className="home-title">Scenario Builder</h1>
+      <h1>Scenario Builder</h1>
       <p className="description">
         Welcome to the Scenario Builder. Create and manage interactive dialogue
         scenarios compatible with XState.
