@@ -2,10 +2,23 @@ import {useState} from "react";
 import "./ScenarioPage.css";
 import { useScenario } from "../../context";
 import { ScenarioForm } from "../../components";
-import type {Dialogue} from "../../types"
+import type {Dialogue} from "../../types";
+import {SelectDialogueModal} from "../../components/modals";
 const ScenarioPage = () => {
   const { scenario, loading, error } = useScenario();
+  const { openModal } = useModal();
+
   const [dialogue, setDialogue] = useState<Dialogue | null>(null);
+  useEffect(()=>{
+    if(!dialogue){
+      handleOpenModal();
+    }
+  }, []);
+
+  const handleOpenModal = () =>{
+    openModal(<SelectDialogueModal />, "Select Dialogue");
+
+  }
   if (loading) {
     return <div className="content-centered-absolute">Loading...</div>;
   }
@@ -29,9 +42,12 @@ const ScenarioPage = () => {
           <small>ID: {scenario.id}</small>
         </p>
       </div>
-      <div className="content-body">
+      {dialogue ? <div className="content-body">
         <ScenarioForm dialogue={dialogue} scenario={scenario} />
       </div>
+      :
+        <button onClick={handleOpenModal} className="btn btn-primary">Select a Dialogue</button>
+      }
     </div>
   );
 };
