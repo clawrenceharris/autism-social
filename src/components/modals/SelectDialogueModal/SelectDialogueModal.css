@@ -1,6 +1,7 @@
 .dialogues-container{
   min-height: 50vh;
   padding: 1rem;
+  border-radius: 1rem;
   
 }
 .dialogue-actions{
