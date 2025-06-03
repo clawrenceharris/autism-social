@@ -2,12 +2,12 @@ import { useState } from "react";
 import { SCENARIO_CATEGORIES } from "../../../constants";
 import { createScenario } from "../../../services/scenarios";
 import { useModal } from "../../../context";
-import {useDialogueScenarios} from "../../../hooks";
+import {useScenarioDialogues} from "../../../hooks";
 import "./SelectDialogueModal.css";
 
 const SelectDialogueModal = () => {
   const { closeModal } = useModal();
-  const { dialogues, loading, error } = useDialogueScenarios();
+  const { dialogues, loading, error } = useScenarioDialogues();
 console.log(dialogues);
   return (
     <div>
