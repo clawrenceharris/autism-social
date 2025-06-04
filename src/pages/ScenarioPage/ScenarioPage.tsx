@@ -58,7 +58,7 @@ const ScenarioPage = () => {
       <DialogueForm steps={
 [
   {
-    “id”: "step_g24im626w",
+    id: "step_g24im626w",
     npc: "Hey! You must be my new roommate. I'm Sarah.",
     options: [
       {
