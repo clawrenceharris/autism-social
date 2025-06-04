@@ -2,13 +2,14 @@
   position: relative;
   display:flex;
   align-items:center;
+  justify-content:center;
 }
 
 .text-input::placeholder {
   color: var(--dark-gray);
 }
 .input-container .icon {
-  position: relative;
+  position: absolute;
   right: 5px;
   margin: 0;
   opacity: 0.5;
