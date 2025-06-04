@@ -11,6 +11,8 @@
 .input-container .icon {
   position: absolute;
   right: 5px;
+  transform: translateY(-50%);
+  top: 50%;
   margin: 0;
   opacity: 0.5;
   cursor: pointer;
