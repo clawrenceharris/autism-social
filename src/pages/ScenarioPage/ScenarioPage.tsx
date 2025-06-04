@@ -66,7 +66,7 @@ const ScenarioPage = () => {
         </button>
         <button 
           className={`tab ${activeTab === 'Dialogue' ? 'active' : ''}`}
-          onClick={() => setActiveTab('dialogue')}
+          onClick={() => setActiveTab('Dialogue')}
         >
           Dialogue
         </button>
