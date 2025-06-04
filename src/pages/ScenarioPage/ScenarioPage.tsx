@@ -60,7 +60,7 @@ const ScenarioPage = () => {
       <div className="tabs">
         <button 
           className={`tab ${activeTab === 'Scenario' ? 'active' : ''}`}
-          onClick={() => setActiveTab('scenario')}
+          onClick={() => setActiveTab('Scenario')}
         >
           Scenario
         </button>
@@ -72,13 +72,13 @@ const ScenarioPage = () => {
         </button>
       </div>
 
-      <div className={`tab-content ${activeTab === 'scenario' ? 'active' : ''}`} 
-           style={{ display: activeTab === 'scenario' ? 'block' : 'none' }}>
+      <div className={`tab-content ${activeTab === 'Scenario' ? 'active' : ''}`} 
+           style={{ display: activeTab === 'Scenario' ? 'block' : 'none' }}>
         <ScenarioForm dailogue={dialogue} scenario={scenario} />
       </div>
 
-      <div className={`tab-content ${activeTab === 'dialogue' ? 'active' : ''}`}
-           style={{ display: activeTab === 'dialogue' ? 'block' : 'none' }}>
+      <div className={`tab-content ${activeTab === 'Dialogue' ? 'active' : ''}`}
+           style={{ display: activeTab === 'Dialogue' ? 'block' : 'none' }}>
         <DialogueForm steps={dialogueSteps} />
       </div>
     </div>
