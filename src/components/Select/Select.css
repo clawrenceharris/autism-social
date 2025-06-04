@@ -14,7 +14,6 @@
 .select-container .option-item {
   transition: 0.17s;
   padding: 15px;
-  flex:1;
   width: 100%;
   border-bottom: 1px solid var(--color-gray-300);
   cursor: pointer;
