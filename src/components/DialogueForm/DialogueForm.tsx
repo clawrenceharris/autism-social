@@ -200,8 +200,8 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
                         optionIndex,
                         "next",
                         e.target.value
-                      )
-                    }
+                      )}
+                    
                   />
                     <option value="">Select next step</option>
                     {steps.map((s) => (
