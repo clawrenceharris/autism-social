@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { DialogueStep, DialogueOption } from "../../types";
+import type { DialogueStep, ScoreCategory } from "../../types";
 import { Plus, Trash2 } from "lucide-react";
 import "./DialogueForm.css";
 
@@ -52,8 +52,7 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
   const handleScoreChange = (
     stepId: string,
     optionIndex: number,
-    field: string,
-    value: number
+    value: ScoreCategory
   ) => {
     setSteps((prevSteps) =>
       prevSteps.map((step) =>
@@ -64,10 +63,7 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
                 idx === optionIndex
                   ? {
                       ...opt,
-                      scoreChanges: {
-                        ...opt.scoreChanges,
-                        [field]: value,
-                      },
+                      scoreChanges: [...opt.scoreChanges, value],
                     }
                   : opt
               ),
@@ -89,7 +85,7 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
                   label: "",
                   event: `CHOOSE_${step.options.length + 1}`,
                   next: "",
-                  scoreChanges: {},
+                  scoreChanges: [],
                 },
               ],
             }
@@ -110,7 +106,7 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
             label: "",
             event: "CHOOSE_1",
             next: "",
-            scoreChanges: {},
+            scoreChanges: [],
           },
         ],
       },
@@ -203,7 +199,7 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
                       )
                     }
                   >
-                    <option value="">Select next step...</option>
+                    <option value="">Select next step</option>
                     {steps.map((s) => (
                       <option key={s.id} value={s.id}>
                         {s.id}
@@ -213,25 +209,15 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
                 </div>
 
                 <div className="score-changes">
-                  {SCORE_FIELDS.map((field) => (
-                    <div key={field} className="score-field">
-                      <label>{field}:</label>
-                      <input
-                        type="number"
-                        min="-1"
-                        max="1"
-                        className="form-input"
-                        value={option.scoreChanges?.[field] || 0}
-                        onChange={(e) =>
-                          handleScoreChange(
-                            step.id,
-                            optionIndex,
-                            field,
-                            parseInt(e.target.value)
-                          )
-                        }
-                      />
-                    </div>
+                  {SCORE_FIELDS.map((item) => (
+                    <button
+                      onClick={() =>
+                        handleScoreChange(step.id, optionIndex, item)
+                      }
+                      className={`score-btn ${true ? "selected" : ""}`}
+                    >
+                      {item}
+                    </button>
                   ))}
                 </div>
 

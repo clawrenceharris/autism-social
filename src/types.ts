@@ -44,14 +44,6 @@ export interface Dialogue {
   created_at?: string;
 }
 
-export interface DialogueContext {
-  clarity: number;
-  empathy: number;
-  assertiveness: number;
-  selfAdvocacy: number;
-  socialAwareness: number;
-}
-
 export interface DialogueStep {
   id: string;
   npc: string;
@@ -60,6 +52,12 @@ export interface DialogueStep {
 export interface DialogueOption {
   label: string;
   event: string;
-  scoreChanges?: Partial<DialogueContext>;
+  scoreChanges: ScoreCategory[];
   next: string;
 }
+export type ScoreCategory =
+  | "clarity"
+  | "empathy"
+  | "assertiveness"
+  | "socialAwareness"
+  | "selfAdvocacy";

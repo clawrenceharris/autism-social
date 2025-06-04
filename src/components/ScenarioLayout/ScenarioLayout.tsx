@@ -1,5 +1,6 @@
 import { Outlet, useParams } from "react-router-dom";
 import { ScenarioProvider } from "../../context";
+import TaskBar from "../TaskBar";
 
 const ScenarioLayout = () => {
   const { scenarioId } = useParams<{ scenarioId: string }>();
@@ -8,7 +9,8 @@ const ScenarioLayout = () => {
   }
   return (
     <ScenarioProvider scenarioId={scenarioId}>
-      <div className="layout-container scene">
+      <div className="layout-container">
+        <TaskBar />
         <main>
           <Outlet />
         </main>
