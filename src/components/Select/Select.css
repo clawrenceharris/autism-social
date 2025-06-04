@@ -30,10 +30,10 @@
   width: 100%;
   box-shadow: var(--box-shadow);
   overflow: hidden;
-
+  
   border-radius: 10px;
   background: #fff;
-  max-height: 200px;
+  max-height: 500px;
   overflow-y: auto;
 
   list-style: none;
