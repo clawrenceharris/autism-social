@@ -9,7 +9,7 @@ const generateAIResponse = async (prompt: string): Promise<string> => {
     const generatedContent = response.text();
     return generatedContent;
   } catch (error) {
-    console.error("Error generating steps:", error);
+    console.error("Error generating response:", error);
     throw error;
   }
 };
