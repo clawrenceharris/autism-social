@@ -178,7 +178,6 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
                     className="form-select"
                     value={option.next}
                     options={steps.map((s) => ({value: s.id, key:s.id}))}
-                    defaultValue={option.next}
                     onChange={(e) =>
                       
                       handleOptionChange(
