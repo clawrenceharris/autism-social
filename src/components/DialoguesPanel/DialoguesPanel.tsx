@@ -49,8 +49,8 @@ const DialoguesPanel = ({ scenario }: DialoguesPanelProps) => {
     <div className="outlined flex-column dialogues-container">
       {scenarioDialogues.length > 0 ? (
         <div>
-          {scenarioDialogues.map((item) => (
-            <div className="dialogue-item ">
+          {scenarioDialogues.map((item, idx) => (
+            <div key={idx} className="dialogue-item ">
               <button
                 onClick={() => handleSelectDialogue(item.id)}
                 className={`squircle-btn ${
