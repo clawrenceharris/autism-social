@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Plus, Wand2 } from "lucide-react";
-import { DIFFICULTY_LEVELS, SCENARIO_CATEGORIES } from "../../constants";
+import {
+  DIFFICULTY_LEVELS,
+  SCENARIO_CATEGORIES,
+} from "../../constants/scenario";
 import { type Dialogue, type Scenario } from "../../types";
 import { Select } from "../";
 import { generateScenarioSteps } from "../../lib/gemini";
@@ -88,7 +91,7 @@ const ScenarioForm = ({ scenario, dailogue }: ScenarioFormProps) => {
       {/* Scenario Title */}
 
       <div className="form-group">
-        <label>Scenario Title</label>
+        <label className="form-label">Scenario Title</label>
         <Select
           name="title"
           value={form.title}
@@ -104,7 +107,7 @@ const ScenarioForm = ({ scenario, dailogue }: ScenarioFormProps) => {
       {/* Dialogue Title */}
 
       <div className="form-group">
-        <label>Dialogue Title</label>
+        <label className="form-label">Dialogue Title</label>
         <Select
           name="dialogueTitle"
           value={form.dialogueTitle}
@@ -119,8 +122,9 @@ const ScenarioForm = ({ scenario, dailogue }: ScenarioFormProps) => {
 
       {/* Difficulty */}
       <div className="form-group">
-        <label>Difficulty Level: </label>
+        <label className="form-label">Difficulty Level</label>
         <select
+          className="form-input"
           name="difficulty"
           value={form.difficulty}
           onChange={handleChange}

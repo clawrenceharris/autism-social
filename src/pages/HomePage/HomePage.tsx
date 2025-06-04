@@ -17,7 +17,7 @@ const HomePage = () => {
         Welcome to the Scenario Builder. Create and manage interactive dialogue
         scenarios compatible with XState.
       </p>
-      <div className="home-grid">
+      <div className="grid">
         <button onClick={handleCreateScenario} className="card">
           <h2>Create New Scenario</h2>
           <p className="description">

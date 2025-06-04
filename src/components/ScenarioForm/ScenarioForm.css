@@ -1,5 +1,4 @@
 select[name="difficulty"] {
   background: none;
-  border: 2px solid #20000010;
-  margin: 0 10px;
+  max-width: 200px;
 }

@@ -10,8 +10,10 @@ const ScenarioPage = () => {
   const { scenario, loading, error } = useScenario();
   const { dialogueId } = useParams<{ dialogueId: string }>();
   const [dialogue, setDialogue] = useState<Dialogue | null>(null);
+  const [dialogueError, setDialogueError] = useState<string | null>(null);
   useEffect(() => {
     if (!dialogueId) {
+      setDialogue(null);
       return;
     }
     const fetchDialogue = async () => {
@@ -19,15 +21,16 @@ const ScenarioPage = () => {
         const dialogue = await getDialogueById(dialogueId);
         if (dialogue) setDialogue(dialogue);
       } catch (err) {
-        alert("Could not load the Dialogue");
+        setDialogueError("Could not load this Dialogue.");
       }
     };
     fetchDialogue();
-  });
+  }, [dialogueId]);
+
   if (loading) {
     return <div className="content-centered-absolute">Loading...</div>;
   }
-  if (error) {
+  if (error || dialogueError) {
     return (
       <div className="content-centered-absolute">An error occured: {error}</div>
     );

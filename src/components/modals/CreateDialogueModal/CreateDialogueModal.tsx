@@ -3,7 +3,7 @@ import { createDialogue } from "../../../services/scenarios";
 import type { Scenario } from "../../../types";
 import { useModal } from "../../../context";
 import Select from "../../Select";
-import { PERSONA_TAGS } from "../../../constants";
+import { PERSONA_TAGS } from "../../../constants/scenario";
 import { X } from "lucide-react";
 import "./CreateDialogueModal.css";
 
