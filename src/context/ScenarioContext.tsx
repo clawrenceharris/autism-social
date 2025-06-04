@@ -35,7 +35,7 @@ const ScenarioProvider = ({ children, scenarioId }: AuthContextProps) => {
         setLoading(false);
         setScenario(scenario);
       } catch (error) {
-        setError(error as string);
+        setError("An error occurred while trying to fetch the Scenario");
         setLoading(false);
       }
     };
