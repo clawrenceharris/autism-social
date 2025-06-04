@@ -191,7 +191,7 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
 
                   <select
                     className="form-select"
-                    value={}
+                    value={option.next}
                     onChange={(e) =>
                       handleOptionChange(
                         step.id,
@@ -214,6 +214,7 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
                   {SCORE_FIELDS.map((category) => (
                     <button
                       key={category}
+                      type="button"
                       onClick={() =>
                         toggleScoreCategory(step.id, optionIndex, category)
                       }
