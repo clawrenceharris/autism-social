@@ -120,7 +120,7 @@ const ScenarioForm = ({ scenario, dailogue }: ScenarioFormProps) => {
         </select>
       </div>
       {error && <p className="danger">{error}</p>}
-      <div className="margin-y flex-content">
+      <div className="margin-y flex-column">
         {dialogueSteps && (
           <button
             onClick={handleGenerate}
