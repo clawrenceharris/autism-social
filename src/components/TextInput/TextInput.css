@@ -1,5 +1,7 @@
 .input-container {
   position: relative;
+  display:flex;
+  align-items:center;
 }
 
 .text-input::placeholder {
