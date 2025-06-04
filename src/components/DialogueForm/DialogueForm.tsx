@@ -1,11 +1,12 @@
 import { useState } from "react";
-import type { DialogueStep, ScoreCategory } from "../../types";
+import type { DialogueStep, ScoreCategory, Dialogue } from "../../types";
 import { Plus, Trash2 } from "lucide-react";
 import "./DialogueForm.css";
 import { Select } from "../";
 
 interface DialogueFormProps {
   steps: DialogueStep[];
+  dialogue: Dialogue;
 }
 
 const SCORE_FIELDS = [
@@ -18,10 +19,22 @@ const SCORE_FIELDS = [
 
 const EVENT_TYPES = ["CHOOSE_1", "CHOOSE_2", "CHOOSE_3", "CHOOSE_4"];
 
-const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
+const DialogueForm = ({dialogue, steps: initialSteps }: DialogueFormProps) => {
   const [steps, setSteps] = useState<DialogueStep[]>(initialSteps);
   const [selectedStepId, setSelectedStepId] = useState<string | null>(null);
-
+const [form, setForm] = useState<{
+    title: string;
+   
+    difficulty: string;
+    personaTags: string[];
+    placeholders: string[];
+  }>({
+    title: dialogue.title,
+    difficulty: dialogue.difficulty,
+    personaTags: dailogue.persona_tags,
+    placeholders: dialogue.placeholders
+  
+  });
   const handleStepChange = (stepId: string, field: string, value: any) => {
     setSteps((prevSteps) =>
       prevSteps.map((step) =>
