@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { DialogueStep, ScoreCategory } from "../../types";
 import { Plus, Trash2 } from "lucide-react";
 import "./DialogueForm.css";
+import { Select } from "../";
 
 interface DialogueFormProps {
   steps: DialogueStep[];
@@ -189,9 +190,10 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
                     ))}
                   </select>
 
-                  <select
+                  <Select
                     className="form-select"
                     value={option.next}
+                    options={steps.map((s) => ({value: s.id, key:s.id})}
                     defaultValue={option.next}
                     onChange={(e) =>
                       
@@ -202,14 +204,8 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
                         e.target.value
                       )}
                     
-                  >
-                    <option value="">Select next step</option>
-                    {steps.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.id}
-                      </option>
-                    ))}
-                  </select>
+                  />
+                   
                 </div>
 
                 <div className="score-changes">
