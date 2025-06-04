@@ -13,7 +13,7 @@ const ScenarioPage = () => {
   const { dialogueId } = useParams<{ dialogueId: string }>();
   const [dialogue, setDialogue] = useState<Dialogue | null>(null);
   const [dialogueError, setDialogueError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'scenario' | 'dialogue'>('scenario');
+  const [activeTab, setActiveTab] = useState<'Scenario' | 'Dialogue'>('Scenario');
 
   useEffect(() => {
     if (!dialogueId) {
@@ -52,20 +52,20 @@ const ScenarioPage = () => {
 
   return (
     <div className="container">
-      <h1>Edit Scenario</h1>
+      <h1>Edit {activeTab}</h1>
       <p>
         <small>ID: {scenario.id}</small>
       </p>
 
       <div className="tabs">
         <button 
-          className={`tab ${activeTab === 'scenario' ? 'active' : ''}`}
+          className={`tab ${activeTab === 'Scenario' ? 'active' : ''}`}
           onClick={() => setActiveTab('scenario')}
         >
           Scenario
         </button>
         <button 
-          className={`tab ${activeTab === 'dialogue' ? 'active' : ''}`}
+          className={`tab ${activeTab === 'Dialogue' ? 'active' : ''}`}
           onClick={() => setActiveTab('dialogue')}
         >
           Dialogue
