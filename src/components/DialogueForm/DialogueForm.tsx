@@ -197,7 +197,27 @@ const [form, setForm] = useState<{
           ))}
         </select>
       </div>
-    
+     <div className="margin-y flex-column">
+        {dialogueSteps && (
+          <button
+            onClick={handleGenerate}
+            type="submit"
+            className="btn btn-primary"
+          >
+            <Plus />
+            Add Dialogue
+          </button>
+        )}
+
+        <button
+          onClick={handleGenerate}
+          type="button"
+          className="btn special btn-primary"
+        >
+          <Wand2 />
+          Generate Dialogue
+        </button>
+      </div>
     
     
     <div className="dialogue-steps">
