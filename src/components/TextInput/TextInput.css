@@ -8,7 +8,7 @@
   color: var(--dark-gray);
 }
 .input-container .icon {
-  position: absolute;
+  position: relative;
   right: 5px;
   margin: 0;
   opacity: 0.5;
