@@ -6,7 +6,7 @@ import {
 } from "../../constants/scenario";
 import { type Dialogue, type Scenario } from "../../types";
 import { Select } from "../";
-import { generateScenarioSteps } from "../../lib/dappier";
+import { generateScenarioSteps } from "../../lib/gemini";
 import "./ScenarioForm.css";
 import { updateScenario } from "../../services/scenarios";
 

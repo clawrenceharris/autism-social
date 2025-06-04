@@ -43,7 +43,7 @@ export async function generateScenarioSteps(
 
   Each step must include:
 
-  - id: a unique string in lowercase kebab-case (e.g., "greeting", "ask-name"). It must match one of the target \`next\` values from another step’s options.
+  - id: a unique string in lowercase kebab-case (e.g., "greeting", "ask-name"). It must match one of the target \`next\` values from another step's options.
   - npc: a short sentence of what the non-player character (NPC) says at this step.
   - options: an array of 3–4 choices the user can select from. Each option must include:
     - label: what the user might say (realistic and breif). 
@@ -67,7 +67,6 @@ export async function generateScenarioSteps(
   const parsedSteps = JSON.parse(jsonMatch[0]);
   return parsedSteps.map((step: any) => ({
     ...step,
-
     options: step.options.map((option: any) => ({
       ...option,
       scoreChanges: option.scoreChanges || {},
