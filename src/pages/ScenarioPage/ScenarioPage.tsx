@@ -138,29 +138,29 @@ const ScenarioPage = () => {
     ]
   },
   {
-    "id": "step_4kllm2yxz",
-    "npc": "I'm studying Biology. What's your major?",
-    "options": [
+    id: "step_4kllm2yxz",
+    npc: "I'm studying Biology. What's your major?",
+    options: [
       {
-        "eventType": "CHOOSE_1",
-        "next": "end-conversation",
-        "scoreChanges": {
-          "clarity": 1,
-          "socialAwareness": 1
+        event: "CHOOSE_1",
+        next: "end-conversation",
+        scoreChanges: {
+          clarity: 1,
+          socialAwareness: 1
         },
-        "label": "I'm studying Computer Science. Do you like animals?"
+        label: "I'm studying Computer Science. Do you like animals?"
       },
       {
-        "eventType": "CHOOSE_2",
-        "next": "end-conversation",
-        "scoreChanges": {},
-        "label": "Computer Science."
+        event: "CHOOSE_2",
+        next: "end-conversation",
+        scoreChanges: {},
+        label: "Computer Science."
       },
       {
-        "eventType": "CHOOSE_3",
-        "next": "end-conversation",
-        "scoreChanges": {},
-        "label": "Um... science stuff."
+        event: "CHOOSE_3",
+        next: "end-conversation",
+        scoreChanges: {},
+        label: "Um... science stuff."
       }
     ]
   },
