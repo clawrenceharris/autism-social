@@ -59,81 +59,81 @@ const ScenarioPage = () => {
 [
   {
     “id”: "step_g24im626w",
-    "npc": "Hey! You must be my new roommate. I'm Sarah.",
-    "options": [
+    npc: "Hey! You must be my new roommate. I'm Sarah.",
+    options: [
       {
-        "eventType": "CHOOSE_1",
-        "next": "comment-on-room",
-        "scoreChanges": {
-          "socialAwareness": 1
+        event: "CHOOSE_1",
+        next: "comment-on-room",
+        scoreChanges: {
+          socialAwareness: 1
         },
-        "label": "Hi Sarah, I'm [Your Name]. Nice to meet you!"
+        label: "Hi Sarah, I'm [Your Name]. Nice to meet you!"
       },
       {
-        "eventType": "CHOOSE_2",
-        "next": "comment-on-room",
-        "scoreChanges": {},
-        "label": "[Your Name]. Hey."
+        event: "CHOOSE_2",
+        next: "comment-on-room",
+        scoreChanges: {},
+        label: "[Your Name]. Hey."
       },
       {
-        "eventType": "CHOOSE_3",
-        "next": "explain-struggle",
-        "scoreChanges": {},
-        "label": "*stares blankly*"
+        event: "CHOOSE_3",
+        next: "explain-struggle",
+        scoreChanges: {},
+        label: "*stares blankly*"
       }
     ]
   },
   {
-    "id": "step_z1nyf5ik7",
-    "npc": "What do you think of the room?",
-    "options": [
+    id: "step_z1nyf5ik7",
+    npc: "What do you think of the room?",
+    options: [
       {
-        "eventType": "CHOOSE_1",
-        "next": "offer-help",
-        "scoreChanges": {
-          "clarity": 1,
-          "socialAwareness": 1
+        event: "CHOOSE_1",
+        next: "offer-help",
+        scoreChanges: {
+          clarity: 1,
+          socialAwareness: 1
         },
-        "label": "It's bigger than I expected! Plenty of space."
+        label: "It's bigger than I expected! Plenty of space."
       },
       {
-        "eventType": "CHOOSE_2",
-        "next": "offer-help",
-        "scoreChanges": {},
-        "label": "It's okay. A bit messy."
+        event: "CHOOSE_2",
+        next: "offer-help",
+        scoreChanges: {},
+        label: "It's okay. A bit messy."
       },
       {
-        "eventType": "CHOOSE_3",
-        "next": "offer-help",
-        "scoreChanges": {},
-        "label": "It's a room."
+        event: "CHOOSE_3",
+        next: "offer-help",
+        scoreChanges: {},
+        label: "It's a room."
       }
     ]
   },
   {
-    "id": "step_samf01u0n",
-    "npc": "I'm still unpacking. It's a bit of a disaster!",
-    "options": [
+    id: "step_samf01u0n",
+    npc: "I'm still unpacking. It's a bit of a disaster!",
+    options: [
       {
-        "eventType": "CHOOSE_1",
-        "next": "common-interest",
-        "scoreChanges": {
-          "empathy": 1,
-          "socialAwareness": 1
+        event: "CHOOSE_1",
+        next: "common-interest",
+        scoreChanges: {
+          empathy: 1,
+          socialAwareness: 1
         },
-        "label": "Do you need any help with that?"
+        label: "Do you need any help with that?"
       },
       {
-        "eventType": "CHOOSE_2",
-        "next": "common-interest",
-        "scoreChanges": {},
-        "label": "Okay."
+        event: "CHOOSE_2",
+        next: "common-interest",
+        scoreChanges: {},
+        label: "Okay."
       },
       {
-        "eventType": "CHOOSE_3",
-        "next": "common-interest",
-        "scoreChanges": {},
-        "label": "I'll unpack my stuff first."
+        event: "CHOOSE_3",
+        next: "common-interest",
+        scoreChanges: {},
+        label: "I'll unpack my stuff first."
       }
     ]
   },
