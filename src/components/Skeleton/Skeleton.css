@@ -15,6 +15,7 @@
     var(--color-gray-100) 37%,
     var(--color-gray-200) 63%
   );
+  margin: 1rem 0;
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
   border-radius: 0.5rem;
