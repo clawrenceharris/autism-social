@@ -1,6 +1,26 @@
-import { DappierAI } from '@dappier/ai';
+import { DAPPIER_API_ENDPOINT } from '../constants/api';
 
-const dappier = new DappierAI(import.meta.env.VITE_DAPPIER_API_KEY);
+async function dappierRequest(prompt: string, maxTokens: number = 100, temperature: number = 0.7) {
+  const response = await fetch(DAPPIER_API_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${import.meta.env.VITE_DAPPIER_API_KEY}`
+    },
+    body: JSON.stringify({
+      prompt,
+      max_tokens: maxTokens,
+      temperature
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`Dappier API error: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.choices[0].text;
+}
 
 export const generateSuggestedDialogues = async (
   scenarioTitle: string
@@ -12,12 +32,8 @@ export const generateSuggestedDialogues = async (
         -Separate each title by a comma with no space.
     `;
   try {
-    const response = await dappier.complete({
-      prompt,
-      maxTokens: 100,
-      temperature: 0.7
-    });
-    return response.text;
+    const text = await dappierRequest(prompt);
+    return text;
   } catch (error) {
     console.error('Error generating dialogues:', error);
     throw error;
@@ -56,13 +72,8 @@ export async function generateScenarioSteps(
   Return only the JSON array. Do not include explanations, comments, or formatting outside of the array.`;
 
   try {
-    const response = await dappier.complete({
-      prompt,
-      maxTokens: 1000,
-      temperature: 0.7
-    });
-    
-    const jsonMatch = response.text.match(/\[.*\]/s);
+    const text = await dappierRequest(prompt, 1000, 0.7);
+    const jsonMatch = text.match(/\[.*\]/s);
     if (!jsonMatch) throw new Error("No valid JSON found in response");
 
     const parsedSteps = JSON.parse(jsonMatch[0]);
