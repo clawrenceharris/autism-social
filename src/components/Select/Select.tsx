@@ -44,7 +44,6 @@ const Select = forwardRef<HTMLInputElement, SelectProps>(
     };
     const handleClose = () => {
       setShowOptions(false);
-      setInputValue("");
     };
     return (
       <div style={style} className="select-container">
