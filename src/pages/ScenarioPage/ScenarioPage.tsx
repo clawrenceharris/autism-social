@@ -48,17 +48,15 @@ const ScenarioPage = () => {
   }
   return (
     <div>
-      <div className="flex-content">
         <div>
           <h1>Edit Scenario</h1>
           <p>
             {" "}
             <small>ID: {scenario.id}</small>
           </p>
-          <ScenarioForm dailogue={dialogue} scenario={scenario} />
-        </div>
+         
+         <ScenarioForm dailogue={dialogue} scenario={scenario} />
         <DialogueForm steps={dialogueSteps} />
-      </div>
     </div>
   );
 };
