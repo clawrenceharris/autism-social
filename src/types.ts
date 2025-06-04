@@ -19,12 +19,6 @@ export interface Option {
   scores: { [key: string]: number };
 }
 
-export interface Step {
-  stepId: string;
-  npcLine: string;
-  options: Option[];
-}
-
 export interface Scenario {
   id: string;
   title: string;
@@ -37,8 +31,8 @@ export interface Dialogue {
   scenario_id: string;
   title: string;
   persona_tags: string[];
-  user_fields: string[];
-  steps: Step[];
+  placeholders: string[];
+  steps: DialogueStep[];
   difficulty: string;
   scoring_categories: string[];
   created_at?: string;

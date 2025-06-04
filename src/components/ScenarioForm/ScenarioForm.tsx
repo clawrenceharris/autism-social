@@ -1,56 +1,38 @@
-import { useState } from "react";
-import { Plus, Wand2 } from "lucide-react";
-import {
-  DIFFICULTY_LEVELS,
-  SCENARIO_CATEGORIES,
-} from "../../constants/scenario";
-import type { Scenario } from "../../types";
+import { SCENARIO_CATEGORIES } from "../../constants/scenario";
+import type { DialogueStep } from "../../types";
 import { Select } from "../";
-import { generateScenarioSteps } from "../../lib/gemini";
 import "./ScenarioForm.css";
-import { updateScenario } from "../../services/scenarios";
+import type { ScenarioFormValues } from "../../pages/ScenarioPage/ScenarioPage";
 
 interface ScenarioFormProps {
-  scenario: Scenario;
+  onChange: (data: Partial<ScenarioFormValues>) => void;
+  values: {
+    scenarioTitle: string;
+    dialogueTitle: string;
+    personaTags: string[];
+    difficulty: string;
+    placeholders: string[];
+    description: string;
+    steps: DialogueStep[];
+  };
+  error?: string | null;
 }
 
-const ScenarioForm = ({ scenario }: ScenarioFormProps) => {
-  const [form, setForm] = useState<{
-    title: string;
-    description: string;
-    difficulty: string;
-    personaTags: string[];
-  }>({
-    title: scenario.title,
-    description: scenario.description,
-  });
-  const [error, setError] = useState<string | null>();
-
- 
-  
+const ScenarioForm = ({ values, onChange, error }: ScenarioFormProps) => {
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      await updateScenario(scenario.id, form);
-      alert("Scenario updated successfully!");
-    } catch (err) {
-      const error =
-        typeof err === "string" ? err : err instanceof Error ? err.message : "";
-      setError("Could not update scenario. " + error);
-    }
+    onChange({ [e.target.name]: e.target.value });
   };
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
       <div className="form-group">
         <label className="form-label">Scenario Title</label>
         <Select
-          name="title"
-          value={form.title}
+          name="scenarioTitle"
+          value={values.scenarioTitle}
           onChange={handleChange}
           options={SCENARIO_CATEGORIES.map((item, i) => ({
             key: i,
@@ -59,11 +41,18 @@ const ScenarioForm = ({ scenario }: ScenarioFormProps) => {
           placeholder="Enter a Scenario title"
         />
       </div>
-
-     
+      <div className="form-group">
+        <label className="form-label">Description</label>
+        <textarea
+          className="form-textarea"
+          name="description"
+          value={values.description}
+          onChange={handleChange}
+          placeholder="Enter a description"
+        />
+      </div>
       {error && <p className="danger">{error}</p>}
-     
-    </form>
+    </div>
   );
 };
 
