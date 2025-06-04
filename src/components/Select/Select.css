@@ -26,6 +26,7 @@
 }
 .select-container .options-list {
   position: absolute;
+  gap: 0;
   width: 100%;
   box-shadow: var(--box-shadow);
   
