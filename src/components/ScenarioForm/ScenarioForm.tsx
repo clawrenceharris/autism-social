@@ -62,27 +62,7 @@ const ScenarioForm = ({ scenario }: ScenarioFormProps) => {
 
      
       {error && <p className="danger">{error}</p>}
-      <div className="margin-y flex-column">
-        {dialogueSteps && (
-          <button
-            onClick={handleGenerate}
-            type="submit"
-            className="btn btn-primary"
-          >
-            <Plus />
-            Add Dialogue
-          </button>
-        )}
-
-        <button
-          onClick={handleGenerate}
-          type="button"
-          className="btn special btn-primary"
-        >
-          <Wand2 />
-          Generate Dialogue
-        </button>
-      </div>
+     
     </form>
   );
 };
