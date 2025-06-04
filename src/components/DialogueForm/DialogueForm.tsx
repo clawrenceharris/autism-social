@@ -152,7 +152,7 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
             />
           </div>
 
-          <div className="options-list">
+          <div className="options-container">
             {step.options.map((option, optionIndex) => (
               <div key={optionIndex} className="option-item">
                 <div className="content-row">
