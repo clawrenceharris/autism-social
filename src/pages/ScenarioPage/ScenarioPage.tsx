@@ -74,12 +74,12 @@ const ScenarioPage = () => {
 
       <div className={`tab-content ${activeTab === 'Scenario' ? 'active' : ''}`} 
            style={{ display: activeTab === 'Scenario' ? 'block' : 'none' }}>
-        <ScenarioForm dailogue={dialogue} scenario={scenario} />
+        <ScenarioForm scenario={scenario} />
       </div>
 
       <div className={`tab-content ${activeTab === 'Dialogue' ? 'active' : ''}`}
            style={{ display: activeTab === 'Dialogue' ? 'block' : 'none' }}>
-        <DialogueForm steps={dialogueSteps} />
+        <DialogueForm dialogue={dialogue} steps={dialogueSteps} />
       </div>
     </div>
   );
