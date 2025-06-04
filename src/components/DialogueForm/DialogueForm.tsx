@@ -198,7 +198,7 @@ const [form, setForm] = useState<{
         </select>
       </div>
      <div className="margin-y flex-column">
-        {dialogueSteps && (
+        {steps && (
           <button
             onClick={handleGenerate}
             type="submit"
