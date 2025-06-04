@@ -193,14 +193,14 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
                     className="form-select"
                     value={option.next}
                     defaultValue={1}
-                    onChange={(e) =>{
+                    onChange={(e) =>
                       
                       handleOptionChange(
                         step.id,
                         optionIndex,
                         "next",
                         e.target.value
-                      )}
+                      )
                     }
                   />
                     <option value="">Select next step</option>
