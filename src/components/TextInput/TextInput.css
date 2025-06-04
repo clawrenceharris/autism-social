@@ -1,25 +1,8 @@
-.input-container {
-
-  
-}
-
-.text-input::placeholder {
-  color: var(--dark-gray);
-}
 .input-container .icon {
   position: absolute;
   right: 5px;
-  top: calc(50% - (24px/2));
+  top: calc(50% - (24px / 2));
   margin: 0;
   opacity: 0.5;
   cursor: pointer;
-}
-.text-input {
-  position: relative;
-
- 
-}
-
-.input-container .description {
-  text-align: left !important;
 }

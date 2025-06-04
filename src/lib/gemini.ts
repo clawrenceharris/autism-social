@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import type { DialogueStep } from "../types";
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_KEY);
 const generateAIResponse = async (prompt: string): Promise<string> => {
@@ -34,7 +35,7 @@ export async function generateScenarioSteps(
   variationTitle: string,
   difficulty: string,
   personaTags: string[]
-): Promise<object> {
+): Promise<DialogueStep[]> {
   const prompt = `
 
   Create a social scenario dialogue for the category "${category}" with variation "${variationTitle}". This is for an autistic user practicing social interaction.
