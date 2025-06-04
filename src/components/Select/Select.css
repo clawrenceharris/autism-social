@@ -29,7 +29,6 @@
   position: absolute;
   width: 100%;
   box-shadow: var(--box-shadow);
-  overflow: hidden;
   
   border-radius: 10px;
   background: #fff;
