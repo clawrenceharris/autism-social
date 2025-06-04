@@ -171,24 +171,7 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
                     placeholder="Response text..."
                   />
 
-                  <select
-                    className="form-select"
-                    value={option.event}
-                    onChange={(e) =>
-                      handleOptionChange(
-                        step.id,
-                        optionIndex,
-                        "event",
-                        e.target.value
-                      )
-                    }
-                  >
-                    {EVENT_TYPES.map((type) => (
-                      <option key={type} value={type}>
-                        {type}
-                      </option>
-                    ))}
-                  </select>
+                 
 
                   <Select
                     className="form-select"
