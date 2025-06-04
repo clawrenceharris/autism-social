@@ -7,7 +7,6 @@
 
 .tab {
   padding: 1rem 2rem;
-  font-size: 1rem;
   color: var(--color-gray-600);
   border-bottom: 2px solid transparent;
   transition: all 0.3s ease;
