@@ -48,7 +48,6 @@ const ScenarioPage = () => {
   }
   return (
     <div>
-        <div>
           <h1>Edit Scenario</h1>
           <p>
             {" "}
