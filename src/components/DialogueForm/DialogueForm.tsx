@@ -1,12 +1,23 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { DialogueStep, ScoreCategory, Dialogue } from "../../types";
 import { Plus, Trash2, Wand2 } from "lucide-react";
 import "./DialogueForm.css";
 import { Select } from "../";
+import { DIFFICULTY_LEVELS } from "../../constants/scenario";
+import { generateScenarioSteps } from "../../lib/gemini";
+import type { ScenarioFormValues } from "../../pages/ScenarioPage/ScenarioPage";
 
 interface DialogueFormProps {
-  steps: DialogueStep[];
-  dialogue: Dialogue;
+  onChange: (data: Partial<ScenarioFormValues>) => void;
+  values: {
+    scenarioTitle: string;
+    dialogueTitle: string;
+    personaTags: string[];
+    difficulty: string;
+    placeholders: string[];
+    description: string;
+    steps: DialogueStep[];
+  };
 }
 
 const SCORE_FIELDS = [
@@ -17,28 +28,30 @@ const SCORE_FIELDS = [
   "selfAdvocacy",
 ] as const;
 
-const EVENT_TYPES = ["CHOOSE_1", "CHOOSE_2", "CHOOSE_3", "CHOOSE_4"];
-
-const DialogueForm = ({dialogue, steps: initialSteps }: DialogueFormProps) => {
-  const [steps, setSteps] = useState<DialogueStep[]>(initialSteps);
+const DialogueForm = ({ values, onChange }: DialogueFormProps) => {
+  const [steps, setSteps] = useState<DialogueStep[]>(values.steps);
   const [selectedStepId, setSelectedStepId] = useState<string | null>(null);
-const [form, setForm] = useState<{
-    title: string;
-   
-    difficulty: string;
-    personaTags: string[];
-    placeholders: string[];
-  }>({
-    title: dialogue.title,
-    difficulty: dialogue.difficulty,
-    personaTags: dailogue.persona_tags,
-    placeholders: dialogue.placeholders
-  
-  });
+  const [stepId, setStepId] = useState<string>("");
 
+  const handleStepIdChange = useCallback(
+    (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
+      setStepId(e.target.value);
+      handleStepChange(id, "id", e.target.value);
+    },
+    []
+  );
+  const [dialoguesByScenario, _] = useState<{
+    [key: string]: Dialogue[];
+  }>({});
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    onChange({ [e.target.name]: e.target.value });
+  };
 
   const handleGenerate = async () => {
-    if (!scenario.title) {
+    if (!values.scenarioTitle) {
       alert(
         "Please provide a scenario title and dialogue title before generating."
       );
@@ -47,18 +60,17 @@ const [form, setForm] = useState<{
 
     try {
       const generatedSteps = await generateScenarioSteps(
-        form.title,
-        form.dialogueTitle,
-        form.difficulty,
-        form.personaTags
+        values.scenarioTitle,
+        values.dialogueTitle,
+        values.difficulty,
+        values.personaTags
       );
-      setDialogueSteps(generatedSteps);
+      onChange({ steps: generatedSteps });
     } catch (error) {
       console.error("Failed to generate steps:", error);
       alert("Failed to generate steps. Please try again.");
     }
   };
-
   const handleStepChange = (stepId: string, field: string, value: any) => {
     setSteps((prevSteps) =>
       prevSteps.map((step) =>
@@ -168,16 +180,18 @@ const [form, setForm] = useState<{
 
   return (
     <div>
-     <div className="form-group">
+      <div className="form-group">
         <label className="form-label">Dialogue Title</label>
         <Select
           name="dialogueTitle"
-          value={form.dialogueTitle}
+          value={values.dialogueTitle}
           onChange={handleChange}
-          options={(dialoguesByScenario[form.title] || []).map((item) => ({
-            value: item.title,
-            key: item.id,
-          }))}
+          options={(dialoguesByScenario[values.scenarioTitle] || []).map(
+            (item) => ({
+              value: item.title,
+              key: item.id,
+            })
+          )}
           placeholder="Enter a Dialogue title"
         />
       </div>
@@ -187,7 +201,7 @@ const [form, setForm] = useState<{
         <select
           className="form-input"
           name="difficulty"
-          value={form.difficulty}
+          value={values.difficulty}
           onChange={handleChange}
         >
           {DIFFICULTY_LEVELS.map((level) => (
@@ -197,18 +211,7 @@ const [form, setForm] = useState<{
           ))}
         </select>
       </div>
-     <div className="margin-y flex-column">
-        {steps && (
-          <button
-            onClick={handleGenerate}
-            type="submit"
-            className="btn btn-primary"
-          >
-            <Plus />
-            Add Dialogue
-          </button>
-        )}
-
+      <div className="margin-y flex-column">
         <button
           onClick={handleGenerate}
           type="button"
@@ -218,120 +221,127 @@ const [form, setForm] = useState<{
           Generate Dialogue
         </button>
       </div>
-    
-    
-    <div className="dialogue-steps">
-      {steps.map((step) => (
-        <div
-          key={step.id}
-          className={`dialogue-step ${
-            selectedStepId === step.id ? "selected" : ""
-          }`}
-          onClick={() => setSelectedStepId(step.id)}
-        >
-          <div className="step-header">
-            <span className="step-id">Step ID: {step.id}</span>
-          </div>
 
-          <div className="npc-line">
-            <textarea
-              className="form-textarea"
-              value={step.npc}
-              onChange={(e) => handleStepChange(step.id, "npc", e.target.value)}
-              placeholder="NPC dialogue line..."
-            />
-          </div>
+      <div className="dialogue-steps">
+        {steps.map((step, index) => (
+          <div
+            key={index}
+            className={`dialogue-step ${
+              selectedStepId === step.id ? "selected" : ""
+            }`}
+            onClick={() => setSelectedStepId(step.id)}
+          >
+            <div className="step-header">
+              <label className="step-id">Step ID: &nbsp; </label>
+              <input
+                type="text"
+                value={step.id}
+                className="form-input"
+                onChange={(e) =>
+                  handleStepChange(step.id, "id", e.target.value)
+                }
+              />
+            </div>
 
-          <div className="dialogue-options-list">
-            {step.options.map((option, optionIndex) => (
-              <div key={optionIndex} className="dialogue-option-item">
-                <div className="content-row">
-                  <input
-                    type="text"
-                    className="form-input"
-                    value={option.label}
-                    onChange={(e) =>
-                      handleOptionChange(
-                        step.id,
-                        optionIndex,
-                        "label",
-                        e.target.value
-                      )
-                    }
-                    placeholder="Response text..."
-                  />
+            <div className="npc-line">
+              <textarea
+                className="form-textarea"
+                value={step.npc}
+                onChange={(e) =>
+                  handleStepChange(step.id, "npc", e.target.value)
+                }
+                placeholder="NPC dialogue line..."
+              />
+            </div>
 
-                 
-
-                  <Select
-                    style={{width: "100%", flex:1}}
-                    className="form-select"
-                    value={option.next}
-                    options={steps.map((s) => ({value: s.id, key:s.id}))}
-                    onChange={(e) =>
-                      
-                      handleOptionChange(
-                        step.id,
-                        optionIndex,
-                        "next",
-                        e.target.value
-                      )}
-                    
-                  />
-                   
-                </div>
-
-                <div className="score-changes">
-                  {SCORE_FIELDS.map((category) => (
-                    <button
-                      key={category}
-                      type="button"
-                      onClick={() =>
-                        toggleScoreCategory(step.id, optionIndex, category)
+            <div className="dialogue-options-list">
+              {step.options.map((option, optionIndex) => (
+                <div key={optionIndex} className="dialogue-option-item">
+                  <div className="content-row">
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={option.label}
+                      onChange={(e) =>
+                        handleOptionChange(
+                          step.id,
+                          optionIndex,
+                          "label",
+                          e.target.value
+                        )
                       }
-                      className={`score-btn ${
-                        option.scoreChanges.includes(category) ? "selected" : ""
-                      }`}
+                      placeholder="Response text..."
+                    />
+
+                    <Select
+                      style={{ width: "100%", flex: 1 }}
+                      className="form-select"
+                      value={option.next}
+                      options={steps.map((s) => ({ value: s.id, key: s.id }))}
+                      onChange={(e) =>
+                        handleOptionChange(
+                          step.id,
+                          optionIndex,
+                          "next",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+
+                  <div className="score-changes">
+                    {SCORE_FIELDS.map((category) => (
+                      <button
+                        key={category}
+                        type="button"
+                        onClick={() =>
+                          toggleScoreCategory(step.id, optionIndex, category)
+                        }
+                        className={`score-btn ${
+                          option.scoreChanges.includes(category)
+                            ? "selected"
+                            : ""
+                        }`}
+                      >
+                        {category}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="actions">
+                    <button
+                      type="button"
+                      onClick={() => removeOption(step.id, optionIndex)}
+                      className="squircle-btn danger"
                     >
-                      {category}
+                      <Trash2 size={20} />
                     </button>
-                  ))}
+                  </div>
                 </div>
+              ))}
+            </div>
 
-                <div className="actions">
-                  <button
-                    type="button"
-                    onClick={() => removeOption(step.id, optionIndex)}
-                    className="squircle-btn danger"
-                  >
-                    <Trash2 size={20} />
-                  </button>
-                </div>
-              </div>
-            ))}
+            <div className="actions">
+              <button
+                type="button"
+                onClick={() => addOption(step.id)}
+                className="btn btn-primary"
+              >
+                <Plus size={20} />
+                Add Response
+              </button>
+            </div>
           </div>
+        ))}
 
-          <div className="actions">
-            <button
-              type="button"
-              onClick={() => addOption(step.id)}
-              className="btn btn-primary"
-            >
-              <Plus size={20} />
-              Add Response
-            </button>
-          </div>
+        <div className="actions">
+          <button type="button" onClick={addStep} className="btn btn-primary">
+            <Plus size={20} />
+            Add Step
+          </button>
         </div>
-      ))}
-
-      <div className="actions">
-        <button type="button" onClick={addStep} className="btn btn-primary">
-          <Plus size={20} />
-          Add Step
-        </button>
       </div>
     </div>
-      </div>
   );
 };
 
