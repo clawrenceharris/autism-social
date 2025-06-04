@@ -6,9 +6,10 @@ import {
 } from "../../constants/scenario";
 import { type Dialogue, type Scenario } from "../../types";
 import { Select } from "../";
-import { generateScenarioSteps } from "../../lib/gemini";
+import { generateScenarioSteps } from "../../lib/dappier";
 import "./ScenarioForm.css";
 import { updateScenario } from "../../services/scenarios";
+
 interface ScenarioFormProps {
   scenario: Scenario;
   dailogue: Dialogue;
@@ -34,19 +35,6 @@ const ScenarioForm = ({ scenario, dailogue }: ScenarioFormProps) => {
   const [dialoguesByScenario, _] = useState<{
     [key: string]: Dialogue[];
   }>({});
-
-  // useEffect(() => {
-  //   const getGeneratedDialogues = async () => {
-  //     try {
-  //       const dialogues = await generateSuggestedDialogues(form.title);
-  //       console.log(dialogues);
-  //       setGeneratedDialogues(dialogues.split(","));
-  //     } catch (error) {
-  //       alert(error);
-  //     }
-  //   };
-  //   // getGeneratedDialogues();
-  // }, []);
 
   const handleGenerate = async () => {
     if (!scenario.title) {
@@ -79,7 +67,7 @@ const ScenarioForm = ({ scenario, dailogue }: ScenarioFormProps) => {
     e.preventDefault();
     try {
       await updateScenario(scenario.id, form);
-      alert("Sceario updated successfully!");
+      alert("Scenario updated successfully!");
     } catch (err) {
       const error =
         typeof err === "string" ? err : err instanceof Error ? err.message : "";
@@ -88,8 +76,6 @@ const ScenarioForm = ({ scenario, dailogue }: ScenarioFormProps) => {
   };
   return (
     <form onSubmit={handleSubmit}>
-      {/* Scenario Title */}
-
       <div className="form-group">
         <label className="form-label">Scenario Title</label>
         <Select
@@ -103,8 +89,6 @@ const ScenarioForm = ({ scenario, dailogue }: ScenarioFormProps) => {
           placeholder="Enter a Scenario title"
         />
       </div>
-
-      {/* Dialogue Title */}
 
       <div className="form-group">
         <label className="form-label">Dialogue Title</label>
@@ -120,7 +104,6 @@ const ScenarioForm = ({ scenario, dailogue }: ScenarioFormProps) => {
         />
       </div>
 
-      {/* Difficulty */}
       <div className="form-group">
         <label className="form-label">Difficulty Level</label>
         <select
