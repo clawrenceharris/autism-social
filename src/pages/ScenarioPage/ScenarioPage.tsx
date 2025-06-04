@@ -165,9 +165,9 @@ const ScenarioPage = () => {
     ]
   },
   {
-    "id": "step_mwqf71wlb",
-    "npc": "Cool! Well, I should probably get back to unpacking. It was nice meeting you, [Your Name].",
-    "options": [
+    id: "step_mwqf71wlb",
+    npc: "Cool! Well, I should probably get back to unpacking. It was nice meeting you, [Your Name].",
+    options: [
       {
         event: "CHOOSE_1",
         next: "end",
@@ -211,9 +211,9 @@ const ScenarioPage = () => {
       },
       {
         event: "CHOOSE_3",
-        "next": "comment-on-room",
-        "scoreChanges": {},
-        "label": "*remains silent*"
+        next: "comment-on-room",
+        scoreChanges: {},
+        label: "*remains silent*"
       }
     ]
   },
