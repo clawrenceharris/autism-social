@@ -3,7 +3,6 @@
 }
 
 .select-container .option-item:last-child {
-  border-radius: 0 0 15px 15px;
 }
 .select-container .option-item:first-child {
 }
