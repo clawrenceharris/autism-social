@@ -130,6 +130,39 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
   };
 
   return (
+    <div>
+     <div className="form-group">
+        <label className="form-label">Dialogue Title</label>
+        <Select
+          name="dialogueTitle"
+          value={form.dialogueTitle}
+          onChange={handleChange}
+          options={(dialoguesByScenario[form.title] || []).map((item) => ({
+            value: item.title,
+            key: item.id,
+          }))}
+          placeholder="Enter a Dialogue title"
+        />
+      </div>
+
+      <div className="form-group">
+        <label className="form-label">Difficulty Level</label>
+        <select
+          className="form-input"
+          name="difficulty"
+          value={form.difficulty}
+          onChange={handleChange}
+        >
+          {DIFFICULTY_LEVELS.map((level) => (
+            <option key={level} value={level}>
+              {level.charAt(0).toUpperCase() + level.slice(1)}
+            </option>
+          ))}
+        </select>
+      </div>
+    
+    
+    
     <div className="dialogue-steps">
       {steps.map((step) => (
         <div
@@ -241,6 +274,7 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
         </button>
       </div>
     </div>
+      </div>
   );
 };
 
