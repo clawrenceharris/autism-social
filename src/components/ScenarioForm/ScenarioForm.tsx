@@ -12,52 +12,22 @@ import { updateScenario } from "../../services/scenarios";
 
 interface ScenarioFormProps {
   scenario: Scenario;
-  dailogue: Dialogue;
 }
 
-const ScenarioForm = ({ scenario, dailogue }: ScenarioFormProps) => {
+const ScenarioForm = ({ scenario }: ScenarioFormProps) => {
   const [form, setForm] = useState<{
     title: string;
     description: string;
-    dialogueTitle: string;
     difficulty: string;
     personaTags: string[];
   }>({
     title: scenario.title,
     description: scenario.description,
-    dialogueTitle: dailogue.title,
-    difficulty: dailogue.difficulty,
-    personaTags: dailogue.persona_tags,
   });
-  const [dialogueSteps, setDialogueSteps] = useState<object>([]);
   const [error, setError] = useState<string | null>();
 
-  const [dialoguesByScenario, _] = useState<{
-    [key: string]: Dialogue[];
-  }>({});
-
-  const handleGenerate = async () => {
-    if (!scenario.title) {
-      alert(
-        "Please provide a scenario title and dialogue title before generating."
-      );
-      return;
-    }
-
-    try {
-      const generatedSteps = await generateScenarioSteps(
-        form.title,
-        form.dialogueTitle,
-        form.difficulty,
-        form.personaTags
-      );
-      setDialogueSteps(generatedSteps);
-    } catch (error) {
-      console.error("Failed to generate steps:", error);
-      alert("Failed to generate steps. Please try again.");
-    }
-  };
-
+ 
+  
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -90,35 +60,7 @@ const ScenarioForm = ({ scenario, dailogue }: ScenarioFormProps) => {
         />
       </div>
 
-      <div className="form-group">
-        <label className="form-label">Dialogue Title</label>
-        <Select
-          name="dialogueTitle"
-          value={form.dialogueTitle}
-          onChange={handleChange}
-          options={(dialoguesByScenario[form.title] || []).map((item) => ({
-            value: item.title,
-            key: item.id,
-          }))}
-          placeholder="Enter a Dialogue title"
-        />
-      </div>
-
-      <div className="form-group">
-        <label className="form-label">Difficulty Level</label>
-        <select
-          className="form-input"
-          name="difficulty"
-          value={form.difficulty}
-          onChange={handleChange}
-        >
-          {DIFFICULTY_LEVELS.map((level) => (
-            <option key={level} value={level}>
-              {level.charAt(0).toUpperCase() + level.slice(1)}
-            </option>
-          ))}
-        </select>
-      </div>
+     
       {error && <p className="danger">{error}</p>}
       <div className="margin-y flex-column">
         {dialogueSteps && (
