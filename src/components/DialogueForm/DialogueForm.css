@@ -33,7 +33,7 @@
   margin-bottom: 1.5rem;
 }
 
-.options-list {
+.dialogue-steps  .options-list {
   display: flex;
   flex-direction: column;
   gap: 1rem;
