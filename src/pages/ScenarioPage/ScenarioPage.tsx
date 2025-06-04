@@ -62,13 +62,13 @@ const ScenarioPage = () => {
           className={`tab ${activeTab === 'scenario' ? 'active' : ''}`}
           onClick={() => setActiveTab('scenario')}
         >
-          Edit Scenario
+          Scenario
         </button>
         <button 
           className={`tab ${activeTab === 'dialogue' ? 'active' : ''}`}
           onClick={() => setActiveTab('dialogue')}
         >
-          Edit Dialogue
+          Dialogue
         </button>
       </div>
 
