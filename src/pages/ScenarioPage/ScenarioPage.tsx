@@ -3,7 +3,7 @@ import "./ScenarioPage.css";
 import { useScenario } from "../../context";
 import { ScenarioForm } from "../../components";
 import type { Dialogue } from "../../types";
-import DialoguesPanel from "../../components/DialoguesPanel";
+import {DialoguesPanel, DialogueForm} from "../../components";
 import { useParams } from "react-router-dom";
 import { getDialogueById } from "../../services/scenarios";
 const ScenarioPage = () => {
