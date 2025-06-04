@@ -30,7 +30,6 @@
   width: 100%;
   box-shadow: var(--box-shadow);
   
-  border-radius: 10px;
   background: #fff;
   max-height: 300px;
   overflow-y: auto;
