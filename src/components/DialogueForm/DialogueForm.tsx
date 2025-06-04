@@ -49,10 +49,10 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
     );
   };
 
-  const handleScoreChange = (
+  const toggleScoreCategory = (
     stepId: string,
     optionIndex: number,
-    value: ScoreCategory
+    category: ScoreCategory
   ) => {
     setSteps((prevSteps) =>
       prevSteps.map((step) =>
@@ -63,7 +63,9 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
                 idx === optionIndex
                   ? {
                       ...opt,
-                      scoreChanges: [...opt.scoreChanges, value],
+                      scoreChanges: opt.scoreChanges.includes(category)
+                        ? opt.scoreChanges.filter((sc) => sc !== category)
+                        : [...opt.scoreChanges, category],
                     }
                   : opt
               ),
@@ -209,14 +211,17 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
                 </div>
 
                 <div className="score-changes">
-                  {SCORE_FIELDS.map((item) => (
+                  {SCORE_FIELDS.map((category) => (
                     <button
+                      key={category}
                       onClick={() =>
-                        handleScoreChange(step.id, optionIndex, item)
+                        toggleScoreCategory(step.id, optionIndex, category)
                       }
-                      className={`score-btn ${true ? "selected" : ""}`}
+                      className={`score-btn ${
+                        option.scoreChanges.includes(category) ? "selected" : ""
+                      }`}
                     >
-                      {item}
+                      {category}
                     </button>
                   ))}
                 </div>
