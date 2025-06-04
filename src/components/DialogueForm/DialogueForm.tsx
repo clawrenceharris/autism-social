@@ -35,6 +35,30 @@ const [form, setForm] = useState<{
     placeholders: dialogue.placeholders
   
   });
+
+
+  const handleGenerate = async () => {
+    if (!scenario.title) {
+      alert(
+        "Please provide a scenario title and dialogue title before generating."
+      );
+      return;
+    }
+
+    try {
+      const generatedSteps = await generateScenarioSteps(
+        form.title,
+        form.dialogueTitle,
+        form.difficulty,
+        form.personaTags
+      );
+      setDialogueSteps(generatedSteps);
+    } catch (error) {
+      console.error("Failed to generate steps:", error);
+      alert("Failed to generate steps. Please try again.");
+    }
+  };
+
   const handleStepChange = (stepId: string, field: string, value: any) => {
     setSteps((prevSteps) =>
       prevSteps.map((step) =>
