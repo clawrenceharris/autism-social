@@ -189,7 +189,7 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
                     ))}
                   </select>
 
-                  <input
+                  <select
                     className="form-select"
                     value={option.next}
                     defaultValue={1}
@@ -202,7 +202,7 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
                         e.target.value
                       )}
                     
-                  />
+                  >
                     <option value="">Select next step</option>
                     {steps.map((s) => (
                       <option key={s.id} value={s.id}>
