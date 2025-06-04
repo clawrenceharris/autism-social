@@ -32,7 +32,7 @@ const ScenarioPage = () => {
   }
   if (error || dialogueError) {
     return (
-      <div className="content-centered-absolute">An error occured: {error}</div>
+      <div className="content-centered-absolute">An error occured: {error || dialogueError}</div>
     );
   }
   if (!scenario) {
