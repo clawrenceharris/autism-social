@@ -1,4 +1,7 @@
-
+.input-container {
+  flex:1;
+  
+}
 
 .text-input::placeholder {
   color: var(--dark-gray);
