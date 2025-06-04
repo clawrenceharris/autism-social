@@ -9,7 +9,6 @@
   border-radius: 15px 15px 0 0;
 }
 .select-container .option-item:only-child {
-  border-radius: 15px;
 }
 .select-container .option-item {
   transition: 0.17s;
@@ -30,6 +29,7 @@
   width: 100%;
   box-shadow: var(--box-shadow);
   
+  border-radius: 10px;
   background: #fff;
   max-height: 300px;
   overflow-y: auto;
