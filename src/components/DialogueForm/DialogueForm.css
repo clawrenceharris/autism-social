@@ -41,7 +41,7 @@
   gap: 1rem;
 }
 
-.dialogue-steps  .option-item {
+.dialogue-option-item {
   background: var(--color-gray-50);
   border-radius: 0.5rem;
   padding: 1rem;
