@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { DialogueStep, ScoreCategory, Dialogue } from "../../types";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Wand2 } from "lucide-react";
 import "./DialogueForm.css";
 import { Select } from "../";
 
