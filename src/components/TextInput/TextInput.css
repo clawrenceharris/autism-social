@@ -1,9 +1,4 @@
-.input-container {
-  position: relative;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
+
 
 .text-input::placeholder {
   color: var(--dark-gray);
