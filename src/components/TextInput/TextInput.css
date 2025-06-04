@@ -8,7 +8,9 @@
   color: var(--dark-gray);
 }
 .input-container .icon {
+  position: absolute;
   right: 5px;
+  margin: 0;
   opacity: 0.5;
   cursor: pointer;
 }
