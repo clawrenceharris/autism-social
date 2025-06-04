@@ -30,7 +30,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
           ref={ref}
           style={style}
           type="text"
-          className="text-input"
+          className="form-input"
           {...rest}
         />
         <button type="button" onClick={onIconClick} className="icon">

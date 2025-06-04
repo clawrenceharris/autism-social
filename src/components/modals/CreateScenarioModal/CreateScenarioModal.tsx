@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SCENARIO_CATEGORIES } from "../../../constants";
+import { SCENARIO_CATEGORIES } from "../../../constants/scenario";
 import { createScenario } from "../../../services/scenarios";
 import { useModal } from "../../../context";
 import "./CreateScenarioModal.css";
