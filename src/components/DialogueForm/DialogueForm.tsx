@@ -174,7 +174,7 @@ const DialogueForm = ({ steps: initialSteps }: DialogueFormProps) => {
                  
 
                   <Select
-                    style={{width: "100%", flex:1, background: "red"}}
+                    style={{width: "100%", flex:1}}
                     className="form-select"
                     value={option.next}
                     options={steps.map((s) => ({value: s.id, key:s.id}))}
