@@ -67,7 +67,6 @@
 
       &:checked + span {
         color: $color-primary;
-        font-weight: 500;
       }
 
       &:checked + span + .checkbox-item {
