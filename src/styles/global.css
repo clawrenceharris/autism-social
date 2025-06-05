@@ -1,8 +1,0 @@
-/* Update the label styles */
-label {
-  font-family: "Dongle", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: 1.5rem;
-  display: block;
-  margin-bottom: 0.5rem;
-  color: var(--color-gray-700);
-}
