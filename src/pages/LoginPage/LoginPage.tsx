@@ -94,7 +94,7 @@ const LoginPage = () => {
                   aria-describedby="password-error"
                 />
                 {errors.password && (
-                  <p id="password-error" className="form-error">{errors.password.message}</p>
+                  <p id="password-error\" className="form-error">{errors.password.message}</p>
                 )}
               </div>
             </>
