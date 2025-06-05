@@ -160,7 +160,7 @@ const SignUpPage = () => {
           >
             <div className="form-group">
               <label>What are your goals for using Autism Social?</label>
-              <p><small>(Select all that apply)</small></p>
+              <p><small>Select all that apply</small></p>
               <div className="goals-grid">
                 {GOALS.map((goal) => (
                   <div
@@ -186,7 +186,7 @@ const SignUpPage = () => {
           >
             <div className="form-group">
               <label>What are your interests?</label>
-              <p className="form-helper">Select all that interest you</p>
+              <p className="form-helper"><small>Select all that apply</small></p>
               <div className="interests-grid">
                 {INTERESTS.map((interest) => (
                   <div
