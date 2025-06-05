@@ -159,7 +159,8 @@ const SignUpPage = () => {
             error={error}
           >
             <div className="form-group">
-              <label>What are your goals for using Autism Social?<small>(Select all that apply)</small></label>
+              <label>What are your goals for using Autism Social?</label>
+              <p><small>(Select all that apply)</small></p>
               <div className="goals-grid">
                 {GOALS.map((goal) => (
                   <div
