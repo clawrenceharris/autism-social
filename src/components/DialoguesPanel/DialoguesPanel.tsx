@@ -31,14 +31,14 @@ const DialoguesPanel = ({ scenario }: DialoguesPanelProps) => {
   };
   if (loading) {
     return (
-      <div className="content-centered-absolute">
+      <div className="content-centered">
         <p>Loading...</p>
       </div>
     );
   }
   if (error) {
     return (
-      <div className="content-centered-absolute">
+      <div className="content-centered">
         <h1>An Error occurred</h1>
         <p>{error}</p>
       </div>
