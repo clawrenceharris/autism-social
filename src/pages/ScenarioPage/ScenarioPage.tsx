@@ -176,12 +176,15 @@ const ScenarioPage = () => {
       </p>
       <div className="tabs">
         <button
+          type="button"
           className={`tab ${activeTab === "Scenario" ? "active" : ""}`}
           onClick={() => setActiveTab("Scenario")}
         >
           Scenario
         </button>
         <button
+                    type="button"
+
           className={`tab ${activeTab === "Dialogue" ? "active" : ""}`}
           onClick={() => setActiveTab("Dialogue")}
         >
