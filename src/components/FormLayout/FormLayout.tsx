@@ -81,7 +81,7 @@ function FormLayout<T extends FieldValues>({
         className="form-layout"
       >
         {description && (
-          <p className="description" style={descriptionStyle}>
+          <p className="description\" style={descriptionStyle}>
             {description}
           </p>
         )}
