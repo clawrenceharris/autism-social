@@ -31,7 +31,7 @@ const SkeletonScenario = () => (
 );
 
 const ScenariosPage = () => {
-  const { scenarios, loading, error } = useScenarios();
+  const { scenarios, loading, error, removeScenario } = useScenarios();
   const { openModal } = useModal();
   const { showToast } = useToast();
 
@@ -44,6 +44,7 @@ const ScenariosPage = () => {
         onConfirm={async () => {
           try {
             await deleteScenario(scenario.id);
+            removeScenario(scenario.id);
             showToast("Scenario deleted successfully", "success");
           } catch (error) {
             showToast("Failed to delete scenario", "error");
@@ -56,10 +57,10 @@ const ScenariosPage = () => {
 
   if (loading) {
     return (
-      <div role="status\" aria-live="polite\" className="scenarios-container">
+      <div role="status" aria-live="polite" className="scenarios-container">
         <header className="scenarios-header">
-          <Skeleton variant="title\" width="60%" />
-          <Skeleton variant="text\" width="80%" />
+          <Skeleton variant="title" width="60%" />
+          <Skeleton variant="text" width="80%" />
         </header>
         <div className="scenarios-grid">
           {[...Array(6)].map((_, index) => (

@@ -7,22 +7,27 @@ const useScenarios = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchScenarios = async () => {
+    try {
+      setLoading(true);
+      const scenarios = await getScenarios();
+      setScenarios(scenarios || []);
+      setLoading(false);
+    } catch (error: any) {
+      setError(error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchScenarios = async () => {
-      try {
-        setLoading(true);
-        const scenarios = await getScenarios();
-        setScenarios(scenarios || []);
-        setLoading(false);
-      } catch (error: any) {
-        setError(error);
-        setLoading(false);
-      }
-    };
     fetchScenarios();
   }, []);
 
-  return { scenarios, loading, error };
+  const removeScenario = (id: string) => {
+    setScenarios((prev) => prev.filter((scenario) => scenario.id !== id));
+  };
+
+  return { scenarios, loading, error, removeScenario };
 };
 
 export default useScenarios;
