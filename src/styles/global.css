@@ -172,7 +172,6 @@ main {
   background-color: var(--color-gray-100);
   border: 2px solid #20000010;
   border-radius: 0.5rem;
-
   transition: all 0.2s;
   font-family: "Lexend Deca";
 }
@@ -310,73 +309,6 @@ svg {
   background-color: var(--color-gray-400);
   cursor: not-allowed;
 }
-/* Typography */
-h1 {
-  font-size: 2.25rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-
-h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  font-family: "Lexend Deca";
-}
-
-p {
-  font-family: "Lexend Deca";
-}
-
-.description,
-small {
-  color: var(--color-gray-500);
-  margin-bottom: 2rem;
-  font-size: 0.9rem;
-  font-weight: 300;
-}
-
-a {
-  text-decoration: none;
-  color: black;
-  font-family: "Lexend Deca";
-  font-size: 1.1rem;
-}
-
-/* Card */
-.card {
-  background-color: var(--color-white);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  text-align: left;
-  /* border: 2px solid #fff; */
-  width: 100%;
-  min-width: 300px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-/* Loading States */
-.btn-loading {
-  position: relative;
-  color: transparent;
-}
-
-.btn-loading::after {
-  content: "";
-  position: absolute;
-  width: 1rem;
-  height: 1rem;
-  border: 2px solid var(--color-white);
-  border-radius: 50%;
-  border-top-color: transparent;
-  animation: spin 0.6s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
 
 /* Toast Container */
 .toast-container {
@@ -408,10 +340,14 @@ a {
 
 .toast.success {
   background: var(--color-green-100);
+  border: 1px solid var(--color-green-600);
+  color: var(--color-green-600);
 }
 
 .toast.error {
   background: var(--color-red-100);
+  border: 1px solid var(--color-red-600);
+  color: var(--color-red-600);
 }
 
 .toast-content {
@@ -425,11 +361,13 @@ a {
   flex-shrink: 0;
 }
 
-.toast.success .toast-icon {
+.toast.success .toast-icon,
+.toast.success .toast-message {
   color: var(--color-green-600);
 }
 
-.toast.error .toast-icon {
+.toast.error .toast-icon,
+.toast.error .toast-message {
   color: var(--color-red-600);
 }
 
@@ -440,15 +378,16 @@ a {
 }
 
 .toast-close {
-  color: var(--color-gray-500);
+  color: currentColor;
   padding: 0.25rem;
   border-radius: 0.375rem;
   transition: all 0.2s;
+  opacity: 0.7;
 }
 
 .toast-close:hover {
+  opacity: 1;
   background-color: rgba(0, 0, 0, 0.05);
-  color: var(--color-gray-700);
 }
 
 @keyframes toast-slide-in {
