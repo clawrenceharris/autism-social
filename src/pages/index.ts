@@ -1,9 +1,10 @@
 export { default as HomePage } from "./HomePage";
 export { default as ScenariosPage } from "./ScenariosPage";
 export { default as ScenarioPage } from "./ScenarioPage";
-export { default as LoginPage } from "./LoginPage/LoginPage";
-export { default as DashboardPage } from "./DashboardPage/DashboardPage";
-export { default as YourScenariosPage } from "./YourScenariosPage/YourScenariosPage";
-export { default as ProgressPage } from "./ProgressPage/ProgressPage";
-export { default as CustomizationPage } from "./CustomizationPage/CustomizationPage";
-export { default as ExplorePage } from "./ExplorePage/ExplorePage";
+export { default as LoginPage } from "./LoginPage";
+export { default as DashboardPage } from "./DashboardPage";
+export { default as YourScenariosPage } from "./YourScenariosPage";
+export { default as ProgressPage } from "./ProgressPage";
+export { default as CustomizationPage } from "./CustomizationPage";
+export { default as ExplorePage } from "./ExplorePage";
+export { default as SignUpPage } from "./SignUpPage";
