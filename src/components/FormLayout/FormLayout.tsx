@@ -6,9 +6,10 @@ import {
   type FieldValues,
   type DefaultValues,
 } from "react-hook-form";
+import "./FormLayout.scss";
 
 interface FormLayoutProps<T extends FieldValues> extends UseFormProps<T> {
-  children: ReactNode;
+  children: ((methods: ReturnType<typeof useForm>) => ReactNode) | ReactNode;
   showsSubmitButton?: boolean;
   showsCancelButton?: boolean;
   submitText?: string;
@@ -69,7 +70,11 @@ function FormLayout<T extends FieldValues>({
 
   const handleSubmit = async (data: T) => {
     if (onSubmit) {
-      await onSubmit(data);
+      try {
+        await onSubmit(data);
+      } catch (error) {
+        console.error("Form submission error:", error);
+      }
     }
   };
 
@@ -79,16 +84,17 @@ function FormLayout<T extends FieldValues>({
         onSubmit={methods.handleSubmit(handleSubmit)}
         style={style}
         className="form-layout"
+        noValidate
       >
         {description && (
-          <p className="description\" style={descriptionStyle}>
+          <p className="form-description" style={descriptionStyle}>
             {description}
           </p>
         )}
 
-        {children}
+        {typeof children === "function" ? children(methods) : children}
 
-        {error && <p className="error-text">{error}</p>}
+        {error && <p className="form-error-message">{error}</p>}
 
         <div className="form-actions">
           {showsCancelButton && (

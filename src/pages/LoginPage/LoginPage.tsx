@@ -2,6 +2,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../context/AuthContext";
 import { FormLayout } from "../../components";
+import { useState } from "react";
 
 interface LoginFormValues {
   email: string;
@@ -11,15 +12,20 @@ interface LoginFormValues {
 const LoginPage = () => {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (data: LoginFormValues) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      setIsLoading(true);
+      setError(null);
+
+      const { error: authError } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       });
 
-      if (error) throw error;
+      if (authError) throw authError;
 
       // Check user role and redirect accordingly
       const { data: roleData } = await supabase
@@ -30,31 +36,28 @@ const LoginPage = () => {
 
       const redirectPath = roleData?.role === 'admin' ? '/' : '/dashboard';
       navigate(redirectPath, { replace: true });
-    } catch (error: any) {
-      throw new Error(error.message);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div style={{ 
-      minHeight: "100vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "1rem"
-    }}>
-      <div style={{ width: "100%", maxWidth: "400px" }}>
-        <div style={{ marginBottom: "1.5rem", textAlign: "center" }}>
-          <h1 style={{ marginBottom: "0.5rem" }}>Log in</h1>
-          <p className="description" style={{ margin: 0 }}>
-            Welcome to the Dialogue App! Log in to access interactive scenarios and practice your social skills in a safe, supportive environment.
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold mb-2">Log in</h1>
+          <p className="text-gray-600">
+            Welcome to the Dialogue App! Log in to access interactive scenarios.
           </p>
         </div>
 
         <FormLayout<LoginFormValues>
           onSubmit={handleSubmit}
           submitText="Log in"
-          description="Enter your credentials to continue"
+          isLoading={isLoading}
+          error={error}
         >
           {({ register, formState: { errors } }) => (
             <>
@@ -71,10 +74,9 @@ const LoginPage = () => {
                       message: "Invalid email address"
                     }
                   })}
-                  aria-describedby="email-error"
                 />
                 {errors.email && (
-                  <p id="email-error" className="form-error">{errors.email.message}</p>
+                  <p className="form-error">{errors.email.message}</p>
                 )}
               </div>
 
@@ -91,22 +93,20 @@ const LoginPage = () => {
                       message: "Password must be at least 6 characters"
                     }
                   })}
-                  aria-describedby="password-error"
                 />
                 {errors.password && (
-                  <p id="password-error\" className="form-error">{errors.password.message}</p>
+                  <p className="form-error">{errors.password.message}</p>
                 )}
               </div>
             </>
           )}
         </FormLayout>
 
-        <p style={{ textAlign: "center", marginTop: "1rem", marginBottom: 0 }}>
+        <p className="text-center mt-4">
           Don't have an account?{" "}
           <Link 
             to="/signup" 
-            className="text-primary"
-            style={{ color: "var(--color-primary)" }}
+            className="text-primary hover:underline"
           >
             Sign up
           </Link>
