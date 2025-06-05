@@ -40,7 +40,7 @@
 
   .goals-grid,
   .interests-grid {
-    @include grid-layout(2);
+    @include grid-layout(2, 1rem);
     margin-top: $spacing-4;
     
     @include responsive(md) {
