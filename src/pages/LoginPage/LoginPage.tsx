@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../context/AuthContext";
 
@@ -37,33 +37,78 @@ const LoginPage = () => {
 
   return (
     <div className="container">
-      <div className="flex-column" style={{ maxWidth: "400px", margin: "0 auto" }}>
-        <h1>Dialogue App Login</h1>
-        {error && <p className="error-text">{error}</p>}
+      <div className="flex-column" style={{ maxWidth: "400px", margin: "100px auto" }}>
+        <div className="text-center">
+          <h1>Log in</h1>
+          <p className="description">
+            Welcome to the Dialogue App! Log in to access interactive scenarios and practice your social skills in a safe, supportive environment.
+          </p>
+        </div>
+
+        {error && (
+          <div 
+            role="alert" 
+            className="error-text" 
+            style={{ 
+              padding: "1rem", 
+              backgroundColor: "var(--color-red-100)", 
+              borderRadius: "0.5rem",
+              marginBottom: "1rem" 
+            }}
+          >
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="flex-column">
           <div className="form-group">
-            <label className="form-label">Email</label>
+            <label htmlFor="email" className="form-label">Email</label>
             <input
+              id="email"
               type="email"
               className="form-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              aria-required="true"
+              aria-describedby="email-description"
             />
+            <span id="email-description" className="form-helper">Enter your registered email address</span>
           </div>
+
           <div className="form-group">
-            <label className="form-label">Password</label>
+            <label htmlFor="password" className="form-label">Password</label>
             <input
+              id="password"
               type="password"
               className="form-input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              aria-required="true"
+              aria-describedby="password-description"
             />
+            <span id="password-description" className="form-helper">Enter your password</span>
           </div>
-          <button type="submit" className="btn btn-primary">
-            Login
+
+          <button 
+            type="submit" 
+            className="btn btn-primary"
+            aria-label="Log in to your account"
+          >
+            Log in
           </button>
+
+          <p style={{ textAlign: "center", marginTop: "1rem" }}>
+            Don't have an account?{" "}
+            <Link 
+              to="/signup" 
+              className="text-primary"
+              style={{ color: "var(--color-primary)" }}
+            >
+              Sign up
+            </Link>
+          </p>
         </form>
       </div>
     </div>
