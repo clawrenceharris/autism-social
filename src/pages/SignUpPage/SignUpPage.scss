@@ -41,7 +41,7 @@
   .goals-grid,
   .interests-grid {
     @include grid-layout(1, 0.5rem);
-    margin: auto;
+    margin: $spacing-4;
     
     @include responsive(md) {
       grid-template-columns: repeat(2, 1fr);
