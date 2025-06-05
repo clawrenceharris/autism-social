@@ -1,0 +1,10 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.create-scenario-modal {
+  @include flex(column, flex-start, stretch, $spacing-6);
+
+  .form-group {
+    width: 100%;
+  }
+}

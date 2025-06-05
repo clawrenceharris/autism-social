@@ -5,7 +5,7 @@ import { useModal } from "../../../context";
 import Select from "../../Select";
 import { PERSONA_TAGS } from "../../../constants/scenario";
 import { X } from "lucide-react";
-import "./CreateDialogueModal.css";
+import "./CreateDialogueModal.scss";
 
 interface CreateDialogueModalProps {
   scenario: Scenario;
@@ -40,22 +40,25 @@ const CreateDialogueModal = ({ scenario }: CreateDialogueModalProps) => {
     } catch (err) {
       setError("Failed to create Dialogue. Please try again.");
       setIsSubmitting(false);
-
       console.error(err);
     }
   };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
   const handleDeleteTag = (tag: string) => {
     setPersonaTags((prev) => prev.filter((t) => tag !== t));
   };
+
   const handleAddTag = (tag: string) => {
     if (personaTags.includes(tag)) {
       return;
     }
     setPersonaTags((prev) => [...prev, tag]);
   };
+
   return (
     <form onSubmit={handleSubmit} className="form-group">
       <div className="form-group">

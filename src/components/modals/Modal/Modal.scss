@@ -1,0 +1,44 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.modal {
+  &-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  &-container {
+    @include flex(row, center, center);
+    min-height: 100vh;
+    padding: $spacing-4;
+  }
+
+  &-close {
+    font-size: 2rem;
+  }
+
+  &-content {
+    position: relative;
+    width: 100%;
+    max-width: 33rem;
+    background-color: $color-white;
+    border-radius: $border-radius-md;
+    padding: $spacing-6;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    transform: translateY(0);
+    transition: transform 0.2s;
+  }
+
+  &-header {
+    @include flex(row, space-between, center);
+    padding-bottom: $spacing-6;
+  }
+
+  &-footer {
+    margin-top: $spacing-6;
+    @include flex(row, flex-end, center, $spacing-3);
+  }
+}

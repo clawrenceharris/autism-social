@@ -1,6 +1,6 @@
 import { useEffect, type ReactNode } from "react";
 import { X } from "lucide-react";
-import "./Modal.css";
+import "./Modal.scss";
 
 interface ModalProps {
   isOpen: boolean;
@@ -35,7 +35,7 @@ const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
           <div className="modal-header">
             <h2 className="modal-title">{title}</h2>
             <button onClick={onClose} className="modal-close">
-              <X  />
+              <X />
             </button>
           </div>
           {children}

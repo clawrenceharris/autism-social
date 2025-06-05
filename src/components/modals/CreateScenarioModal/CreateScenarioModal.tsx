@@ -2,7 +2,7 @@ import { useState } from "react";
 import { SCENARIO_CATEGORIES } from "../../../constants/scenario";
 import { createScenario } from "../../../services/scenarios";
 import { useModal, useToast } from "../../../context";
-import "./CreateScenarioModal.css";
+import "./CreateScenarioModal.scss";
 import Select from "../../Select";
 
 const CreateScenarioModal = () => {
@@ -37,7 +37,7 @@ const CreateScenarioModal = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form-group">
+    <form onSubmit={handleSubmit} className="create-scenario-modal">
       <div className="form-group">
         <label className="form-label">Title</label>
         <Select
