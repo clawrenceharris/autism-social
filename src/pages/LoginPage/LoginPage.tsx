@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
+import { useAuth } from "../../context/AuthContext";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -8,8 +9,8 @@ const LoginPage = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state as any)?.from?.pathname || "/";
-
+  const { isAdmin } = useAuth();
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -20,7 +21,15 @@ const LoginPage = () => {
 
       if (error) throw error;
 
-      navigate(from, { replace: true });
+      // Check user role and redirect accordingly
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
+        .single();
+
+      const redirectPath = roleData?.role === 'admin' ? '/' : '/dashboard';
+      navigate(redirectPath, { replace: true });
     } catch (error: any) {
       setError(error.message);
     }
@@ -29,7 +38,7 @@ const LoginPage = () => {
   return (
     <div className="container">
       <div className="flex-column" style={{ maxWidth: "400px", margin: "0 auto" }}>
-        <h1>Login</h1>
+        <h1>Dialogue App Login</h1>
         {error && <p className="error-text">{error}</p>}
         <form onSubmit={handleSubmit} className="flex-column">
           <div className="form-group">

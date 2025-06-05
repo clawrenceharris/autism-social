@@ -1,10 +1,20 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { RootLayout, ScenarioLayout } from "./components";
-import { HomePage, ScenarioPage, ScenariosPage } from "./pages";
+import { RootLayout, ScenarioLayout, UserLayout } from "./components";
+import {
+  HomePage,
+  ScenarioPage,
+  ScenariosPage,
+  LoginPage,
+  DashboardPage,
+  YourScenariosPage,
+  ProgressPage,
+  CustomizationPage,
+  ExplorePage,
+} from "./pages";
 import { ModalProvider, ToastProvider } from "./context";
 import { AuthProvider } from "./context/AuthContext";
-import PrivateRoute from "./components/PrivateRoute";
-import LoginPage from "./pages/LoginPage/LoginPage";
+import AdminRoute from "./components/AdminRoute";
+import UserRoute from "./components/UserRoute";
 
 function App() {
   return (
@@ -15,33 +25,63 @@ function App() {
             <Routes>
               <Route path="/login" element={<LoginPage />} />
               
+              {/* Admin Routes */}
               <Route element={<RootLayout />}>
                 <Route path="/" element={
-                  <PrivateRoute>
+                  <AdminRoute>
                     <HomePage />
-                  </PrivateRoute>
+                  </AdminRoute>
                 } />
                 <Route path="/scenarios" element={
-                  <PrivateRoute>
+                  <AdminRoute>
                     <ScenariosPage />
-                  </PrivateRoute>
+                  </AdminRoute>
                 } />
               </Route>
 
               <Route element={<ScenarioLayout />}>
                 <Route path="/scenario/:scenarioId" element={
-                  <PrivateRoute>
+                  <AdminRoute>
                     <ScenarioPage />
-                  </PrivateRoute>
+                  </AdminRoute>
                 } />
                 <Route
                   path="/scenario/:scenarioId/dialogue/:dialogueId"
                   element={
-                    <PrivateRoute>
+                    <AdminRoute>
                       <ScenarioPage />
-                    </PrivateRoute>
+                    </AdminRoute>
                   }
                 />
+              </Route>
+
+              {/* User Routes */}
+              <Route element={<UserLayout />}>
+                <Route path="/dashboard" element={
+                  <UserRoute>
+                    <DashboardPage />
+                  </UserRoute>
+                } />
+                <Route path="/your-scenarios" element={
+                  <UserRoute>
+                    <YourScenariosPage />
+                  </UserRoute>
+                } />
+                <Route path="/progress" element={
+                  <UserRoute>
+                    <ProgressPage />
+                  </UserRoute>
+                } />
+                <Route path="/customization" element={
+                  <UserRoute>
+                    <CustomizationPage />
+                  </UserRoute>
+                } />
+                <Route path="/explore" element={
+                  <UserRoute>
+                    <ExplorePage />
+                  </UserRoute>
+                } />
               </Route>
             </Routes>
           </Router>
