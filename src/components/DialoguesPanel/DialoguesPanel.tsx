@@ -9,6 +9,7 @@ import { useState } from "react";
 interface DialoguesPanelProps {
   scenario: Scenario;
 }
+
 const DialoguesPanel = ({ scenario }: DialoguesPanelProps) => {
   const { scenarioDialogues, loading, error } = useScenarioDialogues(
     scenario.id
