@@ -167,6 +167,7 @@ button {
     &:hover {
       transform: translateY(-2px);
       background-color: $color-primary-200;
+      color: black;
       box-shadow: 0 4px 12px rgba($color-primary, 0.3);
     }
 
