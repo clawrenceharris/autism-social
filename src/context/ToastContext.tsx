@@ -69,9 +69,9 @@ function Toast({ message, type, onClose }: ToastProps) {
     >
       <div className="toast-content">
         {type === 'success' ? (
-          <CheckCircle className="toast-icon" aria-hidden="true" />
+          <CheckCircle className="toast-icon\" aria-hidden="true" />
         ) : (
-          <AlertCircle className="toast-icon" aria-hidden="true" />
+          <AlertCircle className="toast-icon\" aria-hidden="true" />
         )}
         <p className="toast-message">{message}</p>
       </div>
