@@ -88,12 +88,13 @@ const SignUpPage = () => {
             {({ register, formState: { errors } }) => (
               <>
                 <div className="form-group">
-                  <label>What would you like to be called?</label>
+                  <label>Name</label>
                   <input
                     type="text"
                     className={`form-input ${errors.name ? "error" : ""}`}
                     {...register("name", { required: "Name is required" })}
                   />
+                  <p>What would you like to be called?</p>
                   {errors.name && (
                     <p className="form-error">{errors.name.message}</p>
                   )}
