@@ -53,19 +53,47 @@ const SignUpPage = () => {
       }
 
       setIsLoading(true);
-      const { error: signUpError } = await supabase.auth.signUp({
+
+      // 1. Sign up the user
+      const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: updatedData.email!,
-        password: updatedData.password!,
-        options: {
-          data: {
-            name: updatedData.name,
-            goals: updatedData.goals,
-            interests: updatedData.interests
-          }
-        }
+        password: updatedData.password!
       });
 
       if (signUpError) throw signUpError;
+      if (!authData.user) throw new Error("Failed to create user");
+
+      // 2. Upload profile photo if provided
+      let profilePhotoUrl = null;
+      if (updatedData.profilePhoto) {
+        const fileExt = updatedData.profilePhoto.name.split('.').pop();
+        const fileName = `${authData.user.id}-${Math.random()}.${fileExt}`;
+
+        const { error: uploadError, data: uploadData } = await supabase.storage
+          .from('profile-photos')
+          .upload(fileName, updatedData.profilePhoto);
+
+        if (uploadError) throw uploadError;
+        if (uploadData) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('profile-photos')
+            .getPublicUrl(uploadData.path);
+          profilePhotoUrl = publicUrl;
+        }
+      }
+
+      // 3. Create user profile
+      const { error: profileError } = await supabase
+        .from('user_profiles')
+        .insert({
+          user_id: authData.user.id,
+          name: updatedData.name,
+          goals: updatedData.goals,
+          interests: updatedData.interests,
+          profile_photo_url: profilePhotoUrl
+        });
+
+      if (profileError) throw profileError;
 
       navigate("/dashboard", { replace: true });
     } catch (err: any) {
