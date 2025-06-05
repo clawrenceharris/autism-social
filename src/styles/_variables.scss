@@ -1,0 +1,55 @@
+// Typography
+$font-family-primary: "Lexend Deca", sans-serif;
+$font-family-secondary: "Dongle", sans-serif;
+
+// Colors
+$color-primary: #54cbe2;
+$color-primary-100: #e0f2fe;
+$color-primary-200: #c1e6ff;
+$color-primary-hover: #5f88fa;
+
+// Gray Scale
+$color-gray-50: #f9fafb;
+$color-gray-100: #f3f4f6;
+$color-gray-200: #edeff1;
+$color-gray-300: #d1d5db;
+$color-gray-400: #9ca3af;
+$color-gray-500: #6b7280;
+$color-gray-600: #4b5563;
+$color-gray-700: #374151;
+$color-gray-800: #1f2937;
+$color-gray-900: #111827;
+
+// Status Colors
+$color-red-100: #fee2e2;
+$color-red-600: #dc2626;
+$color-red-700: #b91c1c;
+$color-green-100: #dcfce7;
+$color-green-600: #16a34a;
+
+// Other
+$color-white: #ffffff;
+$box-shadow: 0 10px 10px rgba(0, 0, 0, 0.15);
+
+// Breakpoints
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+
+// Spacing
+$spacing-1: 0.25rem;
+$spacing-2: 0.5rem;
+$spacing-3: 0.75rem;
+$spacing-4: 1rem;
+$spacing-6: 1.5rem;
+$spacing-8: 2rem;
+$spacing-12: 3rem;
+$spacing-16: 4rem;
+
+// Border Radius
+$border-radius-sm: 0.375rem;
+$border-radius-md: 0.5rem;
+$border-radius-lg: 0.75rem;
+$border-radius-xl: 1rem;
+$border-radius-2xl: 1.5rem;
+$border-radius-full: 9999px;
