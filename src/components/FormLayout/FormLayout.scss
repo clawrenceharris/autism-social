@@ -60,6 +60,6 @@
 
   .form-actions {
     @include flex(row, flex-end, center, $spacing-4);
-    margin-top: $spacing-4;
+    margin-top: $spacing-1;
   }
 }
