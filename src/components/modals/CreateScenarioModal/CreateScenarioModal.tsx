@@ -39,8 +39,9 @@ const CreateScenarioModal = () => {
   return (
     <form onSubmit={handleSubmit} className="form-group">
       <div className="form-group">
-        <label className="form-label">Category</label>
+        <label className="form-label">Title</label>
         <Select
+          required
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="form-select"
