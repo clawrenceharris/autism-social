@@ -11,35 +11,35 @@
     @include card;
     width: 100%;
     max-width: 28rem;
-    padding: $spacing-8;
+    padding: $spacing-6;
 
     .login-header {
-      @include center-column;
-      margin-bottom: $spacing-8;
       text-align: center;
+      margin-bottom: $spacing-4;
 
       h1 {
-        font-size: 2.25rem;
-        font-weight: bold;
+        font-size: 2rem;
+        font-weight: 600;
         margin-bottom: $spacing-2;
         color: $color-gray-900;
       }
 
       p {
         color: $color-gray-600;
-        max-width: 24rem;
-        margin: 0 auto;
+        font-size: 0.9rem;
       }
     }
   }
 
   .login-footer {
     text-align: center;
-    margin-top: $spacing-4;
+    margin-top: $spacing-3;
+    font-size: 0.9rem;
 
     a {
       color: $color-primary;
       text-decoration: none;
+      font-weight: 500;
       
       &:hover {
         text-decoration: underline;

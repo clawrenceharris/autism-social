@@ -48,9 +48,7 @@ const LoginPage = () => {
       <div className="login-card">
         <div className="login-header">
           <h1>Log in</h1>
-          <p>
-            Welcome to the Dialogue App! Log in to access interactive scenarios.
-          </p>
+          <p>Welcome to the Dialogue App! Log in to access interactive scenarios.</p>
         </div>
 
         <FormLayout<LoginFormValues>
@@ -62,7 +60,7 @@ const LoginPage = () => {
           {({ register, formState: { errors } }) => (
             <>
               <div className="form-group">
-                <label htmlFor="email" className="form-label">Email</label>
+                <label htmlFor="email">Email</label>
                 <input
                   id="email"
                   type="email"
@@ -81,7 +79,7 @@ const LoginPage = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="password" className="form-label">Password</label>
+                <label htmlFor="password">Password</label>
                 <input
                   id="password"
                   type="password"
