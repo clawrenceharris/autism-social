@@ -1,0 +1,21 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.form-layout {
+  @include stack-layout($spacing-6);
+  max-width: 600px;
+  margin: 0 auto;
+
+  .form-actions {
+    @include flex(row, flex-end, center, $spacing-4);
+    margin-top: $spacing-6;
+  }
+
+  .error-text {
+    color: $color-red-600;
+    padding: $spacing-3;
+    background-color: $color-red-100;
+    border-radius: $border-radius-md;
+    margin-top: $spacing-4;
+  }
+}
