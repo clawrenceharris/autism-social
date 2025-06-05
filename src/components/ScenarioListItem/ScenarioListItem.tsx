@@ -1,4 +1,4 @@
-import "./ScenarioListItem.css";
+import "./ScenarioListItem.scss";
 import type { Scenario } from "../../types";
 import { Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
