@@ -20,8 +20,6 @@
   position: relative;
   width: 100%;
   max-width: 33rem;
-  min-height: 400px;
-  justify-content: space-between;
   background-color: var(--color-white);
   border-radius: 0.5rem;
   padding: 1.5rem;
