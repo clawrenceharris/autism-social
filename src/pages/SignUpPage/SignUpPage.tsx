@@ -16,12 +16,12 @@ interface SignUpFormValues {
 const GOALS = [
   "Improve my social skills",
   "Practice tough conversations",
-  "Build confidence in social situations",
+  "Build my confidence in social situations",
   "Learn to read social cues better",
-  "Handle workplace interactions",
+  "Handle intimidating interactions",
   "Manage anxiety in social settings",
-  "Make and maintain friendships",
-  "Navigate family relationships"
+  "Make and maintain relationships",
+  "Other"
 ];
 
 const INTERESTS = [
