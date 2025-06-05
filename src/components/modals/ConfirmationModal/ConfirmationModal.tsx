@@ -1,5 +1,4 @@
 import { useModal } from "../../../context";
-import "./ConfirmationModal.scss";
 
 interface ConfirmationModalProps {
   title: string;
