@@ -8,7 +8,7 @@ import Select from "../../Select";
 const CreateScenarioModal = () => {
   const { closeModal } = useModal();
   const { showToast } = useToast();
-  const [title, setTitle] = useState<string | null>(null);
+  const [title, setTitle] = useState<string>();
   const [description, setDescription] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
