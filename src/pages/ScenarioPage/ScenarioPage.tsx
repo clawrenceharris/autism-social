@@ -160,7 +160,7 @@ const ScenarioPage = () => {
     return (
       <div>
         <h1>{scenario.title}</h1>
-        <DialoguesPanel scenario={scenario} /)>
+        <DialoguesPanel scenario={scenario}/>
       </div>
       ;
   }
