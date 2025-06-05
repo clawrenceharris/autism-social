@@ -64,6 +64,7 @@
       cursor: pointer;
       height: 0;
       width: 0;
+      color: $color-gray-400
 
       &:checked + span {
         color: $color-primary;
