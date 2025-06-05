@@ -42,7 +42,7 @@
   .interests-grid {
     @include flex-wrap;
     margin-top: $spacing-4;
-
+    
     @include responsive(md) {
       grid-template-columns: repeat(3, 1fr);
     }
@@ -55,6 +55,7 @@
     border-radius: $border-radius-md;
     cursor: pointer;
     width: 100%;
+    min-width:300px;
     transition: all 0.3s ease;
     background-color: $color-white;
     flex:1;
