@@ -47,6 +47,7 @@ const DialoguesPanel = ({ scenario }: DialoguesPanelProps) => {
 
   return (
     <div className="outlined flex-column dialogues-container">
+      
       {scenarioDialogues.length > 0 ? (
         <div>
           {scenarioDialogues.map((item, idx) => (
