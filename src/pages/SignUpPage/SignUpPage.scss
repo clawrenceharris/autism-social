@@ -1,0 +1,116 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.signup-container {
+  @include center-content;
+  min-height: 100vh;
+  padding: $spacing-4;
+  background-color: $color-gray-50;
+
+  .signup-card {
+    @include card;
+    width: 100%;
+    max-width: 40rem;
+    padding: $spacing-6;
+
+    .signup-progress {
+      margin-bottom: $spacing-6;
+      text-align: center;
+
+      .progress-bar {
+        height: 4px;
+        background-color: $color-gray-200;
+        border-radius: $border-radius-full;
+        margin-bottom: $spacing-2;
+        overflow: hidden;
+
+        .progress-fill {
+          height: 100%;
+          background-color: $color-primary;
+          transition: width 0.3s ease;
+        }
+      }
+
+      p {
+        color: $color-gray-600;
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  .goals-grid,
+  .interests-grid {
+    @include grid-layout(1, 0.5rem);
+    margin: $spacing-4;
+    
+    @include responsive(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .checkbox-item {
+    position: relative;
+    padding: $spacing-4 $spacing-4;
+    border: 2px solid $color-gray-200;
+    border-radius: $border-radius-md;
+    cursor: pointer;
+    min-width:250px;
+    transition: all 0.3s ease;
+    background-color: $color-white;
+    flex:1;
+    input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+
+      &:checked + span {
+        color: $color-primary;
+      }
+
+      &:checked + span + .checkbox-item {
+        transform: translateY(-2px);
+        border-color: $color-primary;
+        background-color: $color-primary-100;
+        box-shadow: 0 4px 12px rgba($color-primary, 0.2);
+      }
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      border-color: $color-primary-200;
+      background-color: $color-primary-100;
+      box-shadow: 0 4px 12px rgba($color-primary, 0.1);
+    }
+
+    &.selected {
+      transform: translateY(-2px);
+      border-color: $color-primary-200;
+      background-color: $color-primary-100;
+      box-shadow: 0 4px 12px rgba($color-primary, 0.2);
+
+      span {
+        color: $color-primary;
+        font-weight: 500;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+    }
+
+    span {
+      display: block;
+      color: $color-gray-500;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+  }
+
+  .form-helper {
+    color: $color-gray-700;
+    font-size: 0.875rem;
+    margin-top: $spacing-1;
+  }
+}

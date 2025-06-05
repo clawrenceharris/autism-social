@@ -8,3 +8,7 @@ export { default as DialogueForm } from "./DialogueForm";
 export { default as Skeleton } from "./Skeleton";
 export { default as DialoguesPanel } from "./DialoguesPanel";
 export { default as ScenarioListItem } from "./ScenarioListItem";
+export { default as AdminRoute } from "./AdminRoute";
+export { default as UserRoute } from "./UserRoute";
+export { default as UserLayout } from "./UserLayout/UserLayout";
+export { default as FormLayout } from "./FormLayout";
