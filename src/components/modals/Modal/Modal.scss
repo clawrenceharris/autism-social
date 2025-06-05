@@ -7,7 +7,9 @@
     inset: 0;
     z-index: 99;
     overflow-y: auto;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
 
   &-container {
