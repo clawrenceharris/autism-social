@@ -1,0 +1,49 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.login-container {
+  @include center-content;
+  min-height: 100vh;
+  padding: $spacing-4;
+  background-color: $color-gray-50;
+
+  .login-card {
+    @include card;
+    width: 100%;
+    max-width: 28rem;
+    padding: $spacing-8;
+
+    .login-header {
+      @include center-column;
+      margin-bottom: $spacing-8;
+      text-align: center;
+
+      h1 {
+        font-size: 2.25rem;
+        font-weight: bold;
+        margin-bottom: $spacing-2;
+        color: $color-gray-900;
+      }
+
+      p {
+        color: $color-gray-600;
+        max-width: 24rem;
+        margin: 0 auto;
+      }
+    }
+  }
+
+  .login-footer {
+    text-align: center;
+    margin-top: $spacing-4;
+
+    a {
+      color: $color-primary;
+      text-decoration: none;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

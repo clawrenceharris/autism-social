@@ -3,6 +3,7 @@ import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../context/AuthContext";
 import { FormLayout } from "../../components";
 import { useState } from "react";
+import "./LoginPage.scss";
 
 interface LoginFormValues {
   email: string;
@@ -27,7 +28,6 @@ const LoginPage = () => {
 
       if (authError) throw authError;
 
-      // Check user role and redirect accordingly
       const { data: roleData } = await supabase
         .from('user_roles')
         .select('role')
@@ -44,11 +44,11 @@ const LoginPage = () => {
   };
 
   return (
-    <div className=" container flex items-center ">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Log in</h1>
-          <p className="text-gray-600">
+    <div className="login-container">
+      <div className="login-card">
+        <div className="login-header">
+          <h1>Log in</h1>
+          <p>
             Welcome to the Dialogue App! Log in to access interactive scenarios.
           </p>
         </div>
@@ -102,15 +102,12 @@ const LoginPage = () => {
           )}
         </FormLayout>
 
-        <p className="text-center mt-4">
-          Don't have an account?{" "}
-          <Link 
-            to="/signup" 
-            className="text-primary hover:underline"
-          >
-            Sign up
-          </Link>
-        </p>
+        <div className="login-footer">
+          <p>
+            Don't have an account?{" "}
+            <Link to="/signup">Sign up</Link>
+          </p>
+        </div>
       </div>
     </div>
   );
