@@ -44,7 +44,8 @@ export class DatabaseService {
     const { data, error } = await queryBuilder;
     return { data: data as T[], error };
   }
- static async getSingle<T>(
+
+  static async getSingle<T>(
     table: Table,
     id: string
   ): Promise<DatabaseResult<T>> {
@@ -56,6 +57,7 @@ export class DatabaseService {
 
     return { data: data as T, error };
   }
+
   static async update<T extends object>(
     table: Table,
     id: string,
@@ -68,6 +70,18 @@ export class DatabaseService {
       .select()
       .single();
 
+    if (!error && !result) {
+      return {
+        data: null,
+        error: {
+          code: "PGRST116",
+          details: `No ${table} record found with id: ${id}`,
+          hint: null,
+          message: "Record not found",
+        },
+      };
+    }
+
     return { data: result as T, error };
   }
 
@@ -76,7 +90,6 @@ export class DatabaseService {
     id: string
   ): Promise<{ error: PostgrestError | null }> {
     const { error } = await supabase.from(table).delete().eq("id", id);
-
     return { error };
   }
 }
