@@ -1,22 +1,22 @@
-import { useState } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../context/AuthContext";
+import { FormLayout } from "../../components";
+
+interface LoginFormValues {
+  email: string;
+  password: string;
+}
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const location = useLocation();
   const { isAdmin } = useAuth();
-  
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+
+  const handleSubmit = async (data: LoginFormValues) => {
     try {
       const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+        email: data.email,
+        password: data.password,
       });
 
       if (error) throw error;
@@ -31,7 +31,7 @@ const LoginPage = () => {
       const redirectPath = roleData?.role === 'admin' ? '/' : '/dashboard';
       navigate(redirectPath, { replace: true });
     } catch (error: any) {
-      setError(error.message);
+      throw new Error(error.message);
     }
   };
 
@@ -51,70 +51,66 @@ const LoginPage = () => {
           </p>
         </div>
 
-        {error && (
-          <div 
-            role="alert" 
-            className="error-text" 
-            style={{ 
-              padding: "0.75rem", 
-              backgroundColor: "var(--color-red-100)", 
-              borderRadius: "0.5rem",
-              marginBottom: "1rem" 
-            }}
+        <FormLayout<LoginFormValues>
+          onSubmit={handleSubmit}
+          submitText="Log in"
+          description="Enter your credentials to continue"
+        >
+          {({ register, formState: { errors } }) => (
+            <>
+              <div className="form-group">
+                <label htmlFor="email" className="form-label">Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  className={`form-input ${errors.email ? 'error' : ''}`}
+                  {...register("email", { 
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Invalid email address"
+                    }
+                  })}
+                  aria-describedby="email-error"
+                />
+                {errors.email && (
+                  <p id="email-error" className="form-error">{errors.email.message}</p>
+                )}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password" className="form-label">Password</label>
+                <input
+                  id="password"
+                  type="password"
+                  className={`form-input ${errors.password ? 'error' : ''}`}
+                  {...register("password", { 
+                    required: "Password is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters"
+                    }
+                  })}
+                  aria-describedby="password-error"
+                />
+                {errors.password && (
+                  <p id="password-error" className="form-error">{errors.password.message}</p>
+                )}
+              </div>
+            </>
+          )}
+        </FormLayout>
+
+        <p style={{ textAlign: "center", marginTop: "1rem", marginBottom: 0 }}>
+          Don't have an account?{" "}
+          <Link 
+            to="/signup" 
+            className="text-primary"
+            style={{ color: "var(--color-primary)" }}
           >
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit}>
-          <div className="form-group" style={{ marginBottom: "1rem" }}>
-            <label htmlFor="email" className="form-label">Email</label>
-            <input
-              id="email"
-              type="email"
-              className="form-input"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              aria-required="true"
-              aria-describedby="email-description"
-            />
-          </div>
-
-          <div className="form-group" style={{ marginBottom: "1.5rem" }}>
-            <label htmlFor="password" className="form-label">Password</label>
-            <input
-              id="password"
-              type="password"
-              className="form-input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              aria-required="true"
-              aria-describedby="password-description"
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            className="btn btn-primary"
-            style={{ width: "100%" }}
-            aria-label="Log in to your account"
-          >
-            Log in
-          </button>
-
-          <p style={{ textAlign: "center", marginTop: "1rem", marginBottom: 0 }}>
-            Don't have an account?{" "}
-            <Link 
-              to="/signup" 
-              className="text-primary"
-              style={{ color: "var(--color-primary)" }}
-            >
-              Sign up
-            </Link>
-          </p>
-        </form>
+            Sign up
+          </Link>
+        </p>
       </div>
     </div>
   );
