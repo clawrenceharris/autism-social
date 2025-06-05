@@ -1,6 +1,5 @@
 import { useScenarios } from "../../hooks";
-import ScenarioListItem from "../../components/ScenarioListItem/ScenarioListItem";
-import { Skeleton } from "../../components";
+import { Skeleton,ScenarioListItem } from "../../components";
 import { deleteScenario } from "../../services/scenarios";
 import { useModal, useToast } from "../../context";
 import { ConfirmationModal } from "../../components/modals";
