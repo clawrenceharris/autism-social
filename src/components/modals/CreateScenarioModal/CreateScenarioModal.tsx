@@ -43,6 +43,7 @@ const CreateScenarioModal = () => {
         <Select
           required
           value={title}
+          onOptionSelect={(opt) => setTitle(opt.value)}
           onChange={(e) => setTitle(e.target.value)}
           className="form-select"
           options={SCENARIO_CATEGORIES.map((item, idx) => ({
