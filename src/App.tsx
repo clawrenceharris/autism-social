@@ -10,6 +10,7 @@ import {
   ProgressPage,
   CustomizationPage,
   ExplorePage,
+  SignUpPage,
 } from "./pages";
 import { ModalProvider, ToastProvider } from "./context";
 import { AuthProvider } from "./context/AuthContext";
@@ -24,7 +25,7 @@ function App() {
           <Router>
             <Routes>
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<LoginPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
 
               {/* Admin Routes */}
               <Route element={<RootLayout />}>
