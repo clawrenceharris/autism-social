@@ -160,6 +160,9 @@ const ScenarioPage = () => {
     return (
       <div>
         <h1>{scenario.title}</h1>
+         <p>
+        <small>ID: {scenario.id}</small>
+      </p>
         <DialoguesPanel scenario={scenario}/>
       </div>);
   }
