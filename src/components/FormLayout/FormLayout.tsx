@@ -87,7 +87,7 @@ function FormLayout<T extends FieldValues>({
         noValidate
       >
         {description && (
-          <p className="form-description" style={descriptionStyle}>
+          <p className="form-description\" style={descriptionStyle}>
             {description}
           </p>
         )}
