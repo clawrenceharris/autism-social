@@ -94,7 +94,7 @@ const SignUpPage = () => {
                     className={`form-input ${errors.name ? "error" : ""}`}
                     {...register("name", { required: "Name is required" })}
                   />
-                  <p>What would you like to be called?</p>
+                  <p className="description">What would you like to be called?</p>
                   {errors.name && (
                     <p className="form-error">{errors.name.message}</p>
                   )}
