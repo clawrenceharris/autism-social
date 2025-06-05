@@ -1,8 +1,6 @@
 @import 'variables';
 @import 'mixins';
-@import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
 
-// Reset & Base Styles
 * {
   margin: 0;
   padding: 0;
@@ -163,20 +161,27 @@ button {
   &-primary {
     background-color: $color-primary;
     color: $color-white;
+    transition: all 0.3s ease;
 
     &:hover {
-      transform: scale(1.03);
-      background-color: darken($color-primary, 10%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba($color-primary, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 6px rgba($color-primary, 0.2);
     }
 
     &:disabled {
       background-color: $color-gray-400;
       cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
     }
 
     &.special:hover {
-      box-shadow: 0 0 10px 2px $color-primary;
-      background-color: $color-primary-hover;
+      box-shadow: 0 0 20px rgba($color-primary, 0.4);
     }
   }
 }
