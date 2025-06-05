@@ -50,19 +50,13 @@
 
   .checkbox-item {
     position: relative;
-    padding: $spacing-3 $spacing-4;
+    padding: $spacing-4 $spacing-4;
     border: 2px solid $color-gray-200;
     border-radius: $border-radius-md;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     background-color: $color-white;
-
-    &:hover {
-      border-color: $color-primary-200;
-      background-color: $color-primary-100;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba($color-primary, 0.1);
-    }
+    text-align: center;
 
     input[type="checkbox"] {
       position: absolute;
@@ -74,60 +68,44 @@
       &:checked + span {
         color: $color-primary;
         font-weight: 500;
-
-        &::before {
-          border-color: $color-primary;
-          background-color: $color-primary;
-          box-shadow: 0 0 0 2px rgba($color-primary, 0.2);
-        }
-
-        &::after {
-          opacity: 1;
-          transform: rotate(45deg) scale(1);
-        }
       }
 
-      &:focus + span::before {
-        box-shadow: 0 0 0 3px rgba($color-primary, 0.2);
+      &:checked + span + .checkbox-item {
+        transform: translateY(-2px);
+        border-color: $color-primary;
+        background-color: $color-primary-100;
+        box-shadow: 0 4px 12px rgba($color-primary, 0.2);
+      }
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      border-color: $color-primary-200;
+      background-color: $color-primary-100;
+      box-shadow: 0 4px 12px rgba($color-primary, 0.1);
+    }
+
+    &.selected {
+      transform: translateY(-2px);
+      border-color: $color-primary;
+      background-color: $color-primary-100;
+      box-shadow: 0 4px 12px rgba($color-primary, 0.2);
+
+      span {
+        color: $color-primary;
+        font-weight: 500;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
       }
     }
 
     span {
-      display: flex;
-      align-items: center;
+      display: block;
       color: $color-gray-700;
       font-size: 0.9rem;
-      padding-left: 2rem;
-      position: relative;
       transition: all 0.2s ease;
-
-      &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 1.2rem;
-        height: 1.2rem;
-        border: 2px solid $color-gray-300;
-        border-radius: 4px;
-        background-color: $color-white;
-        transition: all 0.2s ease;
-      }
-
-      &::after {
-        content: '';
-        position: absolute;
-        left: 0.4rem;
-        top: 50%;
-        transform: translateY(-65%) rotate(45deg) scale(0);
-        width: 0.4rem;
-        height: 0.7rem;
-        border: solid $color-white;
-        border-width: 0 2px 2px 0;
-        opacity: 0;
-        transition: all 0.2s ease;
-      }
     }
   }
 

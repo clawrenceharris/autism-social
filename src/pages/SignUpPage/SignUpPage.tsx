@@ -75,6 +75,16 @@ const SignUpPage = () => {
     }
   };
 
+  const toggleSelection = (type: 'goals' | 'interests', value: string) => {
+    setFormData(prev => {
+      const currentArray = prev[type] || [];
+      const newArray = currentArray.includes(value)
+        ? currentArray.filter(item => item !== value)
+        : [...currentArray, value];
+      return { ...prev, [type]: newArray };
+    });
+  };
+
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -142,59 +152,53 @@ const SignUpPage = () => {
 
       case 2:
         return (
-          <FormLayout<Pick<SignUpFormValues, "goals">>
-            onSubmit={handleSubmit}
+          <FormLayout
+            onSubmit={() => handleSubmit({ goals: formData.goals })}
             submitText="Next"
             isLoading={isLoading}
             error={error}
           >
-            {({ register }) => (
-              <div className="form-group">
-                <label>What are your goals for using Autism Social?</label>
-                <p className="form-helper">Select all that apply</p>
-                <div className="goals-grid">
-                  {GOALS.map((goal) => (
-                    <label key={goal} className="checkbox-item">
-                      <input
-                        type="checkbox"
-                        value={goal}
-                        {...register("goals")}
-                      />
-                      <span>{goal}</span>
-                    </label>
-                  ))}
-                </div>
+            <div className="form-group">
+              <label>What are your goals for using Autism Social?</label>
+              <p className="form-helper">Select all that apply</p>
+              <div className="goals-grid">
+                {GOALS.map((goal) => (
+                  <div
+                    key={goal}
+                    className={`checkbox-item ${formData.goals?.includes(goal) ? 'selected' : ''}`}
+                    onClick={() => toggleSelection('goals', goal)}
+                  >
+                    <span>{goal}</span>
+                  </div>
+                ))}
               </div>
-            )}
+            </div>
           </FormLayout>
         );
 
       case 3:
         return (
-          <FormLayout<Pick<SignUpFormValues, "interests">>
-            onSubmit={handleSubmit}
+          <FormLayout
+            onSubmit={() => handleSubmit({ interests: formData.interests })}
             submitText="Next"
             isLoading={isLoading}
             error={error}
           >
-            {({ register }) => (
-              <div className="form-group">
-                <label>What are your interests?</label>
-                <p className="form-helper">Select all that interest you</p>
-                <div className="interests-grid">
-                  {INTERESTS.map((interest) => (
-                    <label key={interest} className="checkbox-item">
-                      <input
-                        type="checkbox"
-                        value={interest}
-                        {...register("interests")}
-                      />
-                      <span>{interest}</span>
-                    </label>
-                  ))}
-                </div>
+            <div className="form-group">
+              <label>What are your interests?</label>
+              <p className="form-helper">Select all that interest you</p>
+              <div className="interests-grid">
+                {INTERESTS.map((interest) => (
+                  <div
+                    key={interest}
+                    className={`checkbox-item ${formData.interests?.includes(interest) ? 'selected' : ''}`}
+                    onClick={() => toggleSelection('interests', interest)}
+                  >
+                    <span>{interest}</span>
+                  </div>
+                ))}
               </div>
-            )}
+            </div>
           </FormLayout>
         );
 
