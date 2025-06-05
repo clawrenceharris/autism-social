@@ -8,7 +8,6 @@
   }
 }
 
-
 @mixin button-base {
   border: none;
   background: none;
@@ -41,3 +40,72 @@
   padding: $spacing-6;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
+
+// New Layout Mixins
+@mixin center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+@mixin center-absolute {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@mixin center-fixed {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@mixin flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-4;
+}
+
+@mixin grid-layout($columns: 1, $gap: $spacing-4) {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+  gap: $gap;
+}
+
+@mixin center-column {
+  @include flex(column, center, center);
+  width: 100%;
+}
+
+@mixin center-with-max-width($max-width: 1200px) {
+  width: 100%;
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: 0 $spacing-4;
+}
+
+@mixin stack-layout($gap: $spacing-4) {
+  @include flex(column, flex-start, stretch, $gap);
+  width: 100%;
+}
+
+@mixin masonry-grid {
+  column-count: 1;
+  column-gap: $spacing-4;
+  
+  @include responsive(md) {
+    column-count: 2;
+  }
+  
+  @include responsive(lg) {
+    column-count: 3;
+  }
+  
+  > * {
+    break-inside: avoid;
+    margin-bottom: $spacing-4;
+  }
