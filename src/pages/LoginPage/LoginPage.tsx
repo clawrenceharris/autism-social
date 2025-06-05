@@ -36,11 +36,17 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="container">
-      <div className="flex-column" style={{ maxWidth: "400px", margin: "100px auto" }}>
-        <div className="text-center">
-          <h1>Log in</h1>
-          <p className="description">
+    <div style={{ 
+      minHeight: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "1rem"
+    }}>
+      <div style={{ width: "100%", maxWidth: "400px" }}>
+        <div style={{ marginBottom: "1.5rem", textAlign: "center" }}>
+          <h1 style={{ marginBottom: "0.5rem" }}>Log in</h1>
+          <p className="description" style={{ margin: 0 }}>
             Welcome to the Dialogue App! Log in to access interactive scenarios and practice your social skills in a safe, supportive environment.
           </p>
         </div>
@@ -50,7 +56,7 @@ const LoginPage = () => {
             role="alert" 
             className="error-text" 
             style={{ 
-              padding: "1rem", 
+              padding: "0.75rem", 
               backgroundColor: "var(--color-red-100)", 
               borderRadius: "0.5rem",
               marginBottom: "1rem" 
@@ -60,8 +66,8 @@ const LoginPage = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="flex-column">
-          <div className="form-group">
+        <form onSubmit={handleSubmit}>
+          <div className="form-group" style={{ marginBottom: "1rem" }}>
             <label htmlFor="email" className="form-label">Email</label>
             <input
               id="email"
@@ -73,10 +79,9 @@ const LoginPage = () => {
               aria-required="true"
               aria-describedby="email-description"
             />
-            <span id="email-description" className="form-helper">Enter your registered email address</span>
           </div>
 
-          <div className="form-group">
+          <div className="form-group" style={{ marginBottom: "1.5rem" }}>
             <label htmlFor="password" className="form-label">Password</label>
             <input
               id="password"
@@ -88,18 +93,18 @@ const LoginPage = () => {
               aria-required="true"
               aria-describedby="password-description"
             />
-            <span id="password-description" className="form-helper">Enter your password</span>
           </div>
 
           <button 
             type="submit" 
             className="btn btn-primary"
+            style={{ width: "100%" }}
             aria-label="Log in to your account"
           >
             Log in
           </button>
 
-          <p style={{ textAlign: "center", marginTop: "1rem" }}>
+          <p style={{ textAlign: "center", marginTop: "1rem", marginBottom: 0 }}>
             Don't have an account?{" "}
             <Link 
               to="/signup" 
