@@ -40,7 +40,7 @@
 
   .goals-grid,
   .interests-grid {
-    @include grid-layout(2, $spacing-3);
+    @include flex-wrap(2, $spacing-3);
     margin-top: $spacing-4;
 
     @include responsive(md) {
@@ -54,7 +54,7 @@
     border: 2px solid $color-gray-200;
     border-radius: $border-radius-md;
     cursor: pointer;
-    width: 100%;
+    
     transition: all 0.3s ease;
     background-color: $color-white;
     flex:1;
