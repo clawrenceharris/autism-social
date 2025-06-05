@@ -5,9 +5,16 @@ import type {
   CreateScenarioData,
   CreateDialogueData,
 } from "../types";
+import { supabase } from "../lib/supabase";
 
 export async function createScenario(data: CreateScenarioData) {
-  const result = await DatabaseService.create<Partial<Scenario>>("scenarios", data);
+  const user = supabase.auth.getUser();
+  if (!user) throw new Error("User must be authenticated to create a scenario");
+  
+  const result = await DatabaseService.create<Partial<Scenario>>("scenarios", {
+    ...data,
+    user_id: (await user).data.user?.id
+  });
   if (result.error) throw result.error;
   return result.data;
 }
