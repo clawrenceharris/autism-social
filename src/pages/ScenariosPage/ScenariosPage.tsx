@@ -1,6 +1,7 @@
 import { useScenarios } from "../../hooks";
 import ScenarioListItem from "../../components/ScenarioListItem/ScenarioListItem";
 import { Skeleton } from "../../components";
+import { deleteScenario } from "../../services/scenarios";
 import "./ScenariosPage.css";
 
 const SkeletonScenario = () => (
@@ -30,6 +31,11 @@ const SkeletonScenario = () => (
 
 const ScenariosPage = () => {
   const { scenarios, loading, error } = useScenarios();
+  const handleDelete = async () => {
+    if (window.confirm("Are you sure you want to delete this scenario?")) {
+      await deleteScenario(scenario.id);
+    }
+  };
 
   if (loading) {
     return (
@@ -76,7 +82,7 @@ const ScenariosPage = () => {
         >
           {scenarios.map((scenario) => (
             <div key={scenario.id} role="listitem">
-              <ScenarioListItem scenario={scenario} />
+              <ScenarioListItem onDeleteClick={handleDelete} scenario={scenario} />
             </div>
           ))}
         </div>
