@@ -3,10 +3,13 @@ import type { Scenario } from "../../types";
 import { Pencil, Trash2 } from "lucide-react";
 import { deleteScenario } from "../../services/scenarios";
 import { useNavigate } from "react-router-dom";
-
-const ScenarioListItem = ({ scenario }: { scenario: Scenario }) => {
+interface ScenarioListItemProps{
+    scenario: Scenario;
+    onDeleteClick: () => void;
+}
+const ScenarioListItem = ({ scenario, onDeleteClick }: ScenarioListItemProps) => {
   const navigate = useNavigate();
-
+  
   const handleDeleteClick = async () => {
     if (window.confirm("Are you sure you want to delete this scenario?")) {
       await deleteScenario(scenario.id);
@@ -32,7 +35,7 @@ const ScenarioListItem = ({ scenario }: { scenario: Scenario }) => {
           <Pencil size={20} aria-hidden="true" />
         </button>
         <button
-          onClick={handleDeleteClick}
+          onClick={onDeleteClick}
           className="squircle-btn danger"
           aria-label={`Delete ${scenario.title}`}
         >
