@@ -17,7 +17,7 @@ export class DatabaseService {
       .from(table)
       .insert([data])
       .select()
-      .single();
+      .maybeSingle();
 
     return { data: result as T, error };
   }
@@ -53,7 +53,19 @@ export class DatabaseService {
       .from(table)
       .select("*")
       .eq("id", id)
-      .single();
+      .maybeSingle();
+
+    if (!error && !data) {
+      return {
+        data: null,
+        error: {
+          code: "PGRST116",
+          details: `No ${table} record found with id: ${id}`,
+          hint: null,
+          message: "Record not found",
+        },
+      };
+    }
 
     return { data: data as T, error };
   }
@@ -68,7 +80,7 @@ export class DatabaseService {
       .update(data)
       .eq("id", id)
       .select()
-      .single();
+      .maybeSingle();
 
     if (!error && !result) {
       return {
