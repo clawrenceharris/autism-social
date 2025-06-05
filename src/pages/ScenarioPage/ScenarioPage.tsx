@@ -157,7 +157,12 @@ const ScenarioPage = () => {
     );
   }
   if (!dialogue) {
-    return <DialoguesPanel scenario={scenario} />;
+    return (
+      <div>
+        <h1>{scenario.title}</h1>
+        <DialoguesPanel scenario={scenario} /)>
+      </div>
+      ;
   }
 
   return (
