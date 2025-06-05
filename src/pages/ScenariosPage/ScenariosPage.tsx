@@ -2,6 +2,8 @@ import { useScenarios } from "../../hooks";
 import ScenarioListItem from "../../components/ScenarioListItem/ScenarioListItem";
 import { Skeleton } from "../../components";
 import { deleteScenario } from "../../services/scenarios";
+import { useModal, useToast } from "../../context";
+import { ConfirmationModal } from "../../components/modals";
 import "./ScenariosPage.css";
 
 const SkeletonScenario = () => (
@@ -14,7 +16,6 @@ const SkeletonScenario = () => (
     <div className="scenario-actions">
       <Skeleton 
         variant="button"
-        
         width={40} 
         height={40} 
         style={{ borderRadius: "8px" }} 
@@ -31,10 +32,26 @@ const SkeletonScenario = () => (
 
 const ScenariosPage = () => {
   const { scenarios, loading, error } = useScenarios();
-  const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this scenario?")) {
-      await deleteScenario(scenario.id);
-    }
+  const { openModal } = useModal();
+  const { showToast } = useToast();
+
+  const handleDelete = async (scenario: Scenario) => {
+    openModal(
+      <ConfirmationModal
+        title="Delete Scenario"
+        message={`Are you sure you want to delete "${scenario.title}"? This action cannot be undone.`}
+        confirmText="Delete"
+        onConfirm={async () => {
+          try {
+            await deleteScenario(scenario.id);
+            showToast("Scenario deleted successfully", "success");
+          } catch (error) {
+            showToast("Failed to delete scenario", "error");
+          }
+        }}
+      />,
+      "Delete Scenario"
+    );
   };
 
   if (loading) {
@@ -82,7 +99,10 @@ const ScenariosPage = () => {
         >
           {scenarios.map((scenario) => (
             <div key={scenario.id} role="listitem">
-              <ScenarioListItem onDeleteClick={handleDelete} scenario={scenario} />
+              <ScenarioListItem 
+                scenario={scenario} 
+                onDeleteClick={() => handleDelete(scenario)}
+              />
             </div>
           ))}
         </div>
