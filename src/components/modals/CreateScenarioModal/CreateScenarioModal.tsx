@@ -2,7 +2,6 @@ import { useState } from "react";
 import { SCENARIO_CATEGORIES } from "../../../constants/scenario";
 import { createScenario } from "../../../services/scenarios";
 import { useModal, useToast } from "../../../context";
-import "./CreateScenarioModal.scss";
 import Select from "../../Select";
 
 const CreateScenarioModal = () => {
