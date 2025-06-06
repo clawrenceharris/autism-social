@@ -13,7 +13,7 @@ export const SignUpStep2 = ({
 }: SignUpStep2Props) => {
   const { goals, loading, error } = useGoals();
 
-  if (loading)
+  if (true)
     return (
       <div className="center-absolute">
         <ProgressIndicator />
