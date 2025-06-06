@@ -6,7 +6,7 @@ import {
 } from "../../components";
 import { deleteScenario } from "../../services/scenarios";
 import { useModal, useToast } from "../../context";
-import "./ScenariosPage.css";
+import "./ManageScenariosPage.css";
 import type { Scenario } from "../../types";
 
 const SkeletonScenario = () => (
