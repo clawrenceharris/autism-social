@@ -1,10 +1,13 @@
-export interface SignUpFormValues {
+import type { FieldValues } from "react-hook-form";
+
+export interface SignUpFormValues extends FieldValues {
   name: string;
   email: string;
   password: string;
   goals: string[];
   interests: string[];
-  profilePhoto?: File;
+  profilePhoto: File;
+  agreement: boolean;
 }
 
 export interface Interest {

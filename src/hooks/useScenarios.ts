@@ -10,11 +10,11 @@ const useScenarios = () => {
   const fetchScenarios = async () => {
     try {
       setLoading(true);
-      const scenarios = await getScenarios();
-      setScenarios(scenarios || []);
+      const data = await getScenarios();
+      setScenarios(data || []);
       setLoading(false);
-    } catch (error: any) {
-      setError(error);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
       setLoading(false);
     }
   };

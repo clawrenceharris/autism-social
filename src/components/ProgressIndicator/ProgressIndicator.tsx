@@ -1,13 +1,7 @@
-import "./ProgressIndicator.css";
+import "./ProgressIndicator.scss";
 
-const ProgressIndicator = ({
-  size = 40,
-  progress,
-}: {
-  size?: number;
-  progress?: number;
-}) => {
-  return !progress ? (
+const ProgressIndicator = ({ size = 40 }: { size?: number }) => {
+  return (
     <div
       style={{
         padding: 3,
@@ -19,14 +13,6 @@ const ProgressIndicator = ({
       className="loader"
     >
       <div style={{ width: size / 2, height: size / 2 }} />
-    </div>
-  ) : (
-    <div>
-      <div style={{ width: size, height: size }}>
-        <progress value={progress} max={1}>
-          <span>{Math.round((progress / 100) * 100)}%</span>
-        </progress>
-      </div>
     </div>
   );
 };

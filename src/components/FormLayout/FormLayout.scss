@@ -1,7 +1,7 @@
-@import '../../styles/variables';
-@import '../../styles/mixins';
+@import "../../styles/variables";
+@import "../../styles/mixins";
 
-.form-layout {
+.form {
   @include stack-layout($spacing-6);
   width: 100%;
 
@@ -59,7 +59,7 @@
   }
 
   .form-actions {
-    @include flex(row, flex-end, center, $spacing-4);
+    @include flex(row, flex-end, center, $spacing-2);
     margin: $spacing-2 0;
   }
 }

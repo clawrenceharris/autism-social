@@ -7,11 +7,15 @@ import { addUserInterests } from "../../services/interests";
 import "./SignUpPage.scss";
 import { useToast } from "../../context";
 import type { SignUpFormValues } from "../../types";
-import { SignUpStep1 } from "../../components/SignUpSteps/SignUpStep1";
-import { SignUpStep2 } from "../../components/SignUpSteps/SignUpStep2";
-import { SignUpStep3 } from "../../components/SignUpSteps/SignUpStep3";
-import { SignUpStep4 } from "../../components/SignUpSteps/SignUpStep4";
 
+import {
+  SignUpStep5,
+  SignUpStep4,
+  SignUpStep3,
+  SignUpStep2,
+  SignUpStep1,
+} from "../../components/SignUpSteps";
+const NUM_STEPS = 5;
 const SignUpPage = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
@@ -29,7 +33,7 @@ const SignUpPage = () => {
       const updatedData = { ...formData, ...data };
       setFormData(updatedData);
 
-      if (step < 4) {
+      if (step < NUM_STEPS) {
         setStep(step + 1);
         return;
       }
@@ -112,11 +116,12 @@ const SignUpPage = () => {
     switch (step) {
       case 1:
         return (
-          <FormLayout<Pick<SignUpFormValues, "name" | "email" | "password">>
+          <FormLayout<SignUpFormValues>
             onSubmit={handleSubmit}
             submitText="Next"
+            showsSubmitButton={false}
+            showsCancelButton={false}
             isLoading={isLoading}
-            error={error}
           >
             {({ register, formState: { errors } }) => (
               <SignUpStep1 register={register} errors={errors} />
@@ -128,11 +133,18 @@ const SignUpPage = () => {
         return (
           <FormLayout
             onSubmit={() => handleSubmit({ goals: formData.goals })}
-            submitText="Next"
+            showsSubmitButton={false}
             isLoading={isLoading}
             error={error}
+            showsCancelButton={false}
+            onCancel={() => setStep(step - 1)}
           >
-            <SignUpStep2 formData={formData} toggleSelection={toggleSelection} />
+            <>
+              <SignUpStep2
+                formData={formData}
+                toggleSelection={toggleSelection}
+              />
+            </>
           </FormLayout>
         );
 
@@ -140,42 +152,79 @@ const SignUpPage = () => {
         return (
           <FormLayout
             onSubmit={() => handleSubmit({ interests: formData.interests })}
-            submitText="Next"
+            showsSubmitButton={false}
+            showsCancelButton={false}
+            onCancel={() => setStep(step - 1)}
             isLoading={isLoading}
-            error={error}
           >
-            <SignUpStep3 formData={formData} toggleSelection={toggleSelection} />
+            <SignUpStep3
+              formData={formData}
+              toggleSelection={toggleSelection}
+            />
           </FormLayout>
         );
 
       case 4:
         return (
-          <FormLayout<Pick<SignUpFormValues, "profilePhoto">>
+          <FormLayout<SignUpFormValues>
             onSubmit={handleSubmit}
-            submitText="Complete Sign Up"
+            showsSubmitButton={false}
+            showsCancelButton={false}
             isLoading={isLoading}
-            error={error}
           >
             {({ register }) => <SignUpStep4 register={register} />}
+          </FormLayout>
+        );
+      case 5:
+        return (
+          <FormLayout<SignUpFormValues>
+            onSubmit={handleSubmit}
+            showsSubmitButton={false}
+            showsCancelButton={false}
+            isLoading={isLoading}
+          >
+            {({ register }) => <SignUpStep5 register={register} />}
           </FormLayout>
         );
     }
   };
 
   return (
-    <div className="signup-container">
+    <div className="form signup-container">
       <div className="signup-card">
         <div className="signup-progress">
           <div className="progress-bar">
             <div
               className="progress-fill"
-              style={{ width: `${(step / 4) * 100}%` }}
+              style={{ width: `${(step / NUM_STEPS) * 100}%` }}
             />
           </div>
-          <p>Step {step} of 4</p>
+          <p>
+            Step {step} of {NUM_STEPS}
+          </p>
         </div>
 
         {renderStep()}
+        <div className="form-actions">
+          {step > 1 && (
+            <button
+              type="button"
+              onClick={() => setStep(step - 1)}
+              className="btn"
+              disabled={isLoading}
+            >
+              Back
+            </button>
+          )}
+
+          <button
+            onClick={handleSubmit}
+            type="button"
+            className="btn btn-primary"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

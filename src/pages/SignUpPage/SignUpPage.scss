@@ -1,12 +1,14 @@
-@import '../../styles/variables';
-@import '../../styles/mixins';
+@import "../../styles/variables";
+@import "../../styles/mixins";
 
 .signup-container {
   @include center-content;
-  min-height: 100vh;
+  height: 100vh;
   padding: $spacing-4;
   background-color: $color-gray-50;
-
+  .form {
+    min-height: 60vh;
+  }
   .signup-card {
     @include card;
     width: 100%;
@@ -30,11 +32,6 @@
           transition: width 0.3s ease;
         }
       }
-
-      p {
-        color: $color-gray-600;
-        font-size: 0.9rem;
-      }
     }
   }
 
@@ -42,7 +39,8 @@
   .interests-grid {
     @include grid-layout(1, 0.5rem);
     margin: $spacing-4;
-    
+    overflow: scroll;
+    max-height: 300px;
     @include responsive(md) {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -54,10 +52,10 @@
     border: 2px solid $color-gray-200;
     border-radius: $border-radius-md;
     cursor: pointer;
-    min-width:250px;
+    min-width: 250px;
     transition: all 0.3s ease;
     background-color: $color-white;
-    flex:1;
+    flex: 1;
     input[type="checkbox"] {
       position: absolute;
       opacity: 0;

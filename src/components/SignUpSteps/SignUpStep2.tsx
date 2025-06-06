@@ -1,15 +1,24 @@
 import { useGoals } from "../../hooks/useGoals";
 import type { SignUpFormValues } from "../../types";
+import { ProgressIndicator } from "../";
 
 interface SignUpStep2Props {
   formData: Partial<SignUpFormValues>;
   toggleSelection: (type: "goals" | "interests", value: string) => void;
 }
 
-export const SignUpStep2 = ({ formData, toggleSelection }: SignUpStep2Props) => {
+export const SignUpStep2 = ({
+  formData,
+  toggleSelection,
+}: SignUpStep2Props) => {
   const { goals, loading, error } = useGoals();
 
-  if (loading) return <div>Loading goals...</div>;
+  if (loading)
+    return (
+      <div className="center-absolute">
+        <ProgressIndicator />
+      </div>
+    );
   if (error) return <div className="error">{error}</div>;
 
   return (
@@ -34,3 +43,5 @@ export const SignUpStep2 = ({ formData, toggleSelection }: SignUpStep2Props) => 
     </div>
   );
 };
+
+export default SignUpStep2;

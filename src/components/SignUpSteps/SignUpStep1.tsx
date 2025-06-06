@@ -1,4 +1,4 @@
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import type { SignUpFormValues } from "../../types";
 
 interface SignUpStep1Props {
@@ -6,7 +6,7 @@ interface SignUpStep1Props {
   errors: FieldErrors<SignUpFormValues>;
 }
 
-export const SignUpStep1 = ({ register, errors }: SignUpStep1Props) => {
+const SignUpStep1 = ({ register, errors }: SignUpStep1Props) => {
   return (
     <>
       <div className="form-group">
@@ -16,7 +16,6 @@ export const SignUpStep1 = ({ register, errors }: SignUpStep1Props) => {
           className={`form-input ${errors.name ? "error" : ""}`}
           {...register("name", { required: "Name is required" })}
         />
-        <p className="description">What would you like to be called?</p>
         {errors.name && <p className="form-error">{errors.name.message}</p>}
       </div>
 
@@ -49,8 +48,12 @@ export const SignUpStep1 = ({ register, errors }: SignUpStep1Props) => {
             },
           })}
         />
-        {errors.password && <p className="form-error">{errors.password.message}</p>}
+        {errors.password && (
+          <p className="form-error">{errors.password.message}</p>
+        )}
       </div>
     </>
   );
 };
+
+export default SignUpStep1;

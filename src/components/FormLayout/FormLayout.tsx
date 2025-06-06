@@ -84,7 +84,7 @@ function FormLayout<T extends FieldValues>({
       <form
         onSubmit={methods.handleSubmit(handleSubmit)}
         style={style}
-        className="form-layout"
+        className="form"
         noValidate
       >
         {description && (

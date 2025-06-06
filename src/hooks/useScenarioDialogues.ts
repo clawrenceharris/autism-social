@@ -13,8 +13,8 @@ const useScenarioDialogues = (scenarioId: string) => {
     const fetchScenarioDialogues = async () => {
       try {
         setLoading(true);
-        const dialogues = await getDialogues(scenarioId);
-        setScenarioDialogues(dialogues || []);
+        const data = await getDialogues(scenarioId);
+        setScenarioDialogues(data || []);
         setLoading(false);
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));

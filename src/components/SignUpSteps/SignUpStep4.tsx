@@ -1,11 +1,11 @@
-import { UseFormRegister } from "react-hook-form";
+import type { UseFormRegister } from "react-hook-form";
 import type { SignUpFormValues } from "../../types";
 
 interface SignUpStep4Props {
   register: UseFormRegister<SignUpFormValues>;
 }
 
-export const SignUpStep4 = ({ register }: SignUpStep4Props) => {
+const SignUpStep4 = ({ register }: SignUpStep4Props) => {
   return (
     <div className="form-group">
       <label>Profile Photo (Optional)</label>
@@ -18,3 +18,4 @@ export const SignUpStep4 = ({ register }: SignUpStep4Props) => {
     </div>
   );
 };
+export default SignUpStep4;

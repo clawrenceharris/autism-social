@@ -1,7 +1,9 @@
+@import "../../styles/variables";
+
 .loader {
   border: 3px solid transparent;
-  border-left-color: var(--gray);
-  border-top-color: var(--gray);
+  border-left-color: $color-gray-300;
+  border-top-color: $color-gray-300;
   border-radius: 50%;
   position: relative;
   display: flex;
@@ -15,32 +17,11 @@
   animation: spin 0.8s linear infinite;
 }
 
-progress {
-  width: 100%;
-  appearance: none;
-
-  height: 100%;
-}
-progress::-webkit-progress-bar {
-  background: var(--primary);
-  overflow: hidden;
-  border-radius: 100px;
-}
-
-progress::-moz-progress-bar {
-  background: var(--primary);
-  border-radius: 100px;
-}
-progress::-webkit-progress-value {
-  background: white;
-  text-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-}
 .loader div {
   border: 3px solid transparent;
 
-  border-left-color: var(--gray);
-  border-right-color: var(--gray);
+  border-left-color: $color-gray-300;
+  border-right-color: $color-gray-300;
 
   border-radius: 50%;
   position: relative;

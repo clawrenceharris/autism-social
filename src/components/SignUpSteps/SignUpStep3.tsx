@@ -1,19 +1,25 @@
 import { useInterests } from "../../hooks/useInterests";
 import type { SignUpFormValues } from "../../types";
+import { ProgressIndicator } from "../../components";
 
 interface SignUpStep3Props {
   formData: Partial<SignUpFormValues>;
   toggleSelection: (type: "goals" | "interests", value: string) => void;
 }
 
-export const SignUpStep3 = ({ formData, toggleSelection }: SignUpStep3Props) => {
+const SignUpStep3 = ({ formData, toggleSelection }: SignUpStep3Props) => {
   const { interests, loading, error } = useInterests();
 
-  if (loading) return <div>Loading interests...</div>;
+  if (loading)
+    return (
+      <div className="center-absolute">
+        <ProgressIndicator />
+      </div>
+    );
   if (error) return <div className="error">{error}</div>;
 
   return (
-    <div className="form-group">
+    <div>
       <label>What are your interests?</label>
       <p className="form-helper">
         <small>Select all that apply</small>
@@ -34,3 +40,5 @@ export const SignUpStep3 = ({ formData, toggleSelection }: SignUpStep3Props) => 
     </div>
   );
 };
+
+export default SignUpStep3;
