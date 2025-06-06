@@ -119,9 +119,6 @@ const SignUpPage = () => {
           <FormLayout<SignUpFormValues>
             onSubmit={handleSubmit}
             submitText="Next"
-            // showsSubmitButton={false}
-            // showsCancelButton={false}
-            
             isLoading={isLoading}
           >
             {({ register, formState: { errors } }) => (
@@ -134,14 +131,12 @@ const SignUpPage = () => {
         return (
           <FormLayout
             onSubmit={() => handleSubmit({ goals: formData.goals })}
-            //showsSubmitButton={false}
-            //showsCancelButton={false}
+          
             showsCancelButton
             isLoading={isLoading}
             cancelText="Back"
             onCancle={() => setStep(step -1)}
             error={error}
-            onCancel={() => setStep(step - 1)}
           >
             <>
               <SignUpStep2
@@ -156,13 +151,11 @@ const SignUpPage = () => {
         return (
           <FormLayout
             onSubmit={() => handleSubmit({ interests: formData.interests })}
-            //showsSubmitButton={false}
-            //showsCancelButton={false} */}
+            submitText="Next"
             showsCancelButton
             onCancel={() => setStep(step - 1)}
             isLoading={isLoading}
             cancelText="Back"
-            onCancle={() => setStep(step -1)}
           >
             <SignUpStep3
               formData={formData}
@@ -176,10 +169,9 @@ const SignUpPage = () => {
           <FormLayout<SignUpFormValues>
             onSubmit={handleSubmit}
             showsCancelButton
-            // showsSubmitButton={false}
-            // showsCancelButton={false}
+            submitText="Next" 
             isLoading={isLoading}
-              cancelText="Back"
+            cancelText="Back"
             onCancle={() => setStep(step -1)}
           >
             {({ register }) => <SignUpStep4 register={register} />}
@@ -190,9 +182,8 @@ const SignUpPage = () => {
         return (
           <FormLayout<SignUpFormValues>
             onSubmit={handleSubmit}
-            // showsSubmitButton={false}
-            // showsCancelButton={false}
-          cancelText="Back"
+            submitText="Sign Up!"
+            cancelText="Back"
             onCancle={() => setStep(step -1)}
             isLoading={isLoading}
           >
