@@ -3,13 +3,14 @@
 
 .signup-container {
   @include center-content;
-  min-height: 100vh;
+  height: 100vh;
   padding: $spacing-4;
   background-color: $color-gray-50;
   
   .signup-card {
     @include card;
     width: 100%;
+    min-height: 100vh;
     max-width: 40rem;
     padding: $spacing-6;
 
