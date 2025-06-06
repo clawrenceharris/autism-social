@@ -135,7 +135,7 @@ const SignUpPage = () => {
             showsCancelButton
             isLoading={isLoading}
             cancelText="Back"
-            onCancel={() => setStep(step -1)}
+            onCancel={() => setStep(step - 1)}
             error={error}
           >
             <>
@@ -169,10 +169,10 @@ const SignUpPage = () => {
           <FormLayout<SignUpFormValues>
             onSubmit={handleSubmit}
             showsCancelButton
-            submitText="Next" 
+            submitText="Next"
             isLoading={isLoading}
             cancelText="Back"
-            onCancle={() => setStep(step -1)}
+            onCancel={() => setStep(step - 1)}
           >
             {({ register }) => <SignUpStep4 register={register} />}
           </FormLayout>
@@ -181,13 +181,16 @@ const SignUpPage = () => {
         return (
           <FormLayout<SignUpFormValues>
             onSubmit={handleSubmit}
-            submitText="Sign Up!"
+            submitText="Create Account"
             cancelText="Back"
-            onCancle={() => setStep(step -1)}
+            showsCancelButton
+            onCancel={() => setStep(step - 1)}
             isLoading={isLoading}
             error={error}
           >
-            {({ register }) => <SignUpStep5 register={register} />}
+            {({ register, formState: { errors } }) => (
+              <SignUpStep5 register={register} errors={errors} />
+            )}
           </FormLayout>
         );
     }
@@ -209,26 +212,6 @@ const SignUpPage = () => {
         </div>
 
         {renderStep()}
-        {/* <div className="form-actions">
-          {step > 1 && (
-            <button
-              type="button"
-              onClick={() => setStep(step - 1)}
-              className="btn"
-              disabled={isLoading}
-            >
-              Back
-            </button>
-          )}
-
-          <button
-            onClick={handleSubmit}
-            type="button"
-            className="btn btn-primary"
-          >
-            Next
-          </button>
-        </div> */}
       </div>
     </div>
   );
