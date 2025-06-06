@@ -6,7 +6,9 @@ const useScenarioDialogues = (scenarioId: string) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [scenarioDialogues, setScenarioDialogues] = useState<Dialogue[]>([]);
-
+  const addDialogue = (dialogue: Dialogue) => {
+    setScenarioDialogues((prev) => [...prev, dialogue]);
+  };
   useEffect(() => {
     const fetchScenarioDialogues = async () => {
       try {
@@ -14,15 +16,15 @@ const useScenarioDialogues = (scenarioId: string) => {
         const dialogues = await getDialogues(scenarioId);
         setScenarioDialogues(dialogues || []);
         setLoading(false);
-      } catch (error: any) {
-        setError(error);
+      } catch (error) {
+        setError(error instanceof Error ? error.message : String(error));
         setLoading(false);
       }
     };
     fetchScenarioDialogues();
-  }, []);
+  }, [scenarioId]);
 
-  return { scenarioDialogues, loading, error };
+  return { addDialogue, scenarioDialogues, loading, error };
 };
 
 export default useScenarioDialogues;

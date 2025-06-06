@@ -17,13 +17,8 @@ const DialoguesPanel = ({ scenario }: DialoguesPanelProps) => {
   const [selectedDialogueId, setSelectedDialogueId] = useState<string | null>(
     null
   );
-  const { openModal } = useModal();
-  const handleAddDialogue = () => {
-    openModal(
-      <CreateDialogueModal scenario={scenario} />,
-      "Create New Dialogue"
-    );
-  };
+  const { openModal, closeModal } = useModal();
+
   const handleSelectDialogue = (id: string) => {
     if (selectedDialogueId === id) {
       return setSelectedDialogueId(null);
@@ -48,7 +43,6 @@ const DialoguesPanel = ({ scenario }: DialoguesPanelProps) => {
 
   return (
     <div className="outlined flex-column dialogues-container">
-      
       {scenarioDialogues.length > 0 ? (
         <div>
           {scenarioDialogues.map((item, idx) => (
@@ -94,7 +88,21 @@ const DialoguesPanel = ({ scenario }: DialoguesPanelProps) => {
           <button className="squircle-btn danger">
             <Minus />
           </button>
-          <button onClick={handleAddDialogue} className="squircle-btn primary">
+          <button
+            onClick={() => {
+              openModal(
+                <CreateDialogueModal
+                  isLoading={loading}
+                  error={error}
+                  onClose={closeModal}
+                  onSubmit={closeModal}
+                  scenario={scenario}
+                />,
+                "Create New Dialogue"
+              );
+            }}
+            className="squircle-btn primary"
+          >
             <Plus />
           </button>
         </div>

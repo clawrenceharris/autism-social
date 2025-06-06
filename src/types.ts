@@ -6,10 +6,11 @@ export interface CreateScenarioData {
 export interface CreateDialogueData {
   scenario_id: string;
   title: string;
-  steps: any[];
-  user_fields: string[];
+  steps: DialogueStep[];
+  placeholders: string[];
   persona_tags: string[];
   scoring_categories: string[];
+  difficulty: string;
 }
 
 export interface Option {

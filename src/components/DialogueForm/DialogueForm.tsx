@@ -1,21 +1,24 @@
-import { useCallback, useEffect, useState } from "react";
-import type { DialogueStep, ScoreCategory, Dialogue } from "../../types";
+import { useEffect, useState } from "react";
+import type {
+  Dialogue,
+  DialogueStep,
+  Scenario,
+  ScoreCategory,
+} from "../../types";
 import { Plus, Trash2, Wand2 } from "lucide-react";
 import "./DialogueForm.css";
 import { Select } from "../";
 import { DIFFICULTY_LEVELS } from "../../constants/scenario";
 import { generateScenarioSteps } from "../../lib/gemini";
-import type { ScenarioFormValues } from "../../pages/ScenarioPage/ScenarioPage";
 
 interface DialogueFormProps {
-  onChange: (data: Partial<ScenarioFormValues>) => void;
+  scenario: Scenario;
+  onChange: (data: Partial<Dialogue>) => void;
   values: {
-    scenarioTitle: string;
-    dialogueTitle: string;
-    personaTags: string[];
+    title: string;
+    persona_tags: string[];
     difficulty: string;
     placeholders: string[];
-    description: string;
     steps: DialogueStep[];
   };
 }
@@ -28,30 +31,17 @@ const SCORE_FIELDS = [
   "selfAdvocacy",
 ] as const;
 
-const DialogueForm = ({ values, onChange }: DialogueFormProps) => {
+const DialogueForm = ({ values, scenario, onChange }: DialogueFormProps) => {
   const [steps, setSteps] = useState<DialogueStep[]>(values.steps);
-  const [selectedStepId, setSelectedStepId] = useState<string | null>(null);
-  const [stepId, setStepId] = useState<string>("");
-
-  const handleStepIdChange = useCallback(
-    (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
-      setStepId(e.target.value);
-      handleStepChange(id, "id", e.target.value);
-    },
-    []
-  );
-  const [dialoguesByScenario, _] = useState<{
-    [key: string]: Dialogue[];
-  }>({});
+  const [selectedStepIndex, setSelectedIndex] = useState<number | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     onChange({ [e.target.name]: e.target.value });
   };
-
   const handleGenerate = async () => {
-    if (!values.scenarioTitle) {
+    if (!values.title) {
       alert(
         "Please provide a scenario title and dialogue title before generating."
       );
@@ -60,21 +50,26 @@ const DialogueForm = ({ values, onChange }: DialogueFormProps) => {
 
     try {
       const generatedSteps = await generateScenarioSteps(
-        values.scenarioTitle,
-        values.dialogueTitle,
+        scenario.title,
+        values.title,
         values.difficulty,
-        values.personaTags
+        values.persona_tags
       );
-      onChange({ steps: generatedSteps });
+      setSteps(generatedSteps);
     } catch (error) {
       console.error("Failed to generate steps:", error);
       alert("Failed to generate steps. Please try again.");
     }
   };
-  const handleStepChange = (stepId: string, field: string, value: any) => {
+  useEffect(() => {
+    onChange({ steps: steps });
+  }, [onChange, steps]);
+  const handleStepChange = (index: number, field: string, value: string) => {
+    console.log(index + " - " + selectedStepIndex);
+
     setSteps((prevSteps) =>
-      prevSteps.map((step) =>
-        step.id === stepId ? { ...step, [field]: value } : step
+      prevSteps.map((step, i) =>
+        i === index ? { ...step, [field]: value } : step
       )
     );
   };
@@ -83,7 +78,7 @@ const DialogueForm = ({ values, onChange }: DialogueFormProps) => {
     stepId: string,
     optionIndex: number,
     field: string,
-    value: any
+    value: string
   ) => {
     setSteps((prevSteps) =>
       prevSteps.map((step) =>
@@ -177,21 +172,19 @@ const DialogueForm = ({ values, onChange }: DialogueFormProps) => {
       )
     );
   };
-
+  const removeStep = (id: string) => {
+    setSteps((prevSteps) => prevSteps.filter((i) => i.id !== id));
+  };
   return (
     <div>
       <div className="form-group">
         <label className="form-label">Dialogue Title</label>
         <Select
-          name="dialogueTitle"
-          value={values.dialogueTitle}
+          options={[]}
+          name="title"
+          required
+          value={values.title}
           onChange={handleChange}
-          options={(dialoguesByScenario[values.scenarioTitle] || []).map(
-            (item) => ({
-              value: item.title,
-              key: item.id,
-            })
-          )}
           placeholder="Enter a Dialogue title"
         />
       </div>
@@ -227,9 +220,9 @@ const DialogueForm = ({ values, onChange }: DialogueFormProps) => {
           <div
             key={index}
             className={`dialogue-step ${
-              selectedStepId === step.id ? "selected" : ""
+              selectedStepIndex === index ? "selected" : ""
             }`}
-            onClick={() => setSelectedStepId(step.id)}
+            onClick={() => setSelectedIndex(index)}
           >
             <div className="step-header">
               <label className="step-id">Step ID: &nbsp; </label>
@@ -237,19 +230,22 @@ const DialogueForm = ({ values, onChange }: DialogueFormProps) => {
                 type="text"
                 value={step.id}
                 className="form-input"
-                onChange={(e) =>
-                  handleStepChange(step.id, "id", e.target.value)
-                }
+                onChange={(e) => handleStepChange(index, "id", e.target.value)}
               />
+              <button
+                type="button"
+                onClick={() => removeStep(step.id)}
+                className="squircle-btn danger"
+              >
+                <Trash2 />
+              </button>
             </div>
 
             <div className="npc-line">
               <textarea
                 className="form-textarea"
                 value={step.npc}
-                onChange={(e) =>
-                  handleStepChange(step.id, "npc", e.target.value)
-                }
+                onChange={(e) => handleStepChange(index, "npc", e.target.value)}
                 placeholder="NPC dialogue line..."
               />
             </div>

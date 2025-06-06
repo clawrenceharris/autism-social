@@ -5,17 +5,22 @@ import type {
   CreateScenarioData,
   CreateDialogueData,
 } from "../types";
-import { supabase } from "../lib/supabase";
 
 export async function createScenario(data: CreateScenarioData) {
-  const result = await DatabaseService.create<Partial<Scenario>>("scenarios", data);
-  if (result.error) throw result.error;
+  const result = await DatabaseService.create<Scenario>("scenarios", {
+    id: "",
+    ...data,
+  });
+  if (result.error || !result.data) throw result.error;
   return result.data;
 }
 
 export async function createDialogue(data: CreateDialogueData) {
-  const result = await DatabaseService.create<Partial<Dialogue>>("dialogues", data);
-  if (result.error) throw result.error;
+  const result = await DatabaseService.create<Dialogue>("dialogues", {
+    id: "",
+    ...data,
+  });
+  if (result.error || !result.data) throw result.error;
   return result.data;
 }
 

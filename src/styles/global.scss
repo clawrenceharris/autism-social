@@ -1,5 +1,6 @@
-@import 'variables';
-@import 'mixins';
+@import "variables";
+@import "mixins";
+@import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
 
 * {
   margin: 0;
@@ -203,7 +204,7 @@ button {
 
   &.primary {
     color: $color-primary;
-    
+
     &:hover,
     &.selected {
       background-color: $color-primary-100;
@@ -212,7 +213,7 @@ button {
 
   &.danger {
     color: $color-red-600;
-    
+
     &:hover {
       background-color: $color-red-100;
     }

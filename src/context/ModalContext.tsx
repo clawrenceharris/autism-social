@@ -52,10 +52,10 @@ export function ModalProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useModal() {
+export const useModal = () => {
   const context = useContext(ModalContext);
   if (context === undefined) {
     throw new Error("useModal must be used within a ModalProvider");
   }
   return context;
-}
+};

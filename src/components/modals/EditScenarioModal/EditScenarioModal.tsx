@@ -1,50 +1,56 @@
 import { useState } from "react";
 import { SCENARIO_CATEGORIES } from "../../../constants/scenario";
-import { createScenario } from "../../../services/scenarios";
+import { updateScenario } from "../../../services/scenarios";
 import { useModal, useToast } from "../../../context";
 import Select from "../../Select";
 import { ProgressIndicator } from "../..";
-
-const CreateScenarioModal = () => {
-  const { closeModal } = useModal();
+import type { Scenario } from "../../../types";
+interface EditScenarioModalProps {
+  scenario: Scenario;
+}
+const EditScenarioModal = ({ scenario }: EditScenarioModalProps) => {
   const { showToast } = useToast();
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const { closeModal } = useModal();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
+  const [values, setValues] = useState<Partial<Scenario>>({
+    title: scenario.title,
+    description: scenario.description,
+  });
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
 
     try {
-      await createScenario({
-        title,
-        description,
-      });
-      closeModal();
-      setTitle("");
+      await updateScenario(scenario.id, values);
       showToast("Scenario created successfully!", "success");
+      closeModal();
     } catch (err) {
-      const errorMessage = "Failed to create Scenario. Please try again.";
-      setError(errorMessage);
-      showToast(errorMessage, "error");
+      const message = "Failed to create Scenario. Please try again.";
+      setError(message);
+      showToast(message, "error");
       console.error(err);
     } finally {
       setIsSubmitting(false);
     }
   };
-
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
   return (
     <form onSubmit={handleSubmit} className="create-scenario-modal">
       <div className="form-group">
         <label className="form-label">Title</label>
         <Select
           required
-          value={title}
-          onOptionSelect={(opt) => setTitle(opt.value)}
-          onChange={(e) => setTitle(e.target.value)}
+          value={values.title}
+          onOptionSelect={(opt) =>
+            setValues((prev) => ({ ...prev, title: opt.value }))
+          }
+          onChange={handleChange}
           className="form-select"
           options={SCENARIO_CATEGORIES.map((item, idx) => ({
             key: idx,
@@ -56,8 +62,8 @@ const CreateScenarioModal = () => {
       <div className="form-group">
         <label className="form-label">Description</label>
         <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          value={values.description}
+          onChange={handleChange}
           rows={3}
           className="form-textarea"
           required
@@ -75,11 +81,11 @@ const CreateScenarioModal = () => {
           disabled={isSubmitting}
           className="btn btn-primary"
         >
-          {isSubmitting ? <ProgressIndicator /> : "Create Scenario"}
+          {isSubmitting ? <ProgressIndicator /> : "Update Scenario"}
         </button>
       </div>
     </form>
   );
 };
 
-export default CreateScenarioModal;
+export default EditScenarioModal;

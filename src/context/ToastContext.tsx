@@ -1,8 +1,14 @@
-import { createContext, useContext, useCallback, useState, useEffect } from 'react';
-import type { ReactNode } from 'react';
-import { X, CheckCircle, AlertCircle } from 'lucide-react';
+import {
+  createContext,
+  useContext,
+  useCallback,
+  useState,
+  useEffect,
+} from "react";
+import type { ReactNode } from "react";
+import { X, CheckCircle, AlertCircle } from "lucide-react";
 
-export type ToastType = 'success' | 'error';
+export type ToastType = "success" | "error" | "info" | "warning";
 
 interface Toast {
   id: string;
@@ -62,13 +68,9 @@ function Toast({ message, type, onClose }: ToastProps) {
   }, [onClose]);
 
   return (
-    <div
-      className={`toast ${type}`}
-      role="alert"
-      aria-live="polite"
-    >
+    <div className={`toast ${type}`} role="alert" aria-live="polite">
       <div className="toast-content">
-        {type === 'success' ? (
+        {type === "success" ? (
           <CheckCircle className="toast-icon\" aria-hidden="true" />
         ) : (
           <AlertCircle className="toast-icon\" aria-hidden="true" />
@@ -89,7 +91,7 @@ function Toast({ message, type, onClose }: ToastProps) {
 export function useToast() {
   const context = useContext(ToastContext);
   if (context === undefined) {
-    throw new Error('useToast must be used within a ToastProvider');
+    throw new Error("useToast must be used within a ToastProvider");
   }
   return context;
 }

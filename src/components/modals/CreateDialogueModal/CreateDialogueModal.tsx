@@ -1,45 +1,58 @@
 import { useState } from "react";
-import { createDialogue } from "../../../services/scenarios";
 import type { Scenario } from "../../../types";
-import { useModal } from "../../../context";
 import Select from "../../Select";
 import { PERSONA_TAGS } from "../../../constants/scenario";
 import { X } from "lucide-react";
 import "./CreateDialogueModal.scss";
+import { createDialogue } from "../../../services/scenarios";
+import { useScenarioDialogues } from "../../../hooks";
+import { useToast } from "../../../context";
 
 interface CreateDialogueModalProps {
   scenario: Scenario;
+  onSubmit: () => void;
+  onClose: () => void;
+  isLoading: boolean;
+  error: string | null;
 }
 
-const CreateDialogueModal = ({ scenario }: CreateDialogueModalProps) => {
-  const { closeModal } = useModal();
-  const [error, setError] = useState<string | null>(null);
+const CreateDialogueModal = ({
+  scenario,
+  onClose,
+  isLoading,
+  error,
+  onSubmit,
+}: CreateDialogueModalProps) => {
   const [personaTags, setPersonaTags] = useState<string[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const { addDialogue } = useScenarioDialogues(scenario.id);
+  const { showToast } = useToast();
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<{
+    title: string;
+    personaTags: string[];
+    difficulty: string;
+  }>({
     title: "",
-    scenario_id: scenario.id,
-    scoring_categories: [],
+    personaTags: [],
+    difficulty: "easy",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      setIsSubmitting(true);
-      await createDialogue({
+      const result = await createDialogue({
         ...form,
+        scenario_id: scenario.id,
         persona_tags: personaTags,
         scoring_categories: [],
+        placeholders: [],
         steps: [],
-        user_fields: [],
       });
-
-      setIsSubmitting(false);
-      closeModal();
+      addDialogue(result);
+      onSubmit();
+      showToast("Dialogue created successfully!", "success");
     } catch (err) {
-      setError("Failed to create Dialogue. Please try again.");
-      setIsSubmitting(false);
+      showToast("Failed to create Dialogue. Please try again.", "error");
       console.error(err);
     }
   };
@@ -90,18 +103,14 @@ const CreateDialogueModal = ({ scenario }: CreateDialogueModalProps) => {
         </div>
       </div>
 
-      {error && <p className="error-text">{error}</p>}
+      {error && <p className="danger">{error}</p>}
 
       <div className="modal-footer">
-        <button type="button" onClick={closeModal} className="btn">
+        <button type="button" onClick={onClose} className="btn">
           Cancel
         </button>
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="btn btn-primary"
-        >
-          {isSubmitting ? "Creating" : "Create Dialogue"}
+        <button type="submit" disabled={isLoading} className="btn btn-primary">
+          {isLoading ? "Creating" : "Create Dialogue"}
         </button>
       </div>
     </form>

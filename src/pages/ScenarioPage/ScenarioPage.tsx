@@ -1,52 +1,36 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import "./ScenarioPage.css";
-import { useScenario } from "../../context";
-import { ScenarioForm } from "../../components";
-import type { Dialogue, DialogueStep, Scenario } from "../../types";
+import { useModal, useScenario, useToast } from "../../context";
+import type { Dialogue, DialogueStep } from "../../types";
 import { DialoguesPanel, DialogueForm } from "../../components";
 import { useParams } from "react-router-dom";
-import {
-  getDialogueById,
-  updateDialogue,
-  updateScenario,
-} from "../../services/scenarios";
-import { dialogueSteps } from "../../constants/dialogues";
-export interface ScenarioFormValues {
-  scenarioTitle: string;
-  dialogueTitle: string;
-  personaTags: string[];
-  difficulty: string;
-  placeholders: string[];
-  description: string;
-  steps: DialogueStep[];
-}
+import { getDialogueById, updateDialogue } from "../../services/scenarios";
+import { Pencil } from "lucide-react";
+import { EditSceanrioModal } from "../../components/modals";
+
 const ScenarioPage = () => {
   const { scenario, loading, error } = useScenario();
   const { dialogueId } = useParams<{ dialogueId: string }>();
   const [dialogue, setDialogue] = useState<Dialogue | null>(null);
-  const [dialogueError, setDialogueError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"Scenario" | "Dialogue">(
-    "Scenario"
-  );
-  const [form, setForm] = useState<ScenarioFormValues>({
-    scenarioTitle: "",
-    dialogueTitle: "",
+  const { showToast } = useToast();
+  const { openModal } = useModal();
 
-    personaTags: [],
+  const [form, setForm] = useState<{
+    title: string;
+
+    persona_tags: string[];
+    difficulty: string;
+    placeholders: string[];
+    steps: DialogueStep[];
+  }>({
+    title: "",
+
+    persona_tags: [],
     difficulty: "easy",
     placeholders: [],
-    description: "",
-    steps: dialogueSteps,
+    steps: [],
   });
-  useEffect(() => {
-    if (!scenario) return;
-    setForm((prev) => ({
-      ...prev,
-      scenarioTitle: scenario.title,
 
-      description: scenario.description || "",
-    }));
-  }, [scenario]);
   useEffect(() => {
     if (!dialogueId) {
       setDialogue(null);
@@ -55,101 +39,64 @@ const ScenarioPage = () => {
     const fetchDialogue = async () => {
       try {
         const dialogue = await getDialogueById(dialogueId);
-        if (!dialogue) {
-          return;
-        }
+
         setDialogue(dialogue);
         setForm((prev) => ({
           ...prev,
-          dialogueTitle: dialogue.title || "",
+          title: dialogue.title,
 
-          personaTags: dialogue.persona_tags,
+          persona_tags: dialogue.persona_tags,
           difficulty: dialogue.difficulty,
           placeholders: dialogue.placeholders,
-          steps: dialogueSteps,
+          steps: dialogue.steps,
         }));
       } catch (err) {
-        setDialogueError("Could not load this Dialogue.");
+        showToast(err instanceof Error ? err.message : String(err), "error");
       }
     };
     fetchDialogue();
-  }, [dialogueId]);
+  }, [dialogueId, showToast]);
 
-  const handleChange = (data: Partial<ScenarioFormValues>) => {
+  const handleChange = useCallback((data: Partial<Dialogue>) => {
     setForm((prev) => ({ ...prev, ...data }));
-  };
-  const handleUpdateScenario = async (
-    id: string,
-    updatedFields: Partial<Scenario>
-  ) => {
-    try {
-      await updateScenario(id, updatedFields);
+  }, []);
 
-      alert("Scenario updated successfully!");
-    } catch (err) {
-      throw err;
-    }
-  };
-  const handleUpdateDialogue = async (
-    id: string,
-    updatedFields: Partial<Dialogue>
-  ) => {
-    try {
-      await updateDialogue(id, updatedFields);
+  // const handleUpdateScenario = async (
+  //   e: React.FormEvent,
+  //   updatedFields: Partial<Scenario>
+  // ) => {
+  //   e.preventDefault();
 
-      alert("Scenario updated successfully!");
-    } catch (err) {
-      throw err;
+  //   if (!scenario) {
+  //     return;
+  //   }
+  //   try {
+  //     await updateScenario(scenario.id, updatedFields);
+
+  //     showToast("Scenario updated successfully!", "success");
+  //   } catch (err) {
+  //     showToast(err instanceof Error ? err.message : String(err), "error");
+  //   }
+  // };
+
+  const handleUpdateDialogue = async () => {
+    if (!dialogue) {
+      return showToast("This Dialogue could not be found.", "error");
     }
-  };
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!scenario || !dialogue) {
-      return;
-    }
+
     try {
-      if (activeTab === "Dialogue") {
-        const {
-          scenarioTitle,
-          dialogueTitle,
-          description,
-          personaTags,
-          ...rest
-        } = form;
-        await handleUpdateDialogue(dialogue.id, {
-          title: dialogueTitle,
-          persona_tags: personaTags,
-          ...rest,
-        });
-      } else if (activeTab === "Scenario") {
-        const { scenarioTitle, description } = form;
-        await handleUpdateScenario(scenario.id, {
-          title: scenarioTitle,
-          description,
-        });
-      }
-      alert("Updated successful!");
+      await updateDialogue(dialogue.id, form);
+      showToast("Dialogue updated successfully!", "success");
     } catch (err) {
-      const error =
-        typeof err === "string"
-          ? err
-          : err instanceof Error
-          ? err.message
-          : "An unknonw error occured.";
-      alert(error);
-      console.error(error);
+      showToast(err instanceof Error ? err.message : String(err), "error");
     }
   };
 
   if (loading) {
     return <div className="content-centered">Loading...</div>;
   }
-  if (error || dialogueError) {
-    return (
-      <div className="content-centered">
-        An error occured: {error || dialogueError}
-      </div>
-    );
+  if (error) {
+    return <div className="content-centered">An error occured: {error}</div>;
   }
   if (!scenario) {
     return (
@@ -160,57 +107,56 @@ const ScenarioPage = () => {
     return (
       <div>
         <h1>{scenario.title}</h1>
-         <p>
-        <small>ID: {scenario.id}</small>
-      </p>
-        <DialoguesPanel scenario={scenario}/>
-      </div>);
+        <p>
+          <small>ID: {scenario.id}</small>
+        </p>
+        <DialoguesPanel scenario={scenario} />
+      </div>
+    );
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form>
       <div className=" scenario-header flex-content justify-between">
-        <h1>Edit {activeTab}</h1>
+        <h1>Edit Dialogue</h1>
         <div className="content-row">
-          <button className="btn btn-secondary danger">Delete</button>
+          <button className="btn btn-secondary danger">Delete Dialogue</button>
 
-          <button className="btn btn-secondary primary">Update Scenario</button>
+          <button
+            onClick={handleUpdateDialogue}
+            type="button"
+            className="btn btn-secondary primary"
+          >
+            Update Dialogue
+          </button>
         </div>
       </div>
 
       <p>
         <small>ID: {scenario.id}</small>
       </p>
-      <div className="tabs">
-        <button
-          type="button"
-          className={`tab ${activeTab === "Scenario" ? "active" : ""}`}
-          onClick={() => setActiveTab("Scenario")}
-        >
-          Scenario
-        </button>
-        <button
-                    type="button"
 
-          className={`tab ${activeTab === "Dialogue" ? "active" : ""}`}
-          onClick={() => setActiveTab("Dialogue")}
+      <div className="scenario-title">
+        <div>
+          <h2>Scenario: {scenario.title}</h2>
+          <p>
+            <small>ID: {scenario.id}</small>
+          </p>
+        </div>
+        <button
+          className="squircle-btn primary"
+          onClick={() =>
+            openModal(
+              <EditSceanrioModal scenario={scenario} />,
+              "Edit Scenario"
+            )
+          }
         >
-          Dialogue
+          <Pencil />
         </button>
-      </div>
-      <div
-        className={`tab-content ${activeTab === "Scenario" ? "active" : ""}`}
-        style={{ display: activeTab === "Scenario" ? "block" : "none" }}
-      >
-        <ScenarioForm onChange={handleChange} values={form} />
       </div>
 
-      <div
-        className={`tab-content ${activeTab === "Dialogue" ? "active" : ""}`}
-        style={{ display: activeTab === "Dialogue" ? "block" : "none" }}
-      >
-        <DialogueForm values={form} onChange={handleChange} />
-      </div>
+      <DialogueForm scenario={scenario} values={form} onChange={handleChange} />
     </form>
   );
 };

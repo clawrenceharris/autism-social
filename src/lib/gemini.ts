@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import type { DialogueStep } from "../types";
+import type { DialogueOption, DialogueStep } from "../types";
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_KEY);
 const generateAIResponse = async (prompt: string): Promise<string> => {
@@ -14,31 +14,15 @@ const generateAIResponse = async (prompt: string): Promise<string> => {
     throw error;
   }
 };
-export const generateSuggestedDialogues = async (
-  scenarioTitle: string
-): Promise<string> => {
-  const prompt = `Generate 4-5 possible titles for dialogue sequence that could be categorized by the scenario titled "${scenarioTitle}"
-       
-      Constraints:
-      
-        -Separate each title by a comma with no space.
-    `;
-  try {
-    return await generateAIResponse(prompt);
-  } catch (error) {
-    throw error;
-  }
-};
-
 export async function generateScenarioSteps(
-  category: string,
-  variationTitle: string,
+  scenarioTitle: string,
+  dialogueTitle: string,
   difficulty: string,
   personaTags: string[]
 ): Promise<DialogueStep[]> {
   const prompt = `
 
-  Create a social scenario dialogue for the category "${category}" with variation "${variationTitle}". This is for an autistic user practicing social interaction.
+  Create a social scenario dialogue for the category "${scenarioTitle}" with variation "${dialogueTitle}". This is for an autistic user practicing social interaction.
 
   The output should be a valid JSON array of 3–7 dialogue steps. Generate dialogue steps that aim to challenge autistic users based on ${difficulty} difficulty level.
 
@@ -66,9 +50,9 @@ export async function generateScenarioSteps(
   if (!jsonMatch) throw new Error("No valid JSON found in response");
 
   const parsedSteps = JSON.parse(jsonMatch[0]);
-  return parsedSteps.map((step: any) => ({
+  return parsedSteps.map((step: DialogueStep) => ({
     ...step,
-    options: step.options.map((option: any) => ({
+    options: step.options.map((option: DialogueOption) => ({
       ...option,
       scoreChanges: option.scoreChanges || {},
     })),

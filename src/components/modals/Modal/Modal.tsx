@@ -7,9 +7,18 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: ReactNode;
+  isLoading?: boolean;
+  submitText: string;
+  error?: string | null;
 }
 
-const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
+const Modal = ({
+  isOpen,
+
+  onClose,
+  title,
+  children,
+}: ModalProps) => {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
