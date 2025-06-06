@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
-import { Home, FolderOpen, Settings, Zap } from "lucide-react";
+import { Home, FolderOpen, Settings } from "lucide-react";
 import "../../styles/_taskbar.scss";
+import { assets } from "../../constants/assets";
 
 const TaskBar = () => {
   return (
     <nav className="taskbar">
       <div className="taskbar-container">
         <Link to="/" className="taskbar-brand">
-          <Zap size={24} />
-          <span>Scenario Builder</span>
+          <img src={assets.logo} alt="Logo" />
+          <span>Autism Social</span>
         </Link>
 
         <div className="taskbar-nav">
