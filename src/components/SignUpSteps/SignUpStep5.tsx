@@ -17,7 +17,7 @@ const SignUpStep5 = ({ register, errors }: SignUpStep5Props) => {
         </div>
         <h2>You're Almost Ready!</h2>
         <p className="description">
-          Unlock a world of immersive social learning. Your journey begins now
+          Complete this last step and unlock a world of immersive social learning. Your journey waits!
         </p>
       </div>
 
