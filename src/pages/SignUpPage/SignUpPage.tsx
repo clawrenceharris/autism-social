@@ -48,26 +48,6 @@ const SignUpPage = () => {
       if (signUpError) throw signUpError;
       if (!user) throw new Error("Failed to create user");
 
-      let profilePhotoUrl = null;
-      if (updatedData.profilePhoto) {
-        const fileExt = updatedData.profilePhoto.name.split(".").pop();
-        const fileName = `${user.id}-${Math.random()}.${fileExt}`;
-
-        const { error: uploadError, data: uploadData } = await supabase.storage
-          .from("profile-photos")
-          .upload(fileName, updatedData.profilePhoto);
-
-        if (uploadError) throw uploadError;
-        if (uploadData) {
-          const {
-            data: { publicUrl },
-          } = supabase.storage
-            .from("profile-photos")
-            .getPublicUrl(uploadData.path);
-          profilePhotoUrl = publicUrl;
-        }
-      }
-
       const { error: profileError } = await supabase
         .from("user_profiles")
         .insert({
@@ -79,18 +59,13 @@ const SignUpPage = () => {
       if (profileError) throw profileError;
 
       if (updatedData.interests?.length) {
-        const { data: interestsData } = await supabase
-          .from("interests")
-          .select("id, name")
-          .in("name", updatedData.interests);
-
-        if (interestsData) {
+        
           await addUserInterests(
             user.id,
-            interestsData.map((i) => i.id)
+            interests.map((i) => i.id)
           );
         }
-      }
+      
 
       showToast("Sign up was successful!", "success");
       navigate("/", { replace: true });
@@ -163,20 +138,8 @@ const SignUpPage = () => {
           </FormLayout>
         );
 
+     
       case 4:
-        return (
-          <FormLayout<SignUpFormValues>
-            onSubmit={handleSubmit}
-            showsCancelButton
-            submitText="Next"
-            isLoading={isLoading}
-            cancelText="Back"
-            onCancel={() => setStep(step - 1)}
-          >
-            {({ register }) => <SignUpStep4 register={register} />}
-          </FormLayout>
-        );
-      case 5:
         return (
           <FormLayout<SignUpFormValues>
             onSubmit={handleSubmit}
