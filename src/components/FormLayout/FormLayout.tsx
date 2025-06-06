@@ -92,11 +92,12 @@ function FormLayout<T extends FieldValues>({
             {description}
           </p>
         )}
-
+        <div className="form-content">
+        
         {typeof children === "function" ? children(methods) : children}
-
+     
         {error && <p className="form-error-message">{error}</p>}
-
+       </div>
         <div className="form-actions">
           {showsCancelButton && (
             <button
