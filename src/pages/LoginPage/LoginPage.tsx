@@ -31,11 +31,14 @@ const LoginPage = () => {
       if (roleError) {
         console.error("Error fetching user role:", roleError);
       }
+      setIsLoading(false);
 
       const redirectPath = role === 'admin' ? '/admin' : '/';
       navigate(redirectPath, { replace: true });
     } catch (err: any) {
       setError(err.message || "Failed to log in");
+            setIsLoading(false);
+
     } finally {
       setIsLoading(false);
     }
