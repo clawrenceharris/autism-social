@@ -1,0 +1,39 @@
+You are working on a web application that helps autistic users practice social interactions through interactive, dialogue-based scenarios. The app is built with React, TypeScript, XState, Supabase, SASS, and optionally integrates with AI tools like Gemini or Dappier to generate or manage dialogue content.
+
+Key Features
+Scenario-based dialogues where users choose from multiple responses to social prompts.
+
+Scoring system that evaluates clarity, empathy, assertiveness, social awareness, and self-advocacy based on user choices.
+
+Users can track their Progress and receive feedback for improvements
+
+A "Scenario" component that renders scenario data and drives the XState dialogue machine.
+
+A Scenario Builder interface that allows admins to define new scenarios (with support for AI generation of dialogue steps).
+
+User personalization through dynamic text (e.g., {{user.name}}) in NPC lines and responses.
+
+Dialogue steps are JSON-based and fed into XState to dynamically create a state machine for each scenario.
+
+Use SASS for styling all components.
+
+Style & Quality Preferences
+Keep code modular and scalable for future expansion of scenarios and other logic.
+
+Keep code accessible to disabled users
+
+Use meaningful type safety with TypeScript, especially for context and events in state machines.
+
+Favor readable, accessible UI components (screen reader-friendly, keyboard-navigable).
+
+What You Can Help With
+Improve scenario-building UX
+
+Add AI integration
+
+Expand scoring logic
+
+Refactor or suggest better data structures for scalability
+
+
+Troubleshoot SASS, XState, Supabase, or Vite config issues as needed
