@@ -3,6 +3,7 @@ import {
   useContext,
   useState,
   useEffect,
+  useRef,
   type ReactNode,
 } from "react";
 import { supabase } from "../lib/supabase";
@@ -22,66 +23,86 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const isMountedRef = useRef(true);
 
   useEffect(() => {
-    // Initial session check
-    const initializeAuth = async () => {
-      try {
-        const {
-          data: { session },
-          error: sessionError,
-        } = await supabase.auth.getSession();
+    isMountedRef.current = true;
+    let timeoutId: NodeJS.Timeout;
 
-        if (
-          sessionError?.message?.includes("Refresh Token Not Found") ||
-          sessionError?.message?.includes("invalid_grant")
-        ) {
-          await supabase.auth.signOut();
+    // Fallback timeout to ensure loading state is eventually set to false
+    const fallbackTimeout = setTimeout(() => {
+      if (isMountedRef.current && loading) {
+        console.warn("Auth initialization timeout - setting loading to false");
+        setLoading(false);
+      }
+    }, 5000); // 5 second timeout
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      try {
+        if (!isMountedRef.current) return;
+
+        console.log("Auth state change:", event, session?.user?.id);
+
+        if (event === "SIGNED_OUT" || !session?.user) {
           setUser(null);
           setIsAdmin(false);
           setError(null);
         } else if (session?.user) {
           setUser(session.user);
-          const { data: roleData } = await supabase
-            .from("user_roles")
-            .select("role")
-            .eq("user_id", session.user.id)
-            .maybeSingle();
+          
+          // Fetch user role with timeout
+          try {
+            const rolePromise = supabase
+              .from("user_roles")
+              .select("role")
+              .eq("user_id", session.user.id)
+              .maybeSingle();
 
-          setIsAdmin(roleData?.role === "admin");
+            // Add timeout to role fetch
+            const roleTimeout = new Promise((_, reject) =>
+              setTimeout(() => reject(new Error("Role fetch timeout")), 3000)
+            );
+
+            const { data: roleData } = await Promise.race([rolePromise, roleTimeout]) as any;
+            
+            if (isMountedRef.current) {
+              setIsAdmin(roleData?.role === "admin");
+            }
+          } catch (roleError) {
+            console.warn("Failed to fetch user role:", roleError);
+            // Continue without role - user can still access the app
+            if (isMountedRef.current) {
+              setIsAdmin(false);
+            }
+          }
         }
       } catch (err) {
-        console.error("Auth initialization error:", err);
-        setError("Failed to initialize authentication");
+        console.error("Auth state change error:", err);
+        if (isMountedRef.current) {
+          setError("Authentication error occurred");
+        }
       } finally {
-        setLoading(false);
+        if (isMountedRef.current) {
+          setLoading(false);
+          clearTimeout(fallbackTimeout);
+        }
       }
-    };
-
-    initializeAuth();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_OUT") {
-        setUser(null);
-        setIsAdmin(false);
-        setError(null);
-      } else if (session?.user) {
-        setUser(session.user);
-        const { data: roleData } = await supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", session.user.id)
-          .maybeSingle();
-
-        setIsAdmin(roleData?.role === "admin");
-      }
-      setLoading(false);
     });
 
     return () => {
+      isMountedRef.current = false;
+      clearTimeout(fallbackTimeout);
+      if (timeoutId) clearTimeout(timeoutId);
       subscription.unsubscribe();
+    };
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
     };
   }, []);
 
