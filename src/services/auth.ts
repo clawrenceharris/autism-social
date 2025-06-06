@@ -75,7 +75,7 @@ export async function getUserRole(userId: string): Promise<{ role: string | null
       .from('user_roles')
       .select('role')
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
 
     if (error) throw error;
 

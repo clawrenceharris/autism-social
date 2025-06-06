@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             .from('user_roles')
             .select('role')
             .eq('user_id', session.user.id)
-            .single();
+            .maybeSingle();
           
           setIsAdmin(roleData?.role === 'admin');
         }
@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             .from('user_roles')
             .select('role')
             .eq('user_id', session.user.id)
-            .single();
+            .maybeSingle();
           
           setIsAdmin(roleData?.role === 'admin');
         }
