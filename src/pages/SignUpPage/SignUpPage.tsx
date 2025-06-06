@@ -15,7 +15,7 @@ import {
   SignUpStep2,
   SignUpStep1,
 } from "../../components/SignUpSteps";
-const NUM_STEPS = 5;
+const NUM_STEPS = 4;
 const SignUpPage = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
