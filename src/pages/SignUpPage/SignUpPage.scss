@@ -38,7 +38,7 @@
     @include grid-layout(1, 0.5rem);
     margin: $spacing-4;
     overflow: scroll;
-    max-height: 30vh;
+    max-height: 60vh;
     @include responsive(md) {
       grid-template-columns: repeat(2, 1fr);
     }
