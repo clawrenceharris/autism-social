@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
 import { supabase } from "../lib/supabase";
 import type { User } from "@supabase/supabase-js";
 
@@ -21,10 +27,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Initial session check
     const initializeAuth = async () => {
       try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
-        if (sessionError?.message?.includes('Refresh Token Not Found') || 
-            sessionError?.message?.includes('invalid_grant')) {
+        const {
+          data: { session },
+          error: sessionError,
+        } = await supabase.auth.getSession();
+
+        if (
+          sessionError?.message?.includes("Refresh Token Not Found") ||
+          sessionError?.message?.includes("invalid_grant")
+        ) {
           await supabase.auth.signOut();
           setUser(null);
           setIsAdmin(false);
@@ -32,16 +43,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else if (session?.user) {
           setUser(session.user);
           const { data: roleData } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', session.user.id)
+            .from("user_roles")
+            .select("role")
+            .eq("user_id", session.user.id)
             .maybeSingle();
-          
-          setIsAdmin(roleData?.role === 'admin');
+
+          setIsAdmin(roleData?.role === "admin");
         }
       } catch (err) {
-        console.error('Auth initialization error:', err);
-        setError('Failed to initialize authentication');
+        console.error("Auth initialization error:", err);
+        setError("Failed to initialize authentication");
       } finally {
         setLoading(false);
       }
@@ -49,25 +60,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     initializeAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
-          setUser(null);
-          setIsAdmin(false);
-          setError(null);
-        } else if (session?.user) {
-          setUser(session.user);
-          const { data: roleData } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', session.user.id)
-            .maybeSingle();
-          
-          setIsAdmin(roleData?.role === 'admin');
-        }
-        setLoading(false);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "SIGNED_OUT") {
+        setUser(null);
+        setIsAdmin(false);
+        setError(null);
+      } else if (session?.user) {
+        setUser(session.user);
+        const { data: roleData } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", session.user.id)
+          .maybeSingle();
+
+        setIsAdmin(roleData?.role === "admin");
       }
-    );
+      setLoading(false);
+    });
 
     return () => {
       subscription.unsubscribe();
