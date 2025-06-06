@@ -21,23 +21,33 @@ const LoginPage = () => {
       setIsLoading(true);
       setError(null);
 
-      const { error: authError } = await supabase.auth.signInWithPassword({
+      const { error: authError, data: authData } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       });
 
       if (authError) throw authError;
 
-      const { data: roleData } = await supabase
+      // Only proceed if we have a user
+      if (!authData.user) {
+        throw new Error("No user data received");
+      }
+
+      const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
         .select('role')
-        .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
+        .eq('user_id', authData.user.id)
         .single();
 
+      if (roleError) {
+        console.error("Error fetching user role:", roleError);
+      }
+
+      // Navigate even if role fetch fails
       const redirectPath = roleData?.role === 'admin' ? '/' : '/dashboard';
       navigate(redirectPath, { replace: true });
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Failed to log in");
     } finally {
       setIsLoading(false);
     }
