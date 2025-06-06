@@ -54,25 +54,15 @@ const SignUpStep5 = ({ register, errors }: SignUpStep5Props) => {
                 })}
               />
               <span className="checkmark"></span>
-              <span className="checkbox-text">
+              <p className="checkbox-text">
                 I agree to the <a href="#" className="terms-link">Terms of Service</a> and 
                 <a href="#" className="terms-link"> Privacy Policy</a>
-              </span>
+              </p>
             </label>
             {errors.agreement && (
               <p className="form-error">{errors.agreement.message}</p>
             )}
           </div>
-        </div>
-      </div>
-
-      <div className="motivation-section">
-        <div className="motivation-card">
-          <h4>Ready to Start Your Journey?</h4>
-          <p>
-            Join thousands of users who are building confidence and improving their social skills 
-            through practice and personalized feedback.
-          </p>
         </div>
       </div>
     </div>
