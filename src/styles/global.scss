@@ -98,17 +98,19 @@ a {
   font-size: 1.1rem;
 }
 
-// Forms
-.form {
-  margin-bottom: $spacing-6;
-  max-width: 400px;
 
-  label {
+label {
     font-family: $font-family-secondary;
     font-size: 1.7rem;
     font-weight: 500;
     color: $color-gray-700;
   }
+// Forms
+.form-group {
+  margin-bottom: $spacing-6;
+  max-width: 400px;
+
+  
 }
 
 %form-input-base {
