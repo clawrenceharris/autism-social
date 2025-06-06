@@ -35,13 +35,13 @@ const SignUpPage = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [availableInterests, setAvailableInterests] = useState<Interest[]>([]);
+  const [interests, setInterests] = useState<Interest[]>([]);
 
   useEffect(() => {
     const loadInterests = async () => {
       try {
         const interests = await getInterests();
-        setAvailableInterests(interests);
+        setInterests(interests);
       } catch (err) {
         console.error("Failed to load interests:", err);
         setError("Failed to load interests. Please try again.");
@@ -105,7 +105,7 @@ const SignUpPage = () => {
       if (profileError) throw profileError;
 
       // 4. Add user interests
-      const selectedInterests = availableInterests
+      const selectedInterests = interests
         .filter(interest => updatedData.interests?.includes(interest.name))
         .map(interest => interest.id);
 
@@ -232,7 +232,7 @@ const SignUpPage = () => {
               <label>What are your interests?</label>
               <p className="form-helper"><small>Select all that apply</small></p>
               <div className="interests-grid">
-                {availableInterests.map((interest) => (
+                {interests.map((interest) => (
                   <div
                     key={interest.id}
                     className={`checkbox-item ${formData.interests?.includes(interest.name) ? 'selected' : ''}`}
