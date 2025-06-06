@@ -7,7 +7,6 @@
   padding: $spacing-4;
   background-color: $color-gray-50;
   .form {
-    min-height: 60vh;
   }
   .signup-card {
     @include card;
