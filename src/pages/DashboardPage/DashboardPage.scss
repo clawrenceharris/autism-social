@@ -1,0 +1,329 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-4;
+
+  .dashboard-header {
+    margin-bottom: $spacing-8;
+    text-align: center;
+
+    .welcome-section {
+      @include stack-layout($spacing-4);
+      margin-bottom: $spacing-6;
+
+      .welcome-message {
+        font-size: 2.5rem;
+        color: $color-gray-900;
+        margin-bottom: $spacing-2;
+        font-weight: 700;
+      }
+
+      .welcome-subtitle {
+        font-size: 1.2rem;
+        color: $color-gray-600;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+    }
+
+    .quick-stats {
+      @include flex(row, center, center, $spacing-6);
+      flex-wrap: wrap;
+      margin-top: $spacing-6;
+
+      .stat-item {
+        @include flex(column, center, center, $spacing-1);
+        padding: $spacing-4;
+        background: $color-white;
+        border-radius: $border-radius-xl;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        min-width: 120px;
+
+        .stat-number {
+          font-size: 2rem;
+          font-weight: 700;
+          color: $color-primary;
+        }
+
+        .stat-label {
+          font-size: 0.875rem;
+          color: $color-gray-600;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  .dashboard-grid {
+    @include grid-layout(1, $spacing-6);
+
+    @include responsive(md) {
+      grid-template-columns: 2fr 1fr;
+    }
+
+    @include responsive(lg) {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
+
+  .dashboard-section {
+    @include card;
+    padding: $spacing-6;
+
+    .section-header {
+      @include flex(row, space-between, center);
+      margin-bottom: $spacing-6;
+      padding-bottom: $spacing-4;
+      border-bottom: 2px solid $color-gray-100;
+
+      h2 {
+        margin: 0;
+        color: $color-gray-800;
+        font-size: 1.5rem;
+      }
+
+      .section-action {
+        color: $color-primary;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+        @include transition(color);
+
+        &:hover {
+          color: $color-primary-hover;
+        }
+      }
+    }
+
+    .section-content {
+      @include stack-layout($spacing-4);
+    }
+  }
+
+  .continue-scenario {
+    background: linear-gradient(135deg, $color-primary-100, $color-primary-200);
+    border: 2px solid $color-primary;
+
+    .scenario-info {
+      @include stack-layout($spacing-3);
+      margin-bottom: $spacing-4;
+
+      .scenario-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: $color-gray-900;
+      }
+
+      .scenario-progress {
+        @include flex(row, flex-start, center, $spacing-2);
+
+        .progress-bar {
+          flex: 1;
+          height: 8px;
+          background: $color-white;
+          border-radius: $border-radius-full;
+          overflow: hidden;
+
+          .progress-fill {
+            height: 100%;
+            background: $color-primary;
+            transition: width 0.3s ease;
+          }
+        }
+
+        .progress-text {
+          font-size: 0.875rem;
+          color: $color-gray-700;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  .scenario-list {
+    @include stack-layout($spacing-3);
+
+    .scenario-item {
+      @include flex(row, space-between, center);
+      padding: $spacing-4;
+      background: $color-gray-50;
+      border-radius: $border-radius-md;
+      @include transition(all);
+
+      &:hover {
+        background: $color-primary-100;
+        transform: translateY(-1px);
+      }
+
+      .scenario-details {
+        flex: 1;
+
+        .scenario-name {
+          font-weight: 500;
+          color: $color-gray-800;
+          margin-bottom: $spacing-1;
+        }
+
+        .scenario-meta {
+          font-size: 0.875rem;
+          color: $color-gray-600;
+        }
+      }
+
+      .scenario-action {
+        color: $color-primary;
+        font-weight: 500;
+        text-decoration: none;
+        @include transition(color);
+
+        &:hover {
+          color: $color-primary-hover;
+        }
+      }
+    }
+  }
+
+  .progress-overview {
+    .progress-categories {
+      @include stack-layout($spacing-4);
+
+      .category-item {
+        .category-header {
+          @include flex(row, space-between, center);
+          margin-bottom: $spacing-2;
+
+          .category-name {
+            font-weight: 500;
+            color: $color-gray-700;
+          }
+
+          .category-score {
+            font-weight: 600;
+            color: $color-primary;
+          }
+        }
+
+        .category-bar {
+          height: 6px;
+          background: $color-gray-200;
+          border-radius: $border-radius-full;
+          overflow: hidden;
+
+          .category-fill {
+            height: 100%;
+            background: linear-gradient(90deg, $color-primary, $color-primary-200);
+            transition: width 0.3s ease;
+          }
+        }
+      }
+    }
+  }
+
+  .recent-activity {
+    .activity-list {
+      @include stack-layout($spacing-3);
+
+      .activity-item {
+        @include flex(row, flex-start, center, $spacing-3);
+        padding: $spacing-3;
+        background: $color-gray-50;
+        border-radius: $border-radius-md;
+
+        .activity-icon {
+          width: 32px;
+          height: 32px;
+          background: $color-primary-100;
+          border-radius: $border-radius-full;
+          @include flex(row, center, center);
+          color: $color-primary;
+          flex-shrink: 0;
+        }
+
+        .activity-details {
+          flex: 1;
+
+          .activity-text {
+            font-size: 0.9rem;
+            color: $color-gray-800;
+            margin-bottom: $spacing-1;
+          }
+
+          .activity-time {
+            font-size: 0.8rem;
+            color: $color-gray-500;
+          }
+        }
+      }
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: $spacing-8 $spacing-4;
+    color: $color-gray-500;
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: $spacing-4;
+      opacity: 0.5;
+    }
+
+    .empty-message {
+      font-size: 1.1rem;
+      margin-bottom: $spacing-2;
+    }
+
+    .empty-description {
+      font-size: 0.9rem;
+      margin-bottom: $spacing-4;
+    }
+  }
+}
+
+@include responsive(sm) {
+  .dashboard-container {
+    padding: $spacing-2;
+
+    .dashboard-header {
+      .welcome-section {
+        .welcome-message {
+          font-size: 2rem;
+        }
+
+        .welcome-subtitle {
+          font-size: 1rem;
+        }
+      }
+
+      .quick-stats {
+        gap: $spacing-3;
+
+        .stat-item {
+          padding: $spacing-3;
+          min-width: 100px;
+
+          .stat-number {
+            font-size: 1.5rem;
+          }
+        }
+      }
+    }
+
+    .dashboard-section {
+      padding: $spacing-4;
+    }
+
+    .scenario-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: $spacing-2;
+
+      .scenario-action {
+        align-self: flex-end;
+      }
+    }
+  }
+}
