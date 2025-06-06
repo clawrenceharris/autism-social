@@ -44,15 +44,15 @@ const SignUpPage = () => {
 
     fetchInterests();
   }, []);
+
   useEffect(() => {
     const fetchGoals = async () => {
       try {
         const goals = await getGoals();
-        console.log({ goals });
         setGoals(goals);
       } catch (err) {
-        console.error("Failed to load interests:", err);
-        setError("Failed to load interests. Please try again.");
+        console.error("Failed to load goals:", err);
+        setError("Failed to load goals. Please try again.");
       }
     };
 
