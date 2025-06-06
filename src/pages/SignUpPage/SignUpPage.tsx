@@ -38,7 +38,7 @@ const SignUpPage = () => {
   const [interests, setInterests] = useState<Interest[]>([]);
 
   useEffect(() => {
-    const loadInterests = async () => {
+    const fetchInterests = async () => {
       try {
         const interests = await getInterests();
         setInterests(interests);
@@ -48,7 +48,7 @@ const SignUpPage = () => {
       }
     };
 
-    loadInterests();
+    fetchInterests();
   }, []);
 
   const handleSubmit = async (data: Partial<SignUpFormValues>) => {
