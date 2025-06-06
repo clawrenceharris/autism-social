@@ -121,8 +121,7 @@ const SignUpPage = () => {
             submitText="Next"
             // showsSubmitButton={false}
             // showsCancelButton={false}
-            showsCancelButton
-        
+            
             isLoading={isLoading}
           >
             {({ register, formState: { errors } }) => (
@@ -139,6 +138,8 @@ const SignUpPage = () => {
             //showsCancelButton={false}
             showsCancelButton
             isLoading={isLoading}
+            cancelText="Back"
+            onCancle={() => setStep(step -1)}
             error={error}
             onCancel={() => setStep(step - 1)}
           >
@@ -160,6 +161,8 @@ const SignUpPage = () => {
             showsCancelButton
             onCancel={() => setStep(step - 1)}
             isLoading={isLoading}
+            cancelText="Back"
+            onCancle={() => setStep(step -1)}
           >
             <SignUpStep3
               formData={formData}
@@ -176,6 +179,8 @@ const SignUpPage = () => {
             // showsSubmitButton={false}
             // showsCancelButton={false}
             isLoading={isLoading}
+              cancelText="Back"
+            onCancle={() => setStep(step -1)}
           >
             {({ register }) => <SignUpStep4 register={register} />}
           </FormLayout>
@@ -187,6 +192,8 @@ const SignUpPage = () => {
             onSubmit={handleSubmit}
             // showsSubmitButton={false}
             // showsCancelButton={false}
+          cancelText="Back"
+            onCancle={() => setStep(step -1)}
             isLoading={isLoading}
           >
             {({ register }) => <SignUpStep5 register={register} />}
