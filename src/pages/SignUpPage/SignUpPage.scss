@@ -3,8 +3,8 @@
 
 .signup-container {
   @include center-content;
-min-height: 100vh;
-padding: $spacing-4;
+  min-height: 100vh;
+  padding: $spacing-4;
   background-color: $color-gray-50;
   
   .signup-card {
