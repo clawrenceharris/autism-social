@@ -9,7 +9,7 @@ interface SignUpStep1Props {
 const SignUpStep1 = ({ register, errors }: SignUpStep1Props) => {
   return (
     <>
-      <p>Welcome to Autism Social - your personalized platform for building social confidence through interactive scenarios.</p>
+      <p className="description">Welcome to Autism Social - your personalized platform for building social confidence through interactive scenarios.</p>
       <div className="form-group">
         
         <label>Name</label>
