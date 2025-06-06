@@ -135,7 +135,7 @@ const SignUpPage = () => {
             showsCancelButton
             isLoading={isLoading}
             cancelText="Back"
-            onCancle={() => setStep(step -1)}
+            onCancel={() => setStep(step -1)}
             error={error}
           >
             <>
