@@ -1,5 +1,4 @@
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import { FormLayout } from "../../components";
 import { useState } from "react";
 import { signIn, getUserRole } from "../../services/auth";
@@ -12,7 +11,6 @@ interface LoginFormValues {
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { isAdmin } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,22 +19,24 @@ const LoginPage = () => {
       setIsLoading(true);
       setError(null);
 
-      const { user, error: signInError } = await signIn(data.email, data.password);
+      const { user, error: signInError } = await signIn(
+        data.email,
+        data.password
+      );
 
       if (signInError) throw signInError;
       if (!user) throw new Error("No user data received");
 
       const { role, error: roleError } = await getUserRole(user.id);
-      
+
       if (roleError) {
         console.error("Error fetching user role:", roleError);
       }
 
-      const redirectPath = role === 'admin' ? '/admin' : '/';
+      const redirectPath = role === "admin" ? "/admin" : "/";
       navigate(redirectPath, { replace: true });
-    } catch (err: any) {
-      setError(err.message || "Failed to log in");
-
+    } catch {
+      setError("Failed to log in");
     } finally {
       setIsLoading(false);
     }
@@ -47,7 +47,9 @@ const LoginPage = () => {
       <div className="login-card">
         <div className="login-header">
           <h1>Log in</h1>
-          <p>Welcome to the Dialogue App! Log in to access interactive scenarios.</p>
+          <p>
+            Welcome to the Dialogue App! Log in to access interactive scenarios.
+          </p>
         </div>
 
         <FormLayout<LoginFormValues>
@@ -63,13 +65,13 @@ const LoginPage = () => {
                 <input
                   id="email"
                   type="email"
-                  className={`form-input ${errors.email ? 'error' : ''}`}
-                  {...register("email", { 
+                  className={`form-input ${errors.email ? "error" : ""}`}
+                  {...register("email", {
                     required: "Email is required",
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address"
-                    }
+                      message: "Invalid email address",
+                    },
                   })}
                 />
                 {errors.email && (
@@ -82,13 +84,13 @@ const LoginPage = () => {
                 <input
                   id="password"
                   type="password"
-                  className={`form-input ${errors.password ? 'error' : ''}`}
-                  {...register("password", { 
+                  className={`form-input ${errors.password ? "error" : ""}`}
+                  {...register("password", {
                     required: "Password is required",
                     minLength: {
                       value: 6,
-                      message: "Password must be at least 6 characters"
-                    }
+                      message: "Password must be at least 6 characters",
+                    },
                   })}
                 />
                 {errors.password && (
@@ -101,8 +103,7 @@ const LoginPage = () => {
 
         <div className="login-footer">
           <p>
-            Don't have an account?{" "}
-            <Link to="/signup">Sign up</Link>
+            Don't have an account? <Link to="/signup">Sign up</Link>
           </p>
         </div>
       </div>

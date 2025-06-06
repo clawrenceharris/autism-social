@@ -1,7 +1,6 @@
 import { useModal } from "../../../context";
 
 interface ConfirmationModalProps {
-  title: string;
   message: string;
   onConfirm: () => void;
   confirmText?: string;
@@ -9,7 +8,6 @@ interface ConfirmationModalProps {
 }
 
 const ConfirmationModal = ({
-  title,
   message,
   onConfirm,
   confirmText = "Confirm",

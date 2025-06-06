@@ -27,7 +27,9 @@ const Select = forwardRef<HTMLInputElement, SelectProps>(
     const optionsRef = useRef<HTMLDivElement>(null);
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
-      props.onChange && props.onChange(e);
+      if (props.onChange) {
+        props.onChange(e);
+      }
       setInputValue(value);
       setFilteredOptions(
         options.filter((option) =>
@@ -40,7 +42,9 @@ const Select = forwardRef<HTMLInputElement, SelectProps>(
     const handleOptionChange = (option: Option) => {
       setShowOptions(false);
       setInputValue(option.value);
-      onOptionSelect && onOptionSelect(option);
+      if (onOptionSelect) {
+        onOptionSelect(option);
+      }
     };
     const handleClose = () => {
       setShowOptions(false);
@@ -54,7 +58,6 @@ const Select = forwardRef<HTMLInputElement, SelectProps>(
           onChange={handleInputChange}
           onFocus={() => setShowOptions(true)}
           icon={<X />}
-          iconSize={13}
           onIconClick={handleClose}
         />
         {showOptions && (

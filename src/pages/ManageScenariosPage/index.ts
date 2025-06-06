@@ -1,1 +1,1 @@
-export { default } from "./ScenariosPage";
+export { default } from "./ManageScenariosPage";

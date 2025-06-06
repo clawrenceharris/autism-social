@@ -4,7 +4,7 @@ import Select from "../../Select";
 import { PERSONA_TAGS } from "../../../constants/scenario";
 import { X } from "lucide-react";
 import "./CreateDialogueModal.scss";
-import { createDialogue } from "../../../services/scenarios";
+import { createDialogue } from "../../../services/dialogues";
 import { useScenarioDialogues } from "../../../hooks";
 import { useToast } from "../../../context";
 

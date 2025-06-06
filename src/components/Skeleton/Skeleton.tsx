@@ -1,4 +1,4 @@
-import { CSSProperties } from "react";
+import type { CSSProperties } from "react";
 import "./Skeleton.css";
 
 interface SkeletonProps {
@@ -16,11 +16,9 @@ const Skeleton = ({
   style,
   className,
 }: SkeletonProps) => {
-  const classes = [
-    "skeleton",
-    `skeleton-${variant}`,
-    className,
-  ].filter(Boolean).join(" ");
+  const classes = ["skeleton", `skeleton-${variant}`, className]
+    .filter(Boolean)
+    .join(" ");
 
   const combinedStyles: CSSProperties = {
     width: width,

@@ -1,20 +1,11 @@
 import { SCENARIO_CATEGORIES } from "../../constants/scenario";
-import type { DialogueStep } from "../../types";
+import type { CreateScenarioData } from "../../types";
 import { Select } from "../";
 import "./ScenarioForm.css";
-import type { ScenarioFormValues } from "../../pages/EditScenarioPage/EditScenarioPage";
 
 interface ScenarioFormProps {
-  onChange: (data: Partial<ScenarioFormValues>) => void;
-  values: {
-    scenarioTitle: string;
-    dialogueTitle: string;
-    personaTags: string[];
-    difficulty: string;
-    placeholders: string[];
-    description: string;
-    steps: DialogueStep[];
-  };
+  onChange: (data: Partial<CreateScenarioData>) => void;
+  values: CreateScenarioData;
   error?: string | null;
 }
 
@@ -31,8 +22,8 @@ const ScenarioForm = ({ values, onChange, error }: ScenarioFormProps) => {
       <div className="form-group">
         <label className="form-label">Scenario Title</label>
         <Select
-          name="scenarioTitle"
-          value={values.scenarioTitle}
+          name="title"
+          value={values.title}
           onChange={handleChange}
           options={SCENARIO_CATEGORIES.map((item, i) => ({
             key: i,

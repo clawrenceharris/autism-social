@@ -58,12 +58,7 @@ export class DatabaseService {
     if (!error && !data) {
       return {
         data: null,
-        error: {
-          code: "PGRST116",
-          details: `No ${table} record found with id: ${id}`,
-          hint: null,
-          message: "Record not found",
-        },
+        error,
       };
     }
 
@@ -85,12 +80,7 @@ export class DatabaseService {
     if (!error && !result) {
       return {
         data: null,
-        error: {
-          code: "PGRST116",
-          details: `No ${table} record found with id: ${id}`,
-          hint: null,
-          message: "Record not found",
-        },
+        error,
       };
     }
 

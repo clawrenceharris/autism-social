@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth, useToast, useModal } from "../../context";
 import { signOut } from "../../services/auth";
-import { ConfirmationModal } from "../../components/modals";
+import { ConfirmationModal } from "../../components/";
 import {
   User,
   Palette,
