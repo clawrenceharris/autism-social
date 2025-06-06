@@ -27,7 +27,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     isMountedRef.current = true;
-    let timeoutId: NodeJS.Timeout;
 
     // Fallback timeout to ensure loading state is eventually set to false
     const fallbackTimeout = setTimeout(() => {
@@ -51,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setError(null);
         } else if (session?.user) {
           setUser(session.user);
-          
+
           // Fetch user role with timeout
           try {
             const rolePromise = supabase
@@ -65,8 +64,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               setTimeout(() => reject(new Error("Role fetch timeout")), 3000)
             );
 
-            const { data: roleData } = await Promise.race([rolePromise, roleTimeout]) as any;
-            
+            const result = (await Promise.race([rolePromise, roleTimeout])) as {
+              data: { role: string } | null;
+            };
+            const roleData = result.data;
+
             if (isMountedRef.current) {
               setIsAdmin(roleData?.role === "admin");
             }
@@ -94,10 +96,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => {
       isMountedRef.current = false;
       clearTimeout(fallbackTimeout);
-      if (timeoutId) clearTimeout(timeoutId);
       subscription.unsubscribe();
     };
-  }, []);
+  }, [loading]);
 
   // Cleanup on unmount
   useEffect(() => {
