@@ -28,7 +28,7 @@ const DialoguePlayer = ({
   );
   const [state, send] = useMachine(machine);
 
-  const tags = Array.from(state.tags) as DialogueStep[];
+  const tags = Array.from(state.tags) as unknown as DialogueStep[];
   const currentTag = tags?.[0];
   const [isComplete, setIsComplete] = useState<boolean>(false);
   const [input, setInput] = useState<string>();

@@ -2,39 +2,37 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useUser } from "../../context/UserContext";
 import { useRecommendations } from "../../hooks/useRecommendations";
-import { 
-  BookOpen, 
-  TrendingUp, 
-  Clock, 
-  Award, 
-  Play, 
+import {
+  BookOpen,
+  Clock,
+  Award,
+  Play,
   ChevronRight,
   Target,
-  Users,
-  MessageCircle,
-  Star,
-  Zap
+  Zap,
 } from "lucide-react";
 import "./DashboardPage.scss";
+import { RecommendedDialogue } from "../../components";
 
 const DashboardPage = () => {
   const { user } = useAuth();
   const { profile, loading: profileLoading } = useUser();
-  const { recommendations, loading: recommendationsLoading } = useRecommendations();
+  const { recommendations, loading: recommendationsLoading } =
+    useRecommendations();
 
   // Mock data - replace with real data from your services
   const mockStats = {
     scenariosCompleted: 12,
     currentStreak: 5,
     totalScore: 847,
-    averageScore: 78
+    averageScore: 78,
   };
 
   const mockCurrentScenario = {
     id: "1",
     title: "Meeting a New Colleague",
     progress: 65,
-    step: "3 of 5"
+    step: "3 of 5",
   };
 
   const mockProgressCategories = [
@@ -42,28 +40,28 @@ const DashboardPage = () => {
     { name: "Empathy", score: 72, progress: 72 },
     { name: "Assertiveness", score: 68, progress: 68 },
     { name: "Social Awareness", score: 91, progress: 91 },
-    { name: "Self-Advocacy", score: 76, progress: 76 }
+    { name: "Self-Advocacy", score: 76, progress: 76 },
   ];
 
   const mockRecentActivity = [
-    { 
-      id: "1", 
-      text: "Completed 'Job Interview Practice'", 
+    {
+      id: "1",
+      text: "Completed 'Job Interview Practice'",
       time: "2 hours ago",
-      icon: Award
+      icon: Award,
     },
-    { 
-      id: "2", 
-      text: "Started 'Meeting a New Colleague'", 
+    {
+      id: "2",
+      text: "Started 'Meeting a New Colleague'",
       time: "1 day ago",
-      icon: Play
+      icon: Play,
     },
-    { 
-      id: "3", 
-      text: "Achieved 5-day practice streak!", 
+    {
+      id: "3",
+      text: "Achieved 5-day practice streak!",
       time: "2 days ago",
-      icon: Target
-    }
+      icon: Target,
+    },
   ];
 
   // Get user's display name from profile or fallback to email
@@ -72,22 +70,22 @@ const DashboardPage = () => {
     if (profile?.name) return profile.name;
     if (user?.email) {
       // Extract name from email (before @)
-      return user.email.split('@')[0];
+      return user.email.split("@")[0];
     }
     return "User";
   };
 
-  const getMatchScoreColor = (score: number) => {
-    if (score >= 0.7) return "var(--color-green-600)";
-    if (score >= 0.4) return "var(--color-primary)";
-    return "var(--color-gray-500)";
-  };
+  // const getMatchScoreColor = (score: number) => {
+  //   if (score >= 0.7) return "var(--color-green-600)";
+  //   if (score >= 0.4) return "var(--color-primary)";
+  //   return "var(--color-gray-500)";
+  // };
 
-  const getMatchScoreText = (score: number) => {
-    if (score >= 0.7) return "Perfect Match";
-    if (score >= 0.4) return "Good Match";
-    return "Suggested";
-  };
+  // const getMatchScoreText = (score: number) => {
+  //   if (score >= 0.7) return "Perfect Match";
+  //   if (score >= 0.4) return "Good Match";
+  //   return "Suggested";
+  // };
 
   return (
     <div className="dashboard-container">
@@ -97,7 +95,8 @@ const DashboardPage = () => {
             Welcome back, {getUserDisplayName()}! 👋
           </h1>
           <p className="welcome-subtitle">
-            Ready to continue building your social confidence? Let's practice some conversations today.
+            Ready to continue building your social confidence? Let's practice
+            some conversations today.
           </p>
         </div>
 
@@ -130,20 +129,26 @@ const DashboardPage = () => {
             </div>
             <div className="section-content">
               <div className="scenario-info">
-                <div className="scenario-title">{mockCurrentScenario.title}</div>
+                <div className="scenario-title">
+                  {mockCurrentScenario.title}
+                </div>
                 <div className="scenario-progress">
                   <div className="progress-bar">
-                    <div 
-                      className="progress-fill" 
+                    <div
+                      className="progress-fill"
                       style={{ width: `${mockCurrentScenario.progress}%` }}
                     />
                   </div>
                   <span className="progress-text">
-                    Step {mockCurrentScenario.step} • {mockCurrentScenario.progress}% complete
+                    Step {mockCurrentScenario.step} •{" "}
+                    {mockCurrentScenario.progress}% complete
                   </span>
                 </div>
               </div>
-              <Link to={`/scenario/${mockCurrentScenario.id}`} className="btn btn-primary">
+              <Link
+                to={`/scenario/${mockCurrentScenario.id}`}
+                className="btn btn-primary"
+              >
                 <Play size={20} />
                 Continue Scenario
               </Link>
@@ -169,44 +174,24 @@ const DashboardPage = () => {
               ) : recommendations.length > 0 ? (
                 <div className="scenario-list">
                   {recommendations.slice(0, 3).map((scenario) => (
-                    <div key={scenario.id} className="scenario-item recommended">
-                      <div className="scenario-details">
-                        <div className="scenario-header">
-                          <div className="scenario-name">{scenario.title}</div>
-                          <div 
-                            className="match-badge"
-                            style={{ color: getMatchScoreColor(scenario.matchScore) }}
-                          >
-                            <Star size={14} />
-                            {getMatchScoreText(scenario.matchScore)}
-                          </div>
-                        </div>
-                        <div className="scenario-description">{scenario.description}</div>
-                        <div className="match-reasons">
-                          {scenario.matchReasons.slice(0, 2).map((reason, index) => (
-                            <span key={index} className="match-reason">
-                              {reason}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                      <Link 
-                        to={`/scenario/${scenario.id}`} 
-                        className="scenario-action"
-                      >
-                        Start
-                      </Link>
-                    </div>
+                    <RecommendedDialogue scenario={scenario} />
                   ))}
                 </div>
               ) : (
                 <div className="empty-state">
                   <BookOpen className="empty-icon" />
-                  <div className="empty-message">No personalized recommendations yet</div>
-                  <div className="empty-description">
-                    Complete your profile to get personalized scenario recommendations
+                  <div className="empty-message">
+                    No personalized recommendations yet
                   </div>
-                  <Link to="/settings" className="btn btn-primary" style={{ marginTop: "1rem" }}>
+                  <div className="empty-description">
+                    Complete your profile to get personalized scenario
+                    recommendations
+                  </div>
+                  <Link
+                    to="/settings"
+                    className="btn btn-primary"
+                    style={{ marginTop: "1rem" }}
+                  >
                     Complete Profile
                   </Link>
                 </div>
@@ -233,8 +218,8 @@ const DashboardPage = () => {
                       <span className="category-score">{category.score}%</span>
                     </div>
                     <div className="category-bar">
-                      <div 
-                        className="category-fill" 
+                      <div
+                        className="category-fill"
                         style={{ width: `${category.progress}%` }}
                       />
                     </div>

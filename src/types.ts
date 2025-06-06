@@ -90,3 +90,21 @@ export interface CreateDialogueData {
   difficulty: string;
   scoring_categories: string[];
 }
+
+export type DialogueEvent = { type: string };
+
+export interface DialogueStep {
+  id: string;
+  npc: string;
+  options: DialogueOption[];
+}
+export interface DialogueOption {
+  label: string;
+  event: string;
+  scoreChanges: ScoreCategory[];
+  next: string;
+}
+
+export interface Actor {
+  name: string;
+}

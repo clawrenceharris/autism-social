@@ -1,1 +1,1 @@
-export { default } from "./Scenario";
+export { default } from "./ScenarioStagePage";

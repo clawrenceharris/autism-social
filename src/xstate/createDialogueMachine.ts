@@ -1,10 +1,13 @@
-import {
-  createMachine,
-  assign,
-  SingleOrArray,
-  type StateMachine,
-} from "xstate";
-import { DialogueContext, DialogueEvent, DialogueStep } from "../types";
+import { assign, createMachine } from "xstate";
+import type { DialogueEvent, DialogueStep } from "../types";
+
+export interface DialogueContext {
+  clarity: number;
+  empathy: number;
+  assertiveness: number;
+  selfAdvocacy: number;
+  socialAwareness: number;
+}
 
 export function createDialogueMachine(
   id: string,
@@ -12,10 +15,10 @@ export function createDialogueMachine(
   steps: DialogueStep[],
   finalState = "end"
 ) {
-  const stateConfig: any = {};
+  const stateConfig: Record<string, object> = {};
 
   for (const step of steps) {
-    const transitions: Record<string, any> = {};
+    const transitions: Record<string, object> = {};
 
     for (const opt of step.options) {
       transitions[opt.event] = {
@@ -53,30 +56,11 @@ export function createDialogueMachine(
 
   return createMachine({
     types: {
-      context: {} as DialogueContext,
       events: {} as DialogueEvent,
     },
     id,
     initial: steps[0].id,
-    context: {
-      clarity: 0,
-      empathy: 0,
-      assertiveness: 0,
-      socialAwareness: 0,
-      selfAdvocacy: 0,
-    },
 
     states: stateConfig,
-
-    on: {
-      REPLAY: {
-        target: `.${steps[0].id}`,
-        actions: assign({
-          clarity: () => 0,
-          empathy: () => 0,
-          assertiveness: () => 0,
-        }),
-      },
-    },
   });
 }
