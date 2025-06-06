@@ -98,13 +98,15 @@ a {
   font-size: 1.1rem;
 }
 
-
-label {
+.form{
+  label {
     font-family: $font-family-secondary;
     font-size: 1.7rem;
     font-weight: 500;
     color: $color-gray-700;
   }
+}
+
 // Forms
 .form-group {
   margin-bottom: $spacing-6;
