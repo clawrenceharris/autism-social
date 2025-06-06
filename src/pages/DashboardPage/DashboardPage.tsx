@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useUser } from "../../context/UserContext";
+import { useRecommendations } from "../../hooks/useRecommendations";
 import { 
   BookOpen, 
   TrendingUp, 
@@ -10,13 +11,16 @@ import {
   ChevronRight,
   Target,
   Users,
-  MessageCircle
+  MessageCircle,
+  Star,
+  Zap
 } from "lucide-react";
 import "./DashboardPage.scss";
 
 const DashboardPage = () => {
   const { user } = useAuth();
   const { profile, loading: profileLoading } = useUser();
+  const { recommendations, loading: recommendationsLoading } = useRecommendations();
 
   // Mock data - replace with real data from your services
   const mockStats = {
@@ -32,12 +36,6 @@ const DashboardPage = () => {
     progress: 65,
     step: "3 of 5"
   };
-
-  const mockRecommendedScenarios = [
-    { id: "2", title: "Asking for Help at Work", difficulty: "Medium", duration: "5-7 min" },
-    { id: "3", title: "Handling Constructive Feedback", difficulty: "Hard", duration: "8-10 min" },
-    { id: "4", title: "Making Weekend Plans", difficulty: "Easy", duration: "3-5 min" }
-  ];
 
   const mockProgressCategories = [
     { name: "Clarity", score: 85, progress: 85 },
@@ -77,6 +75,18 @@ const DashboardPage = () => {
       return user.email.split('@')[0];
     }
     return "User";
+  };
+
+  const getMatchScoreColor = (score: number) => {
+    if (score >= 0.7) return "var(--color-green-600)";
+    if (score >= 0.4) return "var(--color-primary)";
+    return "var(--color-gray-500)";
+  };
+
+  const getMatchScoreText = (score: number) => {
+    if (score >= 0.7) return "Perfect Match";
+    if (score >= 0.4) return "Good Match";
+    return "Suggested";
   };
 
   return (
@@ -143,20 +153,41 @@ const DashboardPage = () => {
           {/* Recommended Scenarios */}
           <div className="dashboard-section">
             <div className="section-header">
-              <h2>Recommended for You</h2>
+              <h2>
+                <Zap size={20} style={{ marginRight: "0.5rem" }} />
+                Recommended for You
+              </h2>
               <Link to="/explore" className="section-action">
                 View All <ChevronRight size={16} />
               </Link>
             </div>
             <div className="section-content">
-              {mockRecommendedScenarios.length > 0 ? (
+              {recommendationsLoading ? (
+                <div className="loading-state">
+                  <p>Loading personalized recommendations...</p>
+                </div>
+              ) : recommendations.length > 0 ? (
                 <div className="scenario-list">
-                  {mockRecommendedScenarios.map((scenario) => (
-                    <div key={scenario.id} className="scenario-item">
+                  {recommendations.slice(0, 3).map((scenario) => (
+                    <div key={scenario.id} className="scenario-item recommended">
                       <div className="scenario-details">
-                        <div className="scenario-name">{scenario.title}</div>
-                        <div className="scenario-meta">
-                          {scenario.difficulty} • {scenario.duration}
+                        <div className="scenario-header">
+                          <div className="scenario-name">{scenario.title}</div>
+                          <div 
+                            className="match-badge"
+                            style={{ color: getMatchScoreColor(scenario.matchScore) }}
+                          >
+                            <Star size={14} />
+                            {getMatchScoreText(scenario.matchScore)}
+                          </div>
+                        </div>
+                        <div className="scenario-description">{scenario.description}</div>
+                        <div className="match-reasons">
+                          {scenario.matchReasons.slice(0, 2).map((reason, index) => (
+                            <span key={index} className="match-reason">
+                              {reason}
+                            </span>
+                          ))}
                         </div>
                       </div>
                       <Link 
@@ -171,10 +202,13 @@ const DashboardPage = () => {
               ) : (
                 <div className="empty-state">
                   <BookOpen className="empty-icon" />
-                  <div className="empty-message">No scenarios available</div>
+                  <div className="empty-message">No personalized recommendations yet</div>
                   <div className="empty-description">
-                    Check back later for new practice scenarios
+                    Complete your profile to get personalized scenario recommendations
                   </div>
+                  <Link to="/settings" className="btn btn-primary" style={{ marginTop: "1rem" }}>
+                    Complete Profile
+                  </Link>
                 </div>
               )}
             </div>
