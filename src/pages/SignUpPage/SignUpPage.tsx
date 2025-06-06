@@ -119,8 +119,10 @@ const SignUpPage = () => {
           <FormLayout<SignUpFormValues>
             onSubmit={handleSubmit}
             submitText="Next"
-            showsSubmitButton={false}
-            showsCancelButton={false}
+            // showsSubmitButton={false}
+            // showsCancelButton={false}
+            showsCancelButton
+        
             isLoading={isLoading}
           >
             {({ register, formState: { errors } }) => (
@@ -133,10 +135,11 @@ const SignUpPage = () => {
         return (
           <FormLayout
             onSubmit={() => handleSubmit({ goals: formData.goals })}
-            showsSubmitButton={false}
+            //showsSubmitButton={false}
+            //showsCancelButton={false}
+            showsCancelButton
             isLoading={isLoading}
             error={error}
-            showsCancelButton={false}
             onCancel={() => setStep(step - 1)}
           >
             <>
@@ -152,8 +155,9 @@ const SignUpPage = () => {
         return (
           <FormLayout
             onSubmit={() => handleSubmit({ interests: formData.interests })}
-            showsSubmitButton={false}
-            showsCancelButton={false}
+            //showsSubmitButton={false}
+            //showsCancelButton={false} */}
+            showsCancelButton
             onCancel={() => setStep(step - 1)}
             isLoading={isLoading}
           >
@@ -168,8 +172,9 @@ const SignUpPage = () => {
         return (
           <FormLayout<SignUpFormValues>
             onSubmit={handleSubmit}
-            showsSubmitButton={false}
-            showsCancelButton={false}
+            showsCancelButton
+            // showsSubmitButton={false}
+            // showsCancelButton={false}
             isLoading={isLoading}
           >
             {({ register }) => <SignUpStep4 register={register} />}
@@ -180,8 +185,8 @@ const SignUpPage = () => {
         return (
           <FormLayout<SignUpFormValues>
             onSubmit={handleSubmit}
-            showsSubmitButton={false}
-            showsCancelButton={false}
+            // showsSubmitButton={false}
+            // showsCancelButton={false}
             isLoading={isLoading}
           >
             {({ register }) => <SignUpStep5 register={register} />}
@@ -206,7 +211,7 @@ const SignUpPage = () => {
         </div>
 
         {renderStep()}
-        <div className="form-actions">
+        {/* <div className="form-actions">
           {step > 1 && (
             <button
               type="button"
@@ -225,7 +230,7 @@ const SignUpPage = () => {
           >
             Next
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
