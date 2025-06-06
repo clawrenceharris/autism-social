@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import TaskBar from "../TaskBar";
+import { TaskBar } from "../../";
 
 const AdminLayout = () => {
   return (

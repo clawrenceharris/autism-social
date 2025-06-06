@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import UserTaskBar from "../UserTaskBar/UserTaskBar";
+import { UserTaskBar } from "../../";
 
 const UserLayout = () => {
   return (
