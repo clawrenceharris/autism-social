@@ -22,7 +22,7 @@ export const SignUpStep2 = ({
   if (error) return <div className="error">{error}</div>;
 
   return (
-    <div className="form-group">
+    <div >
       <label>What are your goals for using Autism Social?</label>
       <p className="form-helper">
         <small>Select all that apply</small>
