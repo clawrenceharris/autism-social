@@ -3,8 +3,8 @@ import { SCENARIO_CATEGORIES } from "../../../constants/scenario";
 import { updateScenario } from "../../../services/scenarios";
 import { useModal, useToast } from "../../../context";
 import Select from "../../Select";
-import { ProgressIndicator } from "../..";
 import type { Scenario } from "../../../types";
+import { ProgressIndicator } from "../../";
 interface EditScenarioModalProps {
   scenario: Scenario;
 }

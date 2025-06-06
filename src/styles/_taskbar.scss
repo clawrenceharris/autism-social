@@ -1,5 +1,5 @@
-@import "../../styles/variables";
-@import "../../styles/mixins";
+@import "./variables";
+@import "./mixins";
 
 .taskbar {
   background-color: $color-white;
@@ -51,7 +51,6 @@
   &-brand {
     font-weight: 600;
     color: $color-gray-900;
-    font-size: 1.25rem;
     @include flex(row, flex-start, center, $spacing-2);
   }
 }

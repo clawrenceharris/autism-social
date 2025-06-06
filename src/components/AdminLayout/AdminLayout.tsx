@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import TaskBar from "../TaskBar";
 
-const RootLayout = () => {
+const AdminLayout = () => {
   return (
     <div>
       <TaskBar />
@@ -12,4 +12,4 @@ const RootLayout = () => {
   );
 };
 
-export default RootLayout;
+export default AdminLayout;

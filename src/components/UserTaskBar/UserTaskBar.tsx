@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Home, BookOpen, TrendingUp, Settings, Compass } from "lucide-react";
-import "../TaskBar/TaskBar.css";
+import "../../styles/_taskbar.scss";
 
 const UserTaskBar = () => {
   return (
@@ -10,7 +10,7 @@ const UserTaskBar = () => {
           <Home size={24} />
           <span>Dialogue App</span>
         </Link>
-        
+
         <div className="taskbar-nav">
           <Link to="/dashboard" className="taskbar-link">
             <Home />

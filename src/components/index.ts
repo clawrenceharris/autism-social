@@ -1,5 +1,5 @@
 export { default as TaskBar } from "./TaskBar";
-export { default as RootLayout } from "./RootLayout";
+export { default as RootLayout } from "./AdminLayout";
 export { default as ScenarioForm } from "./ScenarioForm";
 export { default as TextInput } from "./TextInput";
 export { default as Select } from "./Select";
@@ -8,7 +8,9 @@ export { default as DialogueForm } from "./DialogueForm";
 export { default as Skeleton } from "./Skeleton";
 export { default as DialoguesPanel } from "./DialoguesPanel";
 export { default as ScenarioListItem } from "./ScenarioListItem";
-export { default as AdminRoute } from "./AdminRoute";
-export { default as UserRoute } from "./UserRoute";
 export { default as UserLayout } from "./UserLayout/UserLayout";
 export { default as FormLayout } from "./FormLayout";
+export { default as AdminRoute } from "./AdminRoute";
+export { default as UserRoute } from "./UserRoute";
+export { default as ProgressIndicator } from "./ProgressIndicator";
+export { default as AdminLayout } from "./AdminLayout";

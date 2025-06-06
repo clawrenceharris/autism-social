@@ -1,23 +1,23 @@
 import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
-interface UserRouteProps {
+interface AdminRouteProps {
   children: React.ReactNode;
 }
 
-const UserRoute = ({ children }: UserRouteProps) => {
-  const { user, loading } = useAuth();
+const AdminRoute = ({ children }: AdminRouteProps) => {
+  const { user, loading, isAdmin } = useAuth();
   const location = useLocation();
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  if (!user) {
+  if (!user || !isAdmin) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return <>{children}</>;
 };
 
-export default UserRoute;
+export default AdminRoute;

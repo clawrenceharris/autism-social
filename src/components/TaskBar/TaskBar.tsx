@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Home, FolderOpen, Settings, Zap } from "lucide-react";
-import "./TaskBar.css";
+import "../../styles/_taskbar.scss";
 
 const TaskBar = () => {
   return (
@@ -10,7 +10,7 @@ const TaskBar = () => {
           <Zap size={24} />
           <span>Scenario Builder</span>
         </Link>
-        
+
         <div className="taskbar-nav">
           <Link to="/" className="taskbar-link">
             <Home />

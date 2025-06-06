@@ -1,5 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { RootLayout, ScenarioLayout, UserLayout } from "./components";
+import {
+  AdminRoute,
+  AdminLayout,
+  ScenarioLayout,
+  UserLayout,
+  UserRoute,
+} from "./components";
 import {
   HomePage,
   ScenarioPage,
@@ -14,8 +20,6 @@ import {
 } from "./pages";
 import { ModalProvider, ToastProvider } from "./context";
 import { AuthProvider } from "./context/AuthContext";
-import AdminRoute from "./components/AdminRoute";
-import UserRoute from "./components/UserRoute";
 
 function App() {
   return (
@@ -28,25 +32,34 @@ function App() {
               <Route path="/signup" element={<SignUpPage />} />
 
               {/* Admin Routes */}
-              <Route element={<RootLayout />}>
-                <Route path="/" element={
-                  <AdminRoute>
-                    <HomePage />
-                  </AdminRoute>
-                } />
-                <Route path="/scenarios" element={
-                  <AdminRoute>
-                    <ScenariosPage />
-                  </AdminRoute>
-                } />
+              <Route element={<AdminLayout />}>
+                <Route
+                  path="/"
+                  element={
+                    <AdminRoute>
+                      <HomePage />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/scenarios"
+                  element={
+                    <AdminRoute>
+                      <ScenariosPage />
+                    </AdminRoute>
+                  }
+                />
               </Route>
 
               <Route element={<ScenarioLayout />}>
-                <Route path="/scenario/:scenarioId" element={
-                  <AdminRoute>
-                    <ScenarioPage />
-                  </AdminRoute>
-                } />
+                <Route
+                  path="/scenario/:scenarioId"
+                  element={
+                    <AdminRoute>
+                      <ScenarioPage />
+                    </AdminRoute>
+                  }
+                />
                 <Route
                   path="/scenario/:scenarioId/dialogue/:dialogueId"
                   element={
@@ -59,31 +72,46 @@ function App() {
 
               {/* User Routes */}
               <Route element={<UserLayout />}>
-                <Route path="/dashboard" element={
-                  <UserRoute>
-                    <DashboardPage />
-                  </UserRoute>
-                } />
-                <Route path="/your-scenarios" element={
-                  <UserRoute>
-                    <YourScenariosPage />
-                  </UserRoute>
-                } />
-                <Route path="/progress" element={
-                  <UserRoute>
-                    <ProgressPage />
-                  </UserRoute>
-                } />
-                <Route path="/customization" element={
-                  <UserRoute>
-                    <CustomizationPage />
-                  </UserRoute>
-                } />
-                <Route path="/explore" element={
-                  <UserRoute>
-                    <ExplorePage />
-                  </UserRoute>
-                } />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <UserRoute>
+                      <DashboardPage />
+                    </UserRoute>
+                  }
+                />
+                <Route
+                  path="/your-scenarios"
+                  element={
+                    <UserRoute>
+                      <YourScenariosPage />
+                    </UserRoute>
+                  }
+                />
+                <Route
+                  path="/progress"
+                  element={
+                    <UserRoute>
+                      <ProgressPage />
+                    </UserRoute>
+                  }
+                />
+                <Route
+                  path="/customization"
+                  element={
+                    <UserRoute>
+                      <CustomizationPage />
+                    </UserRoute>
+                  }
+                />
+                <Route
+                  path="/explore"
+                  element={
+                    <UserRoute>
+                      <ExplorePage />
+                    </UserRoute>
+                  }
+                />
               </Route>
             </Routes>
           </Router>
