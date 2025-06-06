@@ -17,7 +17,7 @@ const SignUpStep5 = ({ register, errors }: SignUpStep5Props) => {
         </div>
         <h2>You're Almost Ready!</h2>
         <p className="welcome-text">
-          Welcome to Autism Social - your personalized platform for building social confidence through interactive scenarios.
+            You're just one step away from a journey of immersive, interactive social learning.
         </p>
       </div>
 
