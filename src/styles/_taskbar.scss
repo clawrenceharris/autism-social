@@ -32,6 +32,14 @@
     border-radius: $border-radius-md;
     transition: all 0.2s ease;
 
+    span {
+      display: none;
+
+      @include responsive(md) {
+        display: inline;
+      }
+    }
+
     &:hover {
       color: $color-primary;
       background-color: $color-gray-50;
@@ -52,16 +60,20 @@
     font-weight: 600;
     color: $color-gray-900;
     @include flex(row, flex-start, center, $spacing-2);
+
+    span {
+      display: none;
+
+      @include responsive(md) {
+        display: inline;
+      }
+    }
   }
 }
 
 @include responsive(sm) {
   .taskbar {
     padding: $spacing-3 $spacing-4;
-
-    &-link span {
-      display: none;
-    }
 
     &-nav {
       gap: $spacing-4;
