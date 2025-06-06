@@ -1,22 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import { FormLayout } from "../../components";
 import { signUp } from "../../services/auth";
-import { getInterests, addUserInterests } from "../../services/interests";
+import { addUserInterests } from "../../services/interests";
 import "./SignUpPage.scss";
 import { useToast } from "../../context";
-import type { Goal, Interest } from "../../types";
-import { getGoals } from "../../services/goals";
-
-interface SignUpFormValues {
-  name: string;
-  email: string;
-  password: string;
-  goals: string[];
-  interests: string[];
-  profilePhoto?: File;
-}
+import type { SignUpFormValues } from "../../types";
+import { SignUpStep1 } from "../../components/SignUpSteps/SignUpStep1";
+import { SignUpStep2 } from "../../components/SignUpSteps/SignUpStep2";
+import { SignUpStep3 } from "../../components/SignUpSteps/SignUpStep3";
+import { SignUpStep4 } from "../../components/SignUpSteps/SignUpStep4";
 
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -28,36 +22,6 @@ const SignUpPage = () => {
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [interests, setInterests] = useState<Interest[]>([]);
-  const [goals, setGoals] = useState<Goal[]>([]);
-
-  useEffect(() => {
-    const fetchInterests = async () => {
-      try {
-        const interests = await getInterests();
-        setInterests(interests);
-      } catch (err) {
-        console.error("Failed to load interests:", err);
-        setError("Failed to load interests. Please try again.");
-      }
-    };
-
-    fetchInterests();
-  }, []);
-
-  useEffect(() => {
-    const fetchGoals = async () => {
-      try {
-        const goals = await getGoals();
-        setGoals(goals);
-      } catch (err) {
-        console.error("Failed to load goals:", err);
-        setError("Failed to load goals. Please try again.");
-      }
-    };
-
-    fetchGoals();
-  }, []);
 
   const handleSubmit = async (data: Partial<SignUpFormValues>) => {
     try {
@@ -72,7 +36,6 @@ const SignUpPage = () => {
 
       setIsLoading(true);
 
-      // 1. Sign up the user
       const { user, error: signUpError } = await signUp(
         updatedData.email!,
         updatedData.password!
@@ -81,7 +44,6 @@ const SignUpPage = () => {
       if (signUpError) throw signUpError;
       if (!user) throw new Error("Failed to create user");
 
-      // 2. Upload profile photo if provided
       let profilePhotoUrl = null;
       if (updatedData.profilePhoto) {
         const fileExt = updatedData.profilePhoto.name.split(".").pop();
@@ -102,7 +64,6 @@ const SignUpPage = () => {
         }
       }
 
-      // 3. Create user profile
       const { error: profileError } = await supabase
         .from("user_profiles")
         .insert({
@@ -113,16 +74,25 @@ const SignUpPage = () => {
 
       if (profileError) throw profileError;
 
-      // 4. Add user interests
-      const selectedInterests = interests
-        .filter((interest) => updatedData.interests?.includes(interest.name))
-        .map((interest) => interest.id);
+      if (updatedData.interests?.length) {
+        const { data: interestsData } = await supabase
+          .from("interests")
+          .select("id, name")
+          .in("name", updatedData.interests);
 
-      await addUserInterests(user.id, selectedInterests);
+        if (interestsData) {
+          await addUserInterests(
+            user.id,
+            interestsData.map((i) => i.id)
+          );
+        }
+      }
+
       showToast("Sign up was successful!", "success");
       navigate("/", { replace: true });
-    } catch {
+    } catch (err) {
       setError("Sign up failed");
+      console.error("Sign up error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -149,58 +119,7 @@ const SignUpPage = () => {
             error={error}
           >
             {({ register, formState: { errors } }) => (
-              <>
-                <div className="form-group">
-                  <label>Name</label>
-                  <input
-                    type="text"
-                    className={`form-input ${errors.name ? "error" : ""}`}
-                    {...register("name", { required: "Name is required" })}
-                  />
-                  <p className="description">
-                    What would you like to be called?
-                  </p>
-                  {errors.name && (
-                    <p className="form-error">{errors.name.message}</p>
-                  )}
-                </div>
-
-                <div className="form-group">
-                  <label>Email</label>
-                  <input
-                    type="email"
-                    className={`form-input ${errors.email ? "error" : ""}`}
-                    {...register("email", {
-                      required: "Email is required",
-                      pattern: {
-                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                        message: "Invalid email address",
-                      },
-                    })}
-                  />
-                  {errors.email && (
-                    <p className="form-error">{errors.email.message}</p>
-                  )}
-                </div>
-
-                <div className="form-group">
-                  <label>Password</label>
-                  <input
-                    type="password"
-                    className={`form-input ${errors.password ? "error" : ""}`}
-                    {...register("password", {
-                      required: "Password is required",
-                      minLength: {
-                        value: 6,
-                        message: "Password must be at least 6 characters",
-                      },
-                    })}
-                  />
-                  {errors.password && (
-                    <p className="form-error">{errors.password.message}</p>
-                  )}
-                </div>
-              </>
+              <SignUpStep1 register={register} errors={errors} />
             )}
           </FormLayout>
         );
@@ -213,25 +132,7 @@ const SignUpPage = () => {
             isLoading={isLoading}
             error={error}
           >
-            <div className="form-group">
-              <label>What are your goals for using Autism Social?</label>
-              <p className="form-helper">
-                <small>Select all that apply</small>
-              </p>
-              <div className="goals-grid">
-                {goals.map((goal) => (
-                  <div
-                    key={goal.id}
-                    className={`checkbox-item ${
-                      formData.goals?.includes(goal.goal) ? "selected" : ""
-                    }`}
-                    onClick={() => toggleSelection("goals", goal.goal)}
-                  >
-                    <span>{goal.goal}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <SignUpStep2 formData={formData} toggleSelection={toggleSelection} />
           </FormLayout>
         );
 
@@ -243,27 +144,7 @@ const SignUpPage = () => {
             isLoading={isLoading}
             error={error}
           >
-            <div className="form-group">
-              <label>What are your interests?</label>
-              <p className="form-helper">
-                <small>Select all that apply</small>
-              </p>
-              <div className="interests-grid">
-                {interests.map((interest) => (
-                  <div
-                    key={interest.id}
-                    className={`checkbox-item ${
-                      formData.interests?.includes(interest.name)
-                        ? "selected"
-                        : ""
-                    }`}
-                    onClick={() => toggleSelection("interests", interest.name)}
-                  >
-                    <span>{interest.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <SignUpStep3 formData={formData} toggleSelection={toggleSelection} />
           </FormLayout>
         );
 
@@ -275,17 +156,7 @@ const SignUpPage = () => {
             isLoading={isLoading}
             error={error}
           >
-            {({ register }) => (
-              <div className="form-group">
-                <label>Profile Photo (Optional)</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="form-input"
-                  {...register("profilePhoto")}
-                />
-              </div>
-            )}
+            {({ register }) => <SignUpStep4 register={register} />}
           </FormLayout>
         );
     }

@@ -1,16 +1,10 @@
-export interface CreateScenarioData {
-  title: string;
-  description: string;
-}
-
-export interface CreateDialogueData {
-  scenario_id: string;
-  title: string;
-  steps: DialogueStep[];
-  placeholders: string[];
-  persona_tags: string[];
-  scoring_categories: string[];
-  difficulty: string;
+export interface SignUpFormValues {
+  name: string;
+  email: string;
+  password: string;
+  goals: string[];
+  interests: string[];
+  profilePhoto?: File;
 }
 
 export interface Interest {
@@ -22,6 +16,7 @@ export interface Goal {
   id: string;
   goal: string;
 }
+
 export interface Option {
   responseLabel: string;
   eventType: string;
@@ -53,12 +48,14 @@ export interface DialogueStep {
   npc: string;
   options: DialogueOption[];
 }
+
 export interface DialogueOption {
   label: string;
   event: string;
   scoreChanges: ScoreCategory[];
   next: string;
 }
+
 export type ScoreCategory =
   | "clarity"
   | "empathy"
