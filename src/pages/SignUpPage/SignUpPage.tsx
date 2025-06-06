@@ -178,7 +178,6 @@ const SignUpPage = () => {
           </FormLayout>
         );
       case 5:
-    console.log(formData);
         return (
           <FormLayout<SignUpFormValues>
             onSubmit={handleSubmit}
@@ -186,6 +185,7 @@ const SignUpPage = () => {
             cancelText="Back"
             onCancle={() => setStep(step -1)}
             isLoading={isLoading}
+            error={error}
           >
             {({ register }) => <SignUpStep5 register={register} />}
           </FormLayout>
