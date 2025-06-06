@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import { FormLayout } from "../../components";
+import { signUp } from "../../services/auth";
+import { getInterests, type Interest, addUserInterests } from "../../services/interests";
 import "./SignUpPage.scss";
 
 interface SignUpFormValues {
@@ -24,13 +26,6 @@ const GOALS = [
   "Other"
 ];
 
-const INTERESTS = [
-  "Sports", "Art", "Music", "Gaming", "Technology",
-  "Science", "Nature", "Animals", "Reading/Writing", "Religion",
-  "Cooking", "Travel", "Movies", "Photography", "Dance",
-  "History", "Cars", "Fashion", "Fitness", "Meditation"
-];
-
 const SignUpPage = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
@@ -40,6 +35,21 @@ const SignUpPage = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [availableInterests, setAvailableInterests] = useState<Interest[]>([]);
+
+  useEffect(() => {
+    const loadInterests = async () => {
+      try {
+        const interests = await getInterests();
+        setAvailableInterests(interests);
+      } catch (err) {
+        console.error("Failed to load interests:", err);
+        setError("Failed to load interests. Please try again.");
+      }
+    };
+
+    loadInterests();
+  }, []);
 
   const handleSubmit = async (data: Partial<SignUpFormValues>) => {
     try {
@@ -55,19 +65,19 @@ const SignUpPage = () => {
       setIsLoading(true);
 
       // 1. Sign up the user
-      const { data: authData, error: signUpError } = await supabase.auth.signUp({
-        email: updatedData.email!,
-        password: updatedData.password!
-      });
+      const { user, error: signUpError } = await signUp(
+        updatedData.email!,
+        updatedData.password!
+      );
 
       if (signUpError) throw signUpError;
-      if (!authData.user) throw new Error("Failed to create user");
+      if (!user) throw new Error("Failed to create user");
 
       // 2. Upload profile photo if provided
       let profilePhotoUrl = null;
       if (updatedData.profilePhoto) {
         const fileExt = updatedData.profilePhoto.name.split('.').pop();
-        const fileName = `${authData.user.id}-${Math.random()}.${fileExt}`;
+        const fileName = `${user.id}-${Math.random()}.${fileExt}`;
 
         const { error: uploadError, data: uploadData } = await supabase.storage
           .from('profile-photos')
@@ -86,18 +96,24 @@ const SignUpPage = () => {
       const { error: profileError } = await supabase
         .from('user_profiles')
         .insert({
-          user_id: authData.user.id,
+          user_id: user.id,
           name: updatedData.name,
           goals: updatedData.goals,
-          interests: updatedData.interests,
           profile_photo_url: profilePhotoUrl
         });
 
       if (profileError) throw profileError;
 
-      navigate("/dashboard", { replace: true });
+      // 4. Add user interests
+      const selectedInterests = availableInterests
+        .filter(interest => updatedData.interests?.includes(interest.name))
+        .map(interest => interest.id);
+
+      await addUserInterests(user.id, selectedInterests);
+
+      navigate("/", { replace: true });
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Failed to sign up");
     } finally {
       setIsLoading(false);
     }
@@ -216,13 +232,13 @@ const SignUpPage = () => {
               <label>What are your interests?</label>
               <p className="form-helper"><small>Select all that apply</small></p>
               <div className="interests-grid">
-                {INTERESTS.map((interest) => (
+                {availableInterests.map((interest) => (
                   <div
-                    key={interest}
-                    className={`checkbox-item ${formData.interests?.includes(interest) ? 'selected' : ''}`}
-                    onClick={() => toggleSelection('interests', interest)}
+                    key={interest.id}
+                    className={`checkbox-item ${formData.interests?.includes(interest.name) ? 'selected' : ''}`}
+                    onClick={() => toggleSelection('interests', interest.name)}
                   >
-                    <span>{interest}</span>
+                    <span>{interest.name}</span>
                   </div>
                 ))}
               </div>
