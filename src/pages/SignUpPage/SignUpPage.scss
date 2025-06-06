@@ -3,7 +3,7 @@
 
 .signup-container {
   @include center-content;
-  height: 100vh;
+  min-height: 100vh;
   padding: $spacing-4;
   background-color: $color-gray-50;
   
