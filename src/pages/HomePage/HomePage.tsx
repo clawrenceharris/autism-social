@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { CreateScenarioModal } from "../../components/modals";
+import { CreateScenarioModal } from "../../components";
 import { useModal } from "../../context";
 import { Plus, FolderOpen, Settings, Wand2 } from "lucide-react";
 import "./HomePage.css";
@@ -17,8 +17,8 @@ const HomePage = () => {
       <section className="hero">
         <h1>Scenario Builder</h1>
         <p className="description">
-          Create and manage interactive dialogue scenarios for social skills training.
-          Build branching conversations with scoring and feedback.
+          Create and manage interactive dialogue scenarios for social skills
+          training. Build branching conversations with scoring and feedback.
         </p>
       </section>
 
@@ -29,8 +29,8 @@ const HomePage = () => {
           </div>
           <h2>Create New Scenario</h2>
           <p className="description">
-            Start building a new interactive dialogue scenario from scratch.
-            Use AI assistance to generate realistic conversations.
+            Start building a new interactive dialogue scenario from scratch. Use
+            AI assistance to generate realistic conversations.
           </p>
           <button onClick={handleCreateScenario} className="btn btn-primary">
             <Plus size={20} />
@@ -44,10 +44,13 @@ const HomePage = () => {
           </div>
           <h2>Manage Scenarios</h2>
           <p className="description">
-            View, edit, and organize your existing scenarios.
-            Track progress and manage multiple dialogue variations.
+            View, edit, and organize your existing scenarios. Track progress and
+            manage multiple dialogue variations.
           </p>
-          <button onClick={() => navigate("/scenarios")} className="btn btn-primary">
+          <button
+            onClick={() => navigate("/scenarios")}
+            className="btn btn-primary"
+          >
             View Scenarios
           </button>
         </div>
@@ -58,10 +61,13 @@ const HomePage = () => {
           </div>
           <h2>Settings</h2>
           <p className="description">
-            Customize your experience, manage scoring categories,
-            and configure AI generation preferences.
+            Customize your experience, manage scoring categories, and configure
+            AI generation preferences.
           </p>
-          <button onClick={() => navigate("/settings")} className="btn btn-primary">
+          <button
+            onClick={() => navigate("/settings")}
+            className="btn btn-primary"
+          >
             Open Settings
           </button>
         </div>

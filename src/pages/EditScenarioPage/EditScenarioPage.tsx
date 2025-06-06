@@ -2,13 +2,16 @@ import { useState, useEffect, useCallback } from "react";
 import "./ScenarioPage.css";
 import { useModal, useScenario, useToast } from "../../context";
 import type { Dialogue, DialogueStep } from "../../types";
-import { DialoguesPanel, DialogueForm } from "../../components";
+import {
+  DialoguesPanel,
+  DialogueForm,
+  EditScenarioModal,
+} from "../../components";
 import { useParams } from "react-router-dom";
 import { getDialogueById, updateDialogue } from "../../services/scenarios";
 import { Pencil } from "lucide-react";
-import { EditSceanrioModal } from "../../components/modals";
 
-const ScenarioPage = () => {
+const EditScenarioPage = () => {
   const { scenario, loading, error } = useScenario();
   const { dialogueId } = useParams<{ dialogueId: string }>();
   const [dialogue, setDialogue] = useState<Dialogue | null>(null);
@@ -147,7 +150,7 @@ const ScenarioPage = () => {
           className="squircle-btn primary"
           onClick={() =>
             openModal(
-              <EditSceanrioModal scenario={scenario} />,
+              <EditScenarioModal scenario={scenario} />,
               "Edit Scenario"
             )
           }
@@ -161,4 +164,4 @@ const ScenarioPage = () => {
   );
 };
 
-export default ScenarioPage;
+export default EditScenarioPage;

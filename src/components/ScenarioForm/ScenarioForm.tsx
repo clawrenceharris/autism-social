@@ -2,7 +2,7 @@ import { SCENARIO_CATEGORIES } from "../../constants/scenario";
 import type { DialogueStep } from "../../types";
 import { Select } from "../";
 import "./ScenarioForm.css";
-import type { ScenarioFormValues } from "../../pages/ScenarioPage/ScenarioPage";
+import type { ScenarioFormValues } from "../../pages/EditScenarioPage/EditScenarioPage";
 
 interface ScenarioFormProps {
   onChange: (data: Partial<ScenarioFormValues>) => void;

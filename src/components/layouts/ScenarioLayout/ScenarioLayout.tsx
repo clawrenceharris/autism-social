@@ -1,6 +1,6 @@
 import { Outlet, useParams } from "react-router-dom";
-import { ScenarioProvider } from "../../context";
-import TaskBar from "../TaskBar";
+import TaskBar from "../../TaskBar";
+import { ScenarioProvider } from "../../../context";
 
 const ScenarioLayout = () => {
   const { scenarioId } = useParams<{ scenarioId: string }>();

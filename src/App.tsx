@@ -8,8 +8,8 @@ import {
 } from "./components";
 import {
   HomePage,
-  ScenarioPage,
-  ScenariosPage,
+  EditScenarioPage,
+  ManageScenariosPage,
   LoginPage,
   DashboardPage,
   YourScenariosPage,
@@ -47,7 +47,7 @@ function App() {
                     path="/scenarios"
                     element={
                       <AdminRoute>
-                        <ScenariosPage />
+                        <ManageScenariosPage />
                       </AdminRoute>
                     }
                   />
@@ -58,7 +58,7 @@ function App() {
                     path="/scenario/:scenarioId"
                     element={
                       <AdminRoute>
-                        <ScenarioPage />
+                        <EditScenarioPage />
                       </AdminRoute>
                     }
                   />
@@ -66,7 +66,7 @@ function App() {
                     path="/scenario/:scenarioId/dialogue/:dialogueId"
                     element={
                       <AdminRoute>
-                        <ScenarioPage />
+                        <EditScenarioPage />
                       </AdminRoute>
                     }
                   />

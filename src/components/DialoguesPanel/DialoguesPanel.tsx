@@ -3,7 +3,7 @@ import "./DialoguesPanel.css";
 import { Check, ChevronRight, Minus, Plus } from "lucide-react";
 import type { Scenario } from "../../types";
 import { useModal } from "../../context";
-import CreateDialogueModal from "../modals/CreateDialogueModal";
+import { CreateDialogueModal } from "../";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 interface DialoguesPanelProps {

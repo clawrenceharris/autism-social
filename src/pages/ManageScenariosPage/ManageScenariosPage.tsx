@@ -1,9 +1,13 @@
 import { useScenarios } from "../../hooks";
-import { Skeleton,ScenarioListItem } from "../../components";
+import {
+  Skeleton,
+  ScenarioListItem,
+  ConfirmationModal,
+} from "../../components";
 import { deleteScenario } from "../../services/scenarios";
 import { useModal, useToast } from "../../context";
-import { ConfirmationModal } from "../../components/modals";
 import "./ScenariosPage.css";
+import type { Scenario } from "../../types";
 
 const SkeletonScenario = () => (
   <div className="scenario-item">
@@ -13,23 +17,23 @@ const SkeletonScenario = () => (
       <Skeleton variant="text" width="85%" />
     </div>
     <div className="scenario-actions">
-      <Skeleton 
+      <Skeleton
         variant="button"
-        width={40} 
-        height={40} 
-        style={{ borderRadius: "8px" }} 
+        width={40}
+        height={40}
+        style={{ borderRadius: "8px" }}
       />
-      <Skeleton 
-        variant="button" 
-        width={40} 
-        height={40} 
-        style={{ borderRadius: "8px" }} 
+      <Skeleton
+        variant="button"
+        width={40}
+        height={40}
+        style={{ borderRadius: "8px" }}
       />
     </div>
   </div>
 );
 
-const ScenariosPage = () => {
+const ManageScenariosPage = () => {
   const { scenarios, loading, error, removeScenario } = useScenarios();
   const { openModal } = useModal();
   const { showToast } = useToast();
@@ -45,7 +49,7 @@ const ScenariosPage = () => {
             await deleteScenario(scenario.id);
             removeScenario(scenario.id);
             showToast("Scenario deleted successfully", "success");
-          } catch (error) {
+          } catch {
             showToast("Failed to delete scenario", "error");
           }
         }}
@@ -56,10 +60,10 @@ const ScenariosPage = () => {
 
   if (loading) {
     return (
-      <div role="status\" aria-live="polite\" className="scenarios-container">
+      <div role="status" aria-live="polite" className="scenarios-container">
         <header className="scenarios-header">
-          <Skeleton variant="title\" width="60%" />
-          <Skeleton variant="text\" width="80%" />
+          <Skeleton variant="title" width="60%" />
+          <Skeleton variant="text" width="80%" />
         </header>
         <div className="scenarios-grid">
           {[...Array(6)].map((_, index) => (
@@ -84,7 +88,9 @@ const ScenariosPage = () => {
     <main className="scenarios-container">
       <header className="scenarios-header">
         <h1>Your Scenarios</h1>
-        <p className="description">Browse and manage your dialogue scenarios.</p>
+        <p className="description">
+          Browse and manage your dialogue scenarios.
+        </p>
       </header>
 
       {scenarios.length === 0 ? (
@@ -92,15 +98,15 @@ const ScenariosPage = () => {
           <p>No scenarios found. Create your first scenario to get started.</p>
         </div>
       ) : (
-        <div 
+        <div
           className="scenarios-grid"
           role="list"
           aria-label="List of scenarios"
         >
           {scenarios.map((scenario) => (
             <div key={scenario.id} role="listitem">
-              <ScenarioListItem 
-                scenario={scenario} 
+              <ScenarioListItem
+                scenario={scenario}
                 onDeleteClick={() => handleDelete(scenario)}
               />
             </div>
@@ -111,4 +117,4 @@ const ScenariosPage = () => {
   );
 };
 
-export default ScenariosPage;
+export default ManageScenariosPage;
