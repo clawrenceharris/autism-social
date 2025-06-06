@@ -18,12 +18,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setUser(session?.user ?? null);
-        setLoading(false);
+    // Initial session check
+    const initializeAuth = async () => {
+      try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
-        if (session?.user) {
+        if (sessionError?.message?.includes('Refresh Token Not Found') || 
+            sessionError?.message?.includes('invalid_grant')) {
+          await supabase.auth.signOut();
+          setUser(null);
+          setIsAdmin(false);
+          setError(null);
+        } else if (session?.user) {
+          setUser(session.user);
           const { data: roleData } = await supabase
             .from('user_roles')
             .select('role')
@@ -31,9 +38,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             .single();
           
           setIsAdmin(roleData?.role === 'admin');
-        } else {
-          setIsAdmin(false);
         }
+      } catch (err) {
+        console.error('Auth initialization error:', err);
+        setError('Failed to initialize authentication');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initializeAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
+          setUser(null);
+          setIsAdmin(false);
+          setError(null);
+        } else if (session?.user) {
+          setUser(session.user);
+          const { data: roleData } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', session.user.id)
+            .single();
+          
+          setIsAdmin(roleData?.role === 'admin');
+        }
+        setLoading(false);
       }
     );
 
