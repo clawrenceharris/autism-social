@@ -16,8 +16,8 @@ const SignUpStep5 = ({ register, errors }: SignUpStep5Props) => {
           <Zap size={48} />
         </div>
         <h2>You're Almost Ready!</h2>
-        <p className="welcome-text">
-            You're just one step away from a journey of immersive, interactive social learning.
+        <p className="description">
+          Unlock a world of immersive social learning. Your journey begins now
         </p>
       </div>
 
