@@ -17,7 +17,7 @@ const SignUpStep5 = ({ register, errors }: SignUpStep5Props) => {
         </div>
         <h2>You're Almost Ready!</h2>
         <p className="welcome-text">
-          Complete this last step and unlock a world of immersive social learning. Your journey waits!
+          Complete this last step and unlock a world of immersive social learning. Your journey awaits!
         </p>
       </div>
 
@@ -62,16 +62,6 @@ const SignUpStep5 = ({ register, errors }: SignUpStep5Props) => {
               <p className="form-error">{errors.agreement.message}</p>
             )}
           </div>
-        </div>
-      </div>
-
-      <div className="motivation-section">
-        <div className="motivation-card">
-          <h4>🎯 Your Journey Starts Now</h4>
-          <p>
-            Every conversation is a step forward. Every scenario builds confidence. 
-            You're about to embark on a personalized path to stronger social connections.
-          </p>
         </div>
       </div>
     </div>
