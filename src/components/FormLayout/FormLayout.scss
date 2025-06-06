@@ -61,5 +61,7 @@
   .form-actions {
     @include flex(row, flex-end, center, $spacing-2);
     margin: $spacing-2 0;
+    position: absolute;
+    bottom: 0;
   }
 }
