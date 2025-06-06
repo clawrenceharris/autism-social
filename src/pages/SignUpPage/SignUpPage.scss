@@ -39,7 +39,6 @@
     margin: $spacing-3;
     overflow: scroll;
     max-height: 40vh;
-    width: 100%;
     @include responsive(md) {
       grid-template-columns: repeat(2, 1fr);
     }
