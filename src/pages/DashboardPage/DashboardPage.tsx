@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useUser } from "../../context/UserContext";
 import { 
   BookOpen, 
   TrendingUp, 
@@ -15,6 +16,7 @@ import "./DashboardPage.scss";
 
 const DashboardPage = () => {
   const { user } = useAuth();
+  const { profile, loading: profileLoading } = useUser();
 
   // Mock data - replace with real data from your services
   const mockStats = {
@@ -66,14 +68,23 @@ const DashboardPage = () => {
     }
   ];
 
-  
+  // Get user's display name from profile or fallback to email
+  const getUserDisplayName = () => {
+    if (profileLoading) return "...";
+    if (profile?.name) return profile.name;
+    if (user?.email) {
+      // Extract name from email (before @)
+      return user.email.split('@')[0];
+    }
+    return "User";
+  };
 
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
         <div className="welcome-section">
           <h1 className="welcome-message">
-            Welcome back, {user.name}! 👋
+            Welcome back, {getUserDisplayName()}! 👋
           </h1>
           <p className="welcome-subtitle">
             Ready to continue building your social confidence? Let's practice some conversations today.

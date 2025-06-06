@@ -20,6 +20,16 @@ export interface Goal {
   goal: string;
 }
 
+export interface UserProfile {
+  id: string;
+  user_id: string;
+  name: string;
+  goals: string[];
+  profile_photo_url?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Option {
   responseLabel: string;
   eventType: string;
@@ -65,3 +75,18 @@ export type ScoreCategory =
   | "assertiveness"
   | "socialAwareness"
   | "selfAdvocacy";
+
+export interface CreateScenarioData {
+  title: string;
+  description: string;
+}
+
+export interface CreateDialogueData {
+  scenario_id: string;
+  title: string;
+  persona_tags: string[];
+  placeholders: string[];
+  steps: DialogueStep[];
+  difficulty: string;
+  scoring_categories: string[];
+}
