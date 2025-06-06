@@ -43,7 +43,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         .from("user_profiles")
         .select("*")
         .eq("user_id", userId)
-        .maybeSingle();
+        .single();
 
       if (fetchError) {
         throw fetchError;
