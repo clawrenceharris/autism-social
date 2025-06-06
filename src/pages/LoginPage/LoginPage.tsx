@@ -1,8 +1,8 @@
 import { useNavigate, Link } from "react-router-dom";
-import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../context/AuthContext";
 import { FormLayout } from "../../components";
 import { useState } from "react";
+import { signIn, getUserRole } from "../../services/auth";
 import "./LoginPage.scss";
 
 interface LoginFormValues {
@@ -21,30 +21,18 @@ const LoginPage = () => {
       setIsLoading(true);
       setError(null);
 
-      const { error: authError, data: authData } = await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password,
-      });
+      const { user, error: signInError } = await signIn(data.email, data.password);
 
-      if (authError) throw authError;
+      if (signInError) throw signInError;
+      if (!user) throw new Error("No user data received");
 
-      // Only proceed if we have a user
-      if (!authData.user) {
-        throw new Error("No user data received");
-      }
-
-      const { data: roleData, error: roleError } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', authData.user.id)
-        .single();
-
+      const { role, error: roleError } = await getUserRole(user.id);
+      
       if (roleError) {
         console.error("Error fetching user role:", roleError);
       }
 
-      // Navigate even if role fetch fails
-      const redirectPath = roleData?.role === 'admin' ? '/' : '/dashboard';
+      const redirectPath = role === 'admin' ? '/' : '/dashboard';
       navigate(redirectPath, { replace: true });
     } catch (err: any) {
       setError(err.message || "Failed to log in");
