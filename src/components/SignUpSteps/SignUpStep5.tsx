@@ -38,11 +38,11 @@ const SignUpStep5 = ({ register, errors }: SignUpStep5Props) => {
 
       <div className="terms-section">
         <div className="terms-content">
-          <h3>Terms & Privacy</h3>
+          <h3>Ready to Begin?</h3>
           <p>
-            By creating an account, you agree to our commitment to providing a safe, 
-            supportive learning environment. Your personal information and progress 
-            will be kept private and secure.
+            By creating an account, you're joining a supportive community dedicated to 
+            building social confidence. We're committed to providing a safe, private, 
+            and personalized learning experience tailored to your needs.
           </p>
           
           <div className="checkbox-wrapper">
@@ -50,19 +50,28 @@ const SignUpStep5 = ({ register, errors }: SignUpStep5Props) => {
               <input 
                 type="checkbox" 
                 {...register("agreement", { 
-                  required: "You must agree to the terms to continue" 
+                  required: "Please confirm your agreement to continue" 
                 })}
               />
               <span className="checkmark"></span>
               <p className="checkbox-text">
-                I agree to the <a href="#" className="terms-link">Terms of Service</a> and 
-                <a href="#" className="terms-link"> Privacy Policy</a>
+                I agree to use this app responsibly and understand that my data will be kept secure and private
               </p>
             </label>
             {errors.agreement && (
               <p className="form-error">{errors.agreement.message}</p>
             )}
           </div>
+        </div>
+      </div>
+
+      <div className="motivation-section">
+        <div className="motivation-card">
+          <h4>🎯 Your Journey Starts Now</h4>
+          <p>
+            Every conversation is a step forward. Every scenario builds confidence. 
+            You're about to embark on a personalized path to stronger social connections.
+          </p>
         </div>
       </div>
     </div>
