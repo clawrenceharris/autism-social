@@ -10,7 +10,6 @@ import type { SignUpFormValues } from "../../types";
 
 import {
   SignUpStep5,
-  SignUpStep4,
   SignUpStep3,
   SignUpStep2,
   SignUpStep1,
@@ -53,20 +52,36 @@ const SignUpPage = () => {
         .insert({
           user_id: user.id,
           name: updatedData.name,
-          profile_photo_url: profilePhotoUrl,
         });
 
       if (profileError) throw profileError;
 
       if (updatedData.interests?.length) {
-        
+        const { data: interestsData } = await supabase
+          .from("interests")
+          .select("id, name")
+          .in("name", updatedData.interests);
+
+        if (interestsData) {
           await addUserInterests(
             user.id,
-            interests.map((i) => i.id)
+            interestsData.map((i) => i.id)
           );
         }
-      
+      }
+      if (updatedData.goals?.length) {
+        const { data: goalsData } = await supabase
+          .from("goals")
+          .select("id, goal")
+          .in("goal", updatedData.goals);
 
+        if (goalsData) {
+          await addUserInterests(
+            user.id,
+            goalsData.map((i) => i.id)
+          );
+        }
+      }
       showToast("Sign up was successful!", "success");
       navigate("/", { replace: true });
     } catch (err) {
@@ -138,7 +153,6 @@ const SignUpPage = () => {
           </FormLayout>
         );
 
-     
       case 4:
         return (
           <FormLayout<SignUpFormValues>

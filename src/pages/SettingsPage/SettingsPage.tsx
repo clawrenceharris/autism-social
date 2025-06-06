@@ -12,9 +12,6 @@ import {
   RotateCcw,
   History,
   Edit3,
-  Moon,
-  Sun,
-  Monitor,
 } from "lucide-react";
 import "./SettingsPage.scss";
 
@@ -25,7 +22,7 @@ const SettingsPage = () => {
   const { showToast } = useToast();
   const { openModal, closeModal } = useModal();
   const navigate = useNavigate();
-  
+
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
   const [notifications, setNotifications] = useState(true);
   const [autoSave, setAutoSave] = useState(true);
@@ -41,7 +38,8 @@ const SettingsPage = () => {
             await signOut();
             showToast("Logged out successfully", "success");
             navigate("/login", { replace: true });
-          } catch (error) {
+            closeModal();
+          } catch {
             showToast("Failed to log out", "error");
           }
         }}
@@ -161,21 +159,27 @@ const SettingsPage = () => {
             </div>
             <div className="color-scheme-options">
               <div
-                className={`color-option ${colorScheme === "light" ? "selected" : ""}`}
+                className={`color-option ${
+                  colorScheme === "light" ? "selected" : ""
+                }`}
                 onClick={() => setColorScheme("light")}
               >
                 <div className="color-preview light"></div>
                 <span className="color-label">Light</span>
               </div>
               <div
-                className={`color-option ${colorScheme === "dark" ? "selected" : ""}`}
+                className={`color-option ${
+                  colorScheme === "dark" ? "selected" : ""
+                }`}
                 onClick={() => setColorScheme("dark")}
               >
                 <div className="color-preview dark"></div>
                 <span className="color-label">Dark</span>
               </div>
               <div
-                className={`color-option ${colorScheme === "auto" ? "selected" : ""}`}
+                className={`color-option ${
+                  colorScheme === "auto" ? "selected" : ""
+                }`}
                 onClick={() => setColorScheme("auto")}
               >
                 <div className="color-preview auto"></div>
@@ -294,7 +298,9 @@ const SettingsPage = () => {
             <div className="danger-zone">
               <div className="danger-header">
                 <h3>Danger Zone</h3>
-                <p>These actions cannot be undone. Please proceed with caution.</p>
+                <p>
+                  These actions cannot be undone. Please proceed with caution.
+                </p>
               </div>
               <div className="danger-actions">
                 <button onClick={handleDeleteAccount} className="btn danger">
