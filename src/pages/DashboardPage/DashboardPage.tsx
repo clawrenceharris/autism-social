@@ -66,22 +66,14 @@ const DashboardPage = () => {
     }
   ];
 
-  const getUserName = () => {
-    if (user?.user_metadata?.name) {
-      return user.user_metadata.name;
-    }
-    if (user?.email) {
-      return user.email.split('@')[0];
-    }
-    return "there";
-  };
+  
 
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
         <div className="welcome-section">
           <h1 className="welcome-message">
-            Welcome back, {getUserName()}! 👋
+            Welcome back, {user.name}! 👋
           </h1>
           <p className="welcome-subtitle">
             Ready to continue building your social confidence? Let's practice some conversations today.
