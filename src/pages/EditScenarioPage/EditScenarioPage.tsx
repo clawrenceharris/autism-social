@@ -8,7 +8,7 @@ import {
   EditScenarioModal,
 } from "../../components";
 import { useParams } from "react-router-dom";
-import { getDialogueById, updateDialogue } from "../../services/scenarios";
+import { getDialogueById, updateDialogue } from "../../services/dialogues";
 import { Pencil } from "lucide-react";
 
 const EditScenarioPage = () => {

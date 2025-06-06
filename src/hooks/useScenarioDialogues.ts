@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Dialogue } from "../types";
-import { getDialogues } from "../services/scenarios";
+import { getScenarioDialogues } from "../services/dialogues";
 
 const useScenarioDialogues = (scenarioId: string) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -13,7 +13,7 @@ const useScenarioDialogues = (scenarioId: string) => {
     const fetchScenarioDialogues = async () => {
       try {
         setLoading(true);
-        const data = await getDialogues(scenarioId);
+        const data = await getScenarioDialogues(scenarioId);
         setScenarioDialogues(data || []);
         setLoading(false);
       } catch (error) {

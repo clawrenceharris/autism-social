@@ -20,3 +20,4 @@ export { default as ConfirmationModal } from "./modals/ConfirmationModal";
 export { default as CreateDialogueModal } from "./modals/CreateDialogueModal";
 export { default as CreateScenarioModal } from "./modals/CreateScenarioModal";
 export { default as EditScenarioModal } from "./modals/EditScenarioModal";
+export { default as RecommendedDialogue } from "./RecommendedDialogue";

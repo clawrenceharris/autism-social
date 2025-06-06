@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Dialogue } from "../types";
-import { getAllDialogues } from "../services/scenarios";
+import { getAllDialogues } from "../services/dialogues";
 
 const useDialogues = () => {
   const [dialogues, setDialogues] = useState<Dialogue[]>([]);
@@ -15,8 +15,8 @@ const useDialogues = () => {
 
         setDialogues(dialogues || []);
         setLoading(false);
-      } catch (error: any) {
-        setError(error);
+      } catch {
+        setError("Error getting dilaogues");
         setLoading(false);
       }
     };
