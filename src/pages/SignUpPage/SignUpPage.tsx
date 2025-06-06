@@ -176,6 +176,7 @@ const SignUpPage = () => {
           </FormLayout>
         );
       case 5:
+    console.log(formData);
         return (
           <FormLayout<SignUpFormValues>
             onSubmit={handleSubmit}
