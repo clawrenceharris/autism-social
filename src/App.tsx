@@ -17,6 +17,7 @@ import {
   CustomizationPage,
   ExplorePage,
   SignUpPage,
+  SettingsPage,
 } from "./pages";
 import { ModalProvider, ToastProvider } from "./context";
 import { AuthProvider } from "./context/AuthContext";
@@ -109,6 +110,14 @@ function App() {
                   element={
                     <UserRoute>
                       <ExplorePage />
+                    </UserRoute>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <UserRoute>
+                      <SettingsPage />
                     </UserRoute>
                   }
                 />

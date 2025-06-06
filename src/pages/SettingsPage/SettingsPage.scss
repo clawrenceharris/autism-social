@@ -1,0 +1,250 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+.settings-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: $spacing-4;
+
+  .settings-header {
+    margin-bottom: $spacing-8;
+    text-align: center;
+
+    h1 {
+      margin-bottom: $spacing-2;
+    }
+
+    .description {
+      color: $color-gray-600;
+      font-size: 1.1rem;
+    }
+  }
+
+  .settings-sections {
+    @include stack-layout($spacing-8);
+  }
+
+  .settings-section {
+    @include card;
+    padding: $spacing-6;
+
+    .section-header {
+      @include flex(row, space-between, center);
+      margin-bottom: $spacing-6;
+      padding-bottom: $spacing-4;
+      border-bottom: 2px solid $color-gray-100;
+
+      h2 {
+        margin: 0;
+        color: $color-gray-800;
+        font-size: 1.5rem;
+      }
+
+      .section-icon {
+        color: $color-primary;
+        background: $color-primary-100;
+        padding: $spacing-2;
+        border-radius: $border-radius-md;
+      }
+    }
+
+    .section-content {
+      @include stack-layout($spacing-4);
+    }
+
+    .setting-item {
+      @include flex(row, space-between, center);
+      padding: $spacing-3 0;
+
+      .setting-info {
+        flex: 1;
+
+        .setting-label {
+          font-weight: 500;
+          color: $color-gray-800;
+          margin-bottom: $spacing-1;
+        }
+
+        .setting-description {
+          font-size: 0.875rem;
+          color: $color-gray-600;
+          margin: 0;
+        }
+      }
+
+      .setting-control {
+        margin-left: $spacing-4;
+      }
+    }
+
+    .color-scheme-options {
+      @include flex(row, flex-start, center, $spacing-3);
+      flex-wrap: wrap;
+
+      .color-option {
+        @include flex(column, center, center, $spacing-2);
+        padding: $spacing-3;
+        border: 2px solid $color-gray-200;
+        border-radius: $border-radius-md;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        min-width: 80px;
+
+        &:hover {
+          border-color: $color-primary-200;
+          background-color: $color-gray-50;
+        }
+
+        &.selected {
+          border-color: $color-primary;
+          background-color: $color-primary-100;
+        }
+
+        .color-preview {
+          width: 24px;
+          height: 24px;
+          border-radius: $border-radius-full;
+          margin-bottom: $spacing-1;
+
+          &.light {
+            background: linear-gradient(135deg, $color-white, $color-gray-100);
+            border: 1px solid $color-gray-300;
+          }
+
+          &.dark {
+            background: linear-gradient(135deg, #1f2937, #111827);
+          }
+
+          &.auto {
+            background: linear-gradient(90deg, $color-white 50%, #1f2937 50%);
+            border: 1px solid $color-gray-300;
+          }
+        }
+
+        .color-label {
+          font-size: 0.75rem;
+          color: $color-gray-700;
+          text-align: center;
+        }
+      }
+    }
+
+    .danger-zone {
+      margin-top: $spacing-6;
+      padding-top: $spacing-6;
+      border-top: 2px solid $color-red-100;
+
+      .danger-header {
+        margin-bottom: $spacing-4;
+
+        h3 {
+          color: $color-red-600;
+          margin-bottom: $spacing-1;
+        }
+
+        p {
+          color: $color-gray-600;
+          font-size: 0.875rem;
+          margin: 0;
+        }
+      }
+
+      .danger-actions {
+        @include flex(column, flex-start, stretch, $spacing-3);
+
+        @include responsive(md) {
+          flex-direction: row;
+          gap: $spacing-4;
+        }
+
+        .btn {
+          &.danger {
+            background-color: $color-red-600;
+            color: $color-white;
+
+            &:hover {
+              background-color: $color-red-700;
+              transform: translateY(-1px);
+              box-shadow: 0 4px 12px rgba($color-red-600, 0.3);
+            }
+
+            &:active {
+              transform: translateY(0);
+            }
+          }
+
+          &.warning {
+            background-color: #f59e0b;
+            color: $color-white;
+
+            &:hover {
+              background-color: #d97706;
+              transform: translateY(-1px);
+              box-shadow: 0 4px 12px rgba(#f59e0b, 0.3);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .profile-info {
+    @include flex(row, flex-start, center, $spacing-4);
+    padding: $spacing-4;
+    background: $color-gray-50;
+    border-radius: $border-radius-md;
+    margin-bottom: $spacing-4;
+
+    .profile-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: $border-radius-full;
+      background: $color-primary-100;
+      @include flex(row, center, center);
+      color: $color-primary;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .profile-details {
+      flex: 1;
+
+      .profile-name {
+        font-weight: 600;
+        color: $color-gray-800;
+        margin-bottom: $spacing-1;
+      }
+
+      .profile-email {
+        color: $color-gray-600;
+        font-size: 0.875rem;
+        margin: 0;
+      }
+    }
+  }
+}
+
+@include responsive(sm) {
+  .settings-container {
+    padding: $spacing-2;
+
+    .settings-section {
+      padding: $spacing-4;
+    }
+
+    .setting-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: $spacing-3;
+
+      .setting-control {
+        margin-left: 0;
+        width: 100%;
+      }
+    }
+
+    .color-scheme-options {
+      justify-content: center;
+    }
+  }
+}

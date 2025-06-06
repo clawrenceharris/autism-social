@@ -8,3 +8,4 @@ export { default as ProgressPage } from "./ProgressPage";
 export { default as CustomizationPage } from "./CustomizationPage";
 export { default as ExplorePage } from "./ExplorePage";
 export { default as SignUpPage } from "./SignUpPage";
+export { default as SettingsPage } from "./SettingsPage";

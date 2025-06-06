@@ -150,6 +150,52 @@ a {
   resize: vertical;
 }
 
+// Toggle Switch
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:checked + .toggle-slider {
+      background-color: $color-primary;
+
+      &:before {
+        transform: translateX(26px);
+      }
+    }
+  }
+
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $color-gray-300;
+    transition: 0.2s;
+    border-radius: 24px;
+
+    &:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: $color-white;
+      transition: 0.2s;
+      border-radius: 50%;
+    }
+  }
+}
+
 // Buttons
 button {
   @include button-base;
@@ -196,6 +242,32 @@ button {
 
     &.special:hover {
       box-shadow: 0 0 20px rgba($color-primary, 0.4);
+    }
+  }
+
+  &.warning {
+    background-color: #f59e0b;
+    color: $color-white;
+
+    &:hover {
+      background-color: #d97706;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(#f59e0b, 0.3);
+    }
+  }
+
+  &.danger {
+    background-color: $color-red-600;
+    color: $color-white;
+
+    &:hover {
+      background-color: $color-red-700;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba($color-red-600, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   }
 }
