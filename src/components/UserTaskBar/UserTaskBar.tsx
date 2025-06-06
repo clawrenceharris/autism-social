@@ -24,7 +24,7 @@ const UserTaskBar = () => {
             <TrendingUp />
             <span>Progress</span>
           </Link>
-          <Link to="/customization" className="taskbar-link">
+          <Link to="/settings" className="taskbar-link">
             <Settings />
             <span>Customization</span>
           </Link>
