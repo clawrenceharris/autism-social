@@ -13,6 +13,15 @@ export interface CreateDialogueData {
   difficulty: string;
 }
 
+export interface Interest {
+  id: string;
+  name: string;
+}
+
+export interface Goal {
+  id: string;
+  goal: string;
+}
 export interface Option {
   responseLabel: string;
   eventType: string;

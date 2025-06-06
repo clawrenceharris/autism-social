@@ -5,11 +5,12 @@ import {
   type UseFormProps,
   type FieldValues,
   type DefaultValues,
+  type UseFormReturn,
 } from "react-hook-form";
 import "./FormLayout.scss";
 
 interface FormLayoutProps<T extends FieldValues> extends UseFormProps<T> {
-  children: ((methods: ReturnType<typeof useForm>) => ReactNode) | ReactNode;
+  children: ((methods: UseFormReturn<T>) => ReactNode) | ReactNode;
   showsSubmitButton?: boolean;
   showsCancelButton?: boolean;
   submitText?: string;

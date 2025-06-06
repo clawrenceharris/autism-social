@@ -3,8 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import { FormLayout } from "../../components";
 import { signUp } from "../../services/auth";
-import { getInterests, type Interest, addUserInterests } from "../../services/interests";
+import { getInterests, addUserInterests } from "../../services/interests";
 import "./SignUpPage.scss";
+import { useToast } from "../../context";
+import type { Goal, Interest } from "../../types";
+import { getGoals } from "../../services/goals";
 
 interface SignUpFormValues {
   name: string;
@@ -15,27 +18,18 @@ interface SignUpFormValues {
   profilePhoto?: File;
 }
 
-const GOALS = [
-  "Improve my social skills",
-  "Practice tough conversations",
-  "Build my confidence in social situations",
-  "Learn to read social cues better",
-  "Handle intimidating interactions",
-  "Manage anxiety in social settings",
-  "Make and maintain relationships",
-  "Other"
-];
-
 const SignUpPage = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<Partial<SignUpFormValues>>({
     goals: [],
-    interests: []
+    interests: [],
   });
+  const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [interests, setInterests] = useState<Interest[]>([]);
+  const [goals, setGoals] = useState<Goal[]>([]);
 
   useEffect(() => {
     const fetchInterests = async () => {
@@ -49,6 +43,20 @@ const SignUpPage = () => {
     };
 
     fetchInterests();
+  }, []);
+  useEffect(() => {
+    const fetchGoals = async () => {
+      try {
+        const goals = await getGoals();
+        console.log({ goals });
+        setGoals(goals);
+      } catch (err) {
+        console.error("Failed to load interests:", err);
+        setError("Failed to load interests. Please try again.");
+      }
+    };
+
+    fetchGoals();
   }, []);
 
   const handleSubmit = async (data: Partial<SignUpFormValues>) => {
@@ -76,17 +84,19 @@ const SignUpPage = () => {
       // 2. Upload profile photo if provided
       let profilePhotoUrl = null;
       if (updatedData.profilePhoto) {
-        const fileExt = updatedData.profilePhoto.name.split('.').pop();
+        const fileExt = updatedData.profilePhoto.name.split(".").pop();
         const fileName = `${user.id}-${Math.random()}.${fileExt}`;
 
         const { error: uploadError, data: uploadData } = await supabase.storage
-          .from('profile-photos')
+          .from("profile-photos")
           .upload(fileName, updatedData.profilePhoto);
 
         if (uploadError) throw uploadError;
         if (uploadData) {
-          const { data: { publicUrl } } = supabase.storage
-            .from('profile-photos')
+          const {
+            data: { publicUrl },
+          } = supabase.storage
+            .from("profile-photos")
             .getPublicUrl(uploadData.path);
           profilePhotoUrl = publicUrl;
         }
@@ -94,36 +104,35 @@ const SignUpPage = () => {
 
       // 3. Create user profile
       const { error: profileError } = await supabase
-        .from('user_profiles')
+        .from("user_profiles")
         .insert({
           user_id: user.id,
           name: updatedData.name,
-          goals: updatedData.goals,
-          profile_photo_url: profilePhotoUrl
+          profile_photo_url: profilePhotoUrl,
         });
 
       if (profileError) throw profileError;
 
       // 4. Add user interests
       const selectedInterests = interests
-        .filter(interest => updatedData.interests?.includes(interest.name))
-        .map(interest => interest.id);
+        .filter((interest) => updatedData.interests?.includes(interest.name))
+        .map((interest) => interest.id);
 
       await addUserInterests(user.id, selectedInterests);
-
+      showToast("Sign up was successful!", "success");
       navigate("/", { replace: true });
-    } catch (err: any) {
-      setError(err.message || "Failed to sign up");
+    } catch {
+      setError("Sign up failed");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const toggleSelection = (type: 'goals' | 'interests', value: string) => {
-    setFormData(prev => {
+  const toggleSelection = (type: "goals" | "interests", value: string) => {
+    setFormData((prev) => {
       const currentArray = prev[type] || [];
       const newArray = currentArray.includes(value)
-        ? currentArray.filter(item => item !== value)
+        ? currentArray.filter((item) => item !== value)
         : [...currentArray, value];
       return { ...prev, [type]: newArray };
     });
@@ -148,7 +157,9 @@ const SignUpPage = () => {
                     className={`form-input ${errors.name ? "error" : ""}`}
                     {...register("name", { required: "Name is required" })}
                   />
-                  <p className="description">What would you like to be called?</p>
+                  <p className="description">
+                    What would you like to be called?
+                  </p>
                   {errors.name && (
                     <p className="form-error">{errors.name.message}</p>
                   )}
@@ -163,8 +174,8 @@ const SignUpPage = () => {
                       required: "Email is required",
                       pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                        message: "Invalid email address"
-                      }
+                        message: "Invalid email address",
+                      },
                     })}
                   />
                   {errors.email && (
@@ -181,8 +192,8 @@ const SignUpPage = () => {
                       required: "Password is required",
                       minLength: {
                         value: 6,
-                        message: "Password must be at least 6 characters"
-                      }
+                        message: "Password must be at least 6 characters",
+                      },
                     })}
                   />
                   {errors.password && (
@@ -204,15 +215,19 @@ const SignUpPage = () => {
           >
             <div className="form-group">
               <label>What are your goals for using Autism Social?</label>
-              <p className="form-helper"><small>Select all that apply</small></p>
+              <p className="form-helper">
+                <small>Select all that apply</small>
+              </p>
               <div className="goals-grid">
-                {GOALS.map((goal) => (
+                {goals.map((goal) => (
                   <div
-                    key={goal}
-                    className={`checkbox-item ${formData.goals?.includes(goal) ? 'selected' : ''}`}
-                    onClick={() => toggleSelection('goals', goal)}
+                    key={goal.id}
+                    className={`checkbox-item ${
+                      formData.goals?.includes(goal.goal) ? "selected" : ""
+                    }`}
+                    onClick={() => toggleSelection("goals", goal.goal)}
                   >
-                    <span>{goal}</span>
+                    <span>{goal.goal}</span>
                   </div>
                 ))}
               </div>
@@ -230,13 +245,19 @@ const SignUpPage = () => {
           >
             <div className="form-group">
               <label>What are your interests?</label>
-              <p className="form-helper"><small>Select all that apply</small></p>
+              <p className="form-helper">
+                <small>Select all that apply</small>
+              </p>
               <div className="interests-grid">
                 {interests.map((interest) => (
                   <div
                     key={interest.id}
-                    className={`checkbox-item ${formData.interests?.includes(interest.name) ? 'selected' : ''}`}
-                    onClick={() => toggleSelection('interests', interest.name)}
+                    className={`checkbox-item ${
+                      formData.interests?.includes(interest.name)
+                        ? "selected"
+                        : ""
+                    }`}
+                    onClick={() => toggleSelection("interests", interest.name)}
                   >
                     <span>{interest.name}</span>
                   </div>
@@ -275,7 +296,7 @@ const SignUpPage = () => {
       <div className="signup-card">
         <div className="signup-progress">
           <div className="progress-bar">
-            <div 
+            <div
               className="progress-fill"
               style={{ width: `${(step / 4) * 100}%` }}
             />
