@@ -10,7 +10,7 @@
   .signup-card {
     @include card;
     width: 100%;
-    min-height: 100vh;
+    height: 100%;
     max-width: 40rem;
     padding: $spacing-6;
 
