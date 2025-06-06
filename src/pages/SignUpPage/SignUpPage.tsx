@@ -13,23 +13,6 @@ interface SignUpFormValues {
   profilePhoto?: File;
 }
 
-const GOALS = [
-  "Improve my social skills",
-  "Practice tough conversations",
-  "Build my confidence in social situations",
-  "Learn to read social cues better",
-  "Handle intimidating interactions",
-  "Manage anxiety in social settings",
-  "Make and maintain relationships",
-  "Other"
-];
-
-const INTERESTS = [
-  "Sports", "Art", "Music", "Gaming", "Technology",
-  "Science", "Nature", "Animals", "Reading", "Writing",
-  "Cooking", "Travel", "Movies", "Photography", "Dance",
-  "History", "Cars", "Fashion", "Fitness", "Gardening"
-];
 
 const SignUpPage = () => {
   const navigate = useNavigate();
