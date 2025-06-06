@@ -34,7 +34,7 @@ function App() {
               {/* Admin Routes */}
               <Route element={<AdminLayout />}>
                 <Route
-                  path="/"
+                  path="/admin"
                   element={
                     <AdminRoute>
                       <HomePage />
@@ -73,7 +73,7 @@ function App() {
               {/* User Routes */}
               <Route element={<UserLayout />}>
                 <Route
-                  path="/dashboard"
+                  path="/"
                   element={
                     <UserRoute>
                       <DashboardPage />
