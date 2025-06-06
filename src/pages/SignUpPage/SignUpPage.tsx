@@ -131,7 +131,7 @@ const SignUpPage = () => {
         return (
           <FormLayout
             onSubmit={() => handleSubmit({ goals: formData.goals })}
-          
+            submitText="Next"
             showsCancelButton
             isLoading={isLoading}
             cancelText="Back"
