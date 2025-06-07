@@ -10,4 +10,4 @@ export { default as ExplorePage } from "./ExplorePage";
 export { default as SignUpPage } from "./SignUpPage";
 export { default as SettingsPage } from "./SettingsPage";
 
-export { default as ScenarioStagePage } from "./ScenarioStagePage";
+export { default as PlayScenarioPage } from "./PlayScenarioPage";

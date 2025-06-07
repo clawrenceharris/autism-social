@@ -36,8 +36,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       try {
-        console.log("Auth state change:", event, session?.user?.id);
-
         if (event === "SIGNED_OUT" || !session?.user) {
           setUser(null);
           setIsAdmin(false);
