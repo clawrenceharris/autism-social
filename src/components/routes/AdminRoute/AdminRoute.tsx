@@ -1,6 +1,6 @@
 import { Navigate, useLocation, Outlet } from "react-router-dom";
 import { useAuth } from "../../../context";
-
+import {AdminLayout} from "../../"
 interface AdminRouteProps {
   children: React.ReactNode;
 }
@@ -17,7 +17,7 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return <Outlet/>;
+  return <AdminLayout><Outlet/></AdminLayout>;
 };
 
 export default AdminRoute;
