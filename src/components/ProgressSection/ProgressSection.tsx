@@ -27,7 +27,7 @@ const ProgressSection = ({ userId }: { userId: string }) => {
         </Link>
       </div>
       <div className="section-content">
-        <div className="progress-categories">
+       {isLoading ? <>Loading</> :  <div className="progress-categories">
           {progressCategories.map((category) => (
             <div key={category.name} className="category-item">
               <div className="category-header">
@@ -42,7 +42,7 @@ const ProgressSection = ({ userId }: { userId: string }) => {
               </div>
             </div>
           ))}
-        </div>
+        </div>}
       </div>
     </div>
   );
