@@ -17,12 +17,12 @@ export async function createProgress(userId: string): Promise<UserProgress> {
     "user_progress",
     {
       id: "",
-      user_id: userId;
-      clarity: 0;
-      empathy: 0;
-      assertiveness: 0;
-      social_awareness: 0;
-      self_advocacy: 0;
+      user_id: userId,
+      clarity: 0,
+      empathy: 0,
+      assertiveness: 0,
+      social_awareness: 0,
+      self_advocacy: 0
           
       
     }
