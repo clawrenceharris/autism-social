@@ -11,10 +11,7 @@ import { useOnboarding } from "../../hooks/useOnboarding";
 const NUM_STEPS = 4;
 const SignUpPage = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<Partial<SignUpFormValues>>({
-    goals: [],
-    interests: [],
-  });
+
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,10 +23,6 @@ const SignUpPage = () => {
   });
   const handleSubmit = async (data: Partial<SignUpFormValues>) => {
     try {
-      setError(null);
-      const updatedData = { ...formData, ...data };
-      setFormData(updatedData);
-
       if (step < NUM_STEPS) {
         return;
       }
@@ -37,8 +30,8 @@ const SignUpPage = () => {
       setIsLoading(true);
 
       const { user, error: signUpError } = await signUp(
-        updatedData.email!,
-        updatedData.password!
+        data.email!,
+        data.password!
       );
 
       if (signUpError) throw signUpError;
@@ -48,16 +41,16 @@ const SignUpPage = () => {
         .from("user_profiles")
         .insert({
           user_id: user.id,
-          name: updatedData.name,
+          name: data.name,
         });
 
       if (profileError) throw profileError;
 
-      if (updatedData.interests?.length) {
+      if (data.interests?.length) {
         const { data: interestsData } = await supabase
           .from("interests")
           .select("id, name")
-          .in("name", updatedData.interests);
+          .in("name", data.interests);
 
         if (interestsData) {
           await addUserInterests(
@@ -66,11 +59,11 @@ const SignUpPage = () => {
           );
         }
       }
-      if (updatedData.goals?.length) {
+      if (data.goals?.length) {
         const { data: goalsData } = await supabase
           .from("goals")
           .select("id, goal")
-          .in("goal", updatedData.goals);
+          .in("goal", data.goals);
 
         if (goalsData) {
           await addUserInterests(

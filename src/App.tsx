@@ -13,7 +13,6 @@ import {
   DashboardPage,
   YourScenariosPage,
   ProgressPage,
-  CustomizationPage,
   ExplorePage,
   SignUpPage,
   SettingsPage,
@@ -50,7 +49,6 @@ function App() {
             <Route path="/" element={<DashboardPage />} />
             <Route path="/your-scenarios" element={<YourScenariosPage />} />
             <Route path="/progress" element={<ProgressPage />} />
-            <Route path="/customization" element={<CustomizationPage />} />
             <Route path="/explore" element={<ExplorePage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route element={<ScenarioLayout />}>

@@ -27,7 +27,7 @@ const UserHeader = () => {
           </Link>
           <Link to="/settings" className="taskbar-link">
             <Settings />
-            <span>Customization</span>
+            <span>Settings</span>
           </Link>
         </div>
       </div>

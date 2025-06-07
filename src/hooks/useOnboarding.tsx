@@ -13,17 +13,19 @@ interface UseOnboardingProps {
   onNext?: () => void;
   onPrev?: () => void;
   error?: string | null;
+  stepStart?: number;
   isLoading?: boolean;
 }
 
 export const useOnboarding = ({
-  handleSubmit,
   onNext,
   onPrev,
   isLoading,
+  stepStart,
   error,
+  ...props
 }: UseOnboardingProps) => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(stepStart || 1);
   const [formData, setFormData] = useState<Partial<SignUpFormValues>>({
     goals: [],
     interests: [],
@@ -49,15 +51,20 @@ export const useOnboarding = ({
       return { ...prev, [type]: newArray };
     });
   };
-  const renderStep = (s: number = step) => {
-    switch (s) {
+  const handleSubmit = (data: Partial<SignUpFormValues>) => {
+    const updatedData = { ...formData, ...data };
+    setFormData(updatedData);
+
+    handleSubmit(data);
+    nextStep();
+    props.handleSubmit(data);
+  };
+  const renderStep = () => {
+    switch (step) {
       case 1:
         return (
           <FormLayout<SignUpFormValues>
-            onSubmit={(data) => {
-              handleSubmit(data);
-              nextStep();
-            }}
+            onSubmit={handleSubmit}
             submitText="Next"
             isLoading={isLoading}
           >
@@ -72,10 +79,9 @@ export const useOnboarding = ({
           <FormLayout
             onSubmit={() => {
               handleSubmit({ goals: formData.goals });
-              nextStep();
             }}
             submitText="Next"
-            showsCancelButton
+            showsCancelButton={step != stepStart}
             isLoading={isLoading}
             cancelText="Back"
             onCancel={prevStep}
@@ -94,10 +100,9 @@ export const useOnboarding = ({
           <FormLayout
             onSubmit={() => {
               handleSubmit({ interests: formData.interests });
-              nextStep();
             }}
             submitText="Next"
-            showsCancelButton
+            showsCancelButton={step != stepStart}
             onCancel={prevStep}
             isLoading={isLoading}
             cancelText="Back"
@@ -112,13 +117,10 @@ export const useOnboarding = ({
       case 4:
         return (
           <FormLayout<SignUpFormValues>
-            onSubmit={(data) => {
-              handleSubmit(data);
-              nextStep();
-            }}
-            submitText="Create Account"
+            onSubmit={handleSubmit}
+            submitText="Complete"
             cancelText="Back"
-            showsCancelButton
+            showsCancelButton={step != stepStart}
             onCancel={prevStep}
             isLoading={isLoading}
             error={error}
