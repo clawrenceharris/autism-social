@@ -18,6 +18,7 @@ import {
   ExplorePage,
   SignUpPage,
   SettingsPage,
+  ScenarioStagePage,
 } from "./pages";
 import { ModalProvider, ToastProvider, UserProvider } from "./context";
 import { AuthProvider } from "./context/AuthContext";
@@ -119,6 +120,15 @@ function App() {
                     element={
                       <UserRoute>
                         <SettingsPage />
+                      </UserRoute>
+                    }
+                  />
+                  {/* Add user scenario playing route */}
+                  <Route
+                    path="/play/:scenarioId"
+                    element={
+                      <UserRoute>
+                        <ScenarioStagePage />
                       </UserRoute>
                     }
                   />

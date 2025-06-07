@@ -145,8 +145,9 @@ const DashboardPage = () => {
                   </span>
                 </div>
               </div>
+              {/* Updated to use the new user scenario playing route */}
               <Link
-                to={`/scenario/${mockCurrentScenario.id}`}
+                to={`/play/${mockCurrentScenario.id}`}
                 className="btn btn-primary"
               >
                 <Play size={20} />
@@ -174,7 +175,7 @@ const DashboardPage = () => {
               ) : recommendations.length > 0 ? (
                 <div className="scenario-list">
                   {recommendations.slice(0, 3).map((scenario) => (
-                    <RecommendedDialogue scenario={scenario} />
+                    <RecommendedDialogue key={scenario.id} scenario={scenario} />
                   ))}
                 </div>
               ) : (

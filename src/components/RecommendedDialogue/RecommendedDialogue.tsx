@@ -1,38 +1,34 @@
 import type { Dialogue, Scenario } from "../../types";
 import { Star } from "lucide-react";
 import { Link } from "react-router-dom";
-interface RecommnendedItemProps {
+
+interface RecommendedItemProps {
   dialogue?: Dialogue;
   scenario: Scenario;
 }
-const RecommnendedDialogue = ({ scenario }: RecommnendedItemProps) => {
+
+const RecommendedDialogue = ({ scenario }: RecommendedItemProps) => {
   return (
     <div key={scenario.id} className="scenario-item recommended">
       <div className="scenario-details">
         <div className="scenario-header">
           <div className="scenario-name">{scenario.title}</div>
-          <div
-            className="match-badge"
-            // style={{ color: getMatchScoreColor(scenario.matchScore) }}
-          >
+          <div className="match-badge">
             <Star size={14} />
-            {/* {getMatchScoreText(scenario.matchScore)} */}
+            {/* Match score would go here */}
           </div>
         </div>
         <div className="scenario-description">{scenario.description}</div>
         <div className="match-reasons">
-          {/* {scenario.matchReasons.slice(0, 2).map((reason, index) => (
-            <span key={index} className="match-reason">
-              {reason}
-            </span>
-          ))} */}
+          {/* Match reasons would go here */}
         </div>
       </div>
-      <Link to={`/scenario/${scenario.id}`} className="scenario-action">
+      {/* Updated to use the new user scenario playing route */}
+      <Link to={`/play/${scenario.id}`} className="scenario-action">
         Start
       </Link>
     </div>
   );
 };
 
-export default RecommnendedDialogue;
+export default RecommendedDialogue;
