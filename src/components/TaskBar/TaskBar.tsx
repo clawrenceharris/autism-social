@@ -8,7 +8,7 @@ const TaskBar = () => {
     <nav className="taskbar">
       <div className="taskbar-container">
         <Link to="/" className="taskbar-brand">
-          <img src={assets.logo} alt="Logo" />
+          <img className="logo" src={assets.logo} alt="Logo" />
           <span>Autism Social</span>
         </Link>
 
