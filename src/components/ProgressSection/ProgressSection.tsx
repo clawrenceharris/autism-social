@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./ProgressSection.scss";
 const ProgressSection = ({ userId }: { userId: string }) => {
-  const { progress } = useProgress(userId);
+  const { progress, isLoading } = useProgress(userId);
   const [progressCategories, setProgressCategories] = useState<
     { name: string; score: number }[]
   >([]);
