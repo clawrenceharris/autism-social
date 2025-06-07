@@ -7,7 +7,7 @@ export async function getProgress(userId: string): Promise<UserProgress> {
     userId
   );
 
-  if (!data || error) throw error;
+  if (error) throw error;
 
   return data;
 }
