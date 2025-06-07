@@ -103,7 +103,7 @@ function _calculateMatchScoresAndReasons(
   const { goalIds: userGoalIds, interestIds: userInterestIds } = userPreferences;
 
   return scenarioLinkages.map(linkage => {
-    const { scenario, goalIds: scenarioGoalIds, interestIds: scenarioInterestIds, goalNames, interestNames } = linkage;
+    const { scenario, goalIds: scenarioGoalIds, interestIds: scenarioInterestIds } = linkage;
 
     // Calculate goal matches
     const goalMatches = scenarioGoalIds.filter(goalId => userGoalIds.includes(goalId));
