@@ -211,9 +211,8 @@
   @include grid-layout(1, 0.5rem);
   margin: $spacing-3;
   overflow: scroll;
-  @include responsive(md) {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  max-height: 40vh;
+  
 }
 
 .checkbox-item {
