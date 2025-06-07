@@ -1,13 +1,11 @@
-import { Outlet } from "react-router-dom";
 import { TaskBar } from "../../";
+import type React from "react";
 
-const AdminLayout = () => {
+const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <TaskBar />
-      <main>
-        <Outlet />
-      </main>
+      <main>{children}</main>
     </div>
   );
 };

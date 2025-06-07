@@ -3,7 +3,6 @@ import {
   useContext,
   useState,
   useEffect,
-  useRef,
   type ReactNode,
 } from "react";
 import { supabase } from "../lib/supabase";
@@ -23,25 +22,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const isMountedRef = useRef(true);
 
   useEffect(() => {
-    isMountedRef.current = true;
-
     // Fallback timeout to ensure loading state is eventually set to false
     const fallbackTimeout = setTimeout(() => {
-      if (isMountedRef.current && loading) {
-        console.warn("Auth initialization timeout - setting loading to false");
+      if (loading) {
+        console.warn("Auth initialization timeout");
         setLoading(false);
       }
-    }, 5000); // 5 second timeout
+    }, 15000);
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       try {
-        if (!isMountedRef.current) return;
-
         console.log("Auth state change:", event, session?.user?.id);
 
         if (event === "SIGNED_OUT" || !session?.user) {
@@ -61,7 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             // Add timeout to role fetch
             const roleTimeout = new Promise((_, reject) =>
-              setTimeout(() => reject(new Error("Role fetch timeout")), 3000)
+              setTimeout(() => reject(new Error("Role fetch timeout")), 10000)
             );
 
             const result = (await Promise.race([rolePromise, roleTimeout])) as {
@@ -69,43 +63,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             };
             const roleData = result.data;
 
-            if (isMountedRef.current) {
-              setIsAdmin(roleData?.role === "admin");
-            }
+            setIsAdmin(roleData?.role === "admin");
           } catch (roleError) {
             console.warn("Failed to fetch user role:", roleError);
             // Continue without role - user can still access the app
-            if (isMountedRef.current) {
-              setIsAdmin(false);
-            }
+            setIsAdmin(false);
           }
         }
       } catch (err) {
         console.error("Auth state change error:", err);
-        if (isMountedRef.current) {
-          setError("Authentication error occurred");
-        }
+        setError("Authentication error occurred");
       } finally {
-        if (isMountedRef.current) {
-          setLoading(false);
-          clearTimeout(fallbackTimeout);
-        }
+        setLoading(false);
+        clearTimeout(fallbackTimeout);
       }
     });
 
     return () => {
-      isMountedRef.current = false;
       clearTimeout(fallbackTimeout);
       subscription.unsubscribe();
     };
   }, [loading]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
 
   return (
     <AuthContext.Provider value={{ user, loading, error, isAdmin }}>
