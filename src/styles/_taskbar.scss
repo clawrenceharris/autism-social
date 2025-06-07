@@ -11,7 +11,10 @@
   left: 0;
   z-index: 50;
   transition: all 0.3s ease;
-
+  img{
+     width: 1.25rem;
+      height: 1.25rem;
+  }
   &-container {
     max-width: 80rem;
     margin: 0 auto;
@@ -49,8 +52,8 @@
       }
     }
 
-    svg, .logo {
-      width: 20px;
+    svg {
+      width: 1.25rem;
       height: 1.25rem;
       transition: transform 0.2s ease;
     }
