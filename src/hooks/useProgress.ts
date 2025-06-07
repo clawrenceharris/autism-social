@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getProgress } from "../services/progress";
+import { getProgress,createProgress } from "../services/progress";
 import type { UserProgress } from "../types";
 
 export const useProgress = (userId: string) => {
@@ -9,8 +9,12 @@ export const useProgress = (userId: string) => {
   useEffect(() => {
     const fetchProgress = async () => {
       try {
+        let progress = null;
         setIsLoading(true);
-        const progress = await getProgress(userId);
+        progress = await getProgress(userId);
+        if(progress === null){
+          progress = createProgress(userId)
+        }
         setProgress(progress);
       } catch (err) {
         setError("Failed to load your progress.");
