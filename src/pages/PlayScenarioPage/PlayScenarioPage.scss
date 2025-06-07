@@ -1,0 +1,578 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+.play-scenario-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
+  
+  // Animated background particles
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
+    animation: float 20s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .game-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: $spacing-4 $spacing-6;
+
+    .header-content {
+      @include flex(row, space-between, center);
+      max-width: 1200px;
+      margin: 0 auto;
+
+      .scenario-info {
+        @include flex(row, flex-start, center, $spacing-4);
+
+        .scenario-title {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: $color-gray-800;
+          margin: 0;
+        }
+
+        .scenario-badge {
+          background: linear-gradient(135deg, $color-primary, $color-primary-200);
+          color: white;
+          padding: 0.25rem 0.75rem;
+          border-radius: $border-radius-full;
+          font-size: 0.875rem;
+          font-weight: 600;
+          box-shadow: 0 2px 8px rgba($color-primary, 0.3);
+        }
+      }
+
+      .game-controls {
+        @include flex(row, flex-end, center, $spacing-3);
+
+        .control-btn {
+          @include flex(row, center, center);
+          width: 48px;
+          height: 48px;
+          border-radius: $border-radius-full;
+          background: rgba(255, 255, 255, 0.9);
+          border: 2px solid rgba($color-primary, 0.2);
+          color: $color-primary;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba($color-primary, 0.3);
+            background: $color-primary;
+            color: white;
+          }
+
+          &.danger {
+            color: $color-red-600;
+            border-color: rgba($color-red-600, 0.2);
+
+            &:hover {
+              background: $color-red-600;
+              color: white;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .game-content {
+    padding-top: 100px;
+    min-height: 100vh;
+    @include flex(column, center, center);
+    position: relative;
+    z-index: 10;
+  }
+
+  .dialogue-arena {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: $spacing-6;
+    position: relative;
+
+    .chat-window {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 2rem;
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+      overflow: hidden;
+      min-height: 600px;
+      @include flex(column, flex-start, stretch);
+      position: relative;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, $color-primary, #667eea, $color-primary);
+        background-size: 200% 100%;
+        animation: shimmer 3s ease-in-out infinite;
+      }
+
+      .chat-messages {
+        flex: 1;
+        padding: $spacing-6;
+        overflow-y: auto;
+        max-height: 400px;
+        @include stack-layout($spacing-4);
+
+        .message {
+          @include flex(row, flex-start, flex-end, $spacing-3);
+          animation: messageSlideIn 0.5s ease-out;
+
+          &.npc {
+            .message-bubble {
+              background: linear-gradient(135deg, $color-gray-100, $color-gray-50);
+              color: $color-gray-800;
+              border-bottom-left-radius: 0.5rem;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+
+            .avatar {
+              background: linear-gradient(135deg, #667eea, #764ba2);
+              color: white;
+            }
+          }
+
+          &.user {
+            flex-direction: row-reverse;
+
+            .message-bubble {
+              background: linear-gradient(135deg, $color-primary, $color-primary-200);
+              color: white;
+              border-bottom-right-radius: 0.5rem;
+              box-shadow: 0 4px 12px rgba($color-primary, 0.3);
+            }
+
+            .avatar {
+              background: linear-gradient(135deg, $color-primary, $color-primary-hover);
+              color: white;
+            }
+          }
+
+          .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: $border-radius-full;
+            @include flex(row, center, center);
+            font-weight: 700;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+          }
+
+          .message-content {
+            flex: 1;
+            max-width: 70%;
+
+            .speaker-name {
+              font-size: 0.875rem;
+              font-weight: 600;
+              color: $color-gray-600;
+              margin-bottom: $spacing-1;
+            }
+
+            .message-bubble {
+              padding: $spacing-4 $spacing-6;
+              border-radius: 1.5rem;
+              font-size: 1rem;
+              line-height: 1.5;
+              position: relative;
+              word-wrap: break-word;
+            }
+          }
+        }
+
+        .typing-indicator {
+          @include flex(row, flex-start, center, $spacing-3);
+          opacity: 0.7;
+
+          .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: $border-radius-full;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            @include flex(row, center, center);
+            color: white;
+            font-weight: 700;
+          }
+
+          .typing-dots {
+            background: $color-gray-100;
+            padding: $spacing-3 $spacing-4;
+            border-radius: 1.5rem;
+            @include flex(row, center, center, 0.5rem);
+
+            .dot {
+              width: 8px;
+              height: 8px;
+              border-radius: 50%;
+              background: $color-gray-400;
+              animation: typingDots 1.4s infinite ease-in-out;
+
+              &:nth-child(1) { animation-delay: -0.32s; }
+              &:nth-child(2) { animation-delay: -0.16s; }
+            }
+          }
+        }
+      }
+
+      .response-section {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        padding: $spacing-6;
+
+        .response-prompt {
+          text-align: center;
+          margin-bottom: $spacing-4;
+
+          h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: $color-gray-800;
+            margin-bottom: $spacing-2;
+          }
+
+          p {
+            color: $color-gray-600;
+            font-size: 0.9rem;
+          }
+        }
+
+        .response-options {
+          @include stack-layout($spacing-3);
+
+          .response-option {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba($color-primary, 0.2);
+            border-radius: 1rem;
+            padding: $spacing-4 $spacing-6;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+
+            &::before {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: -100%;
+              width: 100%;
+              height: 100%;
+              background: linear-gradient(90deg, transparent, rgba($color-primary, 0.1), transparent);
+              transition: left 0.5s ease;
+            }
+
+            &:hover {
+              transform: translateY(-2px);
+              border-color: $color-primary;
+              box-shadow: 0 8px 20px rgba($color-primary, 0.2);
+              background: rgba($color-primary, 0.05);
+
+              &::before {
+                left: 100%;
+              }
+
+              .option-text {
+                color: $color-primary;
+              }
+            }
+
+            &:disabled {
+              opacity: 0.6;
+              cursor: not-allowed;
+              transform: none;
+            }
+
+            .option-text {
+              font-size: 1rem;
+              line-height: 1.5;
+              color: $color-gray-800;
+              transition: color 0.3s ease;
+              margin: 0;
+            }
+          }
+        }
+
+        .custom-response {
+          margin-top: $spacing-4;
+          padding-top: $spacing-4;
+          border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+          .custom-input-container {
+            @include flex(row, flex-start, flex-end, $spacing-3);
+
+            .custom-input {
+              flex: 1;
+              padding: $spacing-3 $spacing-4;
+              border: 2px solid rgba($color-primary, 0.2);
+              border-radius: 1rem;
+              background: rgba(255, 255, 255, 0.9);
+              font-size: 1rem;
+              transition: all 0.3s ease;
+
+              &:focus {
+                outline: none;
+                border-color: $color-primary;
+                box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+              }
+
+              &::placeholder {
+                color: $color-gray-400;
+              }
+            }
+
+            .send-btn {
+              width: 48px;
+              height: 48px;
+              border-radius: $border-radius-full;
+              background: linear-gradient(135deg, $color-primary, $color-primary-200);
+              color: white;
+              border: none;
+              cursor: pointer;
+              @include flex(row, center, center);
+              transition: all 0.3s ease;
+              box-shadow: 0 4px 12px rgba($color-primary, 0.3);
+
+              &:hover {
+                transform: translateY(-2px) scale(1.05);
+                box-shadow: 0 8px 20px rgba($color-primary, 0.4);
+              }
+
+              &:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .results-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    @include flex(row, center, center);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+
+    &.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .results-card {
+      background: white;
+      border-radius: 2rem;
+      padding: $spacing-8;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+
+      &.visible {
+        transform: scale(1);
+      }
+
+      .results-header {
+        margin-bottom: $spacing-6;
+
+        .results-icon {
+          width: 80px;
+          height: 80px;
+          border-radius: $border-radius-full;
+          background: linear-gradient(135deg, $color-primary, $color-primary-200);
+          @include flex(row, center, center);
+          margin: 0 auto $spacing-4;
+          color: white;
+          font-size: 2rem;
+        }
+
+        h2 {
+          font-size: 2rem;
+          font-weight: 700;
+          color: $color-gray-800;
+          margin-bottom: $spacing-2;
+        }
+
+        p {
+          color: $color-gray-600;
+          font-size: 1.1rem;
+        }
+      }
+
+      .score-grid {
+        @include grid-layout(2, $spacing-4);
+        margin-bottom: $spacing-6;
+
+        .score-item {
+          background: $color-gray-50;
+          border-radius: 1rem;
+          padding: $spacing-4;
+          text-align: center;
+
+          .score-label {
+            font-size: 0.875rem;
+            color: $color-gray-600;
+            margin-bottom: $spacing-1;
+          }
+
+          .score-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: $color-primary;
+          }
+        }
+      }
+
+      .results-actions {
+        @include flex(row, center, center, $spacing-3);
+        flex-wrap: wrap;
+
+        .btn {
+          min-width: 120px;
+        }
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-30px) rotate(120deg); }
+  66% { transform: translateY(-20px) rotate(240deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes typingDots {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+// Responsive design
+@include responsive(sm) {
+  .play-scenario-container {
+    .game-header {
+      padding: $spacing-3 $spacing-4;
+
+      .header-content {
+        .scenario-info {
+          .scenario-title {
+            font-size: 1.25rem;
+          }
+        }
+
+        .game-controls {
+          .control-btn {
+            width: 40px;
+            height: 40px;
+          }
+        }
+      }
+    }
+
+    .dialogue-arena {
+      padding: $spacing-4;
+
+      .chat-window {
+        border-radius: 1.5rem;
+
+        .chat-messages {
+          padding: $spacing-4;
+
+          .message {
+            .message-content {
+              max-width: 85%;
+            }
+
+            .avatar {
+              width: 40px;
+              height: 40px;
+              font-size: 1rem;
+            }
+          }
+        }
+
+        .response-section {
+          padding: $spacing-4;
+        }
+      }
+    }
+
+    .results-overlay {
+      .results-card {
+        padding: $spacing-6;
+        border-radius: 1.5rem;
+
+        .score-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .results-actions {
+          flex-direction: column;
+
+          .btn {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}
