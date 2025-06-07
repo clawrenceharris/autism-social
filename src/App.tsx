@@ -35,106 +35,69 @@ function App() {
                 <Route path="/signup" element={<SignUpPage />} />
 
                 {/* Admin Routes */}
-                <Route element={<AdminLayout />}>
+                <Route element={<AdminRoute />}>
                   <Route
                     path="/admin"
-                    element={
-                      <AdminRoute>
-                        <HomePage />
-                      </AdminRoute>
-                    }
+                    element={<HomePage />}
                   />
                   <Route
                     path="/scenarios"
-                    element={
-                      <AdminRoute>
-                        <ManageScenariosPage />
-                      </AdminRoute>
-                    }
+                    element={<ManageScenariosPage />}
                   />
-                </Route>
-
+                  
                 <Route element={<ScenarioLayout />}>
                   <Route
                     path="/scenario/:scenarioId"
                     element={
-                      <AdminRoute>
+                     
                         <EditScenarioPage />
-                      </AdminRoute>
+                      
                     }
                   />
                   <Route
                     path="/scenario/:scenarioId/dialogue/:dialogueId"
                     element={
-                      <AdminRoute>
                         <EditScenarioPage />
-                      </AdminRoute>
                     }
                   />
                 </Route>
+                </Route>
+
 
                 {/* User Routes */}
-                <Route element={<UserLayout />}>
+                <Route element={ <UserRoute>}>
                   <Route
                     path="/"
-                    element={
-                      <UserRoute>
-                        <DashboardPage />
-                      </UserRoute>
-                    }
+                    element={<DashboardPage /> }
                   />
                   <Route
                     path="/your-scenarios"
-                    element={
-                      <UserRoute>
-                        <YourScenariosPage />
-                      </UserRoute>
-                    }
+                    element={<YourScenariosPage />}
                   />
                   <Route
                     path="/progress"
-                    element={
-                      <UserRoute>
-                        <ProgressPage />
-                      </UserRoute>
-                    }
+                    element={<ProgressPage /> }
                   />
                   <Route
                     path="/customization"
-                    element={
-                      <UserRoute>
-                        <CustomizationPage />
-                      </UserRoute>
-                    }
+                    element={ <CustomizationPage /> }
                   />
                   <Route
                     path="/explore"
-                    element={
-                      <UserRoute>
-                        <ExplorePage />
-                      </UserRoute>
-                    }
+                    element={<ExplorePage />}
                   />
                   <Route
                     path="/settings"
-                    element={
-                      <UserRoute>
-                        <SettingsPage />
-                      </UserRoute>
-                    }
+                    element={<SettingsPage />}
                   />
                   {/* Add user scenario playing route */}
                   <Route
                     path="/play/:scenarioId"
-                    element={
-                      <UserRoute>
-                        <ScenarioStagePage />
-                      </UserRoute>
-                    }
+                    element={<ScenarioStagePage /> }
                   />
                 </Route>
-              </Routes>
-            </Router>
+             
+            
           </ModalProvider>
         </ToastProvider>
       </UserProvider>
