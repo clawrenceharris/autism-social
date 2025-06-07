@@ -1,4 +1,4 @@
-import { DatabaseService } from "../services/database";
+import { DatabaseService } from "./database";
 import type { UserProgress } from "../types";
 
 export async function getProgress(userId: string): Promise<UserProgress> {

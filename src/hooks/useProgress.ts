@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getProgress } from "../scripts/progress";
+import { getProgress } from "../services/progress";
 import type { UserProgress } from "../types";
 
 export const useProgress = (userId: string) => {
