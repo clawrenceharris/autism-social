@@ -17,7 +17,10 @@ import { RecommendedDialogue } from "../../components";
 const DashboardPage = () => {
   const { user } = useAuth();
   const { profile, loading: profileLoading } = useUser();
-  const { data: recommendations = [], isLoading: recommendationsLoading } = useRecommendations();
+  const { data: recommendations = [], isLoading: recommendationsLoading } = useRecommendations({
+    limit: 3,
+    minMatchScore: 0.1
+  });
 
   // Mock data - replace with real data from your services
   const mockStats = {
@@ -161,7 +164,7 @@ const DashboardPage = () => {
                 </div>
               ) : recommendations.length > 0 ? (
                 <div className="scenario-list">
-                  {recommendations.slice(0, 3).map((scenario) => (
+                  {recommendations.map((scenario) => (
                     <RecommendedDialogue key={scenario.id} scenario={scenario} />
                   ))}
                 </div>
