@@ -33,6 +33,7 @@ export const useOnboarding = ({
     goals: [],
     interests: [],
   });
+  
   const nextStep = () => {
     if (step === stepEnd) {
       return;
@@ -84,6 +85,7 @@ export const useOnboarding = ({
             onSubmit={() => {
               handleSubmit({ goals: formData.goals });
             }}
+           
             submitText="Next"
             showsCancelButton={step != stepStart}
             isLoading={isLoading}
