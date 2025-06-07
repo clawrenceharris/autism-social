@@ -19,7 +19,6 @@ export interface Interest {
   name: string;
 }
 export interface UserProgress {
-  id: string;
   user_id: string;
   clarity: number;
   empathy: number;
