@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { DialoguePlayer, ProgressIndicator } from "../../components";
-import "./Scenario.css";
 import { useScenario } from "../../context";
 import useDialogues from "../../hooks/useDialogues";
 import type { Dialogue as DialogueType } from "../../types";

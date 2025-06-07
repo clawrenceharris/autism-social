@@ -30,7 +30,6 @@ const SettingsPage = () => {
   const handleLogout = async () => {
     openModal(
       <ConfirmationModal
-        title="Log Out"
         message="Are you sure you want to log out? Any unsaved changes will be lost."
         confirmText="Log Out"
         onConfirm={async () => {
@@ -51,7 +50,6 @@ const SettingsPage = () => {
   const handleDeleteAccount = () => {
     openModal(
       <ConfirmationModal
-        title="Delete Account"
         message="Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently lost."
         confirmText="Delete Account"
         onConfirm={() => {
@@ -66,7 +64,6 @@ const SettingsPage = () => {
   const handleResetProgress = () => {
     openModal(
       <ConfirmationModal
-        title="Reset Progress"
         message="Are you sure you want to reset all your progress? This will clear your scenario history and scores."
         confirmText="Reset Progress"
         onConfirm={() => {

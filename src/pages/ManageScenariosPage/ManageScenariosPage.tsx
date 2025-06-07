@@ -41,7 +41,6 @@ const ManageScenariosPage = () => {
   const handleDelete = async (scenario: Scenario) => {
     openModal(
       <ConfirmationModal
-        title="Delete Scenario"
         message={`Are you sure you want to delete "${scenario.title}"? This action cannot be undone.`}
         confirmText="Delete"
         onConfirm={async () => {
