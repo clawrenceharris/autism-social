@@ -1,6 +1,7 @@
 import { useGoals } from "../../hooks/queries/useGoals";
 import type { SignUpFormValues } from "../../types";
 import { ProgressIndicator } from "../";
+import "./SignUpStep.scss";
 
 interface SignUpStep2Props {
   formData: Partial<SignUpFormValues>;
@@ -22,7 +23,7 @@ export const SignUpStep2 = ({
   if (error) return <div className="error">{error.message}</div>;
 
   return (
-    <div >
+    <div>
       <label>What are your goals for using Autism Social?</label>
       <p className="form-helper">
         <small>Select all that apply</small>

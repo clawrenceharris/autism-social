@@ -1,5 +1,6 @@
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import type { SignUpFormValues } from "../../types";
+import "./SignUpStep.scss";
 
 interface SignUpStep1Props {
   register: UseFormRegister<SignUpFormValues>;

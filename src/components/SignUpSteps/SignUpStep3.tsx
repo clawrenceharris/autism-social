@@ -1,6 +1,7 @@
 import { useInterests } from "../../hooks/queries/useInterests";
 import type { SignUpFormValues } from "../../types";
 import { ProgressIndicator } from "../../components";
+import "./SignUpStep.scss";
 
 interface SignUpStep3Props {
   formData: Partial<SignUpFormValues>;

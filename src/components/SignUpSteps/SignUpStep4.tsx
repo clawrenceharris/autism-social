@@ -1,5 +1,6 @@
 import type { UseFormRegister } from "react-hook-form";
 import type { SignUpFormValues } from "../../types";
+import "./SignUpStep.scss";
 
 interface SignUpStep4Props {
   register: UseFormRegister<SignUpFormValues>;

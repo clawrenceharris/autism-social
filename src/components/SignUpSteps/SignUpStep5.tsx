@@ -1,7 +1,7 @@
 import type { UseFormRegister, FieldErrors } from "react-hook-form";
 import type { SignUpFormValues } from "../../types";
 import { CheckCircle, Shield, Users, Zap } from "lucide-react";
-import "./SignUpStep5.scss";
+import "./SignUpStep.scss";
 
 interface SignUpStep5Props {
   register: UseFormRegister<SignUpFormValues>;
@@ -17,7 +17,8 @@ const SignUpStep5 = ({ register, errors }: SignUpStep5Props) => {
         </div>
         <h2>You're Almost Ready!</h2>
         <p className="welcome-text">
-          Complete this last step and unlock a world of immersive social learning. Your journey awaits!
+          Complete this last step and unlock a world of immersive social
+          learning. Your journey awaits!
         </p>
       </div>
 
@@ -40,22 +41,24 @@ const SignUpStep5 = ({ register, errors }: SignUpStep5Props) => {
         <div className="terms-content">
           <h3>Ready to Begin?</h3>
           <p>
-            By creating an account, you're joining a supportive community dedicated to 
-            building social confidence. We're committed to providing a safe, private, 
-            and personalized learning experience tailored to your needs.
+            By creating an account, you're joining a supportive community
+            dedicated to building social confidence. We're committed to
+            providing a safe, private, and personalized learning experience
+            tailored to your needs.
           </p>
-          
+
           <div className="checkbox-wrapper">
             <label className="custom-checkbox">
-              <input 
-                type="checkbox" 
-                {...register("agreement", { 
-                  required: "Please confirm your agreement to continue" 
+              <input
+                type="checkbox"
+                {...register("agreement", {
+                  required: "Please confirm your agreement to continue",
                 })}
               />
               <span className="checkmark"></span>
               <p className="checkbox-text">
-                I agree to use this app responsibly and understand that my data will be kept secure and private
+                I agree to use this app responsibly and understand that my data
+                will be kept secure and private
               </p>
             </label>
             {errors.agreement && (
