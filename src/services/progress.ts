@@ -1,31 +1,37 @@
-import { DatabaseService } from "./database";
+import { supabase } from "../lib/supabase";
 import type { UserProgress } from "../types";
 
 export async function getProgress(userId: string): Promise<UserProgress> {
-  const { data, error } = await DatabaseService.getSingle<UserProgress>(
-    "user_progress",
-    userId
-  );
+  const { data, error } = await supabase
+    .from("user_progress")
+    .select("*")
+    .eq("user_id", userId)
+    .single();
 
-  if (error) throw error;
+  if (error) {
+    if (error.code === 'PGRST116') {
+      // No rows found, this is expected for new users
+      throw new Error('No progress found');
+    }
+    throw error;
+  }
 
   return data;
 }
 
 export async function createProgress(userId: string): Promise<UserProgress> {
-  const { data, error } = await DatabaseService.create<UserProgress>(
-    "user_progress",
-    {
+  const { data, error } = await supabase
+    .from("user_progress")
+    .insert({
       user_id: userId,
       clarity: 0,
       empathy: 0,
       assertiveness: 0,
       social_awareness: 0,
       self_advocacy: 0
-          
-      
-    }
-  );
+    })
+    .select()
+    .single();
 
   if (error) throw error;
 
