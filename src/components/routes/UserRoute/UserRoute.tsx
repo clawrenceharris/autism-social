@@ -1,4 +1,4 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, Outlet } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import ProgressIndicator from "../../ProgressIndicator";
 
@@ -22,7 +22,7 @@ const UserRoute = ({ children }: UserRouteProps) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return <>{children}</>;
+  return <Outlet/>;
 };
 
 export default UserRoute;
