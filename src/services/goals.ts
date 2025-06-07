@@ -1,8 +1,9 @@
 import { supabase } from "../lib/supabase";
 import type { Goal } from "../types";
+import { DatabaseService } from "./database";
 
 export async function getGoals(): Promise<Goal[]> {
-  const { data, error } = await supabase.from("goals").select("id, goal");
+  const { data, error } = await DatabaseService.get<Goal>("goals");
 
   if (error) throw error;
   return data || [];
@@ -21,8 +22,10 @@ export async function addUserGoals(
   if (fetchError) throw fetchError;
 
   // Filter out goals that the user already has
-  const existingGoalIds = existingGoals?.map(ug => ug.goal_id) || [];
-  const newGoalIds = goalIds.filter(goalId => !existingGoalIds.includes(goalId));
+  const existingGoalIds = existingGoals?.map((ug) => ug.goal_id) || [];
+  const newGoalIds = goalIds.filter(
+    (goalId) => !existingGoalIds.includes(goalId)
+  );
 
   // Only insert if there are new goals to add
   if (newGoalIds.length > 0) {
@@ -49,11 +52,15 @@ export async function updateUserGoals(
 
   if (fetchError) throw fetchError;
 
-  const currentGoalIds = currentGoals?.map(ug => ug.goal_id) || [];
-  
+  const currentGoalIds = currentGoals?.map((ug) => ug.goal_id) || [];
+
   // Find goals to add and remove
-  const goalsToAdd = goalIds.filter(goalId => !currentGoalIds.includes(goalId));
-  const goalsToRemove = currentGoalIds.filter(goalId => !goalIds.includes(goalId));
+  const goalsToAdd = goalIds.filter(
+    (goalId) => !currentGoalIds.includes(goalId)
+  );
+  const goalsToRemove = currentGoalIds.filter(
+    (goalId) => !goalIds.includes(goalId)
+  );
 
   // Remove unselected goals
   if (goalsToRemove.length > 0) {

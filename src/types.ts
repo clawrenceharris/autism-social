@@ -1,3 +1,4 @@
+import type { User } from "@supabase/supabase-js";
 import type { FieldValues } from "react-hook-form";
 
 export interface SignUpFormValues extends FieldValues {
@@ -9,12 +10,23 @@ export interface SignUpFormValues extends FieldValues {
   profilePhoto: File;
   agreement: boolean;
 }
-
+export interface AuthContextType {
+  profile: UserProfile;
+  user: User;
+}
 export interface Interest {
   id: string;
   name: string;
 }
-
+export interface UserProgress {
+  id: string;
+  user_id: string;
+  clarity: number;
+  empathy: number;
+  assertiveness: number;
+  social_awareness: number;
+  self_advocacy: number;
+}
 export interface Goal {
   id: string;
   goal: string;

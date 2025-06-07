@@ -1,7 +1,7 @@
 import { supabase } from "../lib/supabase";
 import type { PostgrestError } from "@supabase/supabase-js";
 
-export type Table = "scenarios" | "dialogues";
+export type Table = "scenarios" | "dialogues" | "goals" | "user_progress";
 
 export interface DatabaseResult<T> {
   data: T | null;

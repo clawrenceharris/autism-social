@@ -98,7 +98,7 @@ a {
   font-size: 1.1rem;
 }
 
-.form{
+.form {
   label {
     font-family: $font-family-secondary;
     font-size: 1.7rem;
@@ -111,8 +111,6 @@ a {
 .form-group {
   margin-bottom: $spacing-6;
   max-width: 400px;
-
-  
 }
 
 %form-input-base {
@@ -358,6 +356,39 @@ button {
       opacity: 1;
       background-color: rgba(0, 0, 0, 0.05);
     }
+  }
+}
+
+.card-section {
+  @include card;
+  padding: $spacing-6;
+
+  .section-header {
+    @include flex(row, space-between, center);
+    margin-bottom: $spacing-6;
+    padding-bottom: $spacing-4;
+    border-bottom: 2px solid $color-gray-100;
+
+    h2 {
+      @include flex(row, flex-start, center);
+      color: $color-gray-800;
+    }
+
+    .section-action {
+      color: $color-primary;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      @include transition(color);
+
+      &:hover {
+        color: $color-primary-hover;
+      }
+    }
+  }
+
+  .section-content {
+    @include stack-layout($spacing-4);
   }
 }
 

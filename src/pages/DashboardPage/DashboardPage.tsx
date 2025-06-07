@@ -1,6 +1,4 @@
-import { Link } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { useUser } from "../../context/UserContext";
+import { Link, useOutletContext } from "react-router-dom";
 import { useRecommendations } from "../../hooks/queries/useRecommendations";
 import {
   BookOpen,
@@ -12,15 +10,16 @@ import {
   Zap,
 } from "lucide-react";
 import "./DashboardPage.scss";
-import { RecommendedDialogue } from "../../components";
+import { ProgressSection, RecommendedDialogue } from "../../components";
+import type { AuthContextType } from "../../types";
 
 const DashboardPage = () => {
-  const { user } = useAuth();
-  const { profile, loading: profileLoading } = useUser();
-  const { data: recommendations = [], isLoading: recommendationsLoading } = useRecommendations({
-    limit: 3,
-    minMatchScore: 0.1
-  });
+  const { user, profile } = useOutletContext<AuthContextType>();
+  const { data: recommendations = [], isLoading: recommendationsLoading } =
+    useRecommendations({
+      limit: 3,
+      minMatchScore: 0.1,
+    });
 
   // Mock data - replace with real data from your services
   const mockStats = {
@@ -36,14 +35,6 @@ const DashboardPage = () => {
     progress: 65,
     step: "3 of 5",
   };
-
-  const mockProgressCategories = [
-    { name: "Clarity", score: 85, progress: 85 },
-    { name: "Empathy", score: 72, progress: 72 },
-    { name: "Assertiveness", score: 68, progress: 68 },
-    { name: "Social Awareness", score: 91, progress: 91 },
-    { name: "Self-Advocacy", score: 76, progress: 76 },
-  ];
 
   const mockRecentActivity = [
     {
@@ -68,7 +59,6 @@ const DashboardPage = () => {
 
   // Get user's display name from profile or fallback to email
   const getUserDisplayName = () => {
-    if (profileLoading) return "...";
     if (profile?.name) return profile.name;
     if (user?.email) {
       // Extract name from email (before @)
@@ -113,7 +103,7 @@ const DashboardPage = () => {
       <div className="dashboard-grid">
         <div className="main-content">
           {/* Continue Current Scenario */}
-          <div className="dashboard-section continue-scenario">
+          <div className="card-section continue-scenario">
             <div className="section-header">
               <h2>Continue Your Journey</h2>
             </div>
@@ -147,7 +137,7 @@ const DashboardPage = () => {
           </div>
 
           {/* Recommended Scenarios */}
-          <div className="dashboard-section">
+          <div className="card-section">
             <div className="section-header">
               <h2>
                 <Zap size={20} style={{ marginRight: "0.5rem" }} />
@@ -165,7 +155,10 @@ const DashboardPage = () => {
               ) : recommendations.length > 0 ? (
                 <div className="scenario-list">
                   {recommendations.map((scenario) => (
-                    <RecommendedDialogue key={scenario.id} scenario={scenario} />
+                    <RecommendedDialogue
+                      key={scenario.id}
+                      scenario={scenario}
+                    />
                   ))}
                 </div>
               ) : (
@@ -193,35 +186,12 @@ const DashboardPage = () => {
 
         <div className="sidebar-content">
           {/* Progress Overview */}
-          <div className="dashboard-section progress-overview">
-            <div className="section-header">
-              <h2>Your Progress</h2>
-              <Link to="/progress" className="section-action">
-                View Details <ChevronRight size={16} />
-              </Link>
-            </div>
-            <div className="section-content">
-              <div className="progress-categories">
-                {mockProgressCategories.map((category) => (
-                  <div key={category.name} className="category-item">
-                    <div className="category-header">
-                      <span className="category-name">{category.name}</span>
-                      <span className="category-score">{category.score}%</span>
-                    </div>
-                    <div className="category-bar">
-                      <div
-                        className="category-fill"
-                        style={{ width: `${category.progress}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="card-section progress-overview">
+            <ProgressSection userId={user.id} />
           </div>
 
           {/* Recent Activity */}
-          <div className="dashboard-section recent-activity">
+          <div className="card-section recent-activity">
             <div className="section-header">
               <h2>Recent Activity</h2>
               <Link to="/your-scenarios" className="section-action">

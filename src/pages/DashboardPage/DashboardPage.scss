@@ -69,41 +69,6 @@
     }
   }
 
-  .dashboard-section {
-    @include card;
-    padding: $spacing-6;
-
-    .section-header {
-      @include flex(row, space-between, center);
-      margin-bottom: $spacing-6;
-      padding-bottom: $spacing-4;
-      border-bottom: 2px solid $color-gray-100;
-
-      h2 {
-        @include flex(row, flex-start, center);
-        margin: 0;
-        color: $color-gray-800;
-        font-size: 1.5rem;
-      }
-
-      .section-action {
-        color: $color-primary;
-        text-decoration: none;
-        font-weight: 500;
-        font-size: 0.9rem;
-        @include transition(color);
-
-        &:hover {
-          color: $color-primary-hover;
-        }
-      }
-    }
-
-    .section-content {
-      @include stack-layout($spacing-4);
-    }
-  }
-
   .continue-scenario {
     background: linear-gradient(135deg, $color-primary-100, $color-primary-200);
     border: 2px solid $color-primary;
@@ -165,7 +130,11 @@
 
         &:hover {
           border-color: $color-primary;
-          background: linear-gradient(135deg, $color-primary-100, $color-primary-200);
+          background: linear-gradient(
+            135deg,
+            $color-primary-100,
+            $color-primary-200
+          );
         }
       }
 
@@ -228,42 +197,6 @@
 
         &:hover {
           color: $color-primary-hover;
-        }
-      }
-    }
-  }
-
-  .progress-overview {
-    .progress-categories {
-      @include stack-layout($spacing-4);
-
-      .category-item {
-        .category-header {
-          @include flex(row, space-between, center);
-          margin-bottom: $spacing-2;
-
-          .category-name {
-            font-weight: 500;
-            color: $color-gray-700;
-          }
-
-          .category-score {
-            font-weight: 600;
-            color: $color-primary;
-          }
-        }
-
-        .category-bar {
-          height: 6px;
-          background: $color-gray-200;
-          border-radius: $border-radius-full;
-          overflow: hidden;
-
-          .category-fill {
-            height: 100%;
-            background: linear-gradient(90deg, $color-primary, $color-primary-200);
-            transition: width 0.3s ease;
-          }
         }
       }
     }

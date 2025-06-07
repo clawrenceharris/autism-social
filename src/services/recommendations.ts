@@ -39,25 +39,26 @@ async function _fetchUserPreferences(userId: string): Promise<UserPreferences> {
     supabase
       .from("user_interests")
       .select("interest_id, interests(id, name)")
-      .eq("user_id", userId)
+      .eq("user_id", userId),
   ]);
 
   if (userGoalsResult.error) throw userGoalsResult.error;
   if (userInterestsResult.error) throw userInterestsResult.error;
 
   const goals = (userGoalsResult.data || [])
-    .map(ug => ug.goals)
-    .filter(Boolean) as Array<{ id: string; goal: string }>;
-  
+    .map((ug) => ug.goals)
+    .filter(Boolean)
+    .flat() as Array<{ id: string; goal: string }>;
+
   const interests = (userInterestsResult.data || [])
-    .map(ui => ui.interests)
-    .filter(Boolean) as Array<{ id: string; name: string }>;
+    .map((ui) => ui.interests)
+    .flat() as Array<{ id: string; name: string }>;
 
   return {
-    goalIds: goals.map(g => g.id),
-    interestIds: interests.map(i => i.id),
+    goalIds: goals.map((g) => g.id),
+    interestIds: interests.map((i) => i.id),
     goals,
-    interests
+    interests,
   };
 }
 
@@ -65,11 +66,16 @@ async function _fetchUserPreferences(userId: string): Promise<UserPreferences> {
  * Fetches all scenarios with their associated goals and interests
  */
 async function _fetchAllScenarioLinkages(): Promise<ScenarioLinkage[]> {
-  const [scenariosResult, scenarioGoalsResult, scenarioInterestsResult] = await Promise.all([
-    supabase.from("scenarios").select("*"),
-    supabase.from("scenario_goals").select("scenario_id, goal_id, goals(goal)"),
-    supabase.from("scenario_interests").select("scenario_id, interest_id, interests(name)")
-  ]);
+  const [scenariosResult, scenarioGoalsResult, scenarioInterestsResult] =
+    await Promise.all([
+      supabase.from("scenarios").select("*"),
+      supabase
+        .from("scenario_goals")
+        .select("scenario_id, goal_id, goals(goal)"),
+      supabase
+        .from("scenario_interests=")
+        .select("scenario_id, interest_id, interests(name)"),
+    ]);
 
   if (scenariosResult.error) throw scenariosResult.error;
   if (scenarioGoalsResult.error) throw scenarioGoalsResult.error;
@@ -79,16 +85,24 @@ async function _fetchAllScenarioLinkages(): Promise<ScenarioLinkage[]> {
   const scenarioGoals = scenarioGoalsResult.data || [];
   const scenarioInterests = scenarioInterestsResult.data || [];
 
-  return scenarios.map(scenario => {
-    const scenarioGoalData = scenarioGoals.filter(sg => sg.scenario_id === scenario.id);
-    const scenarioInterestData = scenarioInterests.filter(si => si.scenario_id === scenario.id);
+  return scenarios.map((scenario) => {
+    const scenarioGoalData = scenarioGoals.filter(
+      (sg) => sg.scenario_id === scenario.id
+    );
+    const scenarioInterestData = scenarioInterests.filter(
+      (si) => si.scenario_id === scenario.id
+    );
 
     return {
       scenario,
-      goalIds: scenarioGoalData.map(sg => sg.goal_id),
-      interestIds: scenarioInterestData.map(si => si.interest_id),
-      goalNames: scenarioGoalData.map(sg => sg.goals?.goal).filter(Boolean) as string[],
-      interestNames: scenarioInterestData.map(si => si.interests?.name).filter(Boolean) as string[]
+      goalIds: scenarioGoalData.map((sg) => sg.goal_id),
+      interestIds: scenarioInterestData.map((si) => si.interest_id),
+      goalNames: scenarioGoalData
+        .flatMap((sg) => sg.goals.flatMap((g) => g.goal))
+        .filter(Boolean) as string[],
+      interestNames: scenarioInterestData
+        .flatMap((si) => si.interests.flatMap((i) => i.name))
+        .filter(Boolean) as string[],
     };
   });
 }
@@ -100,31 +114,54 @@ function _calculateMatchScoresAndReasons(
   userPreferences: UserPreferences,
   scenarioLinkages: ScenarioLinkage[]
 ): RecommendedScenario[] {
-  const { goalIds: userGoalIds, interestIds: userInterestIds } = userPreferences;
+  const { goalIds: userGoalIds, interestIds: userInterestIds } =
+    userPreferences;
 
-  return scenarioLinkages.map(linkage => {
-    const { scenario, goalIds: scenarioGoalIds, interestIds: scenarioInterestIds } = linkage;
+  return scenarioLinkages.map((linkage) => {
+    const {
+      scenario,
+      goalIds: scenarioGoalIds,
+      interestIds: scenarioInterestIds,
+    } = linkage;
 
     // Calculate goal matches
-    const goalMatches = scenarioGoalIds.filter(goalId => userGoalIds.includes(goalId));
-    const matchedGoalNames = goalMatches.map(goalId => {
-      const userGoal = userPreferences.goals.find(g => g.id === goalId);
-      return userGoal?.goal;
-    }).filter(Boolean) as string[];
+    const goalMatches = scenarioGoalIds.filter((goalId) =>
+      userGoalIds.includes(goalId)
+    );
+    const matchedGoalNames = goalMatches
+      .map((goalId) => {
+        const userGoal = userPreferences.goals.find((g) => g.id === goalId);
+        return userGoal?.goal;
+      })
+      .filter(Boolean) as string[];
 
     // Calculate interest matches
-    const interestMatches = scenarioInterestIds.filter(interestId => userInterestIds.includes(interestId));
-    const matchedInterestNames = interestMatches.map(interestId => {
-      const userInterest = userPreferences.interests.find(i => i.id === interestId);
-      return userInterest?.name;
-    }).filter(Boolean) as string[];
+    const interestMatches = scenarioInterestIds.filter((interestId) =>
+      userInterestIds.includes(interestId)
+    );
+    const matchedInterestNames = interestMatches
+      .map((interestId) => {
+        const userInterest = userPreferences.interests.find(
+          (i) => i.id === interestId
+        );
+        return userInterest?.name;
+      })
+      .filter(Boolean) as string[];
 
     // Calculate match score (0-1)
-    const goalScore = userGoalIds.length > 0 ? goalMatches.length / Math.max(userGoalIds.length, scenarioGoalIds.length) : 0;
-    const interestScore = userInterestIds.length > 0 ? interestMatches.length / Math.max(userInterestIds.length, scenarioInterestIds.length) : 0;
-    
+    const goalScore =
+      userGoalIds.length > 0
+        ? goalMatches.length /
+          Math.max(userGoalIds.length, scenarioGoalIds.length)
+        : 0;
+    const interestScore =
+      userInterestIds.length > 0
+        ? interestMatches.length /
+          Math.max(userInterestIds.length, scenarioInterestIds.length)
+        : 0;
+
     // Weight goals more heavily than interests
-    const matchScore = (goalScore * 0.7) + (interestScore * 0.3);
+    const matchScore = goalScore * 0.7 + interestScore * 0.3;
 
     // Build match reasons
     const matchReasons: string[] = [];
@@ -132,7 +169,9 @@ function _calculateMatchScoresAndReasons(
       matchReasons.push(`Matches your goals: ${matchedGoalNames.join(", ")}`);
     }
     if (matchedInterestNames.length > 0) {
-      matchReasons.push(`Aligns with your interests: ${matchedInterestNames.join(", ")}`);
+      matchReasons.push(
+        `Aligns with your interests: ${matchedInterestNames.join(", ")}`
+      );
     }
     if (matchReasons.length === 0) {
       matchReasons.push("General recommendation");
@@ -141,7 +180,7 @@ function _calculateMatchScoresAndReasons(
     return {
       ...scenario,
       matchScore,
-      matchReasons
+      matchReasons,
     };
   });
 }
@@ -156,8 +195,8 @@ function _filterAndSortRecommendations(
   const { limit = 10, excludeCompletedIds = [], minMatchScore = 0 } = options;
 
   return recommendations
-    .filter(rec => !excludeCompletedIds.includes(rec.id)) // Exclude completed scenarios
-    .filter(rec => rec.matchScore > minMatchScore) // Only include scenarios with minimum match score
+    .filter((rec) => !excludeCompletedIds.includes(rec.id)) // Exclude completed scenarios
+    .filter((rec) => rec.matchScore > minMatchScore) // Only include scenarios with minimum match score
     .sort((a, b) => b.matchScore - a.matchScore) // Sort by match score descending
     .slice(0, limit); // Limit results
 }
@@ -174,7 +213,10 @@ export async function getRecommendedScenarios(
     const userPreferences = await _fetchUserPreferences(userId);
 
     // If user has no goals or interests, return general recommendations
-    if (userPreferences.goalIds.length === 0 && userPreferences.interestIds.length === 0) {
+    if (
+      userPreferences.goalIds.length === 0 &&
+      userPreferences.interestIds.length === 0
+    ) {
       const { data: allScenarios, error } = await supabase
         .from("scenarios")
         .select("*")
@@ -182,10 +224,10 @@ export async function getRecommendedScenarios(
 
       if (error) throw error;
 
-      return (allScenarios || []).map(scenario => ({
+      return (allScenarios || []).map((scenario) => ({
         ...scenario,
         matchScore: 0.1,
-        matchReasons: ["General recommendation"]
+        matchReasons: ["General recommendation"],
       }));
     }
 
@@ -193,11 +235,13 @@ export async function getRecommendedScenarios(
     const scenarioLinkages = await _fetchAllScenarioLinkages();
 
     // Calculate match scores and reasons
-    const recommendations = _calculateMatchScoresAndReasons(userPreferences, scenarioLinkages);
+    const recommendations = _calculateMatchScoresAndReasons(
+      userPreferences,
+      scenarioLinkages
+    );
 
     // Filter and sort recommendations
     return _filterAndSortRecommendations(recommendations, options);
-
   } catch (error) {
     console.error("Error getting recommended scenarios:", error);
     throw error;
@@ -216,7 +260,7 @@ export async function getScenariosByGoal(goalId: string): Promise<Scenario[]> {
 
     if (error) throw error;
 
-    return data?.map(sg => sg.scenarios).filter(Boolean) || [];
+    return data.flatMap((sg) => sg.scenarios).filter(Boolean) || [];
   } catch (error) {
     console.error("Error getting scenarios by goal:", error);
     throw error;
@@ -226,7 +270,9 @@ export async function getScenariosByGoal(goalId: string): Promise<Scenario[]> {
 /**
  * Get scenarios by specific interest
  */
-export async function getScenariosByInterest(interestId: string): Promise<Scenario[]> {
+export async function getScenariosByInterest(
+  interestId: string
+): Promise<Scenario[]> {
   try {
     const { data, error } = await supabase
       .from("scenario_interests")
@@ -235,7 +281,7 @@ export async function getScenariosByInterest(interestId: string): Promise<Scenar
 
     if (error) throw error;
 
-    return data?.map(si => si.scenarios).filter(Boolean) || [];
+    return data?.flatMap((si) => si.scenarios).filter(Boolean) || [];
   } catch (error) {
     console.error("Error getting scenarios by interest:", error);
     throw error;
