@@ -1,10 +1,10 @@
 import { Outlet } from "react-router-dom";
-import { UserTaskBar } from "../../";
+import { UserHeader } from "../../";
 
 const UserLayout = () => {
   return (
     <div>
-      <UserTaskBar />
+      <UserHeader />
       <main>
         <Outlet />
       </main>

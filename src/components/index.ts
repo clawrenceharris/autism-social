@@ -1,4 +1,4 @@
-export { default as TaskBar } from "./TaskBar";
+export { default as AdminHeader } from "./AdminHeader";
 export { default as RootLayout } from "./layouts/AdminLayout";
 export { default as ScenarioForm } from "./ScenarioForm";
 export { default as TextInput } from "./TextInput";
@@ -21,4 +21,4 @@ export { default as CreateDialogueModal } from "./modals/CreateDialogueModal";
 export { default as CreateScenarioModal } from "./modals/CreateScenarioModal";
 export { default as EditScenarioModal } from "./modals/EditScenarioModal";
 export { default as RecommendedDialogue } from "./RecommendedDialogue";
-export { default as UserTaskBar } from "./UserTaskBar";
+export { default as UserHeader } from "./UserHeader";

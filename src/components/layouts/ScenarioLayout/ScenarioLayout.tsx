@@ -1,5 +1,4 @@
 import { Outlet, useParams } from "react-router-dom";
-import TaskBar from "../../TaskBar";
 import { ScenarioProvider } from "../../../context";
 
 const ScenarioLayout = () => {
@@ -10,7 +9,7 @@ const ScenarioLayout = () => {
   return (
     <ScenarioProvider scenarioId={scenarioId}>
       <div className="layout-container">
-        <TaskBar />
+        {/* <TaskBar /> */}
         <main>
           <Outlet />
         </main>

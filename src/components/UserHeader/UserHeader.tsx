@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import { Home, BookOpen, TrendingUp, Settings } from "lucide-react";
-import "../../styles/_taskbar.scss";
+import "../../styles/shared/_header.scss";
 import { assets } from "../../constants/assets";
 
-const UserTaskBar = () => {
+const UserHeader = () => {
   return (
     <nav className="taskbar">
       <div className="taskbar-container">
@@ -35,4 +35,4 @@ const UserTaskBar = () => {
   );
 };
 
-export default UserTaskBar;
+export default UserHeader;
