@@ -15,12 +15,27 @@ export async function addUserInterests(
   userId: string,
   interestIds: string[]
 ): Promise<void> {
-  const userInterests = interestIds.map((interestId) => ({
-    user_id: userId,
-    interest_id: interestId,
-  }));
+  // First, get the user's existing interests to avoid duplicates
+  const { data: existingInterests, error: fetchError } = await supabase
+    .from("user_interests")
+    .select("interest_id")
+    .eq("user_id", userId);
 
-  const { error } = await supabase.from("user_interests").insert(userInterests);
+  if (fetchError) throw fetchError;
 
-  if (error) throw error;
+  // Filter out interests that the user already has
+  const existingInterestIds = existingInterests?.map(ui => ui.interest_id) || [];
+  const newInterestIds = interestIds.filter(interestId => !existingInterestIds.includes(interestId));
+
+  // Only insert if there are new interests to add
+  if (newInterestIds.length > 0) {
+    const userInterests = newInterestIds.map((interestId) => ({
+      user_id: userId,
+      interest_id: interestId,
+    }));
+
+    const { error } = await supabase.from("user_interests").insert(userInterests);
+
+    if (error) throw error;
+  }
 }

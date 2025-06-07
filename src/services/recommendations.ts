@@ -42,34 +42,42 @@ export async function getRecommendedScenarios(userId: string): Promise<Recommend
       }));
     }
 
-    // Get scenarios with their goal and interest matches
-    const { data: scenarios, error } = await supabase
-      .from("scenarios")
-      .select(`
-        *,
-        scenario_goals(goal_id, goals(goal)),
-        scenario_interests(interest_id, interests(name))
-      `);
+    // Perform separate queries to avoid relationship issues
+    const [scenariosResult, scenarioGoalsResult, scenarioInterestsResult] = await Promise.all([
+      supabase.from("scenarios").select("*"),
+      supabase.from("scenario_goals").select("scenario_id, goal_id, goals(goal)"),
+      supabase.from("scenario_interests").select("scenario_id, interest_id, interests(name)")
+    ]);
 
-    if (error) throw error;
+    if (scenariosResult.error) throw scenariosResult.error;
+    if (scenarioGoalsResult.error) throw scenarioGoalsResult.error;
+    if (scenarioInterestsResult.error) throw scenarioInterestsResult.error;
+
+    const scenarios = scenariosResult.data || [];
+    const scenarioGoals = scenarioGoalsResult.data || [];
+    const scenarioInterests = scenarioInterestsResult.data || [];
 
     // Calculate match scores and reasons
-    const recommendedScenarios: RecommendedScenario[] = (scenarios || [])
+    const recommendedScenarios: RecommendedScenario[] = scenarios
       .map(scenario => {
-        const scenarioGoalIds = scenario.scenario_goals?.map(sg => sg.goal_id) || [];
-        const scenarioInterestIds = scenario.scenario_interests?.map(si => si.interest_id) || [];
+        // Find goals and interests for this scenario
+        const scenarioGoalData = scenarioGoals.filter(sg => sg.scenario_id === scenario.id);
+        const scenarioInterestData = scenarioInterests.filter(si => si.scenario_id === scenario.id);
+
+        const scenarioGoalIds = scenarioGoalData.map(sg => sg.goal_id);
+        const scenarioInterestIds = scenarioInterestData.map(si => si.interest_id);
 
         // Calculate goal matches
         const goalMatches = scenarioGoalIds.filter(goalId => userGoalIds.includes(goalId));
         const goalMatchNames = goalMatches.map(goalId => {
-          const scenarioGoal = scenario.scenario_goals?.find(sg => sg.goal_id === goalId);
+          const scenarioGoal = scenarioGoalData.find(sg => sg.goal_id === goalId);
           return scenarioGoal?.goals?.goal;
         }).filter(Boolean);
 
         // Calculate interest matches
         const interestMatches = scenarioInterestIds.filter(interestId => userInterestIds.includes(interestId));
         const interestMatchNames = interestMatches.map(interestId => {
-          const scenarioInterest = scenario.scenario_interests?.find(si => si.interest_id === interestId);
+          const scenarioInterest = scenarioInterestData.find(si => si.interest_id === interestId);
           return scenarioInterest?.interests?.name;
         }).filter(Boolean);
 
