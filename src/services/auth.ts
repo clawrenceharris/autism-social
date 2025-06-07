@@ -1,3 +1,4 @@
+import { DatabaseService } from "./database";
 import { supabase } from "../lib/supabase";
 import type { AuthError, User } from "@supabase/supabase-js";
 
@@ -69,18 +70,26 @@ export async function getCurrentUser(): Promise<AuthResponse> {
   }
 }
 
+/**
+ * Get user role by user ID
+ * @param userId - The user ID to get role for
+ * @returns Promise with role string or null if not found
+ */
 export async function getUserRole(userId: string): Promise<{ role: string | null; error: Error | null }> {
   try {
-    const { data, error } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', userId)
-      .maybeSingle();
+    const result = await DatabaseService.getMaybeSingleBy<{ role: string }>(
+      "user_roles",
+      "user_id",
+      userId,
+      "role"
+    );
 
-    if (error) throw error;
+    if (result.error) {
+      throw result.error;
+    }
 
     return {
-      role: data?.role || null,
+      role: result.data?.role || null,
       error: null,
     };
   } catch (error) {

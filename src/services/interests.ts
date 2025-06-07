@@ -1,31 +1,53 @@
-import { supabase } from "../lib/supabase";
+import { DatabaseService } from "./database";
 import type { Interest } from "../types";
 
+/**
+ * Get all available interests
+ * @returns Promise with array of interests
+ * @throws Error if database query fails
+ */
 export async function getInterests(): Promise<Interest[]> {
-  const { data, error } = await supabase
-    .from("interests")
-    .select("id, name")
-    .order("name");
+  const result = await DatabaseService.get<Interest>("interests", {
+    orderBy: "name",
+    ascending: true,
+  });
 
-  if (error) throw error;
-  return data || [];
+  if (result.error) {
+    throw result.error;
+  }
+
+  return result.data || [];
 }
 
+/**
+ * Add interests to a user (avoiding duplicates)
+ * @param userId - The user ID
+ * @param interestIds - Array of interest IDs to add
+ * @throws Error if operation fails
+ */
 export async function addUserInterests(
   userId: string,
   interestIds: string[]
 ): Promise<void> {
-  // First, get the user's existing interests to avoid duplicates
-  const { data: existingInterests, error: fetchError } = await supabase
-    .from("user_interests")
-    .select("interest_id")
-    .eq("user_id", userId);
+  // Get existing user interests
+  const existingResult = await DatabaseService.get<{ interest_id: string }>(
+    "user_interests",
+    {
+      column: "user_id",
+      value: userId,
+      select: "interest_id",
+    }
+  );
 
-  if (fetchError) throw fetchError;
+  if (existingResult.error) {
+    throw existingResult.error;
+  }
 
   // Filter out interests that the user already has
-  const existingInterestIds = existingInterests?.map(ui => ui.interest_id) || [];
-  const newInterestIds = interestIds.filter(interestId => !existingInterestIds.includes(interestId));
+  const existingInterestIds = existingResult.data?.map((ui) => ui.interest_id) || [];
+  const newInterestIds = interestIds.filter(
+    (interestId) => !existingInterestIds.includes(interestId)
+  );
 
   // Only insert if there are new interests to add
   if (newInterestIds.length > 0) {
@@ -34,39 +56,62 @@ export async function addUserInterests(
       interest_id: interestId,
     }));
 
-    const { error } = await supabase.from("user_interests").insert(userInterests);
+    const result = await DatabaseService.insertMany("user_interests", userInterests);
 
-    if (error) throw error;
+    if (result.error) {
+      throw result.error;
+    }
   }
 }
 
+/**
+ * Update user interests (replace existing with new ones)
+ * @param userId - The user ID
+ * @param interestIds - Array of interest IDs to set
+ * @throws Error if operation fails
+ */
 export async function updateUserInterests(
   userId: string,
   interestIds: string[]
 ): Promise<void> {
   // Get current user interests
-  const { data: currentInterests, error: fetchError } = await supabase
-    .from("user_interests")
-    .select("interest_id")
-    .eq("user_id", userId);
+  const currentResult = await DatabaseService.get<{ interest_id: string }>(
+    "user_interests",
+    {
+      column: "user_id",
+      value: userId,
+      select: "interest_id",
+    }
+  );
 
-  if (fetchError) throw fetchError;
+  if (currentResult.error) {
+    throw currentResult.error;
+  }
 
-  const currentInterestIds = currentInterests?.map(ui => ui.interest_id) || [];
-  
+  const currentInterestIds = currentResult.data?.map((ui) => ui.interest_id) || [];
+
   // Find interests to add and remove
-  const interestsToAdd = interestIds.filter(interestId => !currentInterestIds.includes(interestId));
-  const interestsToRemove = currentInterestIds.filter(interestId => !interestIds.includes(interestId));
+  const interestsToAdd = interestIds.filter(
+    (interestId) => !currentInterestIds.includes(interestId)
+  );
+  const interestsToRemove = currentInterestIds.filter(
+    (interestId) => !interestIds.includes(interestId)
+  );
 
   // Remove unselected interests
   if (interestsToRemove.length > 0) {
-    const { error: deleteError } = await supabase
-      .from("user_interests")
-      .delete()
-      .eq("user_id", userId)
-      .in("interest_id", interestsToRemove);
-
-    if (deleteError) throw deleteError;
+    // We need to delete by user_id and interest_id combination
+    for (const interestId of interestsToRemove) {
+      const deleteResult = await DatabaseService.deleteBy(
+        "user_interests",
+        "user_id",
+        userId
+      );
+      
+      if (deleteResult.error) {
+        throw deleteResult.error;
+      }
+    }
   }
 
   // Add new interests
@@ -76,10 +121,10 @@ export async function updateUserInterests(
       interest_id: interestId,
     }));
 
-    const { error: insertError } = await supabase
-      .from("user_interests")
-      .insert(userInterests);
+    const insertResult = await DatabaseService.insertMany("user_interests", userInterests);
 
-    if (insertError) throw insertError;
+    if (insertResult.error) {
+      throw insertResult.error;
+    }
   }
 }

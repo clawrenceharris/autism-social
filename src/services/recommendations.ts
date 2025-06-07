@@ -1,4 +1,4 @@
-import { supabase } from "../lib/supabase";
+import { DatabaseService } from "./database";
 import type { Scenario } from "../types";
 
 export interface RecommendedScenario extends Scenario {
@@ -32,14 +32,14 @@ export interface RecommendationOptions {
  */
 async function _fetchUserPreferences(userId: string): Promise<UserPreferences> {
   const [userGoalsResult, userInterestsResult] = await Promise.all([
-    supabase
-      .from("user_goals")
-      .select("goal_id, goals(id, goal)")
-      .eq("user_id", userId),
-    supabase
-      .from("user_interests")
-      .select("interest_id, interests(id, name)")
-      .eq("user_id", userId),
+    DatabaseService.getWithJoins<{
+      goal_id: string;
+      goals: { id: string; goal: string };
+    }>("user_goals", "goal_id, goals(id, goal)", { user_id: userId }),
+    DatabaseService.getWithJoins<{
+      interest_id: string;
+      interests: { id: string; name: string };
+    }>("user_interests", "interest_id, interests(id, name)", { user_id: userId }),
   ]);
 
   if (userGoalsResult.error) throw userGoalsResult.error;
@@ -47,12 +47,11 @@ async function _fetchUserPreferences(userId: string): Promise<UserPreferences> {
 
   const goals = (userGoalsResult.data || [])
     .map((ug) => ug.goals)
-    .filter(Boolean)
-    .flat() as Array<{ id: string; goal: string }>;
+    .filter(Boolean) as Array<{ id: string; goal: string }>;
 
   const interests = (userInterestsResult.data || [])
     .map((ui) => ui.interests)
-    .flat() as Array<{ id: string; name: string }>;
+    .filter(Boolean) as Array<{ id: string; name: string }>;
 
   return {
     goalIds: goals.map((g) => g.id),
@@ -68,13 +67,17 @@ async function _fetchUserPreferences(userId: string): Promise<UserPreferences> {
 async function _fetchAllScenarioLinkages(): Promise<ScenarioLinkage[]> {
   const [scenariosResult, scenarioGoalsResult, scenarioInterestsResult] =
     await Promise.all([
-      supabase.from("scenarios").select("*"),
-      supabase
-        .from("scenario_goals")
-        .select("scenario_id, goal_id, goals(goal)"),
-      supabase
-        .from("scenario_interests")
-        .select("scenario_id, interest_id, interests(name)"),
+      DatabaseService.get<Scenario>("scenarios"),
+      DatabaseService.getWithJoins<{
+        scenario_id: string;
+        goal_id: string;
+        goals: { goal: string };
+      }>("scenario_goals", "scenario_id, goal_id, goals(goal)"),
+      DatabaseService.getWithJoins<{
+        scenario_id: string;
+        interest_id: string;
+        interests: { name: string };
+      }>("scenario_interests", "scenario_id, interest_id, interests(name)"),
     ]);
 
   if (scenariosResult.error) throw scenariosResult.error;
@@ -98,10 +101,10 @@ async function _fetchAllScenarioLinkages(): Promise<ScenarioLinkage[]> {
       goalIds: scenarioGoalData.map((sg) => sg.goal_id),
       interestIds: scenarioInterestData.map((si) => si.interest_id),
       goalNames: scenarioGoalData
-        .flatMap((sg) => sg.goals.flatMap((g) => g.goal))
+        .map((sg) => sg.goals?.goal)
         .filter(Boolean) as string[],
       interestNames: scenarioInterestData
-        .flatMap((si) => si.interests.flatMap((i) => i.name))
+        .map((si) => si.interests?.name)
         .filter(Boolean) as string[],
     };
   });
@@ -217,14 +220,13 @@ export async function getRecommendedScenarios(
       userPreferences.goalIds.length === 0 &&
       userPreferences.interestIds.length === 0
     ) {
-      const { data: allScenarios, error } = await supabase
-        .from("scenarios")
-        .select("*")
-        .limit(options.limit || 10);
+      const result = await DatabaseService.get<Scenario>("scenarios", {
+        limit: options.limit || 10,
+      });
 
-      if (error) throw error;
+      if (result.error) throw result.error;
 
-      return (allScenarios || []).map((scenario) => ({
+      return (result.data || []).map((scenario) => ({
         ...scenario,
         matchScore: 0.1,
         matchReasons: ["General recommendation"],
@@ -253,14 +255,13 @@ export async function getRecommendedScenarios(
  */
 export async function getScenariosByGoal(goalId: string): Promise<Scenario[]> {
   try {
-    const { data, error } = await supabase
-      .from("scenario_goals")
-      .select("scenarios(*)")
-      .eq("goal_id", goalId);
+    const result = await DatabaseService.getWithJoins<{
+      scenarios: Scenario;
+    }>("scenario_goals", "scenarios(*)", { goal_id: goalId });
 
-    if (error) throw error;
+    if (result.error) throw result.error;
 
-    return data.flatMap((sg) => sg.scenarios).filter(Boolean) || [];
+    return result.data?.map((sg) => sg.scenarios).filter(Boolean) || [];
   } catch (error) {
     console.error("Error getting scenarios by goal:", error);
     throw error;
@@ -274,14 +275,13 @@ export async function getScenariosByInterest(
   interestId: string
 ): Promise<Scenario[]> {
   try {
-    const { data, error } = await supabase
-      .from("scenario_interests")
-      .select("scenarios(*)")
-      .eq("interest_id", interestId);
+    const result = await DatabaseService.getWithJoins<{
+      scenarios: Scenario;
+    }>("scenario_interests", "scenarios(*)", { interest_id: interestId });
 
-    if (error) throw error;
+    if (result.error) throw result.error;
 
-    return data?.flatMap((si) => si.scenarios).filter(Boolean) || [];
+    return result.data?.map((si) => si.scenarios).filter(Boolean) || [];
   } catch (error) {
     console.error("Error getting scenarios by interest:", error);
     throw error;

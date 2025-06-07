@@ -1,28 +1,50 @@
-import { supabase } from "../lib/supabase";
-import type { Goal } from "../types";
 import { DatabaseService } from "./database";
+import type { Goal } from "../types";
 
+/**
+ * Get all available goals
+ * @returns Promise with array of goals
+ * @throws Error if database query fails
+ */
 export async function getGoals(): Promise<Goal[]> {
-  const { data, error } = await DatabaseService.get<Goal>("goals");
+  const result = await DatabaseService.get<Goal>("goals", {
+    orderBy: "goal",
+    ascending: true,
+  });
 
-  if (error) throw error;
-  return data || [];
+  if (result.error) {
+    throw result.error;
+  }
+
+  return result.data || [];
 }
 
+/**
+ * Add goals to a user (avoiding duplicates)
+ * @param userId - The user ID
+ * @param goalIds - Array of goal IDs to add
+ * @throws Error if operation fails
+ */
 export async function addUserGoals(
   userId: string,
   goalIds: string[]
 ): Promise<void> {
-  // First, get the user's existing goals to avoid duplicates
-  const { data: existingGoals, error: fetchError } = await supabase
-    .from("user_goals")
-    .select("goal_id")
-    .eq("user_id", userId);
+  // Get existing user goals
+  const existingResult = await DatabaseService.get<{ goal_id: string }>(
+    "user_goals",
+    {
+      column: "user_id",
+      value: userId,
+      select: "goal_id",
+    }
+  );
 
-  if (fetchError) throw fetchError;
+  if (existingResult.error) {
+    throw existingResult.error;
+  }
 
   // Filter out goals that the user already has
-  const existingGoalIds = existingGoals?.map((ug) => ug.goal_id) || [];
+  const existingGoalIds = existingResult.data?.map((ug) => ug.goal_id) || [];
   const newGoalIds = goalIds.filter(
     (goalId) => !existingGoalIds.includes(goalId)
   );
@@ -34,25 +56,39 @@ export async function addUserGoals(
       goal_id: goalId,
     }));
 
-    const { error } = await supabase.from("user_goals").insert(userGoals);
+    const result = await DatabaseService.insertMany("user_goals", userGoals);
 
-    if (error) throw error;
+    if (result.error) {
+      throw result.error;
+    }
   }
 }
 
+/**
+ * Update user goals (replace existing with new ones)
+ * @param userId - The user ID
+ * @param goalIds - Array of goal IDs to set
+ * @throws Error if operation fails
+ */
 export async function updateUserGoals(
   userId: string,
   goalIds: string[]
 ): Promise<void> {
   // Get current user goals
-  const { data: currentGoals, error: fetchError } = await supabase
-    .from("user_goals")
-    .select("goal_id")
-    .eq("user_id", userId);
+  const currentResult = await DatabaseService.get<{ goal_id: string }>(
+    "user_goals",
+    {
+      column: "user_id",
+      value: userId,
+      select: "goal_id",
+    }
+  );
 
-  if (fetchError) throw fetchError;
+  if (currentResult.error) {
+    throw currentResult.error;
+  }
 
-  const currentGoalIds = currentGoals?.map((ug) => ug.goal_id) || [];
+  const currentGoalIds = currentResult.data?.map((ug) => ug.goal_id) || [];
 
   // Find goals to add and remove
   const goalsToAdd = goalIds.filter(
@@ -64,13 +100,17 @@ export async function updateUserGoals(
 
   // Remove unselected goals
   if (goalsToRemove.length > 0) {
-    const { error: deleteError } = await supabase
-      .from("user_goals")
-      .delete()
-      .eq("user_id", userId)
-      .in("goal_id", goalsToRemove);
+    const deleteResult = await DatabaseService.deleteIn(
+      "user_goals",
+      "goal_id",
+      goalsToRemove.filter((goalId) => 
+        currentResult.data?.some(ug => ug.goal_id === goalId)
+      )
+    );
 
-    if (deleteError) throw deleteError;
+    if (deleteResult.error) {
+      throw deleteResult.error;
+    }
   }
 
   // Add new goals
@@ -80,10 +120,10 @@ export async function updateUserGoals(
       goal_id: goalId,
     }));
 
-    const { error: insertError } = await supabase
-      .from("user_goals")
-      .insert(userGoals);
+    const insertResult = await DatabaseService.insertMany("user_goals", userGoals);
 
-    if (insertError) throw insertError;
+    if (insertResult.error) {
+      throw insertResult.error;
+    }
   }
 }

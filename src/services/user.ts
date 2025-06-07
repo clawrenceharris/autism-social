@@ -1,4 +1,4 @@
-import { supabase } from "../lib/supabase";
+import { DatabaseService } from "./database";
 
 export interface UserProfile {
   id: string;
@@ -23,50 +23,78 @@ export interface UpdateUserProfileData {
   profile_photo_url?: string;
 }
 
+/**
+ * Create a new user profile
+ * @param data - User profile data to create
+ * @returns Promise with created user profile
+ * @throws Error if creation fails
+ */
 export async function createUser(
   data: CreateUserProfileData
 ): Promise<UserProfile> {
-  const { data: profile, error } = await supabase
-    .from("user_profiles")
-    .insert([data])
-    .select()
-    .single();
+  const result = await DatabaseService.create<UserProfile>("user_profiles", data as UserProfile);
 
-  if (error) throw error;
-  return profile;
+  if (result.error || !result.data) {
+    throw result.error || new Error("Failed to create user profile");
+  }
+
+  return result.data;
 }
 
+/**
+ * Get user profile by user ID
+ * @param userId - The user ID to get profile for
+ * @returns Promise with user profile or null if not found
+ * @throws Error if database query fails
+ */
 export async function getUser(userId: string): Promise<UserProfile | null> {
-  const { data, error } = await supabase
-    .from("user_profiles")
-    .select("*")
-    .eq("user_id", userId)
-    .maybeSingle();
+  const result = await DatabaseService.getMaybeSingleBy<UserProfile>(
+    "user_profiles",
+    "user_id",
+    userId
+  );
 
-  if (error) throw error;
-  return data;
+  if (result.error) {
+    throw result.error;
+  }
+
+  return result.data;
 }
 
+/**
+ * Update user profile
+ * @param userId - The user ID to update
+ * @param updates - Partial user profile data to update
+ * @returns Promise with updated user profile
+ * @throws Error if update fails
+ */
 export async function updateUser(
   userId: string,
   updates: UpdateUserProfileData
 ): Promise<UserProfile> {
-  const { data, error } = await supabase
-    .from("user_profiles")
-    .update(updates)
-    .eq("user_id", userId)
-    .select()
-    .single();
+  const result = await DatabaseService.updateBy<UserProfile>(
+    "user_profiles",
+    "user_id",
+    userId,
+    updates
+  );
 
-  if (error) throw error;
-  return data;
+  if (result.error || !result.data || result.data.length === 0) {
+    throw result.error || new Error("Failed to update user profile");
+  }
+
+  return result.data[0];
 }
 
+/**
+ * Delete user profile
+ * @param userId - The user ID to delete profile for
+ * @throws Error if deletion fails
+ */
 export async function deleteUser(userId: string): Promise<void> {
-  const { error } = await supabase
-    .from("user_profiles")
-    .delete()
-    .eq("user_id", userId);
+  const result = await DatabaseService.deleteBy("user_profiles", "user_id", userId);
 
-  if (error) throw error;
+  if (result.error) {
+    throw result.error;
+  }
 }
