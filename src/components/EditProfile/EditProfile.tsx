@@ -3,7 +3,8 @@ import { useOnboarding } from "../../hooks/useOnboarding";
 import { useAuth, useToast } from "../../context";
 import type { SignUpFormValues } from "../../types";
 import { supabase } from "../../lib/supabase";
-import { addUserInterests } from "../../services/interests";
+import { updateUserInterests } from "../../services/interests";
+import { updateUserGoals } from "../../services/goals";
 
 const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,6 +18,7 @@ const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
     stepEnd: 3,
     isLoading,
   });
+  
   const handleSubmit = async (data: Partial<SignUpFormValues>) => {
     try {
       if (step < 3) {
@@ -26,6 +28,8 @@ const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
       if (!user) {
         throw Error("User could not be found");
       }
+
+      // Update interests if provided
       if (data.interests?.length) {
         const { data: interestsData } = await supabase
           .from("interests")
@@ -33,12 +37,17 @@ const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
           .in("name", data.interests);
 
         if (interestsData) {
-          await addUserInterests(
+          await updateUserInterests(
             user.id,
             interestsData.map((i) => i.id)
           );
         }
+      } else {
+        // If no interests selected, remove all existing interests
+        await updateUserInterests(user.id, []);
       }
+
+      // Update goals if provided
       if (data.goals?.length) {
         const { data: goalsData } = await supabase
           .from("goals")
@@ -46,15 +55,17 @@ const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
           .in("goal", data.goals);
 
         if (goalsData) {
-          await addUserInterests(
+          await updateUserGoals(
             user.id,
             goalsData.map((i) => i.id)
           );
         }
+      } else {
+        // If no goals selected, remove all existing goals
+        await updateUserGoals(user.id, []);
       }
 
-      showToast("Updated profile successfulyl!", "success");
-
+      showToast("Updated profile successfully!", "success");
       onSubmit();
     } catch {
       setError("Uh oh, Something went wrong. Please try again later.");

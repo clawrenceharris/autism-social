@@ -39,3 +39,47 @@ export async function addUserInterests(
     if (error) throw error;
   }
 }
+
+export async function updateUserInterests(
+  userId: string,
+  interestIds: string[]
+): Promise<void> {
+  // Get current user interests
+  const { data: currentInterests, error: fetchError } = await supabase
+    .from("user_interests")
+    .select("interest_id")
+    .eq("user_id", userId);
+
+  if (fetchError) throw fetchError;
+
+  const currentInterestIds = currentInterests?.map(ui => ui.interest_id) || [];
+  
+  // Find interests to add and remove
+  const interestsToAdd = interestIds.filter(interestId => !currentInterestIds.includes(interestId));
+  const interestsToRemove = currentInterestIds.filter(interestId => !interestIds.includes(interestId));
+
+  // Remove unselected interests
+  if (interestsToRemove.length > 0) {
+    const { error: deleteError } = await supabase
+      .from("user_interests")
+      .delete()
+      .eq("user_id", userId)
+      .in("interest_id", interestsToRemove);
+
+    if (deleteError) throw deleteError;
+  }
+
+  // Add new interests
+  if (interestsToAdd.length > 0) {
+    const userInterests = interestsToAdd.map((interestId) => ({
+      user_id: userId,
+      interest_id: interestId,
+    }));
+
+    const { error: insertError } = await supabase
+      .from("user_interests")
+      .insert(userInterests);
+
+    if (insertError) throw insertError;
+  }
+}
