@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useMachine } from "@xstate/react";
-import { assets } from "../../constants/assets";
 import "./DialoguePlayer.css";
 import type {
   Dialogue,
@@ -10,6 +9,7 @@ import type {
 } from "../../types";
 import { createDialogueMachine } from "../../xstate/createDialogueMachine";
 import { useNavigate, type Location } from "react-router-dom";
+import { ArrowUpNarrowWide, Redo, X } from "lucide-react";
 
 const DialoguePlayer = ({
   from,
@@ -86,21 +86,11 @@ const DialoguePlayer = ({
           className="button circle-button danger"
           onClick={() => setIsComplete(true)}
         >
-          <img
-            className="icon"
-            src={assets.close}
-            aria-label="Exit Scenario"
-            alt="Exit"
-          />
+          <X />
         </button>
 
         <button className="button primary content-row" onClick={onReplay}>
-          <img
-            className="icon"
-            src={assets.restart}
-            aria-label="Replay Scenario"
-            alt="Restart"
-          />
+          <Redo />
           Replay
         </button>
       </div>
@@ -130,7 +120,7 @@ const DialoguePlayer = ({
               placeholder="Enter your response"
             />
             <button type="submit" className="button primary circle-button">
-              <img className="icon" src={assets.up_arrow} />
+              <ArrowUpNarrowWide />
             </button>
           </form>
 
@@ -174,12 +164,7 @@ const DialoguePlayer = ({
               className="content-centered button primary content-row"
               onClick={onReplay}
             >
-              <img
-                className="icon"
-                src={assets.restart}
-                aria-label="Replay Scenario"
-                alt="Restart"
-              />
+              <Redo />
               Replay
             </button>
             <button
