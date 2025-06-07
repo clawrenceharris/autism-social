@@ -14,6 +14,7 @@ import {
   Edit3,
 } from "lucide-react";
 import "./SettingsPage.scss";
+import EditProfile from "../../components/EditProfile/EditProfile";
 
 type ColorScheme = "light" | "dark" | "auto";
 
@@ -82,6 +83,7 @@ const SettingsPage = () => {
 
   const handleEditProfile = () => {
     // TODO: Open edit profile modal or navigate to edit page
+    openModal(<EditProfile />, "Edit Profile");
     showToast("Edit profile is not yet implemented", "info");
   };
 

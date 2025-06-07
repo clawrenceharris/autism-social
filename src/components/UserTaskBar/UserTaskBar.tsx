@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
-import { Home, BookOpen, TrendingUp, Settings, Compass } from "lucide-react";
+import { Home, BookOpen, TrendingUp, Settings } from "lucide-react";
 import "../../styles/_taskbar.scss";
+import { assets } from "../../constants/assets";
 
 const UserTaskBar = () => {
   return (
     <nav className="taskbar">
       <div className="taskbar-container">
         <Link to="/dashboard" className="taskbar-brand">
-          <Home size={24} />
-          <span>Dialogue App</span>
+          <img className="logo" src={assets.logo} alt="Logo" />
+          <span>Autism Social</span>
         </Link>
 
         <div className="taskbar-nav">
@@ -18,7 +19,7 @@ const UserTaskBar = () => {
           </Link>
           <Link to="/your-scenarios" className="taskbar-link">
             <BookOpen />
-            <span>Your Scenarios</span>
+            <span>Scenarios</span>
           </Link>
           <Link to="/progress" className="taskbar-link">
             <TrendingUp />
@@ -27,10 +28,6 @@ const UserTaskBar = () => {
           <Link to="/settings" className="taskbar-link">
             <Settings />
             <span>Customization</span>
-          </Link>
-          <Link to="/explore" className="taskbar-link">
-            <Compass />
-            <span>Explore</span>
           </Link>
         </div>
       </div>
