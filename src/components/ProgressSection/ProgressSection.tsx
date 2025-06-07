@@ -12,7 +12,7 @@ const ProgressSection = ({ userId }: { userId: string }) => {
   useEffect(() => {
     if (!progress) return;
     setProgressCategories([
-      { name: "Clarity", score: progress.clarity },
+      { name: "Clarity", score:0 },
       { name: "Empathy", score: progress.empathy },
       { name: "assertiveness", score: progress.assertiveness },
       { name: "Self-advocacy", score: progress.self_advocacy },
