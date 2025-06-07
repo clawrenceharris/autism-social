@@ -73,7 +73,7 @@ async function _fetchAllScenarioLinkages(): Promise<ScenarioLinkage[]> {
         .from("scenario_goals")
         .select("scenario_id, goal_id, goals(goal)"),
       supabase
-        .from("scenario_interests=")
+        .from("scenario_interests")
         .select("scenario_id, interest_id, interests(name)"),
     ]);
 
