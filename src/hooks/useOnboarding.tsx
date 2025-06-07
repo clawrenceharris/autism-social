@@ -14,6 +14,8 @@ interface UseOnboardingProps {
   onPrev?: () => void;
   error?: string | null;
   stepStart?: number;
+  stepEnd?: number;
+
   isLoading?: boolean;
 }
 
@@ -22,6 +24,7 @@ export const useOnboarding = ({
   onPrev,
   isLoading,
   stepStart,
+  stepEnd,
   error,
   ...props
 }: UseOnboardingProps) => {
@@ -31,6 +34,9 @@ export const useOnboarding = ({
     interests: [],
   });
   const nextStep = () => {
+    if (step === stepEnd) {
+      return;
+    }
     setStep(step + 1);
     if (onNext) {
       onNext();
@@ -54,8 +60,8 @@ export const useOnboarding = ({
   const handleSubmit = (data: Partial<SignUpFormValues>) => {
     const updatedData = { ...formData, ...data };
     setFormData(updatedData);
-    nextStep();
     props.handleSubmit(data);
+    nextStep();
   };
   const renderStep = () => {
     switch (step) {

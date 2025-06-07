@@ -14,6 +14,7 @@ const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
     handleSubmit: (data: Partial<SignUpFormValues>) => handleSubmit(data),
     error,
     stepStart: 2,
+    stepEnd: 3,
     isLoading,
   });
   const handleSubmit = async (data: Partial<SignUpFormValues>) => {
