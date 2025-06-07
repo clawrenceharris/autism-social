@@ -1,3 +1,6 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
 .progress-overview {
   .progress-categories {
     @include stack-layout($spacing-4);
