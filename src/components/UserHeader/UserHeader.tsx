@@ -13,7 +13,7 @@ const UserHeader = () => {
         </Link>
 
         <div className="taskbar-nav">
-          <Link to="/dashboard" className="taskbar-link">
+          <Link to="/" className="taskbar-link">
             <Home />
             <span>Dashboard</span>
           </Link>
