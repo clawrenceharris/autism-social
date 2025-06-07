@@ -7,6 +7,7 @@ import {
 } from "react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "./AuthContext";
+import { getUser, createUser } from "../services/user";
 
 interface UserProfile {
   id: string;
@@ -39,19 +40,27 @@ export function UserProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       setError(null);
 
-      const { data, error: fetchError } = await supabase
-        .from("user_profiles")
-        .select("*")
-        .eq("user_id", userId)
-        .single();
+      // First, try to get existing profile
+      let userProfile = await getUser(userId);
 
-      if (fetchError) {
-        throw fetchError;
+      // If no profile exists, create one with default values
+      if (!userProfile) {
+        console.log("No user profile found, creating new profile for user:", userId);
+        
+        // Get user email from auth for default name
+        const { data: authUser } = await supabase.auth.getUser();
+        const defaultName = authUser.user?.email?.split('@')[0] || 'User';
+
+        userProfile = await createUser({
+          user_id: userId,
+          name: defaultName,
+          goals: [],
+        });
       }
 
-      setProfile(data);
+      setProfile(userProfile);
     } catch (err) {
-      console.error("Error fetching user profile:", err);
+      console.error("Error fetching/creating user profile:", err);
       setError(err instanceof Error ? err.message : "Failed to fetch profile");
     } finally {
       setLoading(false);
