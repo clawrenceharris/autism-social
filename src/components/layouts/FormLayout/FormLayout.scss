@@ -1,12 +1,12 @@
-@import "../../styles/variables";
-@import "../../styles/mixins";
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
 
 .form {
   @include stack-layout($spacing-6);
   width: 100%;
-  .form-content{
-      padding-bottom: 7rem;
-      min-height: 300px;
+  .form-content {
+    padding-bottom: 7rem;
+    min-height: 300px;
   }
   .form-group {
     @include stack-layout($spacing-2);
