@@ -53,7 +53,10 @@ function App() {
             <Route path="/customization" element={<CustomizationPage />} />
             <Route path="/explore" element={<ExplorePage />} />
             <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/play/:scenarioId" element={<ScenarioStagePage />} />
+            <Route element={<ScenarioLayout />}>
+            
+              <Route path="/play/:scenarioId" element={<ScenarioStagePage />} />
+            </Route>
           </Route>
         </Route>
       </Routes>
