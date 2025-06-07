@@ -14,7 +14,7 @@ export const useProgress = (userId: string) => {
         setProgress(progress);
       } catch (err) {
         setError("Failed to load your progress.");
-        console.error("Error fetching progress: " + err);
+        console.error("Error fetching progress: " + err?.message);
       } finally {
         setIsLoading(false);
       }
