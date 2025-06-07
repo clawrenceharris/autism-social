@@ -18,7 +18,7 @@ const ScenarioStagePage = () => {
 
   if (loading) {
     return (
-      <div className="content-centered">
+      <div className="center-content">
         <ProgressIndicator />
       </div>
     );
