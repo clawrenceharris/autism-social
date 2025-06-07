@@ -1,13 +1,12 @@
-import { useScenarios } from "../../hooks";
 import {
   Skeleton,
   ScenarioListItem,
   ConfirmationModal,
 } from "../../components";
-import { deleteScenario } from "../../services/scenarios";
 import { useModal, useToast } from "../../context";
 import "./ManageScenariosPage.css";
 import type { Scenario } from "../../types";
+import { useScenarios, useDeleteScenario } from "../../hooks/queries/useScenarios";
 
 const SkeletonScenario = () => (
   <div className="scenario-item">
@@ -34,7 +33,8 @@ const SkeletonScenario = () => (
 );
 
 const ManageScenariosPage = () => {
-  const { scenarios, loading, error, removeScenario } = useScenarios();
+  const { data: scenarios = [], isLoading, error } = useScenarios();
+  const deleteScenarioMutation = useDeleteScenario();
   const { openModal } = useModal();
   const { showToast } = useToast();
 
@@ -45,8 +45,7 @@ const ManageScenariosPage = () => {
         confirmText="Delete"
         onConfirm={async () => {
           try {
-            await deleteScenario(scenario.id);
-            removeScenario(scenario.id);
+            await deleteScenarioMutation.mutateAsync(scenario.id);
             showToast("Scenario deleted successfully", "success");
           } catch {
             showToast("Failed to delete scenario", "error");
@@ -57,7 +56,7 @@ const ManageScenariosPage = () => {
     );
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div role="status" aria-live="polite" className="scenarios-container">
         <header className="scenarios-header">
@@ -77,7 +76,7 @@ const ManageScenariosPage = () => {
     return (
       <div role="alert" className="scenarios-container">
         <div className="error-message">
-          <p>An error occurred: {error}</p>
+          <p>An error occurred: {error.message}</p>
         </div>
       </div>
     );

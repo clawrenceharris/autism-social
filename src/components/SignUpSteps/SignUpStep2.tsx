@@ -1,4 +1,4 @@
-import { useGoals } from "../../hooks/useGoals";
+import { useGoals } from "../../hooks/queries/useGoals";
 import type { SignUpFormValues } from "../../types";
 import { ProgressIndicator } from "../";
 
@@ -11,15 +11,15 @@ export const SignUpStep2 = ({
   formData,
   toggleSelection,
 }: SignUpStep2Props) => {
-  const { goals, loading, error } = useGoals();
+  const { data: goals = [], isLoading, error } = useGoals();
 
-  if (loading)
+  if (isLoading)
     return (
       <div className="center-absolute">
         <ProgressIndicator />
       </div>
     );
-  if (error) return <div className="error">{error}</div>;
+  if (error) return <div className="error">{error.message}</div>;
 
   return (
     <div >

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useUser } from "../../context/UserContext";
-import { useRecommendations } from "../../hooks/useRecommendations";
+import { useRecommendations } from "../../hooks/queries/useRecommendations";
 import {
   BookOpen,
   Clock,
@@ -17,8 +17,7 @@ import { RecommendedDialogue } from "../../components";
 const DashboardPage = () => {
   const { user } = useAuth();
   const { profile, loading: profileLoading } = useUser();
-  const { recommendations, loading: recommendationsLoading } =
-    useRecommendations();
+  const { data: recommendations = [], isLoading: recommendationsLoading } = useRecommendations();
 
   // Mock data - replace with real data from your services
   const mockStats = {
@@ -74,18 +73,6 @@ const DashboardPage = () => {
     }
     return "User";
   };
-
-  // const getMatchScoreColor = (score: number) => {
-  //   if (score >= 0.7) return "var(--color-green-600)";
-  //   if (score >= 0.4) return "var(--color-primary)";
-  //   return "var(--color-gray-500)";
-  // };
-
-  // const getMatchScoreText = (score: number) => {
-  //   if (score >= 0.7) return "Perfect Match";
-  //   if (score >= 0.4) return "Good Match";
-  //   return "Suggested";
-  // };
 
   return (
     <div className="dashboard-container">

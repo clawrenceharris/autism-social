@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMachine } from "@xstate/react";
 import { useScenario } from "../../context";
-import useDialogues from "../../hooks/useDialogues";
+import { useDialogues } from "../../hooks/queries/useDialogues";
 import { createDialogueMachine } from "../../xstate/createDialogueMachine";
 import type { Dialogue as DialogueType, DialogueOption } from "../../types";
 import { 
@@ -27,7 +27,7 @@ const PlayScenarioPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { loading, error, scenario } = useScenario();
-  const { dialogues } = useDialogues();
+  const { data: dialogues = [], isLoading: dialoguesLoading } = useDialogues();
   
   const [selectedDialogue, setSelectedDialogue] = useState<DialogueType | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -175,7 +175,7 @@ const PlayScenarioPage = () => {
     };
   };
 
-  if (loading) {
+  if (loading || dialoguesLoading) {
     return (
       <div className="play-scenario-container">
         <div className="game-content">
