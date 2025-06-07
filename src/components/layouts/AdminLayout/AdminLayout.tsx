@@ -1,10 +1,10 @@
-import { TaskBar } from "../../";
+import { AdminHeader } from "../../";
 import type React from "react";
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
-      <TaskBar />
+      <AdminHeader />
       <main>{children}</main>
     </div>
   );
