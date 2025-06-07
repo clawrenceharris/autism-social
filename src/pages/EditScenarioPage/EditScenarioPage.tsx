@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import "./ScenarioPage.css";
+import "./EditScenarioPage.css";
 import { useModal, useScenario, useToast } from "../../context";
 import type { Dialogue, DialogueStep } from "../../types";
 import {
