@@ -6,7 +6,10 @@ import {
 import { useModal, useToast } from "../../context";
 import "./ManageScenariosPage.css";
 import type { Scenario } from "../../types";
-import { useScenarios, useDeleteScenario } from "../../hooks/queries/useScenarios";
+import {
+  useScenarios,
+  useDeleteScenario,
+} from "../../hooks/queries/useScenarios";
 
 const SkeletonScenario = () => (
   <div className="scenario-item">
@@ -58,10 +61,10 @@ const ManageScenariosPage = () => {
 
   if (isLoading) {
     return (
-      <div role="status\" aria-live="polite\" className="scenarios-container">
+      <div role="status" aria-live="polite" className="scenarios-container">
         <header className="scenarios-header">
-          <Skeleton variant="title\" width="60%" />
-          <Skeleton variant="text\" width="80%" />
+          <Skeleton variant="title" width="60%" />
+          <Skeleton variant="text" width="80%" />
         </header>
         <div className="scenarios-grid">
           {[...Array(6)].map((_, index) => (
@@ -91,7 +94,7 @@ const ManageScenariosPage = () => {
         </p>
       </header>
 
-      {scenarios.length === 0 ? (
+      {scenarios?.length === 0 ? (
         <div className="no-scenarios" role="status">
           <p>No scenarios found. Create your first scenario to get started.</p>
         </div>
@@ -101,7 +104,7 @@ const ManageScenariosPage = () => {
           role="list"
           aria-label="List of scenarios"
         >
-          {scenarios.map((scenario) => (
+          {scenarios?.map((scenario) => (
             <div key={scenario.id} role="listitem">
               <ScenarioListItem
                 scenario={scenario}
