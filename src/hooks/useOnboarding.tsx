@@ -54,8 +54,6 @@ export const useOnboarding = ({
   const handleSubmit = (data: Partial<SignUpFormValues>) => {
     const updatedData = { ...formData, ...data };
     setFormData(updatedData);
-
-    handleSubmit(data);
     nextStep();
     props.handleSubmit(data);
   };
