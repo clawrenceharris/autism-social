@@ -1,6 +1,36 @@
 import type { User } from "@supabase/supabase-js";
 import type { FieldValues } from "react-hook-form";
 
+
+
+export interface RecommendedScenario extends Scenario {
+  matchScore: number;
+  matchReasons: string[];
+}
+
+export interface UserPreferences {
+  goalIds: string[];
+  interestIds: string[];
+  goals: Array<{ id: string; goal: string }>;
+  interests: Array<{ id: string; name: string }>;
+}
+
+export interface ScenarioLinkage {
+  scenario: Scenario;
+  goalIds: string[];
+  interestIds: string[];
+  goalNames: string[];
+  interestNames: string[];
+}
+
+export interface RecommendationOptions {
+  limit?: number;
+  excludeCompletedIds?: string[];
+  minMatchScore?: number;
+}
+
+
+
 export interface SignUpFormValues extends FieldValues {
   name: string;
   email: string;
