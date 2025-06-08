@@ -1,32 +1,6 @@
 import { DatabaseService } from "./database";
 import type { Scenario } from "../types";
 
-export interface RecommendedScenario extends Scenario {
-  matchScore: number;
-  matchReasons: string[];
-}
-
-export interface UserPreferences {
-  goalIds: string[];
-  interestIds: string[];
-  goals: Array<{ id: string; goal: string }>;
-  interests: Array<{ id: string; name: string }>;
-}
-
-export interface ScenarioLinkage {
-  scenario: Scenario;
-  goalIds: string[];
-  interestIds: string[];
-  goalNames: string[];
-  interestNames: string[];
-}
-
-export interface RecommendationOptions {
-  limit?: number;
-  excludeCompletedIds?: string[];
-  minMatchScore?: number;
-}
-
 /**
  * Fetches user's goals and interests with their details
  */
