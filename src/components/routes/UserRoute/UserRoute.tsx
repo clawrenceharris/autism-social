@@ -11,9 +11,12 @@ const UserRoute = () => {
 
   if (true) {
     return (
+      <div style={{height: "100vh"}}>
+     
       <div className="center-absolute">
         <ProgressIndicator />
       </div>
+    </div>
     );
   }
 
