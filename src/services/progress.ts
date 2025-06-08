@@ -49,8 +49,8 @@ export async function createProgress(userId: string): Promise<UserProgress> {
 
     
       .select()
-      .single()
-\  if (result.error || !result.data) {
+      .single();
+  if (result.error || !result.data) {
     throw result.error || new Error("Failed to create progress");
   }
 
