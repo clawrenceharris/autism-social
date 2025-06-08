@@ -8,17 +8,19 @@ import type { UserProgress } from "../types";
  * @throws Error if database error occurs
  */
 export async function getProgress(userId: string): Promise<UserProgress | null> {
-  const result = await DatabaseService.getMaybeSingleBy<UserProgress>(
+  const {data, error} = await DatabaseService.getMaybeSingleBy<UserProgress>(
     "user_progress",
     "user_id",
     userId
   );
-
-  if (result.error) {
+  if(!result){
+    return await createProgress(userId);
+  }
+  if (error) {
     throw result.error;
   }
 
-  return result.data;
+  return data;
 }
 
 /**
