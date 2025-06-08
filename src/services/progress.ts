@@ -8,19 +8,19 @@ import type { UserProgress } from "../types";
  * @throws Error if database error occurs
  */
 export async function getProgress(userId: string): Promise<UserProgress | null> {
-  const {data, error} = await DatabaseService.getMaybeSingleBy<UserProgress>(
+  const {result, error} = await DatabaseService.getMaybeSingleBy<UserProgress>(
     "user_progress",
     "user_id",
     userId
   );
-  if(!data){
+  if(!result){
     return await createProgress(userId);
   }
   if (error) {
     throw result.error;
   }
 
-  return data;
+  return result;
 }
 
 /**
@@ -50,11 +50,11 @@ export async function createProgress(userId: string): Promise<UserProgress> {
     
       .select()
       .single();
-  if (result.error || !result.data) {
-    throw result.error || new Error("Failed to create progress");
+  if (error) {
+    throw error || new Error("Failed to create progress");
   }
 
-  return result.data;
+  return result;
 }
 
 /**
