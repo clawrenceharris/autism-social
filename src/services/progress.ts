@@ -17,7 +17,7 @@ export async function getProgress(userId: string): Promise<UserProgress | null> 
     return await createProgress(userId);
   }
   if (error) {
-    throw result.error;
+    throw error;
   }
 
   return result;
