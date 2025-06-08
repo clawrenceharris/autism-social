@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getProgress, createProgress } from "../services/progress";
+import { getOrCreateProgress } from "../services/progress";
 import type { UserProgress } from "../types";
 
 export const useProgress = (userId: string) => {
@@ -13,13 +13,8 @@ export const useProgress = (userId: string) => {
         setIsLoading(true);
         setError(null);
         
-        let progressData = await getProgress(userId);
-        
-        // If no progress exists, create initial progress
-        if (!progressData) {
-          progressData = await createProgress(userId);
-        }
-        
+        // Use getOrCreateProgress to handle both existing and new users
+        const progressData = await getOrCreateProgress(userId);
         setProgress(progressData);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Failed to load your progress.";
@@ -30,9 +25,9 @@ export const useProgress = (userId: string) => {
       }
     };
 
-   
+    if (userId) {
       fetchProgress();
-   
+    }
   }, [userId]);
 
   return { progress, isLoading, error };

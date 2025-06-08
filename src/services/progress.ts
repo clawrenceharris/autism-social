@@ -4,11 +4,11 @@ import type { UserProgress } from "../types";
 /**
  * Get user progress by user ID
  * @param userId - The user ID to get progress for
- * @returns Promise with user progress data
- * @throws Error if no progress found or database error occurs
+ * @returns Promise with user progress data or null if not found
+ * @throws Error if database error occurs
  */
 export async function getProgress(userId: string): Promise<UserProgress | null> {
-  const result = await DatabaseService.getMaybeSingle<UserProgress>(
+  const result = await DatabaseService.getMaybeSingleBy<UserProgress>(
     "user_progress",
     "user_id",
     userId
@@ -19,6 +19,24 @@ export async function getProgress(userId: string): Promise<UserProgress | null> 
   }
 
   return result.data;
+}
+
+/**
+ * Get or create user progress - returns existing progress if found, creates new if not
+ * @param userId - The user ID to get/create progress for
+ * @returns Promise with progress data (existing or newly created)
+ * @throws Error if operation fails
+ */
+export async function getOrCreateProgress(userId: string): Promise<UserProgress> {
+  // First, try to get existing progress
+  const existingProgress = await getProgress(userId);
+  
+  if (existingProgress) {
+    return existingProgress;
+  }
+
+  // If no progress exists, create new one
+  return await createProgress(userId);
 }
 
 /**
