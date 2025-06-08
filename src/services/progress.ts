@@ -51,7 +51,6 @@ export async function createProgress(userId: string): Promise<UserProgress> {
     assertiveness: 0,
     social_awareness: 0,
     self_advocacy: 0,
-        
   } as UserProgress)
       .select()
       .single();
