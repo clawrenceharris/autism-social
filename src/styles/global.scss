@@ -55,10 +55,10 @@ main {
   @include flex(row, flex-start, center, $spacing-4);
 }
 .center-absolute {
-  @include center-absolute();
+  @include center-absolute;
 }
 .content-centered {
-  @include center-content();
+  @include center-content;
 }
 .justify-between {
   justify-content: space-between;
