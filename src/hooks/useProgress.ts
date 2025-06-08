@@ -16,6 +16,7 @@ export const useProgress = (userId: string) => {
         // Use getOrCreateProgress to handle both existing and new users
         const progressData = await getOrCreateProgress(userId);
         setProgress(progressData);
+        console.log("pop");
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Failed to load your progress.";
         setError(errorMessage);
