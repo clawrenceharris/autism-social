@@ -42,16 +42,20 @@ export async function getOrCreateProgress(userId: string): Promise<UserProgress>
  * @throws Error if creation fails
  */
 export async function createProgress(userId: string): Promise<UserProgress> {
-  const result = await DatabaseService.create<UserProgress>("user_progress", {
+   const { data:result, error } = await supabase
+      .from("user_progress")
+      .insert({
     user_id: userId,
     clarity: 0,
     empathy: 0,
     assertiveness: 0,
     social_awareness: 0,
     self_advocacy: 0,
-  } as UserProgress);
-
-  if (result.error || !result.data) {
+  } as UserProgress)
+      .select()
+      .single();
+      .upsert({ user_id: userId }, { onConflict: "user_id" });
+\  if (result.error || !result.data) {
     throw result.error || new Error("Failed to create progress");
   }
 
