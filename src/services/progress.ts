@@ -8,7 +8,7 @@ import type { UserProgress } from "../types";
  * @throws Error if no progress found or database error occurs
  */
 export async function getProgress(userId: string): Promise<UserProgress | null> {
-  const result = await DatabaseService.getSingle<UserProgress>(
+  const result = await DatabaseService.getMaybeSingle<UserProgress>(
     "user_progress",
     "user_id",
     userId
