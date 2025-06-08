@@ -5,9 +5,9 @@ import type { AuthContextType } from "../../../types";
 const UserLayout = () => {
   const context = useOutletContext<AuthContextType>();
   return (
-    <div className="layout-container">
+    <div >
       <UserHeader />
-      <main>
+      <main className="layout-container">
         <Outlet context={context} />
       </main>
     </div>
