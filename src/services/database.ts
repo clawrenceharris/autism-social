@@ -35,7 +35,7 @@ export class DatabaseService {
       .insert([data])
       .select()
       .single();
-
+.upsert({ user_id: userId }, { onConflict: "user_id" });
     return { data: result as T, error };
   }
 
