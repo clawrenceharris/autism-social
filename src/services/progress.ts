@@ -55,7 +55,7 @@ export async function createProgress(userId: string): Promise<UserProgress> {
     self_advocacy: 0,
   } as UserProgress)
       .select()
-      .single();
+      .single()
       .upsert({ user_id: userId }, { onConflict: "user_id" });
 \  if (result.error || !result.data) {
     throw result.error || new Error("Failed to create progress");
