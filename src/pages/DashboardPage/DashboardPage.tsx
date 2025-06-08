@@ -16,10 +16,7 @@ import type { AuthContextType } from "../../types";
 const DashboardPage = () => {
   const { user, profile } = useOutletContext<AuthContextType>();
   const { data: recommendations = [], isLoading: recommendationsLoading } =
-    useRecommendations({
-      limit: 3,
-      minMatchScore: 0.1,
-    });
+    useRecommendations(user.id);
 
   // Mock data - replace with real data from your services
   const mockStats = {
