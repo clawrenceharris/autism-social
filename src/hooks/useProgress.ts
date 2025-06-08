@@ -16,7 +16,7 @@ export const useProgress = (userId: string) => {
         let progressData = await getProgress(userId);
         
         // If no progress exists, create initial progress
-        if (progressData === null) {
+        if (!progressData) {
           progressData = await createProgress(userId);
         }
         
@@ -30,9 +30,9 @@ export const useProgress = (userId: string) => {
       }
     };
 
-    if (userId) {
+   
       fetchProgress();
-    }
+   
   }, [userId]);
 
   return { progress, isLoading, error };
