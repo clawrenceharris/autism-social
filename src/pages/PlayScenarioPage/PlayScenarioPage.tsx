@@ -15,6 +15,7 @@ import {
   Home,
 } from "lucide-react";
 import "./PlayScenarioPage.scss";
+import { ProgressIndicator } from "../../components";
 
 interface Message {
   id: string;
@@ -162,7 +163,7 @@ const PlayScenarioPage = () => {
   };
 
   const handleExit = () => {
-    navigate("/dashboard");
+    navigate("/");
   };
 
   const getCurrentStep = () => {
@@ -184,9 +185,8 @@ const PlayScenarioPage = () => {
     return (
       <div className="play-scenario-container">
         <div className="game-content">
-          <div className="loading-state">
-            <div className="loading-spinner"></div>
-            <p>Loading scenario...</p>
+          <div className="center-absolute">
+            <ProgressIndicator />
           </div>
         </div>
       </div>

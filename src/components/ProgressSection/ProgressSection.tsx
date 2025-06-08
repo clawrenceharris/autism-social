@@ -1,10 +1,10 @@
 import { ChevronRight } from "lucide-react";
-import { useProgress } from "../../hooks/useProgress";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./ProgressSection.scss";
+import { useProgress } from "../../hooks/queries/useProgress";
 const ProgressSection = ({ userId }: { userId: string }) => {
-  const { progress, isLoading } = useProgress(userId);
+  const { data: progress, isLoading, error } = useProgress(userId);
   const [progressCategories, setProgressCategories] = useState<
     { name: string; score: number }[]
   >([]);
@@ -18,6 +18,13 @@ const ProgressSection = ({ userId }: { userId: string }) => {
       { name: "Self-advocacy", score: progress.self_advocacy },
     ]);
   }, [progress]);
+  if (error) {
+    return (
+      <div className="center-absolute">
+        <p className="danger"> {error.message}</p>
+      </div>
+    );
+  }
   return (
     <div>
       <div className="section-header">
@@ -27,22 +34,26 @@ const ProgressSection = ({ userId }: { userId: string }) => {
         </Link>
       </div>
       <div className="section-content">
-       {isLoading ? <>Loading</> :  <div className="progress-categories">
-          {progressCategories.map((category) => (
-            <div key={category.name} className="category-item">
-              <div className="category-header">
-                <span className="category-name">{category.name}</span>
-                <span className="category-score">{category.score}%</span>
+        {isLoading ? (
+          <>Loading</>
+        ) : (
+          <div className="progress-categories">
+            {progressCategories.map((category) => (
+              <div key={category.name} className="category-item">
+                <div className="category-header">
+                  <span className="category-name">{category.name}</span>
+                  <span className="category-score">{category.score}%</span>
+                </div>
+                <div className="category-bar">
+                  <div
+                    className="category-fill"
+                    style={{ width: `${(category.score / 10) * 100}%` }}
+                  />
+                </div>
               </div>
-              <div className="category-bar">
-                <div
-                  className="category-fill"
-                  style={{ width: `${(category.score / 10) * 100}%` }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>}
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -8,13 +8,16 @@ import { supabase } from "../lib/supabase";
  * @returns Promise with user progress data or null if not found
  * @throws Error if database error occurs
  */
-export async function getProgress(userId: string): Promise<UserProgress | null> {
-  const {result, error} = await DatabaseService.getMaybeSingleBy<UserProgress>(
-    "user_progress",
-    "user_id",
-    userId
-  );
-  if(!result){
+export async function getProgress(
+  userId: string
+): Promise<UserProgress | null> {
+  const { data: result, error } =
+    await DatabaseService.getMaybeSingleBy<UserProgress>(
+      "user_progress",
+      "user_id",
+      userId
+    );
+  if (!result) {
     return await createProgress(userId);
   }
   if (error) {
@@ -25,32 +28,18 @@ export async function getProgress(userId: string): Promise<UserProgress | null> 
 }
 
 /**
- * Get or create user progress - returns existing progress if found, creates new if not
- * @param userId - The user ID to get/create progress for
- * @returns Promise with progress data (existing or newly created)
- * @throws Error if operation fails
- */
-export async function getOrCreateProgress(userId: string): Promise<UserProgress> {
-  const existingProgress = await getProgress(userId);
-  if(!existingProgress)
-    // If no progress exists, create new one
-    return await createProgress(userId);
-}
-
-/**
  * Create initial progress record for a user
  * @param userId - The user ID to create progress for
  * @return  s Promise with created progress data
  * @throws Error if creation fails
  */
 export async function createProgress(userId: string): Promise<UserProgress> {
-   const { data:result, error } = await supabase
-      .from("user_progress")
+  const { data: result, error } = await supabase
+    .from("user_progress")
     .upsert({ user_id: userId }, { onConflict: "user_id" })
 
-    
-      .select()
-      .single();
+    .select()
+    .single();
   if (error) {
     throw error || new Error("Failed to create progress");
   }

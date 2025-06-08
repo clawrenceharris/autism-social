@@ -7,7 +7,7 @@ const UserHeader = () => {
   return (
     <nav className="taskbar">
       <div className="taskbar-container">
-        <Link to="/dashboard" className="taskbar-brand">
+        <Link to="/" className="taskbar-brand">
           <img className="logo" src={assets.logo} alt="Logo" />
           <span>Autism Social</span>
         </Link>
