@@ -7,7 +7,7 @@ const UserLayout = () => {
   return (
     <div >
       <UserHeader />
-      <main >
+      <main>
         <Outlet context={context} />
       </main>
     </div>
