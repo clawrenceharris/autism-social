@@ -13,7 +13,7 @@ export async function getProgress(userId: string): Promise<UserProgress | null> 
     "user_id",
     userId
   );
-  if(!result){
+  if(!data){
     return await createProgress(userId);
   }
   if (error) {
