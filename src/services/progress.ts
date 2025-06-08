@@ -28,7 +28,7 @@ export async function getProgress(userId: string): Promise<UserProgress | null> 
  * @throws Error if operation fails
  */
 export async function getOrCreateProgress(userId: string): Promise<UserProgress> {
-  
+  console.log("adding")
   const existingProgress = await getProgress(userId);
   
   // If no progress exists, create new one
@@ -38,7 +38,7 @@ export async function getOrCreateProgress(userId: string): Promise<UserProgress>
 /**
  * Create initial progress record for a user
  * @param userId - The user ID to create progress for
- * @returns Promise with created progress data
+ * @return  s Promise with created progress data
  * @throws Error if creation fails
  */
 export async function createProgress(userId: string): Promise<UserProgress> {
