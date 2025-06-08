@@ -28,12 +28,9 @@ export async function getProgress(userId: string): Promise<UserProgress | null> 
  * @throws Error if operation fails
  */
 export async function getOrCreateProgress(userId: string): Promise<UserProgress> {
-  // First, try to get existing progress
+  
   const existingProgress = await getProgress(userId);
   
-  if (existingProgress) {
-    return existingProgress;
-  }
 
   // If no progress exists, create new one
   return await createProgress(userId);
