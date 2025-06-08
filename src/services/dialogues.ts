@@ -41,6 +41,13 @@ export async function getScenarioDialogues(scenarioId: string) {
 export async function getDialogueById(id: string) {
   const result = await DatabaseService.getSingle<Dialogue>("dialogues", id);
   if (result.error) throw result.error;
-  if (!result.data) throw new Error(`Dialogue not found with id: ${id}`);
   return result.data;
 }
+
+export async function getRecommendedDialogues(){
+  const result = await supabase
+        .rpc("get_recommended_dialogues", { user_uuid: userId });
+  if (result.error)  throw result.error;
+  return result.data;
+  
+} 
