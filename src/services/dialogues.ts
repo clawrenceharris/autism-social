@@ -44,7 +44,7 @@ export async function getDialogueById(id: string) {
   return result.data;
 }
 
-export async function getRecommendedDialogues(){
+export async function getRecommendedDialogues(userId: string){
   const result = await supabase
         .rpc("get_recommended_dialogues", { user_uuid: userId });
   if (result.error)  throw result.error;
