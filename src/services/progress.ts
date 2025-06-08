@@ -31,7 +31,6 @@ export async function getOrCreateProgress(userId: string): Promise<UserProgress>
   
   const existingProgress = await getProgress(userId);
   
-
   // If no progress exists, create new one
   return await createProgress(userId);
 }
