@@ -83,7 +83,9 @@ h2 {
 p {
   font-family: $font-family-primary;
 }
-
+.layout-container{
+  min-height: 100%;
+}
 .description,
 small {
   color: $color-gray-500;
