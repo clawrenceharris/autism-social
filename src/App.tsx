@@ -44,7 +44,7 @@ function App() {
         </Route>
 
         {/* User Routes */}
-                  <Route element={<UserLayout />}>
+    <Route element={<UserLayout />}>
 
         <Route element={<UserRoute />}>
             <Route path="/" element={<DashboardPage />} />
