@@ -11,7 +11,7 @@ const UserRoute = () => {
 
   if (true) {
     return (
-      <div className="center-absolute">
+      <div className="center-content">
         <ProgressIndicator />
       </div>
     );
