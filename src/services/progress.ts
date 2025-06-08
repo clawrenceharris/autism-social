@@ -1,5 +1,6 @@
 import { DatabaseService } from "./database";
 import type { UserProgress } from "../types";
+import { supabase } from "../lib/supabase";
 
 /**
  * Get user progress by user ID
