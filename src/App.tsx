@@ -44,8 +44,9 @@ function App() {
         </Route>
 
         {/* User Routes */}
+                  <Route element={<UserLayout />}>
+
         <Route element={<UserRoute />}>
-          <Route element={<UserLayout />}>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/your-scenarios" element={<YourScenariosPage />} />
             <Route path="/progress" element={<ProgressPage />} />
