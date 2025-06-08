@@ -30,9 +30,9 @@ export async function getProgress(userId: string): Promise<UserProgress | null> 
 export async function getOrCreateProgress(userId: string): Promise<UserProgress> {
   console.log("adding")
   const existingProgress = await getProgress(userId);
-  
-  // If no progress exists, create new one
-  return await createProgress(userId);
+  if(!existingProgress)
+    // If no progress exists, create new one
+    return await createProgress(userId);
 }
 
 /**
