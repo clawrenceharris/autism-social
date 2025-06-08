@@ -45,7 +45,7 @@ export async function getOrCreateProgress(userId: string): Promise<UserProgress>
 export async function createProgress(userId: string): Promise<UserProgress> {
    const { data:result, error } = await supabase
       .from("user_progress")
-    .upsert({ user_id: userId }, { onConflict: "user_id" });
+    .upsert({ user_id: userId }, { onConflict: "user_id" })
 
     
       .select()
