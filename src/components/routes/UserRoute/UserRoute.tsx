@@ -9,7 +9,7 @@ const UserRoute = () => {
   const { profile, loading: loadingUser } = useUser();
   const location = useLocation();
 
-  if (true) {
+  if (loadingAuth || loadingUser) {
     return (
       
       <div className="center-absolute">
