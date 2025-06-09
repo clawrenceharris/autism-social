@@ -32,9 +32,17 @@ const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
       }
       setIsLoading(true);
 
-      await updateUserInterests(user.id, data.interests || []);
+      await updateUserInterests(
+        user.id,
+        interests
+          .filter((i) => data.interests?.includes(i.name))
+          .map((i) => i.id) || []
+      );
 
-      await updateUserGoals(user.id, data.goals || []);
+      await updateUserGoals(
+        user.id,
+        goals.filter((g) => data.goals?.includes(g.goal)).map((g) => g.id)
+      );
 
       showToast("Updated profile successfully!", "success");
       onSubmit();
