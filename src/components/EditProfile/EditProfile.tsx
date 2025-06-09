@@ -38,8 +38,8 @@ const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
           .filter((i) => data.interests?.includes(i.name))
           .map((i) => i.id) || []
       );
-      console.log(data.goals);
-      console.log({goals: goals.filter((g) => data.goals?.includes(g.goal)).map((g) => g.id)});
+      console.log(data?.goals);
+      // console.log({goals: goals.filter((g) => data.goals?.includes(g.goal)).map((g) => g.id)});
       await updateUserGoals(
         user.id,
         goals.filter((g) => data.goals?.includes(g.goal)).map((g) => g.id)
