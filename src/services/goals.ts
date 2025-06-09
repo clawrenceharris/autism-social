@@ -30,7 +30,7 @@ export async function updateUserGoals(
   new_goals: string[]
 ): Promise<void> {
   const { data, error } = await supabase.rpc("update_user_goals", {
-    userId,
+    user_id: userId,
     new_goals,
   });
   if (error) throw error;
