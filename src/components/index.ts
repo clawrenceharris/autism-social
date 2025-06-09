@@ -24,5 +24,4 @@ export { default as EditScenarioModal } from "./modals/EditScenarioModal";
 export { default as RecommendedDialogue } from "./RecommendedDialogue";
 export { default as UserHeader } from "./UserHeader";
 export { default as ProgressSection } from "./ProgressSection";
-export { default as ManageScenariosRedux } from "./ManageScenariosRedux";
 export { default as ToastContainer } from "./ToastContainer";
