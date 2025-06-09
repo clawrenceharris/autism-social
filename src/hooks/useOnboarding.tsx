@@ -62,7 +62,7 @@ export const useOnboarding = ({
   const handleSubmit = (data: Partial<SignUpFormValues>) => {
     const updatedData = { ...formData, ...data };
     setFormData(updatedData);
-    props.handleSubmit(data);
+    props.handleSubmit(formData);
     nextStep();
   };
   const renderStep = (props?: FormLayoutProps<SignUpFormValues>) => {
