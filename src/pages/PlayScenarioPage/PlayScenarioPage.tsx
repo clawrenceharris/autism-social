@@ -26,7 +26,7 @@ interface Message {
 
 const PlayScenarioPage = () => {
   const navigate = useNavigate();
-  const { loading, error, scenario } = useScenario();
+  const { loading, error, scenario, dialogue } = useScenario();
   const { data: dialogues = [], isLoading: dialoguesLoading } = useDialogues();
 
   const [selectedDialogue, setSelectedDialogue] = useState<DialogueType | null>(
@@ -227,7 +227,7 @@ const PlayScenarioPage = () => {
     );
   }
 
-  if (!selectedDialogue) {
+  if (!dialogue) {
     return (
       <div className="play-scenario-container">
         <div className="game-header">
@@ -285,7 +285,7 @@ const PlayScenarioPage = () => {
         <div className="header-content">
           <div className="scenario-info">
             <h1 className="scenario-title">{scenario.title}</h1>
-            <div className="scenario-badge">{selectedDialogue.title}</div>
+            <div className="scenario-badge">{dialogue.title}</div>
           </div>
           <div className="game-controls">
             <button className="control-btn">

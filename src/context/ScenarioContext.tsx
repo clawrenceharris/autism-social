@@ -1,13 +1,16 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { getScenarioById } from "../services/scenarios";
-import type { Scenario } from "../types";
+import type { Dialogue, Scenario } from "../types";
+import { getDialogueById } from "../services/dialogues";
 interface AuthContextProps {
   children: React.ReactNode;
-  scenarioId: string;
+  scenarioId?: string;
+  dialogueId?: string;
 }
 
 type ScenarioContextType = {
   scenario: Scenario | null;
+  dialogue: Dialogue | null;
   error: string | null;
 
   loading: boolean;
@@ -16,20 +19,21 @@ const ScenarioContext = createContext<ScenarioContextType | undefined>(
   undefined
 );
 
-const ScenarioProvider = ({ children, scenarioId }: AuthContextProps) => {
+const ScenarioProvider = ({
+  children,
+  dialogueId,
+  scenarioId,
+}: AuthContextProps) => {
   const [scenario, setScenario] = useState<Scenario | null>(null);
+  const [dialogue, setDialogue] = useState<Dialogue | null>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    const fetchScenario = async () => {
-      if (!scenarioId) {
-        setLoading(false);
-        return;
-      }
+    const fetchScenario = async (id: string) => {
       try {
         setLoading(true);
-        const scenario = await getScenarioById(scenarioId);
+        const scenario = await getScenarioById(id);
         setScenario(scenario);
         setLoading(false);
       } catch {
@@ -37,12 +41,33 @@ const ScenarioProvider = ({ children, scenarioId }: AuthContextProps) => {
         setLoading(false);
       }
     };
-    fetchScenario();
-  }, [scenarioId]);
+    const fetchDialogue = async (id: string) => {
+      if (!dialogueId) {
+        setLoading(false);
+        return;
+      }
+      try {
+        setLoading(true);
+        const dialogue = await getDialogueById(id);
+        setDialogue(dialogue);
+        setLoading(false);
+      } catch {
+        setError("Error getting Scenario");
+        setLoading(false);
+      }
+    };
+    if (scenarioId) {
+      fetchScenario(scenarioId);
+    }
+    if (dialogueId) {
+      fetchDialogue(dialogueId);
+    }
+  }, [scenarioId, dialogueId]);
   return (
     <ScenarioContext.Provider
       value={{
         scenario,
+        dialogue,
         loading,
 
         error,
