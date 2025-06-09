@@ -5,7 +5,7 @@ export async function getRecommendedDialogues(
   userId: string
 ): Promise<RecommendedDialogue[]> {
   const { data, error } = await supabase.rpc("get_recommended_dialogues", {
-    user_uuid: userId,
+    user_id: userId,
   });
 
   if (error) throw error;
