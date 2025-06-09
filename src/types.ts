@@ -1,11 +1,6 @@
 import type { User } from "@supabase/supabase-js";
 import type { FieldValues } from "react-hook-form";
 
-export interface RecommendedDialogue extends Dialogue {
-  matchScore: number;
-  matchReasons: string[];
-}
-
 export interface UserPreferences {
   goalIds: string[];
   interestIds: string[];
