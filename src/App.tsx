@@ -51,7 +51,12 @@ function App() {
             <Route path="/progress" element={<ProgressPage />} />
             <Route path="/explore" element={<ExplorePage />} />
             <Route path="/settings" element={<SettingsPage />} />
-            <Route element={<ScenarioLayout />}>
+            
+          </Route>
+        </Route>
+
+         <Route element={<UserRoute />}>
+<Route element={<ScenarioLayout />}>
               <Route
                 path="/scenario/:scenarioId/dialogue/:dialogueId"
                 element={<PlayScenarioPage />}
@@ -61,8 +66,10 @@ function App() {
                 element={<PlayScenarioPage />}
               />
             </Route>
-          </Route>
-        </Route>
+
+         </Route>
+
+        
       </Routes>
     </Router>
   );
