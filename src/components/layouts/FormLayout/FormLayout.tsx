@@ -9,8 +9,9 @@ import {
 } from "react-hook-form";
 import "./FormLayout.scss";
 
-interface FormLayoutProps<T extends FieldValues> extends UseFormProps<T> {
-  children: ((methods: UseFormReturn<T>) => ReactNode) | ReactNode;
+export interface FormLayoutProps<T extends FieldValues>
+  extends UseFormProps<T> {
+  children?: ((methods: UseFormReturn<T>) => ReactNode) | ReactNode;
   showsSubmitButton?: boolean;
   showsCancelButton?: boolean;
   submitText?: string;
@@ -93,11 +94,10 @@ function FormLayout<T extends FieldValues>({
           </p>
         )}
         <div className="form-content">
-        
-        {typeof children === "function" ? children(methods) : children}
-     
-        {error && <p className="form-error-message">{error}</p>}
-       </div>
+          {typeof children === "function" ? children(methods) : children}
+
+          {error && <p className="form-error-message">{error}</p>}
+        </div>
         <div className="form-actions">
           {showsCancelButton && (
             <button

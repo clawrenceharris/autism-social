@@ -7,6 +7,7 @@ import {
   SignUpStep3,
   SignUpStep5,
 } from "../components/SignUpSteps";
+import type { FormLayoutProps } from "../components/layouts/FormLayout/FormLayout";
 
 interface UseOnboardingProps {
   handleSubmit: (data: Partial<SignUpFormValues>) => void;
@@ -33,7 +34,7 @@ export const useOnboarding = ({
     goals: [],
     interests: [],
   });
-  
+
   const nextStep = () => {
     if (step === stepEnd) {
       return;
@@ -64,7 +65,7 @@ export const useOnboarding = ({
     props.handleSubmit(data);
     nextStep();
   };
-  const renderStep = () => {
+  const renderStep = (props?: FormLayoutProps<SignUpFormValues>) => {
     switch (step) {
       case 1:
         return (
@@ -72,6 +73,7 @@ export const useOnboarding = ({
             onSubmit={handleSubmit}
             submitText="Next"
             isLoading={isLoading}
+            {...props}
           >
             {({ register, formState: { errors } }) => (
               <SignUpStep1 register={register} errors={errors} />
@@ -85,12 +87,12 @@ export const useOnboarding = ({
             onSubmit={() => {
               handleSubmit({ goals: formData.goals });
             }}
-           
             submitText="Next"
             showsCancelButton={step != stepStart}
             isLoading={isLoading}
             cancelText="Back"
             onCancel={prevStep}
+            {...props}
           >
             <>
               <SignUpStep2
@@ -112,6 +114,7 @@ export const useOnboarding = ({
             onCancel={prevStep}
             isLoading={isLoading}
             cancelText="Back"
+            {...props}
           >
             <SignUpStep3
               formData={formData}
@@ -130,6 +133,7 @@ export const useOnboarding = ({
             onCancel={prevStep}
             isLoading={isLoading}
             error={error}
+            {...props}
           >
             {({ register, formState: { errors } }) => (
               <SignUpStep5 register={register} errors={errors} />
