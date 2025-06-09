@@ -31,7 +31,7 @@ const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
         throw Error("User could not be found");
       }
       setIsLoading(true);
- console.log({goals: goals.filter((g) =>   data.goals?.includes(g.goal)).map((g) => g.id)});
+ 
       await updateUserInterests(
         user.id,
         interests
