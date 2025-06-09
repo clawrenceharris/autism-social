@@ -79,7 +79,7 @@ export async function updateUserInterests(
   userId: string,
   new_interests: string[]
 ): Promise<void> {
-  const { data, error } = await supabase.rpc("update_user_interests_by_name", {
+  const { data, error } = await supabase.rpc("update_user_interests", {
     user_uuid: userId,
     new_interests,
   });
