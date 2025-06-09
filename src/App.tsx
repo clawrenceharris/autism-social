@@ -33,11 +33,11 @@ function App() {
 
           <Route element={<ScenarioLayout />}>
             <Route
-              path="/scenario/:scenarioId"
+              path="/admin/scenario/:scenarioId"
               element={<EditScenarioPage />}
             />
             <Route
-              path="/scenario/:scenarioId/dialogue/:dialogueId"
+              path="/admin/scenario/:scenarioId/dialogue/:dialogueId"
               element={<EditScenarioPage />}
             />
           </Route>
