@@ -31,14 +31,14 @@ const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
         throw Error("User could not be found");
       }
       setIsLoading(true);
-
+ console.log({goals: goals.filter((g) =>   data.goals?.includes(g.goal)).map((g) => g.id)});
       await updateUserInterests(
         user.id,
         interests
           .filter((i) => data.interests?.includes(i.name))
           .map((i) => i.id) || []
       );
-      // console.log({goals: goals.filter((g) =>   data.goals?.includes(g.goal)).map((g) => g.id)});
+     
       await updateUserGoals(
         user.id,
         goals.filter((g) => data.goals?.includes(g.goal)).map((g) => g.id)
