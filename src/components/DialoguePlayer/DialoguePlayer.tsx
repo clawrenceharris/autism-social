@@ -5,63 +5,183 @@ import type {
   Dialogue,
   DialogueOption,
   DialogueStep,
+  Message,
   Scenario,
 } from "../../types";
 import { createDialogueMachine } from "../../xstate/createDialogueMachine";
-import { useNavigate, type Location } from "react-router-dom";
-import { ArrowUpNarrowWide, Redo, X } from "lucide-react";
-
-const DialoguePlayer = ({
-  from,
-  scenario,
-  dialogue,
-  onReplay,
-}: {
-  from: Location;
+import {
+  Award,
+  Home,
+  RotateCcw,
+  Send,
+  Settings,
+  Volume2,
+  X,
+} from "lucide-react";
+interface DialoguePlayerProps {
   scenario: Scenario;
   dialogue: Dialogue;
   onReplay: () => void;
-}) => {
+  onExit: () => void;
+}
+const DialoguePlayer = ({
+  scenario,
+  onExit,
+  dialogue,
+  onReplay,
+}: DialoguePlayerProps) => {
   const machine = useMemo(
     () => createDialogueMachine(dialogue.id, dialogue.steps),
     [dialogue]
   );
-  const [state, send] = useMachine(machine);
+  const [state, send] = useMachine(
+    machine || createDialogueMachine("empty", [])
+  );
+
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [customInput, setCustomInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Create dialogue machine
+
+  // Auto-scroll to bottom of messages
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  // Initialize first message when dialogue is selected
+  useEffect(() => {
+    if (dialogue && dialogue.steps.length > 0) {
+      const firstStep = dialogue.steps[0];
+      if (firstStep.npc) {
+        setMessages([
+          {
+            id: "initial",
+            speaker: "npc",
+            text: firstStep.npc,
+            timestamp: new Date(),
+          },
+        ]);
+      }
+    }
+  }, [dialogue]);
+
+  // Handle state changes
+  useEffect(() => {
+    if (state.status === "done") {
+      setShowResults(true);
+    }
+  }, [state.status]);
+
+  const handleOptionClick = async (option: DialogueOption) => {
+    // Add user message
+    const userMessage: Message = {
+      id: `user-${Date.now()}`,
+      speaker: "user",
+      text: option.label,
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+
+    // Show typing indicator
+    setIsTyping(true);
+
+    // Simulate AI thinking time
+    await new Promise((resolve) =>
+      setTimeout(resolve, 1000 + Math.random() * 1000)
+    );
+
+    // Send event to state machine
+    send({ type: option.event });
+
+    // Get next step and add NPC response
+    setTimeout(() => {
+      const currentStep = dialogue?.steps.find(
+        (step) => step.id === option.next
+      );
+
+      if (currentStep?.npc) {
+        const npcMessage: Message = {
+          id: `npc-${Date.now()}`,
+          speaker: "npc",
+          text: currentStep.npc,
+          timestamp: new Date(),
+        };
+
+        setMessages((prev) => [...prev, npcMessage]);
+      }
+
+      setIsTyping(false);
+    }, 500);
+  };
+
+  const getCurrentStep = () => {
+    if (!dialogue || !state.value) return null;
+    return dialogue.steps.find((step) => step.id === state.value);
+  };
+
+  const getScores = () => {
+    return {
+      clarity: state.context?.clarity || 0,
+      empathy: state.context?.empathy || 0,
+      assertiveness: state.context?.assertiveness || 0,
+      socialAwareness: state.context?.socialAwareness || 0,
+      selfAdvocacy: state.context?.selfAdvocacy || 0,
+    };
+  };
+  const handleCustomSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customInput.trim()) return;
+
+    const userMessage: Message = {
+      id: `custom-${Date.now()}`,
+      speaker: "user",
+      text: customInput,
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setCustomInput("");
+
+    // Show typing indicator
+    setIsTyping(true);
+
+    // Simulate AI response (in a real app, this would call your AI service)
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    const aiResponse: Message = {
+      id: `ai-${Date.now()}`,
+      speaker: "npc",
+      text: "That's an interesting response! Let me think about how to continue our conversation...",
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, aiResponse]);
+    setIsTyping(false);
+  };
 
   const tags = Array.from(state.tags) as unknown as DialogueStep[];
   const currentTag = tags?.[0];
-  const [isComplete, setIsComplete] = useState<boolean>(false);
-  const [input, setInput] = useState<string>();
   const [history, setHistory] = useState<{ speaker: string; text: string }[]>(
     []
   );
-  const [isBusy, setIsBusy] = useState(false);
-  const navigate = useNavigate();
+
   useEffect(() => {
     if (history.length === 0) {
       setHistory([{ speaker: "Alex", text: tags?.[0].npc }]);
     }
   }, [history.length, tags]);
-  useEffect(() => {
-    if (state.status === "done") {
-      setIsComplete(true);
-    }
-  }, [state.status]);
 
-  const handleOptionClick = (opt: DialogueOption) => {
-    setIsBusy(true);
-    setHistory((prev) => [...prev, { speaker: "You", text: opt.label }]);
-    setTimeout(() => {
-      setIsBusy(false);
-      send({ type: opt.event });
-    }, 2000);
-  };
   const previousStateRef = useRef(state.value);
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setInput("");
-    if (input) setHistory((prev) => [...prev, { speaker: "You", text: input }]);
-  };
+
   useEffect(() => {
     if (previousStateRef.current !== state.value) {
       if (currentTag?.npc) {
@@ -74,104 +194,155 @@ const DialoguePlayer = ({
     }
   }, [state.value, currentTag?.npc]);
 
-  const parseLabel = (label: string) => {
-    const parsed = label.replace("<name>", "Jonny");
-    return parsed;
-  };
-
+  const currentStep = getCurrentStep();
+  const scores = getScores();
   return (
-    <div className="dialogue-container">
-      <div className="controls margin-y content-row justify-between">
-        <button
-          className="button circle-button danger"
-          onClick={() => setIsComplete(true)}
-        >
-          <X />
-        </button>
-
-        <button className="button primary content-row" onClick={onReplay}>
-          <Redo />
-          Replay
-        </button>
-      </div>
-
-      <div className="chat-container">
-        <div className="chat-content scroll-content flex-column">
-          <h1>{scenario.title}</h1>
-
-          {history.map((item, index) => (
-            <p key={index}>
-              <strong>
-                {item?.speaker}
-                {": "}
-              </strong>
-              {item?.text}
-            </p>
-          ))}
-        </div>
-        <div className="response-container">
-          <form onSubmit={handleSubmit} className="content-row">
-            <input
-              disabled={isBusy}
-              onChange={(e) => setInput(e.target.value)}
-              className="input"
-              value={input}
-              type="text"
-              placeholder="Enter your response"
-            />
-            <button type="submit" className="button primary circle-button">
-              <ArrowUpNarrowWide />
+    <div className="play-scenario-container">
+      <div className="game-header">
+        <div className="header-content">
+          <div className="scenario-info">
+            <h1 className="scenario-title">{scenario.title}</h1>
+            <div className="scenario-badge">{dialogue.title}</div>
+          </div>
+          <div className="game-controls">
+            <button className="control-btn">
+              <Volume2 size={20} />
             </button>
-          </form>
-
-          <ul className="margin-y scroll-content">
-            {currentTag?.options?.map((opt, idx: number) => (
-              <li
-                className="option"
-                key={idx}
-                style={{ marginBottom: "0.5rem" }}
-              >
-                <button
-                  disabled={isBusy}
-                  type="button"
-                  className="option"
-                  onClick={() => handleOptionClick(opt)}
-                  style={{}}
-                >
-                  {parseLabel(opt.label)}
-                </button>
-              </li>
-            ))}
-          </ul>
+            <button className="control-btn">
+              <Settings size={20} />
+            </button>
+            <button onClick={onReplay} className="control-btn">
+              <RotateCcw size={20} />
+            </button>
+            <button onClick={onExit} className="control-btn danger">
+              <X size={20} />
+            </button>
+          </div>
         </div>
       </div>
 
-      <div
-        className={`content-centered-absolute results-container ${
-          isComplete ? "visible" : ""
-        }`}
-      >
-        <div className="flex-column">
-          <h2>Your Results</h2>
-          <div>
-            <p>Clarity: {state.context.clarity}</p>
-            <p>Empathy: {state.context.empathy}</p>
-            <p>Assertiveness: {state.context.assertiveness}</p>
+      <div className="game-content">
+        <div className="dialogue-arena">
+          <div className="chat-window">
+            <div className="chat-messages">
+              {messages.map((message) => (
+                <div key={message.id} className={`message ${message.speaker}`}>
+                  <div className="avatar">
+                    {message.speaker === "npc" ? "A" : "Y"}
+                  </div>
+                  <div className="message-content">
+                    <div className="speaker-name">
+                      {message.speaker === "npc" ? "Alex" : "You"}
+                    </div>
+                    <div className="message-bubble">{message.text}</div>
+                  </div>
+                </div>
+              ))}
+
+              {isTyping && (
+                <div className="typing-indicator">
+                  <div className="avatar">A</div>
+                  <div className="typing-dots">
+                    <div className="dot"></div>
+                    <div className="dot"></div>
+                    <div className="dot"></div>
+                  </div>
+                </div>
+              )}
+
+              <div ref={messagesEndRef} />
+            </div>
+
+            <div className="response-section">
+              {currentStep?.options && currentStep.options.length > 0 && (
+                <>
+                  <div className="response-prompt">
+                    <h3>How do you respond?</h3>
+                    <p>
+                      Choose your response carefully - it affects your social
+                      skills score!
+                    </p>
+                  </div>
+
+                  <div className="response-options">
+                    {currentStep.options.map((option, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleOptionClick(option)}
+                        disabled={isTyping}
+                        className="response-option"
+                      >
+                        <p className="option-text">{option.label}</p>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              <div className="custom-response">
+                <form
+                  onSubmit={handleCustomSubmit}
+                  className="custom-input-container"
+                >
+                  <input
+                    type="text"
+                    value={customInput}
+                    onChange={(e) => setCustomInput(e.target.value)}
+                    placeholder="Or type your own response..."
+                    disabled={isTyping}
+                    className="custom-input"
+                  />
+                  <button
+                    type="submit"
+                    disabled={!customInput.trim() || isTyping}
+                    className="send-btn"
+                  >
+                    <Send size={20} />
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className={`results-overlay ${showResults ? "visible" : ""}`}>
+        <div className={`results-card ${showResults ? "visible" : ""}`}>
+          <div className="results-header">
+            <div className="results-icon">
+              <Award size={32} />
+            </div>
+            <h2>Great Job!</h2>
+            <p>You've completed the dialogue. Here's how you performed:</p>
           </div>
 
-          <div className="flex-content">
-            <button
-              className="content-centered button primary content-row"
-              onClick={onReplay}
-            >
-              <Redo />
-              Replay
+          <div className="score-grid">
+            <div className="score-item">
+              <div className="score-label">Clarity</div>
+              <div className="score-value">{scores.clarity}</div>
+            </div>
+            <div className="score-item">
+              <div className="score-label">Empathy</div>
+              <div className="score-value">{scores.empathy}</div>
+            </div>
+            <div className="score-item">
+              <div className="score-label">Assertiveness</div>
+              <div className="score-value">{scores.assertiveness}</div>
+            </div>
+            <div className="score-item">
+              <div className="score-label">Social Awareness</div>
+              <div className="score-value">{scores.socialAwareness}</div>
+            </div>
+          </div>
+
+          <div className="results-actions">
+            <button onClick={onReplay} className="btn btn-primary">
+              <RotateCcw size={20} />
+              Try Again
             </button>
-            <button
-              className="button  secondary"
-              onClick={() => navigate(from)}
-            >
-              Exit
+            <button onClick={onExit} className="btn">
+              <Home size={20} />
+              Dashboard
             </button>
           </div>
         </div>

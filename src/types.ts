@@ -129,3 +129,10 @@ export interface DialogueOption {
 export interface Actor {
   name: string;
 }
+
+export interface Message {
+  id: string;
+  speaker: "npc" | "user";
+  text: string;
+  timestamp: Date;
+}
