@@ -1,5 +1,5 @@
-import { useState } from "react";
-import type { Scenario } from "../../../types";
+import React, { useState } from "react";
+import type { Dialogue, Scenario } from "../../../types";
 import Select from "../../Select";
 import { PERSONA_TAGS } from "../../../constants/scenario";
 import { X } from "lucide-react";
@@ -10,7 +10,7 @@ import { useToast } from "../../../context";
 
 interface CreateDialogueModalProps {
   scenario: Scenario;
-  onSubmit: () => void;
+  onSubmit: (dialogue: Dialogue) => void;
   onClose: () => void;
   isLoading: boolean;
   error: string | null;
@@ -49,7 +49,7 @@ const CreateDialogueModal = ({
         steps: [],
       });
       addDialogue(result);
-      onSubmit();
+      onSubmit(result);
       showToast("Dialogue created successfully!", "success");
     } catch (err) {
       showToast("Failed to create Dialogue. Please try again.", "error");

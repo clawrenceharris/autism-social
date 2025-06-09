@@ -10,7 +10,7 @@ import {
 } from "../../store/slices/dialoguesSlice";
 import { addToast } from "../../store/slices/uiSlice";
 import { Check, ChevronRight, Minus, Plus } from "lucide-react";
-import type { Scenario } from "../../types";
+import type { Dialogue, Scenario } from "../../types";
 import { useModal } from "../../context";
 import { CreateDialogueModal } from "../";
 import { Link } from "react-router-dom";
@@ -21,12 +21,14 @@ interface DialoguesPanelReduxProps {
 
 const DialoguesPanelRedux = ({ scenario }: DialoguesPanelReduxProps) => {
   const dispatch = useAppDispatch();
-  const dialogues = useAppSelector((state) => 
+  const dialogues = useAppSelector((state) =>
     selectDialoguesByScenario(state, scenario.id)
   );
   const loading = useAppSelector(selectDialoguesLoading);
   const error = useAppSelector(selectDialoguesError);
-  const [selectedDialogueId, setSelectedDialogueId] = useState<string | null>(null);
+  const [selectedDialogueId, setSelectedDialogueId] = useState<string | null>(
+    null
+  );
   const { openModal, closeModal } = useModal();
 
   useEffect(() => {
@@ -35,7 +37,7 @@ const DialoguesPanelRedux = ({ scenario }: DialoguesPanelReduxProps) => {
 
   useEffect(() => {
     if (error) {
-      dispatch(addToast({ message: error, type: 'error' }));
+      dispatch(addToast({ message: error, type: "error" }));
       dispatch(clearError());
     }
   }, [error, dispatch]);
@@ -47,12 +49,14 @@ const DialoguesPanelRedux = ({ scenario }: DialoguesPanelReduxProps) => {
     setSelectedDialogueId(id);
   };
 
-  const handleDialogueCreated = (dialogue: any) => {
+  const handleDialogueCreated = (dialogue: Dialogue) => {
     dispatch(addDialogueToScenario({ scenarioId: scenario.id, dialogue }));
-    dispatch(addToast({ 
-      message: "Dialogue created successfully!", 
-      type: "success" 
-    }));
+    dispatch(
+      addToast({
+        message: "Dialogue created successfully!",
+        type: "success",
+      })
+    );
     closeModal();
   };
 

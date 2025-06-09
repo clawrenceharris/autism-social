@@ -9,7 +9,6 @@ import {
   HomePage,
   EditScenarioPage,
   ManageScenariosPage,
-  ManageScenariosReduxPage,
   LoginPage,
   DashboardPage,
   YourScenariosPage,
@@ -31,7 +30,6 @@ function App() {
         <Route element={<AdminRoute />}>
           <Route path="/admin" element={<HomePage />} />
           <Route path="/scenarios" element={<ManageScenariosPage />} />
-          <Route path="/scenarios-redux" element={<ManageScenariosReduxPage />} />
 
           <Route element={<ScenarioLayout />}>
             <Route
@@ -46,9 +44,8 @@ function App() {
         </Route>
 
         {/* User Routes */}
-    <Route element={<UserLayout />}>
-
-        <Route element={<UserRoute />}>
+        <Route element={<UserLayout />}>
+          <Route element={<UserRoute />}>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/your-scenarios" element={<YourScenariosPage />} />
             <Route path="/progress" element={<ProgressPage />} />

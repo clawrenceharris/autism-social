@@ -1,6 +1,5 @@
 export { default as HomePage } from "./HomePage";
 export { default as ManageScenariosPage } from "./ManageScenariosPage";
-export { default as ManageScenariosReduxPage } from "./ManageScenariosReduxPage";
 export { default as EditScenarioPage } from "./EditScenarioPage";
 export { default as LoginPage } from "./LoginPage";
 export { default as DashboardPage } from "./DashboardPage";
