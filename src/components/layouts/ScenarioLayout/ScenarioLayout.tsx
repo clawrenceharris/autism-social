@@ -12,9 +12,9 @@ const ScenarioLayout = () => {
   return (
     <ScenarioProvider dialogueId={dialogueId} scenarioId={scenarioId}>
       <div className="layout-container">
-        <main>
+        <div>
           <Outlet />
-        </main>
+        </div>
       </div>
     </ScenarioProvider>
   );
