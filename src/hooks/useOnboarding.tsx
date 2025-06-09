@@ -96,7 +96,7 @@ export const useOnboarding = ({
           >
             <>
               <SignUpStep2
-                formData={formData}
+                formData={{ ...formData, ...props?.values }}
                 toggleSelection={toggleSelection}
               />
             </>
@@ -117,7 +117,7 @@ export const useOnboarding = ({
             {...props}
           >
             <SignUpStep3
-              formData={formData}
+              formData={{ ...formData, ...props?.values }}
               toggleSelection={toggleSelection}
             />
           </FormLayout>
