@@ -90,13 +90,6 @@ export interface DialogueStep {
   options: DialogueOption[];
 }
 
-export interface DialogueOption {
-  label: string;
-  event: string;
-  scoreChanges: ScoreCategory[];
-  next: string;
-}
-
 export type ScoreCategory =
   | "clarity"
   | "empathy"
@@ -129,7 +122,7 @@ export interface DialogueStep {
 export interface DialogueOption {
   label: string;
   event: string;
-  scoreChanges: ScoreCategory[];
+  scores: ScoreCategory[];
   next: string;
 }
 

@@ -1,17 +1,22 @@
-import { DAPPIER_API_ENDPOINT } from '../constants/api';
+import { DAPPIER_API_ENDPOINT } from "../constants/api";
+import type { DialogueOption, DialogueStep } from "../types";
 
-async function dappierRequest(prompt: string, maxTokens: number = 100, temperature: number = 0.7) {
+async function dappierRequest(
+  prompt: string,
+  maxTokens: number = 100,
+  temperature: number = 0.7
+) {
   const response = await fetch(DAPPIER_API_ENDPOINT, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${import.meta.env.VITE_DAPPIER_API_KEY}`
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${import.meta.env.VITE_DAPPIER_API_KEY}`,
     },
     body: JSON.stringify({
       prompt,
       max_tokens: maxTokens,
-      temperature
-    })
+      temperature,
+    }),
   });
 
   if (!response.ok) {
@@ -35,7 +40,7 @@ export const generateSuggestedDialogues = async (
     const text = await dappierRequest(prompt);
     return text;
   } catch (error) {
-    console.error('Error generating dialogues:', error);
+    console.error("Error generating dialogues:", error);
     throw error;
   }
 };
@@ -59,7 +64,7 @@ export async function generateScenarioSteps(
     - label: what the user might say (realistic and breif). 
     - event: "CHOOSE_1", "CHOOSE_2", "CHOOSE_3", "CHOOSE_4" etc. Use each only once per step.
     - next: the \`id\` to go to when this option is chosen. This must exactly match one of the existing \`id\` values in the overall array (no orphaned or missing steps).
-    - scoreChanges: an object with any combination of the following keys (clarity, empathy, assertiveness, selfAdvocacy, socialAwareness), each assigned either 0 (no credit) or 1 (full credit).
+    - scores: an object with any combination of the following keys (clarity, empathy, assertiveness, selfAdvocacy, socialAwareness), each assigned either 0 (no credit) or 1 (full credit).
 
   Constraints:
   - The npc's responses should match the following persona: ${personaTags.join(
@@ -77,11 +82,11 @@ export async function generateScenarioSteps(
     if (!jsonMatch) throw new Error("No valid JSON found in response");
 
     const parsedSteps = JSON.parse(jsonMatch[0]);
-    return parsedSteps.map((step: any) => ({
+    return parsedSteps.map((step: DialogueStep) => ({
       ...step,
-      options: step.options.map((option: any) => ({
+      options: step.options.map((option: DialogueOption) => ({
         ...option,
-        scoreChanges: option.scoreChanges || {},
+        scores: option.scores || {},
       })),
     }));
   } catch (error) {

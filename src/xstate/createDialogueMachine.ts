@@ -23,10 +23,10 @@ export function createDialogueMachine(
     for (const opt of step.options) {
       transitions[opt.event] = {
         target: opt.next,
-        actions: opt.scoreChanges
+        actions: opt.scores
           ? assign(({ context }) => {
               const updated = { ...context };
-              Object.entries(opt.scoreChanges!).forEach(([key, value]) => {
+              Object.entries(opt.scores!).forEach(([key, value]) => {
                 updated[key] = (updated[key] || 0) + value;
               });
               return updated;

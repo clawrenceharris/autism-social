@@ -108,9 +108,9 @@ const DialogueForm = ({ values, scenario, onChange }: DialogueFormProps) => {
                 idx === optionIndex
                   ? {
                       ...opt,
-                      scoreChanges: opt.scoreChanges.includes(category)
-                        ? opt.scoreChanges.filter((sc) => sc !== category)
-                        : [...opt.scoreChanges, category],
+                      scores: opt.scores.includes(category)
+                        ? opt.scores.filter((sc) => sc !== category)
+                        : [...opt.scores, category],
                     }
                   : opt
               ),
@@ -132,7 +132,7 @@ const DialogueForm = ({ values, scenario, onChange }: DialogueFormProps) => {
                   label: "",
                   event: `CHOOSE_${step.options.length + 1}`,
                   next: "",
-                  scoreChanges: [],
+                  scores: [],
                 },
               ],
             }
@@ -153,7 +153,7 @@ const DialogueForm = ({ values, scenario, onChange }: DialogueFormProps) => {
             label: "",
             event: "CHOOSE_1",
             next: "",
-            scoreChanges: [],
+            scores: [],
           },
         ],
       },
@@ -294,9 +294,7 @@ const DialogueForm = ({ values, scenario, onChange }: DialogueFormProps) => {
                           toggleScoreCategory(step.id, optionIndex, category)
                         }
                         className={`score-btn ${
-                          option.scoreChanges.includes(category)
-                            ? "selected"
-                            : ""
+                          option.scores.includes(category) ? "selected" : ""
                         }`}
                       >
                         {category}

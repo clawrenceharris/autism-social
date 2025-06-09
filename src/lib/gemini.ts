@@ -34,7 +34,7 @@ export async function generateScenarioSteps(
     - label: what the user might say (realistic and breif). 
     - event: "CHOOSE_1", "CHOOSE_2", "CHOOSE_3", "CHOOSE_4" etc. Use each only once per step.
     - next: the \`id\` to go to when this option is chosen. This must exactly match one of the existing \`id\` values in the overall array (no orphaned or missing steps).
-    - scoreChanges: an object with any combination of the following keys (clarity, empathy, assertiveness, selfAdvocacy, socialAwareness), each assigned either 0 (no credit) or 1 (full credit).
+    - scores: an object with any combination of the following keys (clarity, empathy, assertiveness, selfAdvocacy, socialAwareness), each assigned either 0 (no credit) or 1 (full credit).
 
   Constraints:
   - The npc's responses should match the following persona: ${personaTags.join(
@@ -54,7 +54,7 @@ export async function generateScenarioSteps(
     ...step,
     options: step.options.map((option: DialogueOption) => ({
       ...option,
-      scoreChanges: option.scoreChanges || {},
+      scores: option.scores || {},
     })),
   }));
 }
