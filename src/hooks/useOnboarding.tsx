@@ -30,9 +30,13 @@ export const useOnboarding = ({
   ...props
 }: UseOnboardingProps) => {
   const [step, setStep] = useState(stepStart || 1);
-  const [formData, setFormData] = useState<Partial<SignUpFormValues>>({
+  const [formData, setFormData] = useState<SignUpFormValues>({
     goals: [],
     interests: [],
+    agreement: false,
+    name: "",
+    email: "",
+    password: "",
   });
 
   const nextStep = () => {
@@ -83,10 +87,8 @@ export const useOnboarding = ({
 
       case 2:
         return (
-          <FormLayout
-            onSubmit={() => {
-              handleSubmit({ goals: formData.goals });
-            }}
+          <FormLayout<SignUpFormValues>
+            onSubmit={handleSubmit}
             submitText="Next"
             showsCancelButton={step != stepStart}
             isLoading={isLoading}
@@ -96,7 +98,11 @@ export const useOnboarding = ({
           >
             <>
               <SignUpStep2
-                formData={{ ...formData, ...props?.values }}
+                values={[
+                  ...(formData.goals || []),
+                  ...((props?.defaultValues?.goals as string[] | undefined) ||
+                    []),
+                ].filter((g): g is string => typeof g === "string")}
                 toggleSelection={toggleSelection}
               />
             </>
@@ -107,7 +113,7 @@ export const useOnboarding = ({
         return (
           <FormLayout
             onSubmit={() => {
-              handleSubmit({ interests: formData.interests });
+              handleSubmit({ ...formData, interests: formData.interests });
             }}
             submitText="Next"
             showsCancelButton={step != stepStart}
@@ -117,8 +123,12 @@ export const useOnboarding = ({
             {...props}
           >
             <SignUpStep3
-              formData={{ ...formData, ...props?.values }}
               toggleSelection={toggleSelection}
+              values={[
+                ...(formData.interests || []),
+                ...((props?.defaultValues?.interests as string[] | undefined) ||
+                  []),
+              ].filter((g): g is string => typeof g === "string")}
             />
           </FormLayout>
         );

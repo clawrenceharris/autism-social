@@ -1,14 +1,13 @@
 import { useInterests } from "../../hooks/queries/useInterests";
-import type { SignUpFormValues } from "../../types";
 import { ProgressIndicator } from "../../components";
 import "./SignUpStep.scss";
 
 interface SignUpStep3Props {
-  formData: Partial<SignUpFormValues>;
+  values: string[];
   toggleSelection: (type: "goals" | "interests", value: string) => void;
 }
 
-const SignUpStep3 = ({ formData, toggleSelection }: SignUpStep3Props) => {
+const SignUpStep3 = ({ values, toggleSelection }: SignUpStep3Props) => {
   const { data: interests = [], isLoading, error } = useInterests();
 
   if (isLoading)
@@ -30,7 +29,7 @@ const SignUpStep3 = ({ formData, toggleSelection }: SignUpStep3Props) => {
           <div
             key={interest.id}
             className={`checkbox-item ${
-              formData.interests?.includes(interest.name) ? "selected" : ""
+              values.includes(interest.name) ? "selected" : ""
             }`}
             onClick={() => toggleSelection("interests", interest.name)}
           >

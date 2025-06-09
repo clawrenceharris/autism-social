@@ -1,17 +1,13 @@
 import { useGoals } from "../../hooks/queries/useGoals";
-import type { SignUpFormValues } from "../../types";
 import { ProgressIndicator } from "../";
 import "./SignUpStep.scss";
 
 interface SignUpStep2Props {
-  formData: Partial<SignUpFormValues>;
+  values: string[];
   toggleSelection: (type: "goals" | "interests", value: string) => void;
 }
 
-export const SignUpStep2 = ({
-  formData,
-  toggleSelection,
-}: SignUpStep2Props) => {
+export const SignUpStep2 = ({ values, toggleSelection }: SignUpStep2Props) => {
   const { data: goals = [], isLoading, error } = useGoals();
 
   if (isLoading)
@@ -33,7 +29,7 @@ export const SignUpStep2 = ({
           <div
             key={goal.id}
             className={`checkbox-item ${
-              formData.goals?.includes(goal.goal) ? "selected" : ""
+              values.includes(goal.goal) ? "selected" : ""
             }`}
             onClick={() => toggleSelection("goals", goal.goal)}
           >

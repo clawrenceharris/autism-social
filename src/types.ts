@@ -28,7 +28,6 @@ export interface SignUpFormValues extends FieldValues {
   password: string;
   goals: string[];
   interests: string[];
-  profilePhoto: File;
   agreement: boolean;
 }
 export interface AuthContextType {
