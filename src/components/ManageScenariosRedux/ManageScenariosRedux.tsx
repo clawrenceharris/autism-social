@@ -81,10 +81,10 @@ const ManageScenariosRedux = () => {
 
   if (loading) {
     return (
-      <div role="status" aria-live="polite" className="scenarios-container">
+      <div role="status\" aria-live="polite\" className="scenarios-container">
         <header className="scenarios-header">
-          <Skeleton variant="title" width="60%" />
-          <Skeleton variant="text" width="80%" />
+          <Skeleton variant="title\" width="60%" />
+          <Skeleton variant="text\" width="80%" />
         </header>
         <div className="scenarios-grid">
           {[...Array(6)].map((_, index) => (
