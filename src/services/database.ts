@@ -1,7 +1,18 @@
 import { supabase } from "../lib/supabase";
 import type { PostgrestError } from "@supabase/supabase-js";
 
-export type Table = "scenarios" | "dialogues" | "goals" | "user_progress" | "interests" | "user_interests" | "user_goals" | "user_profiles" | "user_roles" | "scenario_goals" | "scenario_interests";
+export type Table =
+  | "scenarios"
+  | "dialogues"
+  | "goals"
+  | "user_progress"
+  | "interests"
+  | "user_interests"
+  | "user_goals"
+  | "user_profiles"
+  | "user_roles"
+  | "dialogue_goals"
+  | "dialogue_interests";
 
 export interface DatabaseResult<T> {
   data: T | null;
@@ -59,8 +70,8 @@ export class DatabaseService {
     }
 
     if (query?.orderBy) {
-      queryBuilder = queryBuilder.order(query.orderBy, { 
-        ascending: query.ascending ?? true 
+      queryBuilder = queryBuilder.order(query.orderBy, {
+        ascending: query.ascending ?? true,
       });
     }
 
@@ -258,7 +269,7 @@ export class DatabaseService {
   static async getWithJoins<T>(
     table: Table,
     select: string,
-    filters?: Record<string, any>
+    filters?: Record<string, unknown>
   ): Promise<DatabaseResult<T[]>> {
     let queryBuilder = supabase.from(table).select(select);
 
@@ -294,9 +305,9 @@ export class DatabaseService {
       .eq(column, value)
       .limit(1);
 
-    return { 
-      exists: !error && data && data.length > 0, 
-      error 
+    return {
+      exists: !error && data && data.length > 0,
+      error,
     };
   }
 
@@ -308,7 +319,7 @@ export class DatabaseService {
    */
   static async count(
     table: Table,
-    filters?: Record<string, any>
+    filters?: Record<string, unknown>
   ): Promise<{ count: number; error: PostgrestError | null }> {
     let queryBuilder = supabase
       .from(table)

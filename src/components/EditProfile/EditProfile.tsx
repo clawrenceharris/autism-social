@@ -18,7 +18,7 @@ const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
     stepEnd: 3,
     isLoading,
   });
-  
+
   const handleSubmit = async (data: Partial<SignUpFormValues>) => {
     try {
       if (step < 3) {

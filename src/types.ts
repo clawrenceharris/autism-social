@@ -1,9 +1,7 @@
 import type { User } from "@supabase/supabase-js";
 import type { FieldValues } from "react-hook-form";
 
-
-
-export interface RecommendedScenario extends Scenario {
+export interface RecommendedDialogue extends Dialogue {
   matchScore: number;
   matchReasons: string[];
 }
@@ -28,8 +26,6 @@ export interface RecommendationOptions {
   excludeCompletedIds?: string[];
   minMatchScore?: number;
 }
-
-
 
 export interface SignUpFormValues extends FieldValues {
   name: string;

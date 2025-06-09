@@ -14,7 +14,7 @@ const ProgressSection = ({ userId }: { userId: string }) => {
     setProgressCategories([
       { name: "Clarity", score: progress.clarity },
       { name: "Empathy", score: progress.empathy },
-      { name: "assertiveness", score: progress.assertiveness },
+      { name: "Assertiveness", score: progress.assertiveness },
       { name: "Self-advocacy", score: progress.self_advocacy },
     ]);
   }, [progress]);
@@ -47,7 +47,7 @@ const ProgressSection = ({ userId }: { userId: string }) => {
                 <div className="category-bar">
                   <div
                     className="category-fill"
-                    style={{ width: `${(category.score / 10) * 100}%` }}
+                    style={{ width: `${(category.score / 10) * 100}` }}
                   />
                 </div>
               </div>

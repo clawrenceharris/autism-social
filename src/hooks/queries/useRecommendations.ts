@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getRecommendedDialogues } from "../../services/dialogues";
+import { getRecommendedDialogues } from "../../services/recommendations";
 
 export const RECOMMENDATIONS_QUERY_KEY = (userId: string) =>
   ["recommendations", userId] as const;

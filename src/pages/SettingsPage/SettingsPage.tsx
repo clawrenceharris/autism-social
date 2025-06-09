@@ -82,9 +82,7 @@ const SettingsPage = () => {
   };
 
   const handleEditProfile = () => {
-    // TODO: Open edit profile modal or navigate to edit page
-    openModal(<EditProfile />, "Edit Profile");
-    showToast("Edit profile is not yet implemented", "info");
+    openModal(<EditProfile onSubmit={closeModal} />, "Edit Profile");
   };
 
   const getInitials = (name: string) => {

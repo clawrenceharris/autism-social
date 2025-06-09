@@ -1,4 +1,3 @@
-import { supabase } from "../lib/supabase";
 import type { CreateDialogueData, Dialogue } from "../types";
 import { DatabaseService } from "./database";
 
@@ -44,15 +43,4 @@ export async function getDialogueById(id: string) {
   if (result.error) throw result.error;
   if (!result.data) throw new Error(`Dialogue not found with id: ${id}`);
   return result.data;
-}
-
-export async function getRecommendedDialogues(
-  userId: string
-): Promise<Dialogue[]> {
-  const { data, error } = await supabase.rpc("get_recommended_dialogues", {
-    user_uuid: userId,
-  });
-
-  if (error) throw error;
-  return data as Dialogue[];
 }

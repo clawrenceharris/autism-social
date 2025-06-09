@@ -1,5 +1,6 @@
 import { DatabaseService } from "./database";
 import type { Interest } from "../types";
+import { supabase } from "../lib/supabase";
 
 /**
  * Get all available interests
@@ -44,7 +45,8 @@ export async function addUserInterests(
   }
 
   // Filter out interests that the user already has
-  const existingInterestIds = existingResult.data?.map((ui) => ui.interest_id) || [];
+  const existingInterestIds =
+    existingResult.data?.map((ui) => ui.interest_id) || [];
   const newInterestIds = interestIds.filter(
     (interestId) => !existingInterestIds.includes(interestId)
   );
@@ -56,7 +58,10 @@ export async function addUserInterests(
       interest_id: interestId,
     }));
 
-    const result = await DatabaseService.insertMany("user_interests", userInterests);
+    const result = await DatabaseService.insertMany(
+      "user_interests",
+      userInterests
+    );
 
     if (result.error) {
       throw result.error;
@@ -72,59 +77,12 @@ export async function addUserInterests(
  */
 export async function updateUserInterests(
   userId: string,
-  interestIds: string[]
+  new_interests: string[]
 ): Promise<void> {
-  // Get current user interests
-  const currentResult = await DatabaseService.get<{ interest_id: string }>(
-    "user_interests",
-    {
-      column: "user_id",
-      value: userId,
-      select: "interest_id",
-    }
-  );
-
-  if (currentResult.error) {
-    throw currentResult.error;
-  }
-
-  const currentInterestIds = currentResult.data?.map((ui) => ui.interest_id) || [];
-
-  // Find interests to add and remove
-  const interestsToAdd = interestIds.filter(
-    (interestId) => !currentInterestIds.includes(interestId)
-  );
-  const interestsToRemove = currentInterestIds.filter(
-    (interestId) => !interestIds.includes(interestId)
-  );
-
-  // Remove unselected interests
-  if (interestsToRemove.length > 0) {
-    // We need to delete by user_id and interest_id combination
-    for (const interestId of interestsToRemove) {
-      const deleteResult = await DatabaseService.deleteBy(
-        "user_interests",
-        "user_id",
-        userId
-      );
-      
-      if (deleteResult.error) {
-        throw deleteResult.error;
-      }
-    }
-  }
-
-  // Add new interests
-  if (interestsToAdd.length > 0) {
-    const userInterests = interestsToAdd.map((interestId) => ({
-      user_id: userId,
-      interest_id: interestId,
-    }));
-
-    const insertResult = await DatabaseService.insertMany("user_interests", userInterests);
-
-    if (insertResult.error) {
-      throw insertResult.error;
-    }
-  }
+  const { data, error } = await supabase.rpc("update_user_interests", {
+    userId,
+    new_interests,
+  });
+  if (error) throw error;
+  return data;
 }
