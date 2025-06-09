@@ -197,7 +197,7 @@ const DialoguePlayer = ({
   const currentStep = getCurrentStep();
   const scores = getScores();
   return (
-    <div className="play-scenario-container">
+    <>
       <div className="game-header">
         <div className="header-content">
           <div className="scenario-info">
@@ -347,7 +347,7 @@ const DialoguePlayer = ({
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

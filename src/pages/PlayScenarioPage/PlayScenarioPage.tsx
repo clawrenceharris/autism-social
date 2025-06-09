@@ -117,7 +117,7 @@ const PlayScenarioPage = () => {
   }
 
   return (
-    <div key={key}>
+    <div key={key} className="play-scenario-container">
       <DialoguePlayer
         onExit={handleExit}
         scenario={scenario}
