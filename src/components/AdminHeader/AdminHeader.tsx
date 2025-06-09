@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Home, FolderOpen, Settings } from "lucide-react";
+import { Home, FolderOpen, Settings, Database } from "lucide-react";
 import "../../styles/shared/_header.scss";
 import { assets } from "../../constants/assets";
 
@@ -20,6 +20,10 @@ const AdminHeader = () => {
           <Link to="/scenarios" className="taskbar-link">
             <FolderOpen />
             <span>Scenarios</span>
+          </Link>
+          <Link to="/scenarios-redux" className="taskbar-link">
+            <Database />
+            <span>Redux Demo</span>
           </Link>
           <Link to="/settings" className="taskbar-link">
             <Settings />
