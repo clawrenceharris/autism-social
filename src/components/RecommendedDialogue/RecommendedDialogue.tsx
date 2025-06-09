@@ -17,13 +17,15 @@ const RecommendedDialogue = ({ dialogue }: RecommendedItemProps) => {
           <div className="scenario-name">{dialogue.title}</div>
           <div className="match-badge">
             <Star size={14} />
+            Suggested
           </div>
         </div>
-        <div className="scenario-description">{scenario?.description}</div>
+        <div className="scenario-description">
+          {scenario?.description || ""}
+        </div>
       </div>
-      {/* Updated to use the new user scenario playing route */}
       <Link
-        to={`/play/${dialogue.scenario_id}/dialogue/${dialogue.id}`}
+        to={`/scenario/${dialogue.scenario_id}/dialogue/${dialogue.id}`}
         className="scenario-action"
       >
         Start

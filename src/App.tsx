@@ -52,7 +52,14 @@ function App() {
             <Route path="/explore" element={<ExplorePage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route element={<ScenarioLayout />}>
-              <Route path="/play/:scenarioId" element={<PlayScenarioPage />} />
+              <Route
+                path="/scenario/:scenarioId/dialogue/:dialogueId"
+                element={<PlayScenarioPage />}
+              />
+              <Route
+                path="/scenario/:scenarioId"
+                element={<PlayScenarioPage />}
+              />
             </Route>
           </Route>
         </Route>
