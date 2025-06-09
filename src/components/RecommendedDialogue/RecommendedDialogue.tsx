@@ -19,7 +19,7 @@ const RecommendedDialogue = ({ dialogue }: RecommendedItemProps) => {
             <Star size={14} />
           </div>
         </div>
-        <div className="scenario-description">{scenario.description}</div>
+        <div className="scenario-description">{scenario?.description}</div>
       </div>
       {/* Updated to use the new user scenario playing route */}
       <Link
