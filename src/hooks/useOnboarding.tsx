@@ -30,13 +30,9 @@ export const useOnboarding = ({
   ...props
 }: UseOnboardingProps) => {
   const [step, setStep] = useState(stepStart || 1);
-  const [formData, setFormData] = useState<SignUpFormValues>({
+  const [formData, setFormData] = useState<Partial<SignUpFormValues>>({
     goals: [],
     interests: [],
-    agreement: false,
-    name: "",
-    email: "",
-    password: "",
   });
 
   const nextStep = () => {

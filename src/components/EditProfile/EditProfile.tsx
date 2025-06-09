@@ -3,17 +3,18 @@ import { useOnboarding } from "../../hooks/useOnboarding";
 import { useAuth, useToast } from "../../context";
 import type { SignUpFormValues } from "../../types";
 import { updateUserInterests } from "../../services/interests";
-import { updateUserGoals } from "../../services/goals";
 import { useGoals, useInterests } from "../../hooks";
+import { useUser } from "../../store/hooks";
+import { updateUserGoals } from "../../services/user";
 
 const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { data: interests = [] } = useInterests();
   const { data: goals = [] } = useGoals();
-
   const { showToast } = useToast();
   const { user } = useAuth();
+  const { goals: userGoals, interests: userInterests } = useUser();
   const { renderStep, step } = useOnboarding({
     handleSubmit: (data: Partial<SignUpFormValues>) => handleSubmit(data),
     error,
@@ -58,8 +59,8 @@ const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
     <>
       {renderStep({
         defaultValues: {
-          interests: interests.map((i) => i.name),
-          goals: goals.map((g) => g.goal),
+          interests: userInterests.map((i) => i.name),
+          goals: userGoals.map((g) => g.goal),
         },
       })}
     </>

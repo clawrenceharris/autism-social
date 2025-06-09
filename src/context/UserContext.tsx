@@ -7,7 +7,8 @@ import {
 } from "react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "./AuthContext";
-import { getUser, createUser } from "../services/user";
+import { useAppDispatch } from "../store/hooks";
+import { userThunks } from "../store/thunks/userThunks";
 
 interface UserProfile {
   id: string;
@@ -24,7 +25,6 @@ interface UserContextType {
   loading: boolean;
   error: string | null;
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
-  refreshProfile: () => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -34,38 +34,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const fetchProfile = async (userId: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      // First, try to get existing profile
-      let userProfile = await getUser(userId);
-
-      // If no profile exists, create one with default values
-      if (!userProfile) {
-        console.log("No user profile found, creating new profile for user:", userId);
-        
-        // Get user email from auth for default name
-        const { data: authUser } = await supabase.auth.getUser();
-        const defaultName = authUser.user?.email?.split('@')[0] || 'User';
-
-        userProfile = await createUser({
-          user_id: userId,
-          name: defaultName,
-          goals: [],
-        });
-      }
-
-      setProfile(userProfile);
-    } catch (err) {
-      console.error("Error fetching/creating user profile:", err);
-      setError(err instanceof Error ? err.message : "Failed to fetch profile");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const dispatch = useAppDispatch();
 
   const updateProfile = async (updates: Partial<UserProfile>) => {
     if (!user || !profile) {
@@ -89,28 +58,25 @@ export function UserProvider({ children }: { children: ReactNode }) {
       setProfile(data);
     } catch (err) {
       console.error("Error updating user profile:", err);
-      const errorMessage = err instanceof Error ? err.message : "Failed to update profile";
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to update profile";
       setError(errorMessage);
       throw new Error(errorMessage);
-    }
-  };
-
-  const refreshProfile = async () => {
-    if (user) {
-      await fetchProfile(user.id);
     }
   };
 
   // Fetch profile when user changes
   useEffect(() => {
     if (user) {
-      fetchProfile(user.id);
+      dispatch(userThunks.fetchUserById({ userId: user.id }));
+      dispatch(userThunks.fetchUserGoals({ userId: user.id }));
+      dispatch(userThunks.fetchUserInterests({ userId: user.id }));
     } else {
       setProfile(null);
       setLoading(false);
       setError(null);
     }
-  }, [user]);
+  }, [dispatch, user]);
 
   return (
     <UserContext.Provider
@@ -119,7 +85,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
         loading,
         error,
         updateProfile,
-        refreshProfile,
       }}
     >
       {children}

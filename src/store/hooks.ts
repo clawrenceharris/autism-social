@@ -44,6 +44,20 @@ export const useDialogues = () => {
   };
 };
 
+export const useUser = () => {
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user);
+
+  return {
+    user: user.user,
+    loading: user.loading,
+    error: user.error,
+    interests: user.interests,
+    goals: user.goals,
+    dispatch,
+  };
+};
+
 export const useUI = () => {
   const dispatch = useAppDispatch();
   const ui = useAppSelector((state) => state.ui);
