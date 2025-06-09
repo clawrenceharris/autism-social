@@ -1,13 +1,13 @@
 import { supabase } from "../lib/supabase";
-import type { RecommendedDialogue } from "../types";
+import type { Dialogue } from "../types";
 
 export async function getRecommendedDialogues(
   userId: string
-): Promise<RecommendedDialogue[]> {
+): Promise<Dialogue[]> {
   const { data, error } = await supabase.rpc("get_recommended_dialogues", {
     user_uuid: userId,
   });
 
   if (error) throw error;
-  return data as RecommendedDialogue[];
+  return data as Dialogue[];
 }
