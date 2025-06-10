@@ -20,22 +20,27 @@ const DialogueCompletedModal = ({
       </div>
 
       <div className="score-grid">
-        <div className="score-item">
+        {scores.clarity && <div className="score-item">
           <div className="score-label">Clarity</div>
           <div className="score-value">{scores.clarity}</div>
-        </div>
-        <div className="score-item">
+        </div>}
+         {scores.empathy && <div className="score-item">
           <div className="score-label">Empathy</div>
           <div className="score-value">{scores.empathy}</div>
-        </div>
-        <div className="score-item">
-          <div className="score-label">Assertiveness</div>
-          <div className="score-value">{scores.assertiveness}</div>
-        </div>
-        <div className="score-item">
+        </div>}
+        {scores.assertivenes &&
+          <div className="score-item">
+            <div className="score-label">Assertiveness</div>
+            <div className="score-value">
+              {scores.assertiveness}
+            </div>
+          </div>}
+        {scores.socialAwareness && <div className="score-item">
           <div className="score-label">Social Awareness</div>
-          <div className="score-value">{scores.socialAwareness}</div>
-        </div>
+          <div className="score-value">
+            {scores.socialAwareness}          
+          </div>
+        </div>}
       </div>
 
       <div className="results-actions">
