@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useModal, useScenario } from "../../context";
 import { useDialogues } from "../../hooks/queries/useDialogues";
-import { X, Home } from "lucide-react";
+import { X, Home, Award } from "lucide-react";
 import "./PlayScenarioPage.scss";
 import {
   DialogueCompletedModal,
@@ -41,7 +41,13 @@ const PlayScenarioPage = () => {
         onReplayClick={handleReplay}
         scores={scores}
       />,
-      "Dialogue Completed. Great Job!"
+      <div className="results-header">
+        <div className="results-icon">
+          <Award size={32} />
+        </div>
+        <h2>Great Job!</h2>
+        <p>You've completed the dialogue. Here's how you performed:</p>
+      </div>
     );
   };
   if (loading || dialoguesLoading) {

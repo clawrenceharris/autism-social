@@ -1,4 +1,4 @@
-import { Award, Home, RotateCcw } from "lucide-react";
+import { Home, RotateCcw } from "lucide-react";
 import "./DialogueCompletedModal.scss";
 import type { DialogueContext } from "../../../xstate/createDialogueMachine";
 interface DialogueCompletedModalProps {
@@ -12,13 +12,11 @@ const DialogueCompletedModal = ({
   onExitClick,
 }: DialogueCompletedModalProps) => {
   return (
-    <div>
+    <>
       <div className="results-header">
-        <div className="results-icon">
-          <Award size={32} />
-        </div>
-        <h2>Great Job!</h2>
-        <p>You've completed the dialogue. Here's how you performed:</p>
+        <p className="description">
+          You've completed the dialogue. Here's how you performed:
+        </p>
       </div>
 
       <div className="score-grid">
@@ -50,7 +48,7 @@ const DialogueCompletedModal = ({
           Dashboard
         </button>
       </div>
-    </div>
+    </>
   );
 };
 export default DialogueCompletedModal;

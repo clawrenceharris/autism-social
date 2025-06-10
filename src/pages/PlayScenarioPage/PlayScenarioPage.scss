@@ -1,5 +1,31 @@
 @import "../../styles/variables";
 @import "../../styles/mixins";
+.results-header {
+  margin-bottom: $spacing-6;
+
+  .results-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: $border-radius-full;
+    background: linear-gradient(135deg, $color-primary, $color-primary-200);
+    @include flex(row, center, center);
+    margin: 0 auto $spacing-4;
+    color: white;
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: $color-gray-800;
+    margin-bottom: $spacing-2;
+  }
+
+  p {
+    color: $color-gray-600;
+    font-size: 1.1rem;
+  }
+}
 
 .play-scenario-container {
   min-height: 100vh;

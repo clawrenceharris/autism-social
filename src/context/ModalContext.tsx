@@ -1,10 +1,19 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 
 interface ModalContextType {
   isOpen: boolean;
   modalContent: ReactNode | null;
-  modalTitle: string;
-  openModal: (content: ReactNode, title: string) => void;
+  modalTitle: string | React.ReactNode;
+  openModal: (
+    content: ReactElement,
+    title: string | React.ReactElement
+  ) => void;
   closeModal: () => void;
 }
 
@@ -13,9 +22,9 @@ const ModalContext = createContext<ModalContextType | undefined>(undefined);
 export function ModalProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [modalContent, setModalContent] = useState<ReactNode | null>(null);
-  const [modalTitle, setModalTitle] = useState("");
+  const [modalTitle, setModalTitle] = useState<string | ReactElement>("");
 
-  const openModal = (content: ReactNode, title: string) => {
+  const openModal = (content: ReactNode, title: string | ReactElement) => {
     setModalContent(content);
     setModalTitle(title);
     setIsOpen(true);
@@ -38,7 +47,11 @@ export function ModalProvider({ children }: { children: ReactNode }) {
           <div className="modal-container">
             <div className="modal-content">
               <div className="modal-header">
-                <h3 className="modal-title">{modalTitle}</h3>
+                {typeof modalTitle === "string" ? (
+                  <h3 className="modal-title">{modalTitle}</h3>
+                ) : (
+                  modalContent
+                )}
                 <button onClick={closeModal} className="modal-close">
                   ×
                 </button>
