@@ -45,9 +45,9 @@ const PlayScenarioPage = () => {
     category: keyof DialogueContext & ScoreCategory
   ) => {
     if (!context[category] && getCategoryCount(category) > 0) {
-      return undefined;
-    } else if (!context[category]) {
       return 0;
+    } else if (!context[category]) {
+      return undefined;
     }
     return Math.round((context[category] / getCategoryCount(category)) * 100);
   };
