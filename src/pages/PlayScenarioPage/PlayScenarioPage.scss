@@ -252,7 +252,6 @@
         border-top: 1px solid rgba(0, 0, 0, 0.1);
         padding: $spacing-6;
         overflow-y: scroll;
-        display: flex;
         max-height: 350px;
         .response-prompt {
           text-align: center;
@@ -272,6 +271,8 @@
         }
 
         .response-options {
+          display: flex;
+
           @include stack-layout($spacing-3);
 
           .response-option {
