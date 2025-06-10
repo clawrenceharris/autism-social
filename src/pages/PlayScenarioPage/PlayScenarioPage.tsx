@@ -40,34 +40,22 @@ const PlayScenarioPage = () => {
     }
     return count;
   };
+  const calcScore = (context: DialogueContext, category: ScoreCategory ){
+    !context[cateogry] && getCategoryCount(category)) > 0 ? 0 :  Math.round(
+            (context[category] / getCategoryCount(category)) * 100
+  }
   const getScores = (context: DialogueContext) => {
     return {
-      clarity: context?.clarity
-        ? Math.round((context.clarity / getCategoryCount("clarity")) * 100)
-        : undefined,
+      clarity: calcScore(context, "clarity"),
 
-      empathy: context?.empathy
-        ? Math.round((context.empathy / getCategoryCount("empathy")) * 100)
-        : undefined,
+      empathy:calcScore(context, "empathy"),
 
-      assertiveness: context?.assertiveness
-        ? Math.round(
-            (context.assertiveness / getCategoryCount("assertiveness")) * 100
-          )
-        : undefined,
+      assertiveness: calcScore(context, "assertiveness"),
+        
 
-      socialAwareness: context?.socialAwareness
-        ? Math.round(
-            (context.socialAwareness / getCategoryCount("socialAwareness")) *
-              100
-          )
-        : undefined,
+      socialAwareness:calcScore(context, "socialAwareness"),
 
-      selfAdvocacy: context?.selfAdvocacy
-        ? Math.round(
-            (context.selfAdvocacy / getCategoryCount("selfAdvocacy")) * 100
-          )
-        : undefined,
+      selfAdvocacy: calcScore(context, "selfAdvocacy")
     };
   };
   const handleComplete = (context: DialogueContext) => {
