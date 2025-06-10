@@ -8,25 +8,22 @@ import type {
   Message,
   Scenario,
 } from "../../types";
-import { createDialogueMachine } from "../../xstate/createDialogueMachine";
 import {
-  Award,
-  Home,
-  RotateCcw,
-  Send,
-  Settings,
-  Volume2,
-  X,
-} from "lucide-react";
+  createDialogueMachine,
+  type DialogueContext,
+} from "../../xstate/createDialogueMachine";
+import { RotateCcw, Send, Settings, Volume2, X } from "lucide-react";
 interface DialoguePlayerProps {
   scenario: Scenario;
   dialogue: Dialogue;
   onReplay: () => void;
   onExit: () => void;
+  onComplete: (scores: DialogueContext) => void;
 }
 const DialoguePlayer = ({
   scenario,
   onExit,
+  onComplete,
   dialogue,
   onReplay,
 }: DialoguePlayerProps) => {
@@ -41,7 +38,6 @@ const DialoguePlayer = ({
   const [messages, setMessages] = useState<Message[]>([]);
   const [customInput, setCustomInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [showResults, setShowResults] = useState(false);
 
   const messageWindowRef = useRef<HTMLDivElement>(null);
 
@@ -78,9 +74,9 @@ const DialoguePlayer = ({
   // Handle state changes
   useEffect(() => {
     if (state.status === "done") {
-      setShowResults(true);
+      onComplete(state.context as DialogueContext);
     }
-  }, [state.status]);
+  }, [onComplete, state.context, state.status]);
 
   const handleOptionClick = async (option: DialogueOption) => {
     // Add user message
@@ -130,15 +126,6 @@ const DialoguePlayer = ({
     return dialogue.steps.find((step) => step.id === state.value);
   };
 
-  const getScores = () => {
-    return {
-      clarity: state.context?.clarity || 0,
-      empathy: state.context?.empathy || 0,
-      assertiveness: state.context?.assertiveness || 0,
-      socialAwareness: state.context?.socialAwareness || 0,
-      selfAdvocacy: state.context?.selfAdvocacy || 0,
-    };
-  };
   const handleCustomSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!customInput.trim()) return;
@@ -197,37 +184,33 @@ const DialoguePlayer = ({
   }, [state.value, currentTag?.npc]);
 
   const currentStep = getCurrentStep();
-  const scores = getScores();
   return (
     <>
-      
       <div className="game-content">
-        
         <div className="dialogue-arena">
-          
           <div className="chat-window">
             <div className="game-header">
-        <div className="header-content">
-          <div className="scenario-info">
-            <h1 className="scenario-title">{scenario.title}</h1>
-            <div className="scenario-badge">{dialogue.title}</div>
-          </div>
-          <div className="game-controls">
-            <button className="control-btn">
-              <Volume2 size={20} />
-            </button>
-            <button className="control-btn">
-              <Settings size={20} />
-            </button>
-            <button onClick={onReplay} className="control-btn">
-              <RotateCcw size={20} />
-            </button>
-            <button onClick={onExit} className="control-btn danger">
-              <X size={20} />
-            </button>
-          </div>
-        </div>
-      </div>
+              <div className="header-content">
+                <div className="scenario-info">
+                  <h1 className="scenario-title">{scenario.title}</h1>
+                  <div className="scenario-badge">{dialogue.title}</div>
+                </div>
+                <div className="game-controls">
+                  <button className="control-btn">
+                    <Volume2 size={20} />
+                  </button>
+                  <button className="control-btn">
+                    <Settings size={20} />
+                  </button>
+                  <button onClick={onReplay} className="control-btn">
+                    <RotateCcw size={20} />
+                  </button>
+                  <button onClick={onExit} className="control-btn danger">
+                    <X size={20} />
+                  </button>
+                </div>
+              </div>
+            </div>
 
             <div ref={messageWindowRef} className="chat-messages">
               {messages.map((message) => (
@@ -261,9 +244,7 @@ const DialoguePlayer = ({
             <div className="response-section">
               {currentStep?.options && currentStep.options.length > 0 && (
                 <>
-                  <div className="response-prompt">
-                   
-                  </div>
+                  <div className="response-prompt"></div>
 
                   <div className="response-options">
                     {currentStep.options.map((option, index) => (
@@ -306,8 +287,6 @@ const DialoguePlayer = ({
           </div>
         </div>
       </div>
-
-      
     </>
   );
 };

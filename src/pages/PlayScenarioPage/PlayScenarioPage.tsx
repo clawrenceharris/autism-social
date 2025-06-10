@@ -1,15 +1,21 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useScenario } from "../../context";
+import { useModal, useScenario } from "../../context";
 import { useDialogues } from "../../hooks/queries/useDialogues";
 import { X, Home } from "lucide-react";
 import "./PlayScenarioPage.scss";
-import { DialoguePlayer, ProgressIndicator } from "../../components";
+import {
+  DialogueCompletedModal,
+  DialoguePlayer,
+  ProgressIndicator,
+} from "../../components";
+import type { DialogueContext } from "../../xstate/createDialogueMachine";
 
 const PlayScenarioPage = () => {
   const navigate = useNavigate();
   const { loading, error, scenario, dialogue } = useScenario();
   const { data: dialogues = [], isLoading: dialoguesLoading } = useDialogues();
+  const { openModal } = useModal();
   const [key, setKey] = useState<number>(0);
   const handleReplay = () => {
     setKey((prev) => prev + 1);
@@ -18,7 +24,26 @@ const PlayScenarioPage = () => {
   const handleExit = () => {
     navigate("/");
   };
-
+  const getScores = (context: DialogueContext) => {
+    return {
+      clarity: context?.clarity || 0,
+      empathy: context?.empathy || 0,
+      assertiveness: context?.assertiveness || 0,
+      socialAwareness: context?.socialAwareness || 0,
+      selfAdvocacy: context?.selfAdvocacy || 0,
+    };
+  };
+  const handleComplete = (context: DialogueContext) => {
+    const scores = getScores(context);
+    openModal(
+      <DialogueCompletedModal
+        onExitClick={handleExit}
+        onReplayClick={handleReplay}
+        scores={scores}
+      />,
+      "Dialogue Completed. Great Job!"
+    );
+  };
   if (loading || dialoguesLoading) {
     return (
       <div className="play-scenario-container">
@@ -121,6 +146,7 @@ const PlayScenarioPage = () => {
       <DialoguePlayer
         onExit={handleExit}
         scenario={scenario}
+        onComplete={handleComplete}
         onReplay={handleReplay}
         dialogue={dialogue}
       />
