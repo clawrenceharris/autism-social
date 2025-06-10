@@ -12,7 +12,7 @@ const DialogueCompletedModal = ({
   onExitClick,
 }: DialogueCompletedModalProps) => {
   return (
-    <>
+    <div>
       <div className="results-header">
         <p className="description">
           You've completed the dialogue. Here's how you performed:
@@ -48,7 +48,7 @@ const DialogueCompletedModal = ({
           Dashboard
         </button>
       </div>
-    </>
+    </div>
   );
 };
 export default DialogueCompletedModal;
