@@ -30,9 +30,6 @@
     width: 100%;
     height: 100%;
     background:linear-gradient(to right, $color-primary, mediumpurple);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    padding: $spacing-4 $spacing-6;
   }
   
   .game-header {
