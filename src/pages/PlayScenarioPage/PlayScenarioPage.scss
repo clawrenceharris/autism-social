@@ -62,6 +62,7 @@
 
         .scenario-badge {
           background: $color-primary;
+          backdrop-filter: blur(20px);
           color: white;
           padding: 0.25rem 0.75rem;
           border-radius: $border-radius-full;
