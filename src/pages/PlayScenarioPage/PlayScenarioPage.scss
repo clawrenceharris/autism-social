@@ -103,7 +103,6 @@
     @include flex(column, center, center);
     position: relative;
     z-index: 10;
-        background: linear-gradient;
 
   }
 
@@ -113,6 +112,7 @@
     margin: 0 auto;
     padding: $spacing-6;
     position: relative;
+        background: linear-gradient;
 
     .chat-window {
       background: rgba(255, 255, 255, 0.95);
