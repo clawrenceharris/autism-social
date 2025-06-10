@@ -16,6 +16,7 @@ const PlayScenarioPage = () => {
   const { loading, error, scenario, dialogue } = useScenario();
   const { data: dialogues = [], isLoading: dialoguesLoading } = useDialogues();
   const { openModal, closeModal } = useModal();
+  const [isComplete, setIsComplete] = useState<boolean>(false)
   const [key, setKey] = useState<number>(0);
   const getMultiplier = () => {
     let multiplier = 1;
@@ -202,7 +203,7 @@ const PlayScenarioPage = () => {
       <DialoguePlayer
         onExit={handleExit}
         scenario={scenario}
-        onComplete={handleComplete}
+        onComplete={() => setIsComplete(true)}
         onReplay={handleReplay}
         dialogue={dialogue}
       />
