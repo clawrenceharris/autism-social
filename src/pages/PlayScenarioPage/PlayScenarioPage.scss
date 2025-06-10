@@ -111,8 +111,8 @@
     position: relative;
 
     .chat-window {
-      background: rgba(255, 255, 255, 0.9);
-
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
       border-radius: 2rem;
       box-shadow: 
         0 20px 40px rgba(0, 0, 0, 0.1),
@@ -138,9 +138,7 @@
         flex: 1;
         padding: $spacing-6;
         overflow-y: auto;
-         background: rgba(255, 255, 255, 0.6);
-        min-height: 200px;
-        max-height: 200px;
+        height: 200px;
         @include stack-layout($spacing-4);
 
         .message {
@@ -245,7 +243,7 @@
       }
 
       .response-section {
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.8);
         backdrop-filter: blur(10px);
         border-top: 1px solid rgba(0, 0, 0, 0.1);
       
