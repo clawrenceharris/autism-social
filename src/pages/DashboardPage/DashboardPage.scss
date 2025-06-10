@@ -2,14 +2,16 @@
 @import "../../styles/mixins";
 
 .container{
-  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-4;
+
   .dashboard-header {
     margin-bottom: $spacing-8;
     text-align: center;
 
     .welcome-section {
       @include stack-layout($spacing-4);
-      
       margin-bottom: $spacing-6;
 
       .welcome-message {
