@@ -15,7 +15,6 @@ const PlayScenarioPage = () => {
   const navigate = useNavigate();
   const { loading, error, scenario, dialogue } = useScenario();
   const { data: dialogues = [], isLoading: dialoguesLoading } = useDialogues();
-  const { openModal, closeModal } = useModal();
   const [isComplete, setIsComplete] = useState<boolean>(false);
   const [context, setContext] = useState<DialogueContext | null>(null);
 
@@ -35,12 +34,10 @@ const PlayScenarioPage = () => {
   };
   const handleReplay = () => {
     setKey((prev) => prev + 1);
-    closeModal();
   };
 
   const handleExit = () => {
     navigate("/");
-    closeModal();
   };
   const getCategoryCount = (category: ScoreCategory) => {
     if (!dialogue) {
