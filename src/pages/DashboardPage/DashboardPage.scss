@@ -9,7 +9,7 @@
 
     .welcome-section {
       @include stack-layout($spacing-4);
-      gap: 2rem;
+      
       margin-bottom: $spacing-6;
 
       .welcome-message {
