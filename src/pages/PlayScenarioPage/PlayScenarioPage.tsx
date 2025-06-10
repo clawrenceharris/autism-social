@@ -41,11 +41,11 @@ const PlayScenarioPage = () => {
     return {
 clarity: context?.clarity ? context.clarity  / getCategoryCount("clarity") * 100, : undefined,
 
-      empathy: context?.empathy ? context.empathy  / getCategoryCount("empathy") * 100, : undefined,
+      empathy: context?.empathy ? context.empathy  / getCategoryCount("empathy") * 100 : undefined,
 
-      assertiveness: context?.assertiveness ? context.assertiveness  / getCategoryCount("assertiveness") * 100, : undefined,
+      assertiveness: context?.assertiveness ? context.assertiveness  / getCategoryCount("assertiveness") * 100 : undefined,
      
-      socialAwareness: context?.socialAwareness ? context.socialAwareness  / getCategoryCount("socialAwareness") * 100, : undefined,
+      socialAwareness: context?.socialAwareness ? context.socialAwareness  / getCategoryCount("socialAwareness") * 100 : undefined,
       
       selfAdvocacy:context?.selfAdvocacy ? context.selfAdvocacy  / getCategoryCount("selfAdvocacy") * 100, : undefined,
       
