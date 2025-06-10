@@ -38,6 +38,7 @@
           @include flex(row, space-between, center);
 
           .scenario-name {
+            margin-top: 2rem;
             font-weight: 500;
             color: $color-gray-800;
           }
