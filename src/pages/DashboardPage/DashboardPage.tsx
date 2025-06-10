@@ -69,7 +69,7 @@ const DashboardPage = () => {
       <div className="dashboard-header">
         <div className="welcome-section">
           <h1 className="welcome-message">
-            Welcome back, {getUserDisplayName()}! 👋
+            Hi, {getUserDisplayName()}! 👋
           </h1>
           <p className="welcome-subtitle">
             Ready to continue building your social confidence? Let's practice
