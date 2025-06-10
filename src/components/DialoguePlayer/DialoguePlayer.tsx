@@ -7,7 +7,8 @@ import type {
   Message,
   Scenario,
 } from "../../types";
-import {DialogueCompletedModal} from "../"
+import {DialogueCompletedModal} from "../";
+import {getDialogueScores} from "../../utils"
 import {
   createDialogueMachine,
   type DialogueContext,
@@ -85,7 +86,7 @@ const DialoguePlayer = ({
       <DialogueCompletedModal
         onExitClick={handleExit}
         onReplayClick={handleReplay}
-        scores={scores}
+        scores={getDialogueScores}
       />,
       <div className="results-header">
         <div className="results-icon">
