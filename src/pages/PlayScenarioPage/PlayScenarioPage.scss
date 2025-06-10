@@ -118,7 +118,7 @@
         0 20px 40px rgba(0, 0, 0, 0.1),
         0 0 0 1px rgba(255, 255, 255, 0.2);
       overflow: hidden;
-      min-height: 00px;
+      // min-height: 00px;
       @include flex(column, flex-start, stretch);
       position: relative;
 
@@ -138,7 +138,7 @@
         flex: 1;
         padding: $spacing-6;
         overflow-y: auto;
-        max-height: 200px;
+        height: 200px;
         @include stack-layout($spacing-4);
 
         .message {
