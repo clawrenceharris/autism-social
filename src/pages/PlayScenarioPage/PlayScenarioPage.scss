@@ -247,13 +247,14 @@
         background: rgba(255, 255, 255, 0.8);
         backdrop-filter: blur(10px);
         border-top: 1px solid rgba(0, 0, 0, 0.1);
-        min-height: 300px;
       
 
         .response-options {
           display:flex;
           gap: $spacing-4;
           overflow-x: scroll;
+                  min-height: 300px;
+
 
           .response-option {
             background: rgba(255, 255, 255, 0.9);
