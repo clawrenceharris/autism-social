@@ -21,7 +21,7 @@
     animation: float 20s ease-in-out infinite;
     pointer-events: none;
   }
-  .game-header::after {
+  .game-header::before {
     content: "";
     z-index: -1;
     position: absolute;
