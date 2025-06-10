@@ -39,7 +39,7 @@ const PlayScenarioPage = () => {
   }
   const getScores = (context: DialogueContext) => {
     return {
-clarity: context?.clarity ? context.clarity  / getCategoryCount("clarity") * 100, : undefined,
+clarity: context?.clarity ? context.clarity  / getCategoryCount("clarity") * 100 : undefined,
 
       empathy: context?.empathy ? context.empathy  / getCategoryCount("empathy") * 100 : undefined,
 
