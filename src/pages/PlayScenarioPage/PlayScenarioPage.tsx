@@ -16,8 +16,8 @@ const PlayScenarioPage = () => {
   const { loading, error, scenario, dialogue } = useScenario();
   const { data: dialogues = [], isLoading: dialoguesLoading } = useDialogues();
   const { openModal, closeModal } = useModal();
-  const [isComplete, setIsComplete] = useState<boolean>(false)
-  const [context, setContext] = useState<DialogueContext | null>(null)
+  const [isComplete, setIsComplete] = useState<boolean>(false);
+  const [context, setContext] = useState<DialogueContext | null>(null);
 
   const [key, setKey] = useState<number>(0);
   const getMultiplier = () => {
@@ -73,7 +73,7 @@ const PlayScenarioPage = () => {
     const empathy = calcScore(context, "empathy");
     const assertiveness = calcScore(context, "assertiveness");
     const socialAwareness = calcScore(context, "socialAwareness");
-    
+
     const selfAdvocacy = calcScore(context, "selfAdvocacy");
 
     return {
@@ -89,12 +89,9 @@ const PlayScenarioPage = () => {
     };
   };
 
-
-  
-
   // if(isComplete){
   //     const scores = getScores(context);
-    
+
   //    return openModal(
   //     <DialogueCompletedModal
   //       onExitClick={handleExit}
@@ -211,10 +208,8 @@ const PlayScenarioPage = () => {
       <DialoguePlayer
         onExit={handleExit}
         scenario={scenario}
-        onComplete={(context) => {setIsComplete(true); setContext(context)}}
         onReplay={handleReplay}
         dialogue={dialogue}
-        
       />
     </div>
   );
