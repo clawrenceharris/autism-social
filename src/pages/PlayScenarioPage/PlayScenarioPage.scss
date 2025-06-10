@@ -139,7 +139,7 @@
         flex: 1;
         padding: $spacing-6;
         overflow-y: auto;
-        max-height: 400px;
+        height: 300px;
         @include stack-layout($spacing-4);
 
         .message {
