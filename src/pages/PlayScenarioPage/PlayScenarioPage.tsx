@@ -48,6 +48,7 @@ clarity: context?.clarity ? context.clarity  / getCategoryCount("clarity") * 100
       socialAwareness: context?.socialAwareness ? context.socialAwareness  / getCategoryCount("socialAwareness") * 100 : undefined,
       
       selfAdvocacy: context?.selfAdvocacy ? context.selfAdvocacy  / getCategoryCount("selfAdvocacy") * 100 : undefined,
+
       
     };
   };
