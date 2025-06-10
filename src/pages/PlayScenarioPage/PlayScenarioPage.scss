@@ -273,7 +273,6 @@
         .response-options {
           display: flex;
 
-          @include stack-layout($spacing-3);
 
           .response-option {
             background: rgba(255, 255, 255, 0.9);
