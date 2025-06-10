@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useMachine } from "@xstate/react";
-import "./DialoguePlayer.css";
 import type {
   Dialogue,
   DialogueOption,
