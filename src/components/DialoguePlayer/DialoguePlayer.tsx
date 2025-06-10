@@ -43,10 +43,18 @@ const DialoguePlayer = ({
   const [isTyping, setIsTyping] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Create dialogue machine
 
- 
+  // Auto-scroll to bottom of messages
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   // Initialize first message when dialogue is selected
   useEffect(() => {
@@ -241,7 +249,8 @@ const DialoguePlayer = ({
                   </div>
                 </div>
               )}
-              <div ref={endMessagesRef}/>
+
+              <div ref={messagesEndRef} />
             </div>
 
             <div className="response-section">
