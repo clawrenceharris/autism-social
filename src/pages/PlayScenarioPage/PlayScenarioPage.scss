@@ -103,6 +103,8 @@
     @include flex(column, center, center);
     position: relative;
     z-index: 10;
+        background: linear-gradient;
+
   }
 
   .dialogue-arena {
