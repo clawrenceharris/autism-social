@@ -71,7 +71,7 @@ const DashboardPage = () => {
           <h1 className="welcome-message">
             Hi, {getUserDisplayName()}! 👋
           </h1>
-          <p className="welcome-subtitle">
+          <p className="description">
             Ready to continue building your social confidence? Let's practice
             some conversations today.
           </p>
