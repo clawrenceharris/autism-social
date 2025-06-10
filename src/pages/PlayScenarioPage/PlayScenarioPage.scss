@@ -252,7 +252,8 @@
       
 
         .response-options {
-          @include flex;
+          display:flex;
+          gap: $spacing-4;
           overflow-x: scroll;
 
           .response-option {
