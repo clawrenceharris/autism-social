@@ -47,6 +47,7 @@
           .match-badge {
             position: sticky;
             left: 0;
+            top:0;
             
             @include flex(row, center, center, 0.25rem);
             font-size: 0.75rem;
