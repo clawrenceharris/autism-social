@@ -6,7 +6,6 @@ import type {
   ScoreCategory,
 } from "../../types";
 import { Plus, Trash2, Wand2 } from "lucide-react";
-import "./DialogueForm.css";
 import { Select } from "../";
 import { DIFFICULTY_LEVELS } from "../../constants/scenario";
 import { generateScenarioSteps } from "../../lib/gemini";
