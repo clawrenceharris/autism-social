@@ -61,7 +61,7 @@
         }
 
         .scenario-badge {
-          background: linear-gradient(135deg, $color-primary, $color-primary-200);
+          background: $color-primary;
           color: white;
           padding: 0.25rem 0.75rem;
           border-radius: $border-radius-full;
