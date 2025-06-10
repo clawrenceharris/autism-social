@@ -70,7 +70,14 @@ const DialoguePlayer = ({
       }
     }
   }, [dialogue]);
-
+  const handleExit = () => {
+    onExit();
+    closeModal();
+  }
+  const handleReplay = () =>{
+    onReplay();
+    closeModal();
+  }
   // Handle state changes
   useEffect(() => {
     if (state.status === "done") {
@@ -214,10 +221,10 @@ const DialoguePlayer = ({
                   <button className="control-btn">
                     <Settings size={20} />
                   </button>
-                  <button onClick={onReplay} className="control-btn">
+                  <button onClick={handleReplay} className="control-btn">
                     <RotateCcw size={20} />
                   </button>
-                  <button onClick={onExit} className="control-btn danger">
+                  <button onClick={handleExit} className="control-btn danger">
                     <X size={20} />
                   </button>
                 </div>
