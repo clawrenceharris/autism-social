@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useModal, useScenario } from "../../context";
 import { useDialogues } from "../../hooks/queries/useDialogues";
@@ -15,9 +15,9 @@ const PlayScenarioPage = () => {
   const navigate = useNavigate();
   const { loading, error, scenario, dialogue } = useScenario();
   const { data: dialogues = [], isLoading: dialoguesLoading } = useDialogues();
-  const { openModal, closeModal, isOpen: isModalOpen } = useModal();
+  const { openModal, closeModal } = useModal();
   const [key, setKey] = useState<number>(0);
-  const getMultiplier = useCallback(() => {
+  const getMultiplier = () => {
     let multiplier = 1;
     if (dialogue?.difficulty === "medium") {
       multiplier = 10;
@@ -29,95 +29,77 @@ const PlayScenarioPage = () => {
       multiplier = 30;
     }
     return multiplier;
-  }, [dialogue]);
-
-  const handleReplay = useCallback(() => {
-    closeModal();
-
+  };
+  const handleReplay = () => {
     setKey((prev) => prev + 1);
-  }, [closeModal]);
-  useEffect(() => {
-    if (!isModalOpen) {
-      setKey((prev) => prev + 1);
-    }
-  }, [isModalOpen]);
-  const handleExit = useCallback(() => {
+    closeModal();
+  };
+
+  const handleExit = () => {
     navigate("/");
     closeModal();
-  }, [closeModal, navigate]);
-  const getCategoryCount = useCallback(
-    (category: ScoreCategory) => {
-      if (!dialogue) {
-        return 0;
-      }
-      let count = 0;
-      for (let i = 0; i < dialogue.steps.length; i++) {
-        for (let j = 0; j < dialogue.steps[i].options.length; j++) {
-          if (dialogue.steps[i].options[j].scores.includes(category)) {
-            count++;
-          }
+  };
+  const getCategoryCount = (category: ScoreCategory) => {
+    if (!dialogue) {
+      return 0;
+    }
+    let count = 0;
+    for (let i = 0; i < dialogue.steps.length; i++) {
+      for (let j = 0; j < dialogue.steps[i].options.length; j++) {
+        if (dialogue.steps[i].options[j].scores.includes(category)) {
+          count++;
         }
       }
-      return count;
-    },
-    [dialogue]
-  );
+    }
+    return count;
+  };
 
-  const calcScore = useCallback(
-    (
-      context: DialogueContext,
-      category: keyof DialogueContext & ScoreCategory
-    ) => {
-      if (!context[category] && getCategoryCount(category) > 0) {
-        return 0;
-      } else if (!context[category]) {
-        return undefined;
-      }
-      return context[category];
-    },
-    [getCategoryCount]
-  );
-  const getScores = useCallback(
-    (context: DialogueContext) => {
-      const clarity = calcScore(context, "clarity");
-      const empathy = calcScore(context, "empathy");
-      const assertiveness = calcScore(context, "assertiveness");
-      const socialAwareness = calcScore(context, "socialAwareness");
-      const selfAdvocacy = calcScore(context, "selfAdvocacy");
+  const calcScore = (
+    context: DialogueContext,
+    category: keyof DialogueContext & ScoreCategory
+  ) => {
+    if (context[category] === undefined && getCategoryCount(category) > 0) {
+      return 0;
+    } else if (!context[category]) {
+      return undefined;
+    }
+    return context[category];
+  };
+  const getScores = (context: DialogueContext) => {
+    const clarity = calcScore(context, "clarity");
+    const empathy = calcScore(context, "empathy");
+    const assertiveness = calcScore(context, "assertiveness");
+    const socialAwareness = calcScore(context, "socialAwareness");
+    const selfAdvocacy = calcScore(context, "selfAdvocacy");
 
-      return {
-        clarity: clarity ? clarity * getMultiplier() : undefined,
-        empathy: empathy ? empathy * getMultiplier() : undefined,
-        assertiveness: assertiveness
-          ? assertiveness * getMultiplier()
-          : undefined,
-        socialAwareness: socialAwareness
-          ? socialAwareness * getMultiplier()
-          : undefined,
-        selfAdvocacy: selfAdvocacy ? selfAdvocacy * getMultiplier() : undefined,
-      };
-    },
-    [calcScore, getMultiplier]
-  );
-  const handleComplete = useCallback(
-    (context: DialogueContext) => {
-      const scores = getScores(context);
-      openModal(
-        <DialogueCompletedModal
-          onExitClick={handleExit}
-          onReplayClick={handleReplay}
-          scores={scores}
-        />,
-        <div className="results-header">
-          <div className="results-icon">
-            <Award size={20} />
-          </div>
-          <h2>Great Job!</h2>
+    return {
+      clarity: clarity ? clarity * getMultiplier() : undefined,
+      empathy: empathy ? empathy * getMultiplier() : undefined,
+      assertiveness: assertiveness
+        ? assertiveness * getMultiplier()
+        : undefined,
+      socialAwareness: socialAwareness
+        ? socialAwareness * getMultiplier()
+        : undefined,
+      selfAdvocacy: selfAdvocacy ? selfAdvocacy * getMultiplier() : undefined,
+    };
+  };
+  const handleComplete = (context: DialogueContext) => {
+    const scores = getScores(context);
+    openModal(
+      <DialogueCompletedModal
+        onExitClick={handleExit}
+        onReplayClick={handleReplay}
+        scores={scores}
+      />,
+      <div className="results-header">
+        <div className="results-icon">
+          <Award size={20} />
         </div>
-      );
-    },
-    [getScores, handleExit, handleReplay, openModal]
-  );
+        <h2>Great Job!</h2>
+      </div>
+    );
+  };
   if (loading || dialoguesLoading) {
     return (
       <div className="play-scenario-container">
