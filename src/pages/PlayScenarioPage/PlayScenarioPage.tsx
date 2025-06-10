@@ -10,7 +10,7 @@ import {
   ProgressIndicator,
 } from "../../components";
 import type { DialogueContext } from "../../xstate/createDialogueMachine";
-
+import type {ScoreCategory} from "../../types";
 const PlayScenarioPage = () => {
   const navigate = useNavigate();
   const { loading, error, scenario, dialogue } = useScenario();
@@ -26,7 +26,7 @@ const PlayScenarioPage = () => {
     navigate("/");
     closeModal();
   };
-  const getCategoryCount = (category: string) =>{
+  const getCategoryCount = (category: ScoreCategory) =>{
     let count = 0;
     for(let i = 0; i < dialogue.steps.length; i++){
       for(let j = 0; j < dialogue.steps[i].options.length; j++){
@@ -39,11 +39,16 @@ const PlayScenarioPage = () => {
   }
   const getScores = (context: DialogueContext) => {
     return {
-      clarity: context?.clarity / . || 0,
-      empathy: context?.empathy || 0,
-      assertiveness: context?.assertiveness || 0,
-      socialAwareness: context?.socialAwareness || 0,
-      selfAdvocacy: context?.selfAdvocacy || 0,
+clarity: context?.clarity ? context.clarity  / getCategoryCount("clarity") * 100, : undefined,
+
+      empathy: context?.empathy ? context.empathy  / getCategoryCount("empathy") * 100, : undefined,
+
+      assertiveness: context?.assertiveness ? context.assertiveness  / getCategoryCount("assertiveness") * 100, : undefined,
+     
+      socialAwareness: context?.socialAwareness ? context.socialAwareness  / getCategoryCount("socialAwareness") * 100, : undefined,
+      
+      selfAdvocacy:context?.selfAdvocacy ? context.selfAdvocacy  / getCategoryCount("selfAdvocacy") * 100, : undefined,
+      
     };
   };
   const handleComplete = (context: DialogueContext) => {
