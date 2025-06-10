@@ -89,7 +89,8 @@
         @include transition(color);
 
         &:hover {
-          color: $color-primary-200;
+          opacity: 0.5;
+         
         }
       }
     }
