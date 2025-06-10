@@ -2,7 +2,6 @@
 @import "../../styles/mixins";
 .results-header {
   @include flex;
-  margin-bottom: $spacing-6;
   
   .results-icon {
     width: 40px;
