@@ -241,7 +241,7 @@ const DialoguePlayer = ({
                   </div>
                 </div>
               )}
-
+              <div ref={endMessagesRef}/>
             </div>
 
             <div className="response-section">
