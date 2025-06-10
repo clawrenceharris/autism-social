@@ -516,7 +516,7 @@
 
       .header-content {
         .scenario-info {
-          flex-direction: column;
+          display: block;
           .scenario-title {
             font-size: 1.25rem;
           }
