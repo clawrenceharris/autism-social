@@ -27,8 +27,7 @@ export function createDialogueMachine(
           ? assign(({ context }) => {
               const updated = { ...context };
               opt.scores.forEach((key) => {
-                updated[key] += 1;
-                console.log("Value: " + key);
+                updated[key] = (updated[key] || 0) + 1;
               });
             console.log(updated);
               return updated;
