@@ -35,7 +35,7 @@
         flex: 1;
 
         .scenario-header {
-          @include flex(row, space-between, start);
+          @include flex(row, space-between, center);
 
           .scenario-name {
             margin-top: 2.4rem;
