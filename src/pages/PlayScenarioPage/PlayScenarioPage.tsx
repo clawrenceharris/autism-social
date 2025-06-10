@@ -15,18 +15,31 @@ const PlayScenarioPage = () => {
   const navigate = useNavigate();
   const { loading, error, scenario, dialogue } = useScenario();
   const { data: dialogues = [], isLoading: dialoguesLoading } = useDialogues();
-  const { openModal } = useModal();
+  const { openModal,closeModal } = useModal();
   const [key, setKey] = useState<number>(0);
   const handleReplay = () => {
     setKey((prev) => prev + 1);
+    closeModal();
   };
 
   const handleExit = () => {
     navigate("/");
+    closeModal();
   };
+  const getCategoryCount = (category: string) =>{
+    let count = 0;
+    for(let i = 0; i < dialogue.steps.length; i++){
+      for(let j = 0; j < dialogue.steps[i].options.length; j++){
+        if(dialogue.steps[i].options[j].scores.includes(category)){
+          count++;
+        }
+      }
+    }
+    return count;
+  }
   const getScores = (context: DialogueContext) => {
     return {
-      clarity: context?.clarity || 0,
+      clarity: context?.clarity / . || 0,
       empathy: context?.empathy || 0,
       assertiveness: context?.assertiveness || 0,
       socialAwareness: context?.socialAwareness || 0,
@@ -37,6 +50,7 @@ const PlayScenarioPage = () => {
     const scores = getScores(context);
     openModal(
       <DialogueCompletedModal
+        
         onExitClick={handleExit}
         onReplayClick={handleReplay}
         scores={scores}
