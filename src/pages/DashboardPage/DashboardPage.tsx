@@ -152,7 +152,7 @@ const DashboardPage = () => {
               ) : recommendations.length > 0 ? (
                 <div className="scenario-list">
                   {recommendations.map((dialogue) => (
-                    <RecommendedDialogue dialogue={dialogue} />
+                    <RecommendedDialogue key={dialogue.id} dialogue={dialogue} />
                   ))}
                 </div>
               ) : (
