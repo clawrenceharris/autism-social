@@ -40,21 +40,28 @@ const PlayScenarioPage = () => {
     }
     return count;
   };
-  const calcScore = (context: DialogueContext, category: ScoreCategory ) => {
-    !context[cateogry] && getCategoryCount(category) > 0 ? 0 :  Math.round(context[category] / getCategoryCount(category) * 100);
-  }
+  const calcScore = (
+    context: DialogueContext,
+    category: keyof DialogueContext & ScoreCategory
+  ) => {
+    if (!context[category] && getCategoryCount(category) > 0) {
+      return undefined;
+    } else if (!context[category]) {
+      return 0;
+    }
+    return Math.round((context[category] / getCategoryCount(category)) * 100);
+  };
   const getScores = (context: DialogueContext) => {
     return {
       clarity: calcScore(context, "clarity"),
 
-      empathy:calcScore(context, "empathy"),
+      empathy: calcScore(context, "empathy"),
 
       assertiveness: calcScore(context, "assertiveness"),
-        
 
-      socialAwareness:calcScore(context, "socialAwareness"),
+      socialAwareness: calcScore(context, "socialAwareness"),
 
-      selfAdvocacy: calcScore(context, "selfAdvocacy")
+      selfAdvocacy: calcScore(context, "selfAdvocacy"),
     };
   };
   const handleComplete = (context: DialogueContext) => {
