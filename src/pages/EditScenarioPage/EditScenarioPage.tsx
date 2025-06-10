@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import "./EditScenarioPage.css";
 import { useModal, useScenario, useToast } from "../../context";
-import type { Dialogue, DialogueStep } from "../../types";
+import type { Dialogue, DialogueStep, Difficulty } from "../../types";
 import {
   DialoguesPanel,
   DialogueForm,
@@ -22,7 +22,7 @@ const EditScenarioPage = () => {
     title: string;
 
     persona_tags: string[];
-    difficulty: string;
+    difficulty: Difficulty;
     placeholders: string[];
     steps: DialogueStep[];
   }>({

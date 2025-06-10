@@ -79,7 +79,7 @@ export interface Dialogue {
   persona_tags: string[];
   placeholders: string[];
   steps: DialogueStep[];
-  difficulty: "easy" | "medium" | "hard" | "extra hard";
+  difficulty: Difficulty;
   scoring_categories: string[];
   created_at?: string;
 }
@@ -97,6 +97,8 @@ export type ScoreCategory =
   | "socialAwareness"
   | "selfAdvocacy";
 
+export type Difficulty = "easy" | "medium" | "hard" | "extra hard";
+
 export interface CreateScenarioData {
   title: string;
   description: string;
@@ -108,7 +110,7 @@ export interface CreateDialogueData {
   persona_tags: string[];
   placeholders: string[];
   steps: DialogueStep[];
-  difficulty: string;
+  difficulty: Difficulty;
   scoring_categories: string[];
 }
 
