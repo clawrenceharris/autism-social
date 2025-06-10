@@ -89,7 +89,7 @@
         @include transition(color);
 
         &:hover {
-          color: $primary-color-200;
+          color: $primary-color-100;
         }
       }
     }
