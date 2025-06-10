@@ -38,9 +38,8 @@
           @include flex(row, space-between, center);
 
           .scenario-name {
-           
+            font-weight: 500;
             color: $color-gray-800;
-            font-size: 1.1rem;
           }
 
           .match-badge {
