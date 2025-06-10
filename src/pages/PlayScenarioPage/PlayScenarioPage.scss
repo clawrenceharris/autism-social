@@ -139,9 +139,10 @@
 
       .chat-messages {
         flex: 1;
+                max-height: 300px;
+
         padding: $spacing-6;
         overflow-y: auto;
-        max-height: 300px;
         @include stack-layout($spacing-4);
 
         .message {
