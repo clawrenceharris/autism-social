@@ -111,7 +111,7 @@
     position: relative;
 
     .chat-window {
-      background: rgba(0, 0, 0, 0.6);
+     
       backdrop-filter: blur(20px);
       border-radius: 2rem;
       box-shadow: 
@@ -138,6 +138,7 @@
         flex: 1;
         padding: $spacing-6;
         overflow-y: auto;
+         background: rgba(0, 0, 0, 0.6);
         min-height: 200px;
         max-height: 200px;
         @include stack-layout($spacing-4);
