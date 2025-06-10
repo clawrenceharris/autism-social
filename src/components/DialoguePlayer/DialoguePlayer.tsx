@@ -43,13 +43,15 @@ const DialoguePlayer = ({
   const [isTyping, setIsTyping] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messageWindowRef = useRef<HTMLDivElement>(null);
 
   // Create dialogue machine
 
   // Auto-scroll to bottom of messages
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messageWindowRef.current?.scrollTo({
+      top: messageWindowRef.current.scrollHeight,
+    });
   };
 
   useEffect(() => {
@@ -224,7 +226,7 @@ const DialoguePlayer = ({
       <div className="game-content">
         <div className="dialogue-arena">
           <div className="chat-window">
-            <div className="chat-messages">
+            <div ref={messageWindowRef} className="chat-messages">
               {messages.map((message) => (
                 <div key={message.id} className={`message ${message.speaker}`}>
                   <div className="avatar">
@@ -250,7 +252,7 @@ const DialoguePlayer = ({
                 </div>
               )}
 
-              <div ref={messagesEndRef} />
+              <div ref={messageWindowRef} />
             </div>
 
             <div className="response-section">
