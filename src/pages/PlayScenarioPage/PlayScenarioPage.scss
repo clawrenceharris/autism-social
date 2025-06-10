@@ -1,7 +1,7 @@
 @import "../../styles/variables";
 @import "../../styles/mixins";
 .results-header {
-  @include flex();
+  @include flex;
   margin-bottom: $spacing-6;
   
   .results-icon {
