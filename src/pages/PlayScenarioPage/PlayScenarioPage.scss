@@ -115,8 +115,7 @@
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(20px);
       border-radius: 2rem;
-      min-height: 500px;
-      max-height: 500px;
+      
       background:red;
       box-shadow: 
         0 20px 40px rgba(0, 0, 0, 0.1),
@@ -142,7 +141,8 @@
         flex: 1;
         padding: $spacing-6;
         overflow-y: auto;
-        max-height: 400px;
+        min-height: 500px;
+      max-height: 500px;
         @include stack-layout($spacing-4);
 
         .message {
