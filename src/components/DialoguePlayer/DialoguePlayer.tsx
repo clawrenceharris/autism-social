@@ -259,7 +259,6 @@ const DialoguePlayer = ({
               {currentStep?.options && currentStep.options.length > 0 && (
                 <>
                   <div className="response-prompt">
-                    <h3>How do you respond?</h3>
                    
                   </div>
 
