@@ -253,9 +253,9 @@
 
         .response-options {
           display:flex;
-          gap: $spacing-3;
+          gap: $spacing-4;
           overflow-x: scroll;
-          padding: $spacing-4;
+          padding: $spacing-2;
 
           .response-option {
             background: rgba(255, 255, 255);
