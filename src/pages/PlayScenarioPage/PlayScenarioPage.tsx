@@ -41,13 +41,7 @@ const PlayScenarioPage = () => {
         onReplayClick={handleReplay}
         scores={scores}
       />,
-      <div className="results-header">
-        <div className="results-icon">
-          <Award size={32} />
-        </div>
-        <h2>Great Job!</h2>
-        <p>You've completed the dialogue. Here's how you performed:</p>
-      </div>
+      "Great Job!"
     );
   };
   if (loading || dialoguesLoading) {
