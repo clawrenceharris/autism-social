@@ -112,9 +112,10 @@
     margin: 0 auto;
     padding: $spacing-6;
     position: relative;
-        background: linear-gradient(to right, lightblue, mediumpurple);
+       
 
     .chat-window {
+       background: linear-gradient(to right, lightblue, mediumpurple);
       backdrop-filter: blur(20px);
       border-radius: 2rem;
       box-shadow: 
