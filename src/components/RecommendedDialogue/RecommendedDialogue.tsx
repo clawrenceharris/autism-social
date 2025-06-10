@@ -2,7 +2,7 @@ import { Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Dialogue } from "../../types";
 import { selectScenario, useAppSelector } from "../../store/hooks";
-
+import "./RecommendedDialogue.scss"
 interface RecommendedItemProps {
   dialogue: Dialogue;
 }
