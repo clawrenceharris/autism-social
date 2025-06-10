@@ -58,7 +58,7 @@ export function createDialogueMachine(
   return createMachine({
     types: {
       events: {} as DialogueEvent,
-      context: {} as DialogueContext
+      context: {clarity: 0} as DialogueContext
     },
     id,
     initial: steps[0].id,
