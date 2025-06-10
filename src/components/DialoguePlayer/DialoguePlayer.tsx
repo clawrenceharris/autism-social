@@ -7,6 +7,7 @@ import type {
   Message,
   Scenario,
 } from "../../types";
+import {DialogueCompletedModal} from "../"
 import {
   createDialogueMachine,
   type DialogueContext,
@@ -18,12 +19,10 @@ interface DialoguePlayerProps {
   dialogue: Dialogue;
   onReplay: () => void;
   onExit: () => void;
-  onComplete: (scores: DialogueContext) => void;
 }
 const DialoguePlayer = ({
   scenario,
   onExit,
-  onComplete,
   dialogue,
   onReplay,
 }: DialoguePlayerProps) => {
@@ -50,7 +49,7 @@ const DialoguePlayer = ({
       top: messageWindowRef.current.scrollHeight,
     });
   };
-
+  
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -75,9 +74,21 @@ const DialoguePlayer = ({
   // Handle state changes
   useEffect(() => {
     if (state.status === "done") {
-      onComplete(state.context as DialogueContext);
+      openModal(
+      <DialogueCompletedModal
+        onExitClick={handleExit}
+        onReplayClick={handleReplay}
+        scores={scores}
+      />,
+      <div className="results-header">
+        <div className="results-icon">
+          <Award size={20} />
+        </div>
+        <h2>Great Job!</h2>
+      </div>
+    );
     }
-  }, [onComplete, state.context, state.status]);
+  }, [state.context, state.status]);
 
   const handleOptionClick = async (option: DialogueOption) => {
     // Add user message
