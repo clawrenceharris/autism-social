@@ -85,9 +85,12 @@ const PlayScenarioPage = () => {
       selfAdvocacy: selfAdvocacy ? selfAdvocacy * getMultiplier() : undefined,
     };
   };
-  const handleComplete = (context: DialogueContext) => {
-    const scores = getScores(context);
-    openModal(
+ 
+
+  if(isComplete){
+      const scores = getScores(context);
+
+     openModal(
       <DialogueCompletedModal
         onExitClick={handleExit}
         onReplayClick={handleReplay}
@@ -100,7 +103,7 @@ const PlayScenarioPage = () => {
         <h2>Great Job!</h2>
       </div>
     );
-  };
+  }
   if (loading || dialoguesLoading) {
     return (
       <div className="play-scenario-container">
