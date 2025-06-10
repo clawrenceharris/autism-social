@@ -1,25 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useModal, useScenario } from "../../context";
+import { useScenario } from "../../context";
 import { useDialogues } from "../../hooks/queries/useDialogues";
-import { X, Home, Award } from "lucide-react";
+import { X, Home } from "lucide-react";
 import "./PlayScenarioPage.scss";
-import {
-  DialogueCompletedModal,
-  DialoguePlayer,
-  ProgressIndicator,
-} from "../../components";
-import type { DialogueContext } from "../../xstate/createDialogueMachine";
-import type { ScoreCategory } from "../../types";
+import { DialoguePlayer, ProgressIndicator } from "../../components";
 const PlayScenarioPage = () => {
   const navigate = useNavigate();
   const { loading, error, scenario, dialogue } = useScenario();
   const { data: dialogues = [], isLoading: dialoguesLoading } = useDialogues();
-  const [isComplete, setIsComplete] = useState<boolean>(false);
-  const [context, setContext] = useState<DialogueContext | null>(null);
 
   const [key, setKey] = useState<number>(0);
-  
+
   const handleReplay = () => {
     setKey((prev) => prev + 1);
   };
@@ -27,7 +19,7 @@ const PlayScenarioPage = () => {
   const handleExit = () => {
     navigate("/");
   };
-  
+
   if (loading || dialoguesLoading) {
     return (
       <div className="play-scenario-container">

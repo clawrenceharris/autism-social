@@ -6,6 +6,7 @@ import {
   type ReactElement,
   type ReactNode,
 } from "react";
+import { Modal } from "../components";
 
 interface ModalContextType {
   isOpen: boolean;
@@ -45,26 +46,9 @@ export function ModalProvider({ children }: { children: ReactNode }) {
       value={{ isOpen, modalContent, modalTitle, openModal, closeModal }}
     >
       {children}
-      {isOpen && modalContent && (
-        <div className="modal-overlay">
-          <div className="modal-backdrop" onClick={closeModal} />
-          <div className="modal-container">
-            <div className="modal-content">
-              <div className="modal-header">
-                {typeof modalTitle === "string" ? (
-                  <h3 className="modal-title">{modalTitle}</h3>
-                ) : (
-                  modalTitle
-                )}
-                <button onClick={closeModal} className="modal-close">
-                  ×
-                </button>
-              </div>
-              {modalContent}
-            </div>
-          </div>
-        </div>
-      )}
+      <Modal onClose={closeModal} title={modalTitle} isOpen={isOpen}>
+        {modalContent}
+      </Modal>
     </ModalContext.Provider>
   );
 }

@@ -1,15 +1,12 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, type ReactElement, type ReactNode } from "react";
 import { X } from "lucide-react";
 import "./Modal.scss";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  title: string;
+  title: string | ReactElement;
   children: ReactNode;
-  isLoading?: boolean;
-  submitText: string;
-  error?: string | null;
 }
 
 const Modal = ({

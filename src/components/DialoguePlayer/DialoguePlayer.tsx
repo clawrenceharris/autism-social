@@ -7,14 +7,10 @@ import type {
   Message,
   Scenario,
 } from "../../types";
-import {DialogueCompletedModal} from "../";
-import {getDialogueScores} from "../../utils"
-import {
-  createDialogueMachine,
-  type DialogueContext,
-} from "../../xstate/createDialogueMachine";
-import {useModal} from "../../context"
-import { RotateCcw, Send, Settings, Volume2, X,Award, Home } from "lucide-react";
+import { DialogueCompletedModal, Modal } from "../";
+import { getDialogueScores } from "../../utils";
+import { createDialogueMachine } from "../../xstate/createDialogueMachine";
+import { RotateCcw, Send, Settings, Volume2, X, Award } from "lucide-react";
 interface DialoguePlayerProps {
   scenario: Scenario;
   dialogue: Dialogue;
@@ -34,7 +30,6 @@ const DialoguePlayer = ({
   const [state, send] = useMachine(
     machine || createDialogueMachine("empty", [])
   );
-  const { openModal, closeModal } = useModal({onClose: () => handleExit()});
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [customInput, setCustomInput] = useState("");
@@ -50,7 +45,7 @@ const DialoguePlayer = ({
       top: messageWindowRef.current.scrollHeight,
     });
   };
-  
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -71,33 +66,6 @@ const DialoguePlayer = ({
       }
     }
   }, [dialogue]);
-  const handleExit = () => {
-    onExit();
-    closeModal();
-  }
-  const handleReplay = () =>{
-    onReplay();
-    closeModal();
-  }
-  
-  // Handle state changes
-  useEffect(() => {
-    if (state.status === "done") {
-      openModal(
-      <DialogueCompletedModal
-        onExitClick={handleExit}
-        onReplayClick={handleReplay}
-        scores={getDialogueScores}
-      />,
-      <div className="results-header">
-        <div className="results-icon">
-          <Award size={20} />
-        </div>
-        <h2>Great Job!</h2>
-      </div>
-    );
-    }
-  }, [state.context, state.status]);
 
   const handleOptionClick = async (option: DialogueOption) => {
     // Add user message
@@ -223,10 +191,10 @@ const DialoguePlayer = ({
                   <button className="control-btn">
                     <Settings size={20} />
                   </button>
-                  <button onClick={handleReplay} className="control-btn">
+                  <button onClick={onReplay} className="control-btn">
                     <RotateCcw size={20} />
                   </button>
-                  <button onClick={handleExit} className="control-btn danger">
+                  <button onClick={onExit} className="control-btn danger">
                     <X size={20} />
                   </button>
                 </div>
@@ -306,6 +274,29 @@ const DialoguePlayer = ({
               </div>
             </div>
           </div>
+
+          <Modal
+            onClose={onExit}
+            title={
+              <div className="results-header">
+                <div className="results-icon">
+                  <Award size={20} />
+                </div>
+                <h2>Great Job!</h2>
+
+                <p className="description">
+                  You've completed the dialogue. Here's how you performed:
+                </p>
+              </div>
+            }
+            isOpen={state.status === "done"}
+          >
+            <DialogueCompletedModal
+              onExitClick={onExit}
+              onReplayClick={onReplay}
+              scores={getDialogueScores(state.context)}
+            />
+          </Modal>
         </div>
       </div>
     </>

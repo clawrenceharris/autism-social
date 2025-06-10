@@ -13,34 +13,31 @@ const DialogueCompletedModal = ({
 }: DialogueCompletedModalProps) => {
   return (
     <div>
-      <div className="results-header">
-        <p className="description">
-          You've completed the dialogue. Here's how you performed:
-        </p>
-      </div>
-
       <div className="score-grid">
-        {scores.clarity !== undefined && <div className="score-item">
-          <div className="score-label">Clarity</div>
-          <div className="score-value">{scores.clarity}</div>
-        </div>}
-         {scores.empathy !== undefined && <div className="score-item">
-          <div className="score-label">Empathy</div>
-          <div className="score-value">{scores.empathy}</div>
-        </div>}
-        {scores.assertivenes !== undefined &&
+        {scores.clarity !== undefined && (
+          <div className="score-item">
+            <div className="score-label">Clarity</div>
+            <div className="score-value">{scores.clarity}</div>
+          </div>
+        )}
+        {scores.empathy !== undefined && (
+          <div className="score-item">
+            <div className="score-label">Empathy</div>
+            <div className="score-value">{scores.empathy}</div>
+          </div>
+        )}
+        {scores.assertiveness !== undefined && (
           <div className="score-item">
             <div className="score-label">Assertiveness</div>
-            <div className="score-value">
-              {scores.assertiveness}
-            </div>
-          </div>}
-        {scores.socialAwareness !== undefined && <div className="score-item">
-          <div className="score-label">Social Awareness</div>
-          <div className="score-value">
-            {scores.socialAwareness}          
+            <div className="score-value">{scores.assertiveness}</div>
           </div>
-        </div>}
+        )}
+        {scores.socialAwareness !== undefined && (
+          <div className="score-item">
+            <div className="score-label">Social Awareness</div>
+            <div className="score-value">{scores.socialAwareness}</div>
+          </div>
+        )}
       </div>
 
       <div className="results-actions">
