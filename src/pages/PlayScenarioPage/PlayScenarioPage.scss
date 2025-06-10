@@ -253,7 +253,7 @@
           display:flex;
           gap: $spacing-4;
           overflow-x: scroll;
-                  min-height: 300px;
+          min-height: 300px;
 
 
           .response-option {
@@ -261,6 +261,7 @@
             border: 2px solid rgba($color-primary, 0.2);
             border-radius: 1rem;
             min-width: 200px;
+            max-height: 180px;
             padding: $spacing-4 $spacing-6;
             cursor: pointer;
             transition: all 0.3s ease;
