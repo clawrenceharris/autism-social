@@ -204,7 +204,9 @@ const DialoguePlayer = ({
       <div className="game-content">
         
         <div className="dialogue-arena">
-          <div className="game-header">
+          
+          <div className="chat-window">
+            <div className="game-header">
         <div className="header-content">
           <div className="scenario-info">
             <h1 className="scenario-title">{scenario.title}</h1>
@@ -227,7 +229,6 @@ const DialoguePlayer = ({
         </div>
       </div>
 
-          <div className="chat-window">
             <div ref={messageWindowRef} className="chat-messages">
               {messages.map((message) => (
                 <div key={message.id} className={`message ${message.speaker}`}>
