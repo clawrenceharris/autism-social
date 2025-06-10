@@ -34,7 +34,7 @@ const DialoguePlayer = ({
   const [state, send] = useMachine(
     machine || createDialogueMachine("empty", [])
   );
-  const { openModal, closeModal } = useModal();
+  const { openModal, closeModal } = useModal({onClose: () => handleExit()});
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [customInput, setCustomInput] = useState("");
@@ -79,6 +79,7 @@ const DialoguePlayer = ({
     onReplay();
     closeModal();
   }
+  
   // Handle state changes
   useEffect(() => {
     if (state.status === "done") {
