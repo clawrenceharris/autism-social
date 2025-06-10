@@ -139,7 +139,7 @@
         overflow-y: auto;
         max-height: 220px;
         min-height:220px;
-        background: rgba(255, 255, 255, 0.6);
+        background: rgba(255, 255, 255, 0.3);
 
         @include stack-layout($spacing-4);
 
