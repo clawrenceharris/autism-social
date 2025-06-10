@@ -1,4 +1,4 @@
-import type {Difficulty} from "./types"
+import type {Dialogue, Difficulty} from "./types"
 export function generateId(prefix: string): string {
   return `${prefix}_${Math.random().toString(36).substr(2, 9)}`;
 }
