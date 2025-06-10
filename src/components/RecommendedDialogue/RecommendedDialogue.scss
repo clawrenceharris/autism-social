@@ -86,10 +86,10 @@
         color: $color-primary;
         font-weight: 500;
         text-decoration: none;
-       
+        @include transition(color);
 
         &:hover {
-          color: $color-primary-hover;
+          color: $primary-color-200;
         }
       }
     }
