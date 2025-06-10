@@ -200,7 +200,9 @@ const DialoguePlayer = ({
   const scores = getScores();
   return (
     <>
-      <div className="game-header">
+      
+      <div className="game-content">
+        <div className="game-header">
         <div className="header-content">
           <div className="scenario-info">
             <h1 className="scenario-title">{scenario.title}</h1>
@@ -223,7 +225,6 @@ const DialoguePlayer = ({
         </div>
       </div>
 
-      <div className="game-content">
         <div className="dialogue-arena">
           <div className="chat-window">
             <div ref={messageWindowRef} className="chat-messages">
