@@ -65,7 +65,7 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="container">
+    <div >
       <div className="dashboard-header">
         <div className="welcome-section">
           <h1 className="welcome-message">
