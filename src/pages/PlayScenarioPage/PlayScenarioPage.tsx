@@ -46,7 +46,7 @@ const PlayScenarioPage = () => {
           <Award size={32} />
         </div>
         <h2>Great Job!</h2>
-        <p>You've completed the dialogue. Here's how you performed:</p>
+       
         
       </div>
     );
