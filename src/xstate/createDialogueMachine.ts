@@ -29,6 +29,7 @@ export function createDialogueMachine(
               opt.scores.forEach((key) => {
                 updated[key] += 1;
               });
+            console.log(updated);
               return updated;
             })
           : undefined,
