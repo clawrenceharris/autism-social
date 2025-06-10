@@ -84,7 +84,6 @@
 
       .scenario-progress {
         @include flex(row, flex-start, center, $spacing-2);
-    margin-bottom: 2rem;
 
         .progress-bar {
           flex: 1;
