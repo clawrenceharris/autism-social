@@ -46,6 +46,7 @@
 
           .match-badge {
             position: absolute;
+            right: 0px;
             @include flex(row, center, center, 0.25rem);
             font-size: 0.75rem;
             font-weight: 600;
