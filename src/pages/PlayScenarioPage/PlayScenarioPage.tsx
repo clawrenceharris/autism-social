@@ -40,7 +40,7 @@ const PlayScenarioPage = () => {
     }
     return count;
   };
-  const calcScore = (context: DialogueContext, category: ScoreCategory ){
+  const calcScore = (context: DialogueContext, category: ScoreCategory ) => {
     !context[cateogry] && getCategoryCount(category)) > 0 ? 0 :  Math.round(
             (context[category] / getCategoryCount(category) * 100);
   }
