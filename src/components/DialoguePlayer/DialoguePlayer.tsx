@@ -260,10 +260,7 @@ const DialoguePlayer = ({
                 <>
                   <div className="response-prompt">
                     <h3>How do you respond?</h3>
-                    <p>
-                      Choose your response carefully - it affects your social
-                      skills score!
-                    </p>
+                   
                   </div>
 
                   <div className="response-options">
