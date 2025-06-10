@@ -140,7 +140,7 @@
         max-height: 220px;
         min-height:220px;
         backdrop-filter: blur(20px);
-        background: rgba(255, 255, 255, 0.4);
+        background: rgba(0, 0, 0, 0.3);
 
         @include stack-layout($spacing-4);
 
