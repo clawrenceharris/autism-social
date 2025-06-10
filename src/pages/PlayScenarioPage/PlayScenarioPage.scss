@@ -29,7 +29,8 @@
     left: 0;
     right: 0;
     z-index: 100;
-    background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px 20px 0 0;
+
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     padding: $spacing-4 $spacing-6;
