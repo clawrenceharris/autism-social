@@ -88,25 +88,26 @@ const PlayScenarioPage = () => {
       selfAdvocacy: selfAdvocacy ? selfAdvocacy * getMultiplier() : undefined,
     };
   };
- 
 
-  if(isComplete){
-      const scores = getScores(context);
+  
+
+  // if(isComplete){
+  //     const scores = getScores(context);
     
-     return openModal(
-      <DialogueCompletedModal
-        onExitClick={handleExit}
-        onReplayClick={handleReplay}
-        scores={scores}
-      />,
-      <div className="results-header">
-        <div className="results-icon">
-          <Award size={20} />
-        </div>
-        <h2>Great Job!</h2>
-      </div>
-    );
-  }
+  //    return openModal(
+  //     <DialogueCompletedModal
+  //       onExitClick={handleExit}
+  //       onReplayClick={handleReplay}
+  //       scores={scores}
+  //     />,
+  //     <div className="results-header">
+  //       <div className="results-icon">
+  //         <Award size={20} />
+  //       </div>
+  //       <h2>Great Job!</h2>
+  //     </div>
+  //   );
+  // }
   if (loading || dialoguesLoading) {
     return (
       <div className="play-scenario-container">
