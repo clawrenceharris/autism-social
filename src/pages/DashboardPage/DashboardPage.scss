@@ -56,7 +56,7 @@
   }
 
   .dashboard-grid {
-    @include grid-layout(1, $spacing-7);
+    @include grid-layout(1, $spacing-6);
 
     @include responsive(md) {
       grid-template-columns: 2fr 1fr;
