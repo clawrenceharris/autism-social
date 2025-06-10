@@ -50,7 +50,7 @@ export function ModalProvider({ children }: { children: ReactNode }) {
                 {typeof modalTitle === "string" ? (
                   <h3 className="modal-title">{modalTitle}</h3>
                 ) : (
-                  modalContent
+                  modalTitle
                 )}
                 <button onClick={closeModal} className="modal-close">
                   ×
