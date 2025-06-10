@@ -111,6 +111,7 @@
     position: relative;
 
     .chat-window {
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(20px);
       border-radius: 2rem;
       box-shadow: 
@@ -254,7 +255,7 @@
           padding: $spacing-4;
 
           .response-option {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.5);
             border: 2px solid rgba($color-primary, 0.2);
             border-radius: 1rem;
             min-width: 200px;
