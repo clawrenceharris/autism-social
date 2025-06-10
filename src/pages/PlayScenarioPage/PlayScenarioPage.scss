@@ -98,7 +98,6 @@
   }
 
   .game-content {
-    padding-top: 100px;
     min-height: 100vh;
     @include flex(column, center, center);
     position: relative;
