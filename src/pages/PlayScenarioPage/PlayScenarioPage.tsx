@@ -31,8 +31,9 @@ const PlayScenarioPage = () => {
     return multiplier;
   };
   const handleReplay = () => {
+        closeModal();
+
     setKey((prev) => prev + 1);
-    closeModal();
   };
 
   const handleExit = () => {
