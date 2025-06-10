@@ -25,10 +25,8 @@ export function createDialogueMachine(
         target: opt.next,
         actions: opt.scores
           ? assign(({ context }) => {
-              const updated = { ...context };
-              Object.entries(opt.scores!).forEach(([key, value]) => {
-                updated[key] = (updated[key] || 0) + value;
-              });
+              const updated = { ...context, ...opt.scores };
+             
               return updated;
             })
           : undefined,
