@@ -138,6 +138,8 @@
         padding: $spacing-6;
         overflow-y: auto;
         height: 400px;
+        background: rgba(255, 255, 255, 0.6);
+
         @include stack-layout($spacing-4);
 
         .message {
