@@ -20,22 +20,22 @@ const DialogueCompletedModal = ({
       </div>
 
       <div className="score-grid">
-        {scores.clarity && <div className="score-item">
+        {scores.clarity !== undefined && <div className="score-item">
           <div className="score-label">Clarity</div>
           <div className="score-value">{scores.clarity}</div>
         </div>}
-         {scores.empathy && <div className="score-item">
+         {scores.empathy !== undefined && <div className="score-item">
           <div className="score-label">Empathy</div>
           <div className="score-value">{scores.empathy}</div>
         </div>}
-        {scores.assertivenes &&
+        {scores.assertivenes !== undefined &&
           <div className="score-item">
             <div className="score-label">Assertiveness</div>
             <div className="score-value">
               {scores.assertiveness}
             </div>
           </div>}
-        {scores.socialAwareness && <div className="score-item">
+        {scores.socialAwareness !== undefined && <div className="score-item">
           <div className="score-label">Social Awareness</div>
           <div className="score-value">
             {scores.socialAwareness}          
