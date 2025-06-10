@@ -214,6 +214,7 @@ const PlayScenarioPage = () => {
         onComplete={(context) => {setIsComplete(true); setContext(context)}}
         onReplay={handleReplay}
         dialogue={dialogue}
+        
       />
     </div>
   );
