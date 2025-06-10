@@ -15,7 +15,7 @@ const PlayScenarioPage = () => {
   const navigate = useNavigate();
   const { loading, error, scenario, dialogue } = useScenario();
   const { data: dialogues = [], isLoading: dialoguesLoading } = useDialogues();
-  const { openModal, closeModal } = useModal();
+  const { openModal,  closeModal, isOpen: isModalOpen } = useModal();
   const [key, setKey] = useState<number>(0);
   const getMultiplier = () => {
     let multiplier = 1;
@@ -35,7 +35,11 @@ const PlayScenarioPage = () => {
 
     setKey((prev) => prev + 1);
   };
-
+useEffect(() =>{
+  if(!isModalOpen){
+    setKey((prev) => prev + 1)
+  }
+}, [isModalOpen])
   const handleExit = () => {
     navigate("/");
     closeModal();
