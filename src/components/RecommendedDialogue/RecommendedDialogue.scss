@@ -36,7 +36,6 @@
 
         .scenario-header {
           @include flex(row, space-between, center);
-          margin: $spacing-2;
 
           .scenario-name {
             font-weight: 500;
