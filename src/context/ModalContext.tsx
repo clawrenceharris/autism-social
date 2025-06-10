@@ -1,5 +1,6 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useState,
   type ReactElement,
@@ -24,17 +25,20 @@ export function ModalProvider({ children }: { children: ReactNode }) {
   const [modalContent, setModalContent] = useState<ReactNode | null>(null);
   const [modalTitle, setModalTitle] = useState<string | ReactElement>("");
 
-  const openModal = (content: ReactNode, title: string | ReactElement) => {
-    setModalContent(content);
-    setModalTitle(title);
-    setIsOpen(true);
-  };
+  const openModal = useCallback(
+    (content: ReactNode, title: string | ReactElement) => {
+      setModalContent(content);
+      setModalTitle(title);
+      setIsOpen(true);
+    },
+    []
+  );
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setIsOpen(false);
     setModalContent(null);
     setModalTitle("");
-  };
+  }, []);
 
   return (
     <ModalContext.Provider
