@@ -294,7 +294,7 @@ const DialoguePlayer = ({
             <DialogueCompletedModal
               onExitClick={onExit}
               onReplayClick={onReplay}
-              scores={getDialogueScores(state.context)}
+              scores={getDialogueScores(state.context, dialogue)}
             />
           </Modal>
         </div>
