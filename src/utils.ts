@@ -1,3 +1,4 @@
+import type {Difficulty} from "./types"
 export function generateId(prefix: string): string {
   return `${prefix}_${Math.random().toString(36).substr(2, 9)}`;
 }
@@ -18,15 +19,15 @@ export const getScoreCategoryCount = (category: ScoreCategory) => {
     return count;
   };
 
-export const getScoreMultiplier = () => {
+export const getScoreMultiplier = (difficulty: Difficulty) => {
     let multiplier = 1;
-    if (dialogue?.difficulty === "medium") {
+    if (difficulty === "medium") {
       multiplier = 10;
     }
-    if (dialogue?.difficulty === "hard") {
+    if (difficulty === "hard") {
       multiplier = 20;
     }
-    if (dialogue?.difficulty === "extra hard") {
+    if (difficulty === "extra hard") {
       multiplier = 30;
     }
     return multiplier;
@@ -43,23 +44,23 @@ export const getScoreMultiplier = () => {
     return context[category];
   };
   
-export const getDialogueScores = (context: DialogueContext) => {
+export const getDialogueScores = (context: DialogueContext, dialogue: Dialogue ) => {
     const clarity = calcDialogueScore(context, "clarity");
     const empathy = calcDialogueScore(context, "empathy");
     const assertiveness = calcDialogueScore(context, "assertiveness");
     const socialAwareness = calcDialogueScore(context, "socialAwareness");
 
     const selfAdvocacy = calcDialogueScore(context, "selfAdvocacy");
-
+    const difficulty = dialogue.difficulty
     return {
-      clarity: clarity ? clarity * getScoreMultiplier() : undefined,
-      empathy: empathy ? empathy * getScoreMultiplier() : undefined,
+      clarity: clarity ? clarity * getScoreMultiplier(difficulty) : undefined,
+      empathy: empathy ? empathy * getScoreMultiplier(difficulty) : undefined,
       assertiveness: assertiveness
-        ? assertiveness * getScoreMultiplier()
+        ? assertiveness * getScoreMultiplier(difficulty)
         : undefined,
       socialAwareness: socialAwareness
         ? socialAwareness * getScoreMultiplier()
         : undefined,
-      selfAdvocacy: selfAdvocacy ? selfAdvocacy * getScoreMultiplier() : undefined,
+      selfAdvocacy: selfAdvocacy ? selfAdvocacy * getScoreMultiplier(difficulty) : undefined,
     };
   };
