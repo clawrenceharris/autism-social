@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useModal, useScenario } from "../../context";
 import { useDialogues } from "../../hooks/queries/useDialogues";
@@ -15,7 +15,7 @@ const PlayScenarioPage = () => {
   const navigate = useNavigate();
   const { loading, error, scenario, dialogue } = useScenario();
   const { data: dialogues = [], isLoading: dialoguesLoading } = useDialogues();
-  const { openModal,  closeModal, isOpen: isModalOpen } = useModal();
+  const { openModal, closeModal, isOpen: isModalOpen } = useModal();
   const [key, setKey] = useState<number>(0);
   const getMultiplier = () => {
     let multiplier = 1;
@@ -31,15 +31,15 @@ const PlayScenarioPage = () => {
     return multiplier;
   };
   const handleReplay = () => {
-        closeModal();
+    closeModal();
 
     setKey((prev) => prev + 1);
   };
-useEffect(() =>{
-  if(!isModalOpen){
-    setKey((prev) => prev + 1)
-  }
-}, [isModalOpen])
+  useEffect(() => {
+    if (!isModalOpen) {
+      setKey((prev) => prev + 1);
+    }
+  }, [isModalOpen]);
   const handleExit = () => {
     navigate("/");
     closeModal();
