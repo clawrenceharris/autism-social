@@ -43,7 +43,7 @@ const PlayScenarioPage = () => {
       />,
       <div className="results-header">
         <div className="results-icon">
-          <Award size={32} />
+          <Award size={20} />
         </div>
         <h2>Great Job!</h2>
        
