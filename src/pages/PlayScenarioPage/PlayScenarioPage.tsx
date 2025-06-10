@@ -73,6 +73,7 @@ const PlayScenarioPage = () => {
     const empathy = calcScore(context, "empathy");
     const assertiveness = calcScore(context, "assertiveness");
     const socialAwareness = calcScore(context, "socialAwareness");
+    
     const selfAdvocacy = calcScore(context, "selfAdvocacy");
 
     return {
