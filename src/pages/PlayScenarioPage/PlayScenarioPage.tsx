@@ -17,6 +17,19 @@ const PlayScenarioPage = () => {
   const { data: dialogues = [], isLoading: dialoguesLoading } = useDialogues();
   const { openModal, closeModal } = useModal();
   const [key, setKey] = useState<number>(0);
+  const getMultiplier = () => {
+    let multiplier = 1;
+    if (dialogue?.difficulty === "medium") {
+      multiplier = 10;
+    }
+    if (dialogue?.difficulty === "hard") {
+      multiplier = 20;
+    }
+    if (dialogue?.difficulty === "extra hard") {
+      multiplier = 30;
+    }
+    return multiplier;
+  };
   const handleReplay = () => {
     setKey((prev) => prev + 1);
     closeModal();
@@ -40,6 +53,7 @@ const PlayScenarioPage = () => {
     }
     return count;
   };
+
   const calcScore = (
     context: DialogueContext,
     category: keyof DialogueContext & ScoreCategory
@@ -49,19 +63,25 @@ const PlayScenarioPage = () => {
     } else if (!context[category]) {
       return undefined;
     }
-    return Math.round((context[category] / getCategoryCount(category)) * 100);
+    return context[category];
   };
   const getScores = (context: DialogueContext) => {
+    const clarity = calcScore(context, "clarity");
+    const empathy = calcScore(context, "empathy");
+    const assertiveness = calcScore(context, "assertiveness");
+    const socialAwareness = calcScore(context, "socialAwareness");
+    const selfAdvocacy = calcScore(context, "selfAdvocacy");
+
     return {
-      clarity: calcScore(context, "clarity"),
-
-      empathy: calcScore(context, "empathy"),
-
-      assertiveness: calcScore(context, "assertiveness"),
-
-      socialAwareness: calcScore(context, "socialAwareness"),
-
-      selfAdvocacy: calcScore(context, "selfAdvocacy"),
+      clarity: clarity ? clarity * getMultiplier() : undefined,
+      empathy: empathy ? empathy * getMultiplier() : undefined,
+      assertiveness: assertiveness
+        ? assertiveness * getMultiplier()
+        : undefined,
+      socialAwareness: socialAwareness
+        ? socialAwareness * getMultiplier()
+        : undefined,
+      selfAdvocacy: selfAdvocacy ? selfAdvocacy * getMultiplier() : undefined,
     };
   };
   const handleComplete = (context: DialogueContext) => {

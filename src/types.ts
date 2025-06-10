@@ -79,7 +79,7 @@ export interface Dialogue {
   persona_tags: string[];
   placeholders: string[];
   steps: DialogueStep[];
-  difficulty: string;
+  difficulty: "easy" | "medium" | "hard" | "extra hard";
   scoring_categories: string[];
   created_at?: string;
 }
