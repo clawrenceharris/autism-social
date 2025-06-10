@@ -121,7 +121,7 @@
         0 0 0 1px rgba(255, 255, 255, 0.2);
       overflow: hidden;
       min-height: 600px;
-      @include flex(column, flex-start, stretch);
+      @include flex(column, flex-start, stretch, 0);
       position: relative;
 
       &::before {
