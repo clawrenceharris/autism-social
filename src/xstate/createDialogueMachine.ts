@@ -2,11 +2,11 @@ import { assign, createMachine } from "xstate";
 import type { DialogueEvent, DialogueStep } from "../types";
 
 export interface DialogueContext {
-  clarity: number;
-  empathy: number;
-  assertiveness: number;
-  selfAdvocacy: number;
-  socialAwareness: number;
+  clarity?: number;
+  empathy?: number;
+  assertiveness?: number;
+  selfAdvocacy?: number;
+  socialAwareness?: number;
 }
 
 export function createDialogueMachine(
@@ -29,7 +29,7 @@ export function createDialogueMachine(
               opt.scores.forEach((key) => {
                 updated[key] = (updated[key] || 0) + 1;
               });
-            console.log(updated);
+              console.log(updated);
               return updated;
             })
           : undefined,
@@ -58,7 +58,7 @@ export function createDialogueMachine(
   return createMachine({
     types: {
       events: {} as DialogueEvent,
-      context: {clarity: 0} as DialogueContext
+      context: { clarity: 0 } as DialogueContext,
     },
     id,
     initial: steps[0].id,

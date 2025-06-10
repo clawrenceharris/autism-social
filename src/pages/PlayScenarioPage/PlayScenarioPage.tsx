@@ -10,12 +10,12 @@ import {
   ProgressIndicator,
 } from "../../components";
 import type { DialogueContext } from "../../xstate/createDialogueMachine";
-import type {ScoreCategory} from "../../types";
+import type { ScoreCategory } from "../../types";
 const PlayScenarioPage = () => {
   const navigate = useNavigate();
   const { loading, error, scenario, dialogue } = useScenario();
   const { data: dialogues = [], isLoading: dialoguesLoading } = useDialogues();
-  const { openModal,closeModal } = useModal();
+  const { openModal, closeModal } = useModal();
   const [key, setKey] = useState<number>(0);
   const handleReplay = () => {
     setKey((prev) => prev + 1);
@@ -26,37 +26,54 @@ const PlayScenarioPage = () => {
     navigate("/");
     closeModal();
   };
-  const getCategoryCount = (category: ScoreCategory) =>{
+  const getCategoryCount = (category: ScoreCategory) => {
+    if (!dialogue) {
+      return 0;
+    }
     let count = 0;
-    for(let i = 0; i < dialogue.steps.length; i++){
-      for(let j = 0; j < dialogue.steps[i].options.length; j++){
-        if(dialogue.steps[i].options[j].scores.includes(category)){
+    for (let i = 0; i < dialogue.steps.length; i++) {
+      for (let j = 0; j < dialogue.steps[i].options.length; j++) {
+        if (dialogue.steps[i].options[j].scores.includes(category)) {
           count++;
         }
       }
     }
     return count;
-  }
+  };
   const getScores = (context: DialogueContext) => {
     return {
-clarity: context?.clarity ? round(context.clarity  / getCategoryCount("clarity") * 100) : undefined,
+      clarity: context?.clarity
+        ? Math.round((context.clarity / getCategoryCount("clarity")) * 100)
+        : undefined,
 
-      empathy: context?.empathy ? round(context.empathy  / getCategoryCount("empathy") * 100) : undefined,
+      empathy: context?.empathy
+        ? Math.round((context.empathy / getCategoryCount("empathy")) * 100)
+        : undefined,
 
-      assertiveness: context?.assertiveness ? round(context.assertiveness  / getCategoryCount("assertiveness") * 100) : undefined,
-     
-      socialAwareness: context?.socialAwareness ? round(context.socialAwareness  / getCategoryCount("socialAwareness") * 100) : undefined,
-      
-      selfAdvocacy: context?.selfAdvocacy ? round(context.selfAdvocacy  / getCategoryCount("selfAdvocacy") * 100) : undefined,
+      assertiveness: context?.assertiveness
+        ? Math.round(
+            (context.assertiveness / getCategoryCount("assertiveness")) * 100
+          )
+        : undefined,
 
-      
+      socialAwareness: context?.socialAwareness
+        ? Math.round(
+            (context.socialAwareness / getCategoryCount("socialAwareness")) *
+              100
+          )
+        : undefined,
+
+      selfAdvocacy: context?.selfAdvocacy
+        ? Math.round(
+            (context.selfAdvocacy / getCategoryCount("selfAdvocacy")) * 100
+          )
+        : undefined,
     };
   };
   const handleComplete = (context: DialogueContext) => {
     const scores = getScores(context);
     openModal(
       <DialogueCompletedModal
-        
         onExitClick={handleExit}
         onReplayClick={handleReplay}
         scores={scores}
@@ -66,8 +83,6 @@ clarity: context?.clarity ? round(context.clarity  / getCategoryCount("clarity")
           <Award size={20} />
         </div>
         <h2>Great Job!</h2>
-       
-        
       </div>
     );
   };
