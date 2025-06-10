@@ -160,7 +160,7 @@
             flex-direction: row-reverse;
 
             .message-bubble {
-              background: linear-gradient(135deg, $color-primary, $color-primary-200);
+              background: $color-primary-200;
               color: white;
               border-bottom-right-radius: 0.5rem;
               box-shadow: 0 4px 12px rgba($color-primary, 0.3);
