@@ -11,6 +11,7 @@ import {
   createDialogueMachine,
   type DialogueContext,
 } from "../../xstate/createDialogueMachine";
+import {useModal} from "../../context"
 import { RotateCcw, Send, Settings, Volume2, X } from "lucide-react";
 interface DialoguePlayerProps {
   scenario: Scenario;
@@ -33,6 +34,7 @@ const DialoguePlayer = ({
   const [state, send] = useMachine(
     machine || createDialogueMachine("empty", [])
   );
+  const { openModal, closeModal } = useModal();
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [customInput, setCustomInput] = useState("");
