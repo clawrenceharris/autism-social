@@ -23,7 +23,7 @@
   }
   .game-header::after {
     content: "";
-    z-index: -4;
+    z-index: -100;
     position: absolute;
     top: 0;
     left: 0;
