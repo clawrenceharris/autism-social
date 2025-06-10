@@ -89,8 +89,8 @@ const PlayScenarioPage = () => {
 
   if(isComplete){
       const scores = getScores(context);
-
-     openModal(
+    
+     return openModal(
       <DialogueCompletedModal
         onExitClick={handleExit}
         onReplayClick={handleReplay}
