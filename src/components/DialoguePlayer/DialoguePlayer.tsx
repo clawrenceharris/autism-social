@@ -13,7 +13,7 @@ import {
   type DialogueContext,
 } from "../../xstate/createDialogueMachine";
 import {useModal} from "../../context"
-import { RotateCcw, Send, Settings, Volume2, X } from "lucide-react";
+import { RotateCcw, Send, Settings, Volume2, X,Award, Home } from "lucide-react";
 interface DialoguePlayerProps {
   scenario: Scenario;
   dialogue: Dialogue;
