@@ -17,7 +17,7 @@ const DialogueItem = ({
   const { scenarios } = useScenarioStore();
 
   return (
-    < <Link
+    <Link
         key={dialogue.id} className="scenario-item recommended"
         to={`/scenario/${dialogue.scenario_id}/dialogue/${dialogue.id}`}
       >
@@ -41,7 +41,7 @@ const DialogueItem = ({
       >
         Start
       </div>
-    </div>
+    </Link>
   );
 };
 
