@@ -16,7 +16,7 @@ createRoot(document.getElementById("root")!).render(
       <ToastProvider>
         <UserProvider>
           <ModalProvider>
-            <App />
+            <div>Hello World</div>
             <ToastContainer />
           </ModalProvider>
         </UserProvider>
