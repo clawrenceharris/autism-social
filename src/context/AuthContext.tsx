@@ -19,7 +19,6 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const {
@@ -27,19 +26,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser,
     user,
     profile,
-    loading: loadingUserAndProfile,
+    loading,
   } = useUserStore();
 
   useEffect(() => {
     fetchUserAndProfile();
   }, [fetchUserAndProfile]);
   useEffect(() => {
-    if (loadingUserAndProfile) {
-      return;
-    } else if (user && profile) {
-      setLoading(false);
-      return;
-    }
+   
     // Fallback timeout to ensure loading state is eventually set to false
     const fallbackTimeout = setTimeout(() => {
       if (loading) {
@@ -62,7 +56,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.error("Auth state change error:", err);
         setError("Authentication error occurred");
       } finally {
-        setLoading(false);
         clearTimeout(fallbackTimeout);
       }
     });
