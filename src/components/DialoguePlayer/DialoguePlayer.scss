@@ -1,0 +1,258 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+.game-content {
+  @include flex(column, center, center);
+  position: relative;
+  z-index: 10;
+}
+
+.dialogue-arena {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+
+  .chat-window {
+    background: linear-gradient(to right, lightblue, mediumpurple);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    @include flex(column, flex-start, stretch, 0);
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(
+        90deg,
+        $color-primary,
+        #667eea,
+        $color-primary
+      );
+      background-size: 200% 100%;
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    .chat-messages {
+      overflow-y: auto;
+      height: 200px;
+      @include stack-layout($spacing-4);
+
+      .message {
+        @include flex(row, flex-start, flex-end, $spacing-3);
+        animation: messageSlideIn 0.5s ease-out;
+        font-family: $font-family-secondary;
+
+        &.npc {
+          .message-bubble {
+            background: linear-gradient(
+              135deg,
+              $color-gray-100,
+              $color-gray-50
+            );
+            color: $color-gray-800;
+            border-bottom-left-radius: 0.5rem;
+            box-shadow: 0 3px 4px 1px rgba(#000, 0.08);
+          }
+
+          .avatar {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+          }
+        }
+
+        &.user {
+          flex-direction: row-reverse;
+
+          .message-bubble {
+            background: $color-primary;
+            color: white;
+            border-bottom-right-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba($color-primary, 0.3);
+          }
+
+          .avatar {
+            background: linear-gradient(
+              135deg,
+              $color-primary,
+              $color-primary-hover
+            );
+            color: white;
+          }
+        }
+
+        .avatar {
+          width: 48px;
+          height: 48px;
+          border-radius: $border-radius-full;
+          @include flex(row, center, center);
+          font-weight: 700;
+          flex-shrink: 0;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .message-content {
+          flex: 1;
+          max-width: 70%;
+
+          .speaker-name {
+            font-weight: 600;
+            font-family: $font-family-primary;
+            color: $color-gray-600;
+            margin-bottom: $spacing-1;
+          }
+
+          .message-bubble {
+            padding: $spacing-4 $spacing-6;
+            border-radius: 1.2rem;
+            font-size: 1.6rem;
+
+            line-height: 1.5;
+            position: relative;
+            word-wrap: break-word;
+          }
+        }
+      }
+
+      .typing-indicator {
+        @include flex(row, flex-start, center, $spacing-3);
+        opacity: 0.7;
+
+        .avatar {
+          width: 48px;
+          height: 48px;
+          border-radius: $border-radius-full;
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          @include flex(row, center, center);
+          color: white;
+          font-weight: 700;
+        }
+
+        .typing-dots {
+          background: $color-gray-100;
+          padding: $spacing-3 $spacing-4;
+          border-radius: $border-radius-full;
+          @include flex(row, center, center, 0.5rem);
+
+          .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: $color-gray-400;
+            animation: typingDots 1.4s infinite ease-in-out;
+
+            &:nth-child(1) {
+              animation-delay: -0.32s;
+            }
+            &:nth-child(2) {
+              animation-delay: -0.16s;
+            }
+          }
+        }
+      }
+    }
+
+    .response-section {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      padding: $spacing-6;
+
+      .response-options {
+        @include stack-layout($spacing-3);
+
+        .response-option {
+          background: rgba(255, 255, 255, 0.9);
+          border: 2px solid rgba(rgba(255, 255, 255, 0.9), 0.2);
+          border-radius: 1.2rem;
+          box-shadow: 0 3px 4px 1px rgba(#000, 0.08);
+          text-align: left;
+
+          padding: $spacing-4 $spacing-6;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+
+          &:hover:not(.disabled) {
+            border-color: $color-primary;
+            box-shadow: 0 3px 4px 1px rgba($color-primary, 0.25);
+            background: rgba($color-primary, 0.2);
+            transform: translateY(-3px);
+
+            &::before {
+              left: 100%;
+            }
+
+            .option-text {
+              color: $color-primary;
+            }
+          }
+
+          &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+          }
+
+          .option-text {
+            font-size: 1.6rem;
+            font-family: $font-family-secondary;
+            color: $color-gray-800;
+            transition: color 0.3s ease;
+          }
+        }
+      }
+
+      .custom-response {
+        margin-top: $spacing-4;
+        padding-top: $spacing-4;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+        .input-container {
+          @include flex(row, flex-start, flex-end, $spacing-3);
+
+          .form-input {
+            border: 2px solid rgba($color-primary, 0.2);
+            border-radius: $border-radius-full;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+
+            &::placeholder {
+              color: $color-gray-400;
+            }
+          }
+
+          .send-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: $border-radius-full;
+            background: $color-primary;
+            color: white;
+            border: none;
+            cursor: pointer;
+            @include flex(row, center, center);
+            transition: all 0.3s ease;
+
+            &:hover {
+              transform: translateY(-2px) scale(1.05);
+              box-shadow: 0 8px 20px rgba($color-primary, 0.4);
+            }
+
+            &:disabled {
+              opacity: 0.6;
+              cursor: not-allowed;
+              transform: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}

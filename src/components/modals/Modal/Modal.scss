@@ -29,8 +29,8 @@
     max-height: 90vh;
     background-color: $color-white;
     border-radius: $border-radius-md;
+    box-shadow: none;
     padding: $spacing-6;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
     transform: translateY(0);
     transition: transform 0.2s;
   }

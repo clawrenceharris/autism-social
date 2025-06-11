@@ -1,43 +1,13 @@
 import { useState } from "react";
 import { SCENARIO_CATEGORIES } from "../../../constants/scenario";
-import { createScenario } from "../../../services/scenarios";
-import { useModal, useToast } from "../../../context";
 import Select from "../../Select";
-import { ProgressIndicator } from "../..";
 
 const CreateScenarioModal = () => {
-  const { closeModal } = useModal();
-  const { showToast } = useToast();
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError("");
-
-    try {
-      await createScenario({
-        title,
-        description,
-      });
-      closeModal();
-      setTitle("");
-      showToast("Scenario created successfully!", { type: "success" });
-    } catch (err) {
-      const errorMessage = "Failed to create Scenario. Please try again.";
-      setError(errorMessage);
-      showToast(errorMessage, { type: "error" });
-      console.error(err);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   return (
-    <form onSubmit={handleSubmit} className="create-scenario-modal">
+    <div className="create-scenario-modal">
       <div className="form-group">
         <label className="form-label">Title</label>
         <Select
@@ -63,22 +33,7 @@ const CreateScenarioModal = () => {
           required
         />
       </div>
-
-      {error && <p className="danger">{error}</p>}
-
-      <div className="modal-footer">
-        <button type="button" onClick={closeModal} className="btn">
-          Cancel
-        </button>
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="btn btn-primary"
-        >
-          {isSubmitting ? <ProgressIndicator /> : "Create Scenario"}
-        </button>
-      </div>
-    </form>
+    </div>
   );
 };
 

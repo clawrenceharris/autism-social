@@ -13,7 +13,7 @@ interface ScenarioStore {
   scenarios: Record<string, Scenario>;
   completedDialogues: Record<string, Dialogue>;
   dialogues: Record<string, Dialogue>;
-  scenarioDialogues: Record<string, Dialogue>;
+  dialoguesByScenario: Record<string, Dialogue[]>;
 
   scenarioIds: string[];
   dialogueIds: string[];
@@ -21,7 +21,7 @@ interface ScenarioStore {
   dialoguesLoading: boolean;
   error: string | null;
   fetchDialogues: () => void;
-  fetchScenarioDialogues: (scenarioId: string) => void;
+  fetchDialoguesByScenario: (scenarioId: string) => void;
   clearDialogues: () => void;
 
   fetchScenarios: () => void;
@@ -36,16 +36,15 @@ export const useScenarioStore = create<ScenarioStore>()(
       scenarios: {},
       dialogues: {},
       completedDialogues: {},
-      scenarioDialogues: {},
+      dialoguesByScenario: {},
       scenarioIds: [],
       dialogueIds: [],
       scenariosLoading: false,
       dialoguesLoading: false,
       error: null,
       fetchDialogues: async () => {
-        set({ dialoguesLoading: true, error: null });
-
         try {
+          set({ dialoguesLoading: true, error: null });
           const scenarios = (await getDialogues()) || [];
           set({ scenarioIds: scenarios.map((dialogue) => dialogue.id) });
           set({
@@ -54,15 +53,18 @@ export const useScenarioStore = create<ScenarioStore>()(
                 acc[dialogue.id] = dialogue;
                 return acc;
               }, {}) || {},
-            dialoguesLoading: false,
           });
         } catch {
           set({ error: "Could not load dialogues", dialoguesLoading: false });
+        } finally {
+          set({
+            dialoguesLoading: false,
+          });
         }
       },
       fetchScenarios: async () => {
-        set({ scenariosLoading: true, error: null });
         try {
+          set({ scenariosLoading: true, error: null });
           const scenarios = (await getScenarios()) || [];
 
           set({ scenarioIds: scenarios.map((scenario) => scenario.id) });
@@ -74,14 +76,19 @@ export const useScenarioStore = create<ScenarioStore>()(
               },
               {}
             ),
-            scenariosLoading: false,
           });
         } catch {
-          set({ error: "Failed to load scenarios", scenariosLoading: false });
+          set({ error: "Failed to load scenarios" });
+        } finally {
+          set({
+            scenariosLoading: false,
+          });
         }
       },
       fetchCompletedScenarios: async (userId: string) => {
         try {
+          set({ scenariosLoading: true, error: null });
+
           const dialogues = (await getCompletedDialogues(userId)) || [];
 
           set({
@@ -97,25 +104,34 @@ export const useScenarioStore = create<ScenarioStore>()(
         } catch {
           set({
             error: "Could not load completed scenarios",
+          });
+        } finally {
+          set({
             scenariosLoading: false,
           });
         }
       },
-      fetchScenarioDialogues: async (scenarioId: string) => {
-        set({ scenariosLoading: true, error: null });
+      fetchDialoguesByScenario: async (scenarioId: string) => {
+        set({ dialoguesLoading: true, error: null });
         try {
           const dialogues = (await getScenarioDialogues(scenarioId)) || [];
-          set({ dialogueIds: dialogues.map((dialogue) => dialogue.id) });
           set({
-            scenarioDialogues:
-              dialogues?.reduce<Record<string, Dialogue>>((acc, dialogue) => {
-                acc[dialogue.id] = dialogue;
+            dialoguesByScenario:
+              dialogues.reduce<Record<string, Dialogue[]>>((acc, dialogue) => {
+                if (!acc[dialogue.scenario_id]) {
+                  acc[dialogue.scenario_id] = [];
+                }
+                acc[dialogue.scenario_id].push(dialogue);
+
                 return acc;
               }, {}) || {},
-            scenariosLoading: false,
           });
         } catch {
-          set({ error: "Failed to load scenarios", scenariosLoading: false });
+          set({ error: "Failed to load dialogues", scenariosLoading: false });
+        } finally {
+          set({
+            dialoguesLoading: false,
+          });
         }
       },
 

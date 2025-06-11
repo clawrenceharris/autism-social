@@ -88,6 +88,7 @@ export interface Scenario {
 
 export interface Dialogue {
   id: string;
+  actor: Actor;
   scenario_id: string;
   title: string;
   persona_tags: string[];
@@ -126,6 +127,7 @@ export interface ScoreSummary {
 }
 
 export interface CreateDialogueData {
+  actorName: string;
   scenario_id: string;
   title: string;
   persona_tags: string[];
@@ -157,5 +159,4 @@ export interface Message {
   id: string;
   speaker: "npc" | "user";
   text: string;
-  timestamp: Date;
 }

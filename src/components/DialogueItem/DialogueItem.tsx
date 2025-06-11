@@ -3,14 +3,17 @@ import type { Dialogue as DialogueType } from "../../types";
 import "./DialogueItem.scss";
 import { useScenarioStore } from "../../store/useScenarioStrore";
 import type { ReactElement } from "react";
+import { BookmarkPlus, Play } from "lucide-react";
 interface RecommendedItemProps {
   dialogue: DialogueType;
   badgeTitle?: string;
   badgeIcon?: ReactElement;
+  buttonIcon?: ReactElement;
 }
 
 const DialogueItem = ({
   dialogue,
+  buttonIcon,
   badgeTitle,
   badgeIcon,
 }: RecommendedItemProps) => {
@@ -18,28 +21,31 @@ const DialogueItem = ({
 
   return (
     <Link
-        key={dialogue.id} className="scenario-item recommended"
-        to={`/scenario/${dialogue.scenario_id}/dialogue/${dialogue.id}`}
-      >
+      key={dialogue.id}
+      className="scenario-item recommended"
+      to={`/scenario/${dialogue.scenario_id}/dialogue/${dialogue.id}`}
+    >
       <div className="scenario-details">
         <div className="scenario-header">
-          <div className="scenario-name">{dialogue.title}</div>
           {badgeTitle && (
             <div className="match-badge">
               {badgeIcon && badgeIcon}
               {badgeTitle}
             </div>
           )}
+          <h3>{dialogue.title}</h3>
         </div>
-        <div className="scenario-description">
+        <div className="description">
           {scenarios[dialogue.scenario_id].description || ""}
         </div>
       </div>
-      <div
-        
-        className="scenario-action"
-      >
-        Start
+      <div className="scenario-actions">
+        <button className="squircle-btn primary">
+          {buttonIcon || <BookmarkPlus />}
+        </button>
+        <button className="squircle-btn primary">
+          {buttonIcon || <Play />}
+        </button>
       </div>
     </Link>
   );

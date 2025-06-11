@@ -8,9 +8,12 @@ export async function deleteDialogue(id: string) {
 }
 
 export async function createDialogue(data: CreateDialogueData) {
+  const { actorName, ...rest } = data;
+
   const result = await DatabaseService.create<Dialogue>("dialogues", {
     id: "",
-    ...data,
+    actor: { name: actorName },
+    ...rest,
   });
   if (result.error || !result.data) throw result.error;
   return result.data;

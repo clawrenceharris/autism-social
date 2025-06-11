@@ -21,11 +21,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const { fetchUserAndProfile, setUser, user, loading } = useUserStore();
+  const { fetchUserData, setUser, user, loading } = useUserStore();
 
   useEffect(() => {
-    fetchUserAndProfile();
-  }, [fetchUserAndProfile]);
+    fetchUserData();
+  }, [fetchUserData]);
   useEffect(() => {
     const {
       data: { subscription },

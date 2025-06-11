@@ -11,6 +11,8 @@ export { default as ScenarioListItem } from "./ScenarioListItem";
 export { default as UserLayout } from "./layouts/UserLayout/UserLayout";
 export { default as FormLayout } from "./layouts/FormLayout";
 export { default as AdminRoute } from "./routes/AdminRoute";
+export { default as ScenarioRoute } from "./routes/ScenarioRoute";
+
 export { default as UserRoute } from "./routes/UserRoute";
 export { default as ProgressIndicator } from "./ProgressIndicator";
 export { default as AdminLayout } from "./layouts/AdminLayout";
@@ -21,6 +23,7 @@ export { default as CreateDialogueModal } from "./modals/CreateDialogueModal";
 export { default as CreateScenarioModal } from "./modals/CreateScenarioModal";
 export { default as EditScenarioModal } from "./modals/EditScenarioModal";
 export { default as DialogueCompletedModal } from "./modals/DialogueCompletedModal";
+export { default as DialogueOnboardingModal } from "./modals/DialogueOnboardingModal";
 
 export { default as DialogueItem } from "./DialogueItem";
 export { default as UserHeader } from "./UserHeader";

@@ -12,8 +12,7 @@ interface DialoguesPanelProps {
 
 const DialoguesPanel = ({ scenario }: DialoguesPanelProps) => {
   const {
-    scenarioDialogues: dialogues,
-    dialogueIds: ids,
+    dialoguesByScenario: dialogues,
     dialoguesLoading: loading,
     error,
   } = useScenarioStore();
@@ -46,19 +45,19 @@ const DialoguesPanel = ({ scenario }: DialoguesPanelProps) => {
 
   return (
     <div className="outlined flex-column dialogues-container">
-      {ids.length > 0 ? (
+      {dialogues[scenario.id].length > 0 ? (
         <div>
-          {ids.map((id) => (
-            <div key={id} className="dialogue-item ">
+          {dialogues[scenario.id].map((dialogue) => (
+            <div key={dialogue.id} className="dialogue-item ">
               <button
-                onClick={() => handleSelectDialogue(id)}
+                onClick={() => handleSelectDialogue(dialogue.id)}
                 className={`squircle-btn ${
-                  selectedDialogueId === id ? "primary selected" : ""
+                  selectedDialogueId === dialogue.id ? "primary selected" : ""
                 } outlined`}
               >
                 <Check
                   color={`${
-                    selectedDialogueId === id
+                    selectedDialogueId === dialogue.id
                       ? "var(--color-primary)"
                       : "var(--color-gray-500)"
                   }`}
@@ -66,12 +65,12 @@ const DialoguesPanel = ({ scenario }: DialoguesPanelProps) => {
               </button>
               <Link
                 className="content-row"
-                to={`/scenario/${scenario.id}/dialogue/${id}`}
+                to={`/scenario/${scenario.id}/dialogue/${dialogue.id}`}
               >
                 <div>
-                  <h2>{dialogues[id].title}</h2>
+                  <h2>{dialogue.title}</h2>
                   <p>
-                    <small>ID: {id}</small>
+                    <small>ID: {dialogue.id}</small>
                   </p>
                 </div>
                 <button>

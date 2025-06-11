@@ -1,35 +1,51 @@
 @import "../../../styles/variables";
 @import "../../../styles/mixins";
+.results-content {
+  margin-top: $spacing-3;
+  @include flex(column, center, center, 1rem);
 
-.score-grid {
-  @include grid-layout(2, $spacing-4);
-  margin-bottom: $spacing-6;
+  .score-grid {
+    @include flex-wrap;
+    justify-content: center;
+    .score-item {
+      min-width: 200px;
+      background: $color-gray-50;
+      border-radius: 1rem;
+      box-shadow: 0 3px 4px 1px rgba(#000, 0.04);
 
-  .score-item {
-    background: $color-gray-50;
-    border-radius: 1rem;
-    padding: $spacing-4;
-    text-align: center;
+      padding: $spacing-4;
 
-    .score-label {
-      font-size: 0.875rem;
-      color: $color-gray-600;
-      margin-bottom: $spacing-1;
-    }
+      text-align: center;
+      b .score-label {
+        font-size: 0.875rem;
+        color: $color-gray-600;
+        margin-bottom: $spacing-1;
+      }
 
-    .score-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: $color-primary;
+      .score-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: $color-primary;
+
+        &.high {
+          color: $color-green-200;
+        }
+        &.average {
+          color: orange;
+        }
+        &.low {
+          color: $color-red-300;
+        }
+      }
     }
   }
-}
 
-.results-actions {
-  @include flex(row, center, center, $spacing-3);
-  flex-wrap: wrap;
-
-  .btn {
-    min-width: 120px;
+  .results-actions {
+    @include flex(row, center, center, $spacing-3);
+    flex-wrap: wrap;
+    margin-top: $spacing-3;
+    .btn {
+      min-width: 120px;
+    }
   }
 }

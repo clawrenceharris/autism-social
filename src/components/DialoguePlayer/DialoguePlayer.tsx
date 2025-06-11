@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useMachine } from "@xstate/react";
 import type {
   Dialogue,
@@ -7,20 +13,24 @@ import type {
   Message,
   Scenario,
 } from "../../types";
-import { DialogueCompletedModal, Modal } from "../";
+import "./DialoguePlayer.scss";
+import { DialogueCompletedModal } from "../";
 import { getDialogueScores } from "../../utils";
 import { createDialogueMachine } from "../../xstate/createDialogueMachine";
-import { RotateCcw, Send, Settings, Volume2, X, Award } from "lucide-react";
+import { RotateCcw, Send, Settings, Volume2, X } from "lucide-react";
+import { useUserStore } from "../../store/useUserStore";
 interface DialoguePlayerProps {
   scenario: Scenario;
   dialogue: Dialogue;
   onReplay: () => void;
   onExit: () => void;
+  userFields: { [key: string]: string };
 }
 const DialoguePlayer = ({
   scenario,
   onExit,
   dialogue,
+  userFields,
   onReplay,
 }: DialoguePlayerProps) => {
   const machine = useMemo(
@@ -30,7 +40,7 @@ const DialoguePlayer = ({
   const [state, send] = useMachine(
     machine || createDialogueMachine("empty", [])
   );
-
+  const { profile: user } = useUserStore();
   const [messages, setMessages] = useState<Message[]>([]);
   const [customInput, setCustomInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -45,7 +55,14 @@ const DialoguePlayer = ({
       top: messageWindowRef.current.scrollHeight,
     });
   };
-
+  const renderMessage = useCallback(
+    (template: string): string => {
+      return template.replace(/{{\s*user\.(\w+)\s*}}/g, (_, key) => {
+        return userFields[key] ?? "";
+      });
+    },
+    [userFields]
+  );
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -59,21 +76,19 @@ const DialoguePlayer = ({
           {
             id: "initial",
             speaker: "npc",
-            text: firstStep.npc,
-            timestamp: new Date(),
+            text: renderMessage(firstStep.npc),
           },
         ]);
       }
     }
-  }, [dialogue]);
+  }, [dialogue, renderMessage]);
 
   const handleOptionClick = async (option: DialogueOption) => {
     // Add user message
     const userMessage: Message = {
       id: `user-${Date.now()}`,
       speaker: "user",
-      text: option.label,
-      timestamp: new Date(),
+      text: renderMessage(option.label),
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -99,8 +114,7 @@ const DialoguePlayer = ({
         const npcMessage: Message = {
           id: `npc-${Date.now()}`,
           speaker: "npc",
-          text: currentStep.npc,
-          timestamp: new Date(),
+          text: renderMessage(currentStep.npc),
         };
 
         setMessages((prev) => [...prev, npcMessage]);
@@ -123,7 +137,6 @@ const DialoguePlayer = ({
       id: `custom-${Date.now()}`,
       speaker: "user",
       text: customInput,
-      timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -138,8 +151,9 @@ const DialoguePlayer = ({
     const aiResponse: Message = {
       id: `ai-${Date.now()}`,
       speaker: "npc",
-      text: "That's an interesting response! Let me think about how to continue our conversation...",
-      timestamp: new Date(),
+      text: renderMessage(
+        "That's an interesting response! Let me think about how to continue our conversation..."
+      ),
     };
 
     setMessages((prev) => [...prev, aiResponse]);
@@ -162,15 +176,14 @@ const DialoguePlayer = ({
 
   useEffect(() => {
     if (previousStateRef.current !== state.value) {
-      if (currentTag?.npc) {
-        setHistory((prev) => [
-          ...prev,
-          { speaker: "Alex", text: currentTag?.npc },
-        ]);
-      }
+      setHistory((prev) => [
+        ...prev,
+        { speaker: "Alex", text: renderMessage(currentTag.npc) },
+      ]);
+
       previousStateRef.current = state.value;
     }
-  }, [state.value, currentTag?.npc]);
+  }, [state.value, currentTag.npc, renderMessage]);
 
   const currentStep = getCurrentStep();
   return (
@@ -204,9 +217,11 @@ const DialoguePlayer = ({
             <div ref={messageWindowRef} className="chat-messages">
               {messages.map((message) => (
                 <div key={message.id} className={`message ${message.speaker}`}>
-                  <div className="avatar">
-                    {message.speaker === "npc" ? "A" : "Y"}
-                  </div>
+                  <p className="avatar">
+                    {message.speaker === "npc"
+                      ? dialogue.actor.name.charAt(0)
+                      : user?.name || ""}
+                  </p>
                   <div className="message-content">
                     <div className="speaker-name">
                       {message.speaker === "npc" ? "Alex" : "You"}
@@ -230,69 +245,64 @@ const DialoguePlayer = ({
               <div ref={messageWindowRef} />
             </div>
 
-            <div className="response-section">
-              {currentStep?.options && currentStep.options.length > 0 && (
-                <>
-                  <div className="response-prompt"></div>
+            {state.status !== "done" ? (
+              <div className="response-section">
+                {currentStep?.options && currentStep.options.length > 0 && (
+                  <>
+                    <div className="response-prompt"></div>
 
-                  <div className="response-options">
-                    {currentStep.options.map((option, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleOptionClick(option)}
-                        disabled={isTyping}
-                        className="response-option"
-                      >
-                        <p className="option-text">{option.label}</p>
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
+                    <div className="response-options">
+                      {currentStep.options.map((option, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleOptionClick(option)}
+                          disabled={isTyping}
+                          className={`response-option ${
+                            isTyping ? "disabled" : ""
+                          }`}
+                        >
+                          <p className="option-text">
+                            {renderMessage(option.label)}
+                          </p>
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
 
-              <div className="custom-response">
-                <form
-                  onSubmit={handleCustomSubmit}
-                  className="custom-input-container"
-                >
-                  <input
-                    type="text"
-                    value={customInput}
-                    onChange={(e) => setCustomInput(e.target.value)}
-                    placeholder="Or type your own response..."
-                    disabled={isTyping}
-                    className="custom-input"
-                  />
-                  <button
-                    type="submit"
-                    disabled={!customInput.trim() || isTyping}
-                    className="send-btn"
+                <div className="custom-response">
+                  <form
+                    onSubmit={handleCustomSubmit}
+                    className="input-container"
                   >
-                    <Send size={20} />
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-
-          <Modal
-            showsCloseButton={false}
-            title={
-              <div className="results-header">
-                <div className="results-icon">
-                  <Award size={20} />
+                    <input
+                      type="text"
+                      value={customInput}
+                      onChange={(e) => setCustomInput(e.target.value)}
+                      placeholder="Or type your own response..."
+                      disabled={isTyping}
+                      className="form-input"
+                    />
+                    <button
+                      type="submit"
+                      disabled={!customInput.trim() || isTyping}
+                      className="send-btn"
+                    >
+                      <Send size={20} />
+                    </button>
+                  </form>
                 </div>
-                <h2>Dialogue Complete!</h2>
               </div>
-            }
-            isOpen={state.status === "done"}
-          >
-            <DialogueCompletedModal
-              onExitClick={onExit}
-              onReplayClick={onReplay}
-              scores={getDialogueScores(state.context)}
-            />
-          </Modal>
+            ) : (
+              <div className="response-section">
+                <DialogueCompletedModal
+                  onExitClick={onExit}
+                  onReplayClick={onReplay}
+                  scores={getDialogueScores(state.context)}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </>

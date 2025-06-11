@@ -22,7 +22,8 @@ body {
 }
 
 main {
-  
+  max-width: 1200px;
+  margin: 0 auto;
   padding: $spacing-4 $spacing-8;
 }
 
@@ -50,7 +51,12 @@ main {
 .flex-column {
   @include flex(column, flex-start, stretch, $spacing-4);
 }
-
+.flex-content {
+  @include flex(column, flex-start, start, $spacing-4);
+  @include responsive(md) {
+    flex-direction: row;
+  }
+}
 .content-row {
   @include flex(row, flex-start, center, $spacing-4);
 }
@@ -78,18 +84,21 @@ h2 {
   font-weight: 600;
   margin-bottom: $spacing-4;
 }
-
+h3 {
+  font-weight: 500;
+  margin-bottom: $spacing-2;
+}
 p {
   font-family: $font-family-primary;
 }
-.layout-container{
+.layout-container {
   min-height: 100vh;
 }
 .description,
 small {
-  color: $color-gray-500;
+  color: $color-gray-600;
   margin-bottom: $spacing-8;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 300;
 }
 
@@ -130,8 +139,7 @@ a {
 
   &:focus {
     outline: none;
-    border-color: $color-primary;
-    box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.3);
   }
 
   &.error {
@@ -270,137 +278,139 @@ button {
       transform: translateY(0);
     }
   }
-}
 
-.squircle-btn {
-  @include flex(row, center, center, $spacing-2);
-  padding: $spacing-2;
-  border-radius: $border-radius-md;
-  font-family: $font-family-secondary;
-  transition: background-color 0.2s ease-out;
-  cursor: pointer;
-
-  &:hover > * {
-    transform: scale(1.09);
-  }
-
-  &.primary {
-    color: $color-primary;
-
-    &:hover,
-    &.selected {
-      background-color: $color-primary-100;
+  .squircle-btn {
+    @include flex(row, center, center, $spacing-2);
+    padding: $spacing-2;
+    border-radius: $border-radius-md;
+    font-family: $font-family-secondary;
+    transition: 0.2s ease-out;
+    cursor: pointer;
+    & > * {
+      transition: 0.1s ease-out;
     }
-  }
-
-  &.danger {
-    color: $color-red-600;
-
-    &:hover {
-      background-color: $color-red-100;
-    }
-  }
-}
-
-// Toast System
-.toast {
-  &-container {
-    position: fixed;
-    bottom: $spacing-4;
-    right: $spacing-4;
-    z-index: 1000;
-    @include flex(column, flex-start, stretch, $spacing-2);
-    max-width: 100%;
-    width: 400px;
-    pointer-events: none;
-  }
-
-  @include card;
-  @include flex(row, space-between, flex-start, $spacing-3);
-  pointer-events: auto;
-  animation: toast-slide-in 0.2s ease-out;
-
-  &.success {
-    background: $color-green-100;
-    border: 1px solid $color-green-600;
-    color: $color-green-600;
-  }
-
-  &.error {
-    background: $color-red-100;
-    border: 1px solid $color-red-600;
-    color: $color-red-600;
-  }
-
-  &-content {
-    @include flex(row, flex-start, center, $spacing-3);
-    flex: 1;
-  }
-
-  &-icon {
-    flex-shrink: 0;
-  }
-
-  &-message {
-    margin: 0;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-  }
-
-  &-close {
-    color: currentColor;
-    padding: $spacing-1;
-    border-radius: $border-radius-sm;
-    @include transition(all);
-    opacity: 0.7;
-
-    &:hover {
-      opacity: 1;
-      background-color: rgba(0, 0, 0, 0.05);
-    }
-  }
-}
-
-.card-section {
-  @include card;
-  padding: $spacing-6;
-
-  .section-header {
-    @include flex(row, space-between, center);
-    margin-bottom: $spacing-6;
-    padding-bottom: $spacing-4;
-    border-bottom: 2px solid $color-gray-100;
-
-    h2 {
-      @include flex(row, flex-start, center);
-      color: $color-gray-800;
+    &:hover > * {
+      transform: scale(1.09);
     }
 
-    .section-action {
+    &.primary {
       color: $color-primary;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.9rem;
-      @include transition(color);
+
+      &:hover,
+      &.selected {
+        background-color: $color-primary-100;
+      }
+    }
+
+    &.danger {
+      color: $color-red-600;
 
       &:hover {
-        color: $color-primary-hover;
+        background-color: $color-red-100;
       }
     }
   }
 
-  .section-content {
-    @include stack-layout($spacing-4);
-  }
-}
+  // Toast System
+  .toast {
+    &-container {
+      position: fixed;
+      bottom: $spacing-4;
+      right: $spacing-4;
+      z-index: 1000;
+      @include flex(column, flex-start, stretch, $spacing-2);
+      max-width: 100%;
+      width: 400px;
+      pointer-events: none;
+    }
 
-@keyframes toast-slide-in {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
+    @include card;
+    @include flex(row, space-between, flex-start, $spacing-3);
+    pointer-events: auto;
+    animation: toast-slide-in 0.2s ease-out;
+
+    &.success {
+      background: $color-green-100;
+      border: 1px solid $color-green-600;
+      color: $color-green-600;
+    }
+
+    &.error {
+      background: $color-red-100;
+      border: 1px solid $color-red-600;
+      color: $color-red-600;
+    }
+
+    &-content {
+      @include flex(row, flex-start, center, $spacing-3);
+      flex: 1;
+    }
+
+    &-icon {
+      flex-shrink: 0;
+    }
+
+    &-message {
+      margin: 0;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+
+    &-close {
+      color: currentColor;
+      padding: $spacing-1;
+      border-radius: $border-radius-sm;
+      @include transition(all);
+      opacity: 0.7;
+
+      &:hover {
+        opacity: 1;
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+    }
   }
-  to {
-    transform: translateX(0);
-    opacity: 1;
+
+  .card-section {
+    @include card;
+    padding: $spacing-6;
+
+    .section-header {
+      @include flex(row, space-between, center);
+      margin-bottom: $spacing-6;
+      padding-bottom: $spacing-4;
+      border-bottom: 2px solid $color-gray-100;
+
+      h2 {
+        @include flex(row, flex-start, center);
+        color: $color-gray-800;
+      }
+
+      .section-action {
+        color: $color-primary;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+        @include transition(color);
+
+        &:hover {
+          color: $color-primary-hover;
+        }
+      }
+    }
+
+    .section-content {
+      @include stack-layout($spacing-4);
+    }
+  }
+
+  @keyframes toast-slide-in {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
   }
 }

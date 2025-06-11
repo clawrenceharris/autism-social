@@ -10,34 +10,54 @@ const DialogueCompletedModal = ({
   onReplayClick,
   onExitClick,
 }: DialogueCompletedModalProps) => {
+  const getScoreLabel = (score: number) => {
+    if (score >= 80) {
+      return "high";
+    } else if (score >= 60) {
+      return "medium";
+    }
+    return "low";
+  };
   return (
-    <div>
+    <div className="results-content">
       <p className="description">
-        You've completed the dialogue. Here's how you performed:
+        You've completed the Dialogue! Here's how you performed:
       </p>
       <div className="score-grid">
         {scores.clarity !== undefined && (
           <div className="score-item">
-            <div className="score-label">Clarity</div>
-            <div className="score-value">{scores.clarity}</div>
+            <h3>Clarity</h3>
+            <div className={`score-value ${getScoreLabel(scores.clarity)}`}>
+              {scores.clarity}%
+            </div>
           </div>
         )}
         {scores.empathy !== undefined && (
           <div className="score-item">
-            <div className="score-label">Empathy</div>
-            <div className="score-value">{scores.empathy}</div>
+            <h3>Empathy</h3>
+            <div className={`score-value ${getScoreLabel(scores.empathy)}`}>
+              {scores.empathy}%
+            </div>
           </div>
         )}
         {scores.assertiveness !== undefined && (
           <div className="score-item">
-            <div className="score-label">Assertiveness</div>
-            <div className="score-value">{scores.assertiveness}</div>
+            <h3>Assertiveness</h3>
+            <div
+              className={`score-value ${getScoreLabel(scores.assertiveness)}`}
+            >
+              {scores.assertiveness}%
+            </div>
           </div>
         )}
         {scores.socialAwareness !== undefined && (
           <div className="score-item">
-            <div className="score-label">Social Awareness</div>
-            <div className="score-value">{scores.socialAwareness}</div>
+            <h3>Social Awareness</h3>
+            <div
+              className={`score-value ${getScoreLabel(scores.socialAwareness)}`}
+            >
+              {scores.socialAwareness}%
+            </div>
           </div>
         )}
       </div>

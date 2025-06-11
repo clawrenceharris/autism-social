@@ -1,25 +1,57 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useScenario } from "../../context";
+import { useModal, useScenario } from "../../context";
 import { X, Home } from "lucide-react";
 import "./PlayScenarioPage.scss";
-import { DialoguePlayer, ProgressIndicator } from "../../components";
+import {
+  DialogueItem,
+  DialogueOnboardingModal,
+  DialoguePlayer,
+  FormLayout,
+  ProgressIndicator,
+} from "../../components";
 import { useScenarioStore } from "../../store/useScenarioStrore";
 
 const PlayScenarioPage = () => {
   const navigate = useNavigate();
-  const { scenariosLoading, error, dialogueIds, dialogues, dialoguesLoading } =
-    useScenarioStore();
+  const {
+    scenariosLoading,
+    scenarioIds,
+    dialoguesByScenario,
+    error,
+    dialoguesLoading,
 
+    fetchDialoguesByScenario: fetchScenarioDialogues,
+  } = useScenarioStore();
+  const [userFields, setUserFields] = useState({});
   const [key, setKey] = useState<number>(0);
   const { scenario, dialogue } = useScenario();
+  const { openModal } = useModal();
   const handleReplay = () => {
     setKey((prev) => prev + 1);
   };
-
+  const handleSubmit = (data: { [key: string]: string }) => {
+    setUserFields(data);
+  };
   const handleExit = () => {
     navigate("/");
   };
+  useEffect(() => {
+    if (scenario) fetchScenarioDialogues(scenario.id);
+  }, [fetchScenarioDialogues, scenario]);
+
+  useEffect(() => {
+    //if we selected a dialogue and there are no user fields defined
+    if (!userFields && dialogue) {
+      //open modal so we can enter the user fields
+      openModal(
+        <FormLayout<{ [key: string]: string }> onSubmit={handleSubmit}>
+          <DialogueOnboardingModal />
+        </FormLayout>,
+        "Set Dialogue Inputs"
+      );
+    }
+  });
 
   if (scenariosLoading || dialoguesLoading) {
     return (
@@ -55,8 +87,11 @@ const PlayScenarioPage = () => {
       <div className="play-scenario-container">
         <div className="game-content">
           <div className="error-state">
-            <h1>Scenario Not Found</h1>
-            <p>The requested scenario could not be found.</p>
+            <div>
+              <h1>Scenario Not Found</h1>
+              <p>The requested scenario could not be found.</p>
+            </div>
+
             <button onClick={handleExit} className="btn btn-primary">
               <Home size={20} />
               Return to Dashboard
@@ -73,8 +108,12 @@ const PlayScenarioPage = () => {
         <div className="game-header">
           <div className="header-content">
             <div className="scenario-info">
-              <h1 className="scenario-title">{scenario.title}</h1>
-              <div className="scenario-badge">Select Dialogue</div>
+              <h1
+                style={{ color: "white", fontSize: "1.7rem" }}
+                className="scenario-title"
+              >
+                {scenario.title}
+              </h1>
             </div>
             <div className="game-controls">
               <button onClick={handleExit} className="control-btn danger">
@@ -84,7 +123,7 @@ const PlayScenarioPage = () => {
           </div>
         </div>
 
-        <div className="game-content">
+        <div style={{ display: "block", margin: 20 }} className="game-content">
           <div className="dialogue-selection">
             <div className="selection-header">
               <h2>Choose Your Dialogue</h2>
@@ -92,42 +131,30 @@ const PlayScenarioPage = () => {
             </div>
 
             <div className="dialogue-options">
-              {dialogueIds.map((id) => (
-                <button
-                  key={id}
-                  onClick={() =>
-                    navigate(`/scenario/${scenario.id}/dialogue/${id}`)
-                  }
-                  className="dialogue-option-card"
-                >
-                  <h3>{dialogues[id].title}</h3>
-                  <p>Difficulty: {dialogues[id].difficulty}</p>
-                  <div className="dialogue-tags">
-                    {dialogues[id].persona_tags.map((tag) => (
-                      <span key={tag} className="tag">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </button>
-              ))}
+              {scenarioIds.map((id) => {
+                return dialoguesByScenario[id]?.map((dialogue) => (
+                  <DialogueItem dialogue={dialogue} />
+                ));
+              })}
             </div>
           </div>
         </div>
       </div>
     );
   }
-
-  return (
-    <div key={key} className="play-scenario-container">
-      <DialoguePlayer
-        onExit={handleExit}
-        scenario={scenario}
-        onReplay={handleReplay}
-        dialogue={dialogue}
-      />
-    </div>
-  );
+  if (userFields) {
+    return (
+      <div key={key} className="play-scenario-container">
+        <DialoguePlayer
+          userFields={userFields}
+          onExit={handleExit}
+          scenario={scenario}
+          onReplay={handleReplay}
+          dialogue={dialogue}
+        />
+      </div>
+    );
+  }
 };
 
 export default PlayScenarioPage;

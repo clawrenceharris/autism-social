@@ -2,8 +2,6 @@
 @import "../../styles/mixins";
 
 .daily-challenges-container {
-  max-width: 1200px;
-  margin: 0 auto;
   padding: $spacing-4;
 
   .challenges-header {
@@ -27,6 +25,8 @@
     @include card;
     margin-bottom: $spacing-8;
     text-align: center;
+    height: 100%;
+    flex: 1;
 
     .week-info {
       margin-bottom: $spacing-6;
@@ -107,7 +107,7 @@
         .node-circle {
           width: 60px;
           height: 60px;
-          border-radius: $border-radius-full;
+          border-radius: $border-radius-md;
           @include flex(row, center, center);
           background: $color-white;
           border: 3px solid $color-gray-300;
@@ -133,10 +133,6 @@
             color: $color-gray-400;
             cursor: not-allowed;
           }
-
-          .node-icon {
-            font-size: 1.5rem;
-          }
         }
 
         .node-info {
@@ -148,16 +144,6 @@
             color: $color-gray-800;
             margin-bottom: $spacing-1;
             font-size: 0.9rem;
-          }
-
-          .challenge-title {
-            font-size: 0.8rem;
-            color: $color-gray-600;
-            line-height: 1.2;
-            max-width: 100px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
           }
 
           .difficulty-badge {
@@ -198,6 +184,10 @@
 
   .challenge-details {
     @include card;
+    min-height: 60vh;
+    position: sticky;
+    flex: 1;
+    top: 100px;
 
     .no-challenge {
       text-align: center;
@@ -238,7 +228,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 4px 12px rgba($color-primary, 0.2);
   }
   50% {
@@ -265,6 +256,7 @@
         }
 
         .challenge-node {
+          margin: $spacing-4;
           .node-circle {
             width: 50px;
             height: 50px;

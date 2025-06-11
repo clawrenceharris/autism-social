@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import {
   AdminRoute,
   ScenarioLayout,
+  ScenarioRoute,
   UserLayout,
   UserRoute,
 } from "./components";
@@ -56,8 +57,8 @@ function App() {
           </Route>
         </Route>
 
-        <Route element={<UserRoute />}>
-          <Route element={<ScenarioLayout />}>
+        <Route element={<ScenarioLayout />}>
+          <Route element={<ScenarioRoute />}>
             <Route
               path="/scenario/:scenarioId/dialogue/:dialogueId"
               element={<PlayScenarioPage />}

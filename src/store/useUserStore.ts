@@ -12,8 +12,9 @@ interface UserStore {
   interests: Interest[];
   setUser: (user: User) => void;
   setProfile: (profile: UserProfile) => void;
-  fetchUserAndProfile: () => void;
+  fetchUserData: () => void;
   logout: () => void;
+  error: string | null;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -24,34 +25,48 @@ export const useUserStore = create<UserStore>()(
       goals: [],
       interests: [],
       loading: true,
+      error: null,
 
       setUser: (user) => set({ user }),
       setProfile: (profile) => set({ profile }),
 
-      fetchUserAndProfile: async () => {
-        set({ loading: true });
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (user) {
-          set({ user });
-          const goals = await userService.getUserGoals(user.id);
-          set({ goals });
-          const interests = await userService.getUserInterests(user.id);
-          set({ interests });
-          const profile = await userService.getUserById(user.id);
+      fetchUserData: async () => {
+        try {
+          set({ loading: true });
 
-          if (profile) {
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+          if (user) {
+            set({ user });
+
+            const goals = await userService.getUserGoals(user.id);
+            set({ goals });
+
+            const interests = await userService.getUserInterests(user.id);
+            set({ interests });
+
+            const profile = await userService.getUserById(user.id);
             set({ profile });
+            console.log({ profile });
           }
+          set({ loading: false });
+        } catch (err) {
+          console.error("Error fetching user: " + err);
+          set({ error: "Could not load user data", loading: false });
         }
-
-        set({ loading: false });
       },
 
       logout: async () => {
-        await supabase.auth.signOut();
-        set({ user: null, profile: null });
+        set({ user: null, profile: null, loading: true });
+
+        const { error } = await supabase.auth.signOut();
+        set({
+          user: null,
+          profile: null,
+          error: error?.message,
+          loading: false,
+        });
       },
     }),
     {
