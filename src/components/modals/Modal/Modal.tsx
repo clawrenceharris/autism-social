@@ -4,7 +4,7 @@ import "./Modal.scss";
 
 interface ModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   title: string | ReactElement;
   children: ReactNode;
   showsCloseButton?: boolean;
@@ -20,7 +20,11 @@ const Modal = ({
 }: ModalProps) => {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape"){
+        if(onClose){
+          onClose();
+        }
+      }
     };
 
     if (isOpen) {
