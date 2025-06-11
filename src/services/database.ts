@@ -12,7 +12,9 @@ export type Table =
   | "user_profiles"
   | "user_roles"
   | "dialogue_goals"
-  | "dialogue_interests";
+  | "dialogue_interests"
+  | "completed_dialogues"
+  | "daily_challenges";
 
 export interface DatabaseResult<T> {
   data: T | null;

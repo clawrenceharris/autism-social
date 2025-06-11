@@ -1,17 +1,17 @@
 import { createContext, useContext, useEffect, type ReactNode } from "react";
 import { supabase } from "../lib/supabase";
-import { useUserStore, type UserStore } from "../store/useUserStore";
 import { useToast } from "./ToastContext";
+import { useUserStore } from "../store/useUserStore";
 
-const UserContext = createContext<UserStore | undefined>(undefined);
+const UserContext = createContext<undefined>(undefined);
 
 export function UserProvider({ children }: { children: ReactNode }) {
-  const userStore = useUserStore();
+  const { fetchUserAndProfile, logout } = useUserStore();
   const { showToast } = useToast();
 
   useEffect(() => {
-    userStore.fetchUserAndProfile();
-  }, [userStore.fetchUserAndProfile]);
+    fetchUserAndProfile();
+  }, [fetchUserAndProfile]);
 
   useEffect(() => {
     const {
@@ -19,7 +19,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       try {
         if (event === "SIGNED_OUT" || !session?.user) {
-          userStore.logout();
+          logout();
         }
       } catch (err) {
         console.error("Auth state change error:", err);
@@ -29,10 +29,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [userStore.logout, showToast]);
+  }, [logout, showToast]);
 
   return (
-    <UserContext.Provider value={userStore}>{children}</UserContext.Provider>
+    <UserContext.Provider value={undefined}>{children}</UserContext.Provider>
   );
 }
 

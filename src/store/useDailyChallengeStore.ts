@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { DailyChallenge } from "../types";
-import { getDailyChallenges, getDailyChallengeByDay } from "../services/dailyChallenges";
+import { getDailyChallenges } from "../services/dailyChallenges";
 
 interface DailyChallengeStore {
   challenges: DailyChallenge[];
@@ -26,16 +26,16 @@ export const useDailyChallengeStore = create<DailyChallengeStore>()(
           set({ challenges, loading: false });
         } catch (error) {
           console.error("Failed to fetch daily challenges:", error);
-          set({ 
-            error: "Failed to load daily challenges", 
-            loading: false 
+          set({
+            error: "Failed to load daily challenges",
+            loading: false,
           });
         }
       },
 
       getDayChallenge: (dayOfWeek: number) => {
         const challenges = get().challenges;
-        return challenges.find(c => c.day_of_week === dayOfWeek) || null;
+        return challenges.find((c) => c.day_of_week === dayOfWeek) || null;
       },
 
       clearChallenges: () => set({ challenges: [], error: null }),

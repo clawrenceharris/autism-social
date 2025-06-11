@@ -1,21 +1,17 @@
 import { Navigate, useLocation, Outlet } from "react-router-dom";
-import { useAuth } from "../../../context/AuthContext";
 import { ProgressIndicator } from "../../";
-import { useUser } from "../../../context";
 import type { AuthContextType } from "../../../types";
+import { useUserStore } from "../../../store/useUserStore";
 
 const UserRoute = () => {
-  const { user, loading: loadingAuth } = useAuth();
-  const { profile, loading: loadingUser } = useUser();
+  const { profile, user, loading } = useUserStore();
   const location = useLocation();
 
-  if (loadingAuth || loadingUser) {
+  if (loading) {
     return (
-      
       <div className="center-absolute">
         <ProgressIndicator />
       </div>
-    
     );
   }
 

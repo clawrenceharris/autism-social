@@ -68,7 +68,7 @@ export interface DailyChallenge {
   dialogue_id: string;
   week_start_date: string;
   is_active: boolean;
-  created_at: string;
+  created_at?: string;
   dialogue?: Dialogue;
 }
 

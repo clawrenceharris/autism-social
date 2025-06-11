@@ -4,20 +4,15 @@ import { useScenario } from "../../context";
 import { X, Home } from "lucide-react";
 import "./PlayScenarioPage.scss";
 import { DialoguePlayer, ProgressIndicator } from "../../components";
-import { useDialogueStore } from "../../store/useDialogueStore";
+import { useScenarioStore } from "../../store/useScenarioStrore";
 
 const PlayScenarioPage = () => {
   const navigate = useNavigate();
-  const {
-    loading: scenariosLoading,
-    error,
-    scenario,
-    dialogue,
-  } = useScenario();
-  const { dialogues, ids, loading: dialoguesLoading } = useDialogueStore();
+  const { scenariosLoading, error, dialogueIds, dialogues, dialoguesLoading } =
+    useScenarioStore();
 
   const [key, setKey] = useState<number>(0);
-
+  const { scenario, dialogue } = useScenario();
   const handleReplay = () => {
     setKey((prev) => prev + 1);
   };
@@ -97,7 +92,7 @@ const PlayScenarioPage = () => {
             </div>
 
             <div className="dialogue-options">
-              {ids?.map((id) => (
+              {dialogueIds.map((id) => (
                 <button
                   key={id}
                   onClick={() =>
@@ -108,8 +103,8 @@ const PlayScenarioPage = () => {
                   <h3>{dialogues[id].title}</h3>
                   <p>Difficulty: {dialogues[id].difficulty}</p>
                   <div className="dialogue-tags">
-                    {dialogues[id].persona_tags.map((tag, index) => (
-                      <span key={index} className="tag">
+                    {dialogues[id].persona_tags.map((tag) => (
+                      <span key={tag} className="tag">
                         {tag}
                       </span>
                     ))}

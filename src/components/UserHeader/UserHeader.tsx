@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Home, BookOpen, TrendingUp, Settings, Calendar } from "lucide-react";
+import { Home, BookOpen, TrendingUp, Settings } from "lucide-react";
 import "../../styles/shared/_header.scss";
 import { assets } from "../../constants/assets";
 
@@ -17,7 +17,7 @@ const UserHeader = () => {
             <Home />
             <span>Dashboard</span>
           </Link>
-         
+
           <Link to="/your-scenarios" className="taskbar-link">
             <BookOpen />
             <span>Scenarios</span>

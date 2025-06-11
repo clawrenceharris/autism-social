@@ -5,7 +5,7 @@ import { useModal } from "../../context";
 import { CreateDialogueModal } from "../";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { useDialogueStore } from "../../store/useDialogueStore";
+import { useScenarioStore } from "../../store/useScenarioStrore";
 interface DialoguesPanelProps {
   scenario: Scenario;
 }
@@ -13,10 +13,10 @@ interface DialoguesPanelProps {
 const DialoguesPanel = ({ scenario }: DialoguesPanelProps) => {
   const {
     scenarioDialogues: dialogues,
-    ids,
-    loading,
+    dialogueIds: ids,
+    dialoguesLoading: loading,
     error,
-  } = useDialogueStore();
+  } = useScenarioStore();
   const [selectedDialogueId, setSelectedDialogueId] = useState<string | null>(
     null
   );

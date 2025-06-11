@@ -34,7 +34,12 @@ const SkeletonScenario = () => (
 );
 
 const ManageScenariosRedux = () => {
-  const { scenarios, error, loading, ids } = useScenarioStore();
+  const {
+    scenarios,
+    error,
+    scenariosLoading: loading,
+    scenarioIds: ids,
+  } = useScenarioStore();
   const { openModal } = useModal();
   const { showToast } = useToast();
   const deleteScenario = useScenarioStore((s) => s.deleteScenario);
