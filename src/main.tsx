@@ -17,14 +17,14 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <UserProvider>
-          <ToastProvider>
+        <ToastProvider>
+          <UserProvider>
             <ModalProvider>
               <App />
               <ToastContainer />
             </ModalProvider>
-          </ToastProvider>
-        </UserProvider>
+          </UserProvider>
+        </ToastProvider>
       </AuthProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
