@@ -2,9 +2,6 @@
 @import "../../styles/mixins";
 
 
-.scenario-list {
-    @include stack-layout($spacing-3);
-
     .scenario-item {
       @include flex(row, space-between, center);
       padding: $spacing-4;
@@ -97,4 +94,4 @@
         }
       }
     }
-  }
+  
