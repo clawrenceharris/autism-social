@@ -276,7 +276,7 @@ const DialoguePlayer = ({
           </div>
 
           <Modal
-            onClose={onExit}
+           
             showsCloseButton={false}
             title={
               <div className="results-header">
