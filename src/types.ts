@@ -30,6 +30,7 @@ export interface SignUpFormValues extends FieldValues {
   interests: string[];
   agreement: boolean;
 }
+
 export interface AuthContextType {
   profile: UserProfile;
   user: User;
@@ -102,6 +103,13 @@ export type Difficulty = "easy" | "medium" | "hard" | "extra hard";
 export interface CreateScenarioData {
   title: string;
   description: string;
+}
+
+export interface ScoreSummary {
+  [category: string]: {
+    earned: number;
+    possible: number;
+  };
 }
 
 export interface CreateDialogueData {

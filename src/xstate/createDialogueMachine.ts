@@ -1,13 +1,10 @@
 import { assign, createMachine } from "xstate";
-import type { DialogueEvent, DialogueStep } from "../types";
-
-export interface DialogueContext {
-  clarity?: number;
-  empathy?: number;
-  assertiveness?: number;
-  selfAdvocacy?: number;
-  socialAwareness?: number;
-}
+import type {
+  DialogueEvent,
+  DialogueStep,
+  ScoreCategory,
+  ScoreSummary,
+} from "../types";
 
 export function createDialogueMachine(
   id: string,
@@ -16,6 +13,15 @@ export function createDialogueMachine(
   finalState = "end"
 ) {
   const stateConfig: Record<string, object> = {};
+  const categories: ScoreCategory[] = [
+    "clarity",
+    "empathy",
+    "empathy",
+    "assertiveness",
+    "socialAwareness",
+    "selfAdvocacy",
+  ];
+  const seen = new Set<string>();
 
   for (const step of steps) {
     const transitions: Record<string, object> = {};
@@ -24,12 +30,17 @@ export function createDialogueMachine(
       transitions[opt.event] = {
         target: opt.next,
         actions: opt.scores
-          ? assign(({ context }) => {
+          ? assign(({ context }: { context: ScoreSummary }) => {
               const updated = { ...context };
-              opt.scores.forEach((key) => {
-                updated[key] = (updated[key] || 0) + 1;
-              });
-              console.log(updated);
+              for (const cat of opt.scores) {
+                updated[cat].earned += 1;
+                if (!seen.has(cat)) {
+                  updated[cat].possible += 1;
+
+                  seen.add(cat);
+                }
+              }
+
               return updated;
             })
           : undefined,
@@ -58,8 +69,12 @@ export function createDialogueMachine(
   return createMachine({
     types: {
       events: {} as DialogueEvent,
-      context: { clarity: 0 } as DialogueContext,
+      context: {} as ScoreSummary,
     },
+    context: Object.fromEntries(
+      categories.map((c) => [c, { earned: 0, possible: 0 }])
+    ),
+
     id,
     initial: steps[0].id,
 

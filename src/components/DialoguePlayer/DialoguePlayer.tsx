@@ -276,7 +276,6 @@ const DialoguePlayer = ({
           </div>
 
           <Modal
-           
             showsCloseButton={false}
             title={
               <div className="results-header">
@@ -284,8 +283,6 @@ const DialoguePlayer = ({
                   <Award size={20} />
                 </div>
                 <h2>Dialogue Complete!</h2>
-
-               
               </div>
             }
             isOpen={state.status === "done"}
@@ -293,7 +290,7 @@ const DialoguePlayer = ({
             <DialogueCompletedModal
               onExitClick={onExit}
               onReplayClick={onReplay}
-              scores={getDialogueScores(state.context, dialogue)}
+              scores={getDialogueScores(state.context)}
             />
           </Modal>
         </div>
