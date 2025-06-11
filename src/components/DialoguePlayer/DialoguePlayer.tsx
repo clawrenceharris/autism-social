@@ -284,9 +284,7 @@ const DialoguePlayer = ({
                 </div>
                 <h2>Great Job!</h2>
 
-                <p className="description">
-                  You've completed the dialogue. Here's how you performed:
-                </p>
+               
               </div>
             }
             isOpen={state.status === "done"}
