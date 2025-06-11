@@ -21,7 +21,6 @@ export function createDialogueMachine(
     "socialAwareness",
     "selfAdvocacy",
   ];
-  const seen = new Set<string>();
 
   for (const step of steps) {
     const transitions: Record<string, object> = {};
@@ -32,6 +31,8 @@ export function createDialogueMachine(
         actions: opt.scores
           ? assign(({ context }: { context: ScoreSummary }) => {
               const updated = { ...context };
+              const seen = new Set<string>();
+
               for (const cat of opt.scores) {
                 updated[cat].earned += 1;
                 if (!seen.has(cat)) {
