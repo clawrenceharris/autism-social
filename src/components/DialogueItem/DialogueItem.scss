@@ -10,7 +10,7 @@
       @include transition(all);
       margin-bottom: 1rem;
       cursor: pointer;
-      min-height:230px;
+      min-height:130px;
       &:hover {
         background: $color-primary-100;
         transform: translateY(-1px);
