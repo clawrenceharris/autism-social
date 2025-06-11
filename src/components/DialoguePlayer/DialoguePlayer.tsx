@@ -277,6 +277,7 @@ const DialoguePlayer = ({
 
           <Modal
             onClose={onExit}
+            showsCloseButton={false}
             title={
               <div className="results-header">
                 <div className="results-icon">
@@ -284,13 +285,15 @@ const DialoguePlayer = ({
                 </div>
                 <h2>Great Job!</h2>
 
-               
+                <p className="description">
+                  You've completed the dialogue. Here's how you performed:
+                </p>
               </div>
             }
             isOpen={state.status === "done"}
           >
             <DialogueCompletedModal
-              onExitClick={closeModal}
+              onExitClick={onExit}
               onReplayClick={onReplay}
               scores={getDialogueScores(state.context, dialogue)}
             />
