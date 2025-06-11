@@ -283,7 +283,7 @@ const DialoguePlayer = ({
                 <div className="results-icon">
                   <Award size={20} />
                 </div>
-                <h2>Great Job!</h2>
+                <h2>Dialogue Complete!</h2>
 
                
               </div>
