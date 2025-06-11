@@ -30,7 +30,6 @@
       }
 
       .scenario-details {
-        flex: 1;
 
         .scenario-header {
           @include flex(row, space-between, start);
