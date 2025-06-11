@@ -24,7 +24,50 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<div>Hello</div>} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
+
+        {/* Admin Routes */}
+        <Route element={<AdminRoute />}>
+          <Route path="/admin" element={<HomePage />} />
+          <Route path="/scenarios" element={<ManageScenariosPage />} />
+
+          <Route element={<ScenarioLayout />}>
+            <Route
+              path="/admin/scenario/:scenarioId"
+              element={<EditScenarioPage />}
+            />
+            <Route
+              path="/admin/scenario/:scenarioId/dialogue/:dialogueId"
+              element={<EditScenarioPage />}
+            />
+          </Route>
+        </Route>
+
+        {/* User Routes */}
+        <Route element={<UserLayout />}>
+          <Route element={<UserRoute />}>
+            <Route path="/" element={<DashboardPage />} />
+            <Route path="/your-scenarios" element={<YourScenariosPage />} />
+            <Route path="/progress" element={<ProgressPage />} />
+            <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/daily-challenges" element={<DailyChallengesPage />} />
+          </Route>
+        </Route>
+
+        <Route element={<UserRoute />}>
+          <Route element={<ScenarioLayout />}>
+            <Route
+              path="/scenario/:scenarioId/dialogue/:dialogueId"
+              element={<PlayScenarioPage />}
+            />
+            <Route
+              path="/scenario/:scenarioId"
+              element={<PlayScenarioPage />}
+            />
+          </Route>
+        </Route>
       </Routes>
     </Router>
   );
