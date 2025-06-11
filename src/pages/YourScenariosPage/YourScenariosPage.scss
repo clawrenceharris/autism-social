@@ -1,0 +1,516 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+.scenarios-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-4;
+
+  .page-header {
+    text-align: center;
+    margin-bottom: $spacing-8;
+
+    h1 {
+      margin-bottom: $spacing-2;
+      color: $color-gray-900;
+    }
+
+    .description {
+      color: $color-gray-600;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto $spacing-6;
+    }
+
+    .search-section {
+      max-width: 500px;
+      margin: 0 auto;
+
+      .search-container {
+        position: relative;
+        margin-bottom: $spacing-4;
+
+        .search-input {
+          width: 100%;
+          padding: $spacing-3 $spacing-4 $spacing-3 3rem;
+          border: 2px solid $color-gray-200;
+          border-radius: $border-radius-full;
+          font-size: 1rem;
+          background: $color-white;
+          transition: all 0.3s ease;
+
+          &:focus {
+            outline: none;
+            border-color: $color-primary;
+            box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+          }
+
+          &::placeholder {
+            color: $color-gray-400;
+          }
+        }
+
+        .search-icon {
+          position: absolute;
+          left: $spacing-3;
+          top: 50%;
+          transform: translateY(-50%);
+          color: $color-gray-400;
+          pointer-events: none;
+        }
+
+        .clear-search {
+          position: absolute;
+          right: $spacing-3;
+          top: 50%;
+          transform: translateY(-50%);
+          background: none;
+          border: none;
+          color: $color-gray-400;
+          cursor: pointer;
+          padding: $spacing-1;
+          border-radius: $border-radius-full;
+          transition: all 0.2s ease;
+
+          &:hover {
+            color: $color-gray-600;
+            background: $color-gray-100;
+          }
+        }
+      }
+
+      .filter-tabs {
+        @include flex(row, center, center, $spacing-2);
+        flex-wrap: wrap;
+
+        .filter-tab {
+          padding: $spacing-2 $spacing-4;
+          border: 2px solid $color-gray-200;
+          border-radius: $border-radius-full;
+          background: $color-white;
+          color: $color-gray-600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-size: 0.9rem;
+          font-weight: 500;
+
+          &:hover {
+            border-color: $color-primary-200;
+            background: $color-primary-100;
+            color: $color-primary;
+          }
+
+          &.active {
+            border-color: $color-primary;
+            background: $color-primary;
+            color: $color-white;
+            box-shadow: 0 4px 12px rgba($color-primary, 0.3);
+          }
+
+          .tab-count {
+            margin-left: $spacing-1;
+            font-size: 0.8rem;
+            opacity: 0.8;
+          }
+        }
+      }
+    }
+  }
+
+  .scenarios-content {
+    .section-header {
+      @include flex(row, space-between, center);
+      margin-bottom: $spacing-6;
+
+      h2 {
+        @include flex(row, flex-start, center, $spacing-2);
+        margin: 0;
+        color: $color-gray-800;
+
+        .section-icon {
+          color: $color-primary;
+        }
+      }
+
+      .view-toggle {
+        @include flex(row, center, center, $spacing-1);
+        background: $color-gray-100;
+        border-radius: $border-radius-md;
+        padding: $spacing-1;
+
+        .toggle-btn {
+          padding: $spacing-2;
+          border: none;
+          background: none;
+          border-radius: $border-radius-sm;
+          color: $color-gray-500;
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          &.active {
+            background: $color-white;
+            color: $color-primary;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+
+          &:hover:not(.active) {
+            color: $color-gray-700;
+          }
+        }
+      }
+    }
+
+    .scenarios-grid {
+      @include grid-layout(1, $spacing-4);
+
+      @include responsive(md) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      @include responsive(lg) {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      &.list-view {
+        grid-template-columns: 1fr;
+        gap: $spacing-3;
+      }
+    }
+
+    .scenario-card {
+      @include card;
+      padding: $spacing-6;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 2px solid transparent;
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-color: $color-primary-200;
+      }
+
+      &.completed {
+        background: linear-gradient(135deg, $color-green-100, $color-white);
+        border-color: $color-green-600;
+
+        .completion-badge {
+          background: $color-green-600;
+          color: $color-white;
+        }
+      }
+
+      &.trending {
+        background: linear-gradient(135deg, #fef3c7, $color-white);
+        border-color: #f59e0b;
+
+        .trending-badge {
+          background: #f59e0b;
+          color: $color-white;
+        }
+      }
+
+      .card-header {
+        @include flex(row, space-between, flex-start);
+        margin-bottom: $spacing-4;
+
+        .scenario-title {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: $color-gray-800;
+          margin: 0;
+          flex: 1;
+        }
+
+        .badges {
+          @include flex(column, flex-start, flex-end, $spacing-1);
+
+          .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: $border-radius-full;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+            min-width: 60px;
+
+            &.completion-badge {
+              background: $color-primary;
+              color: $color-white;
+            }
+
+            &.trending-badge {
+              background: #f59e0b;
+              color: $color-white;
+            }
+
+            &.difficulty-badge {
+              background: $color-gray-200;
+              color: $color-gray-700;
+
+              &.easy {
+                background: $color-green-100;
+                color: $color-green-600;
+              }
+
+              &.medium {
+                background: #fef3c7;
+                color: #d97706;
+              }
+
+              &.hard {
+                background: $color-red-100;
+                color: $color-red-600;
+              }
+            }
+          }
+        }
+      }
+
+      .scenario-description {
+        color: $color-gray-600;
+        margin-bottom: $spacing-4;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .scenario-meta {
+        @include flex(row, space-between, center);
+        margin-bottom: $spacing-4;
+        padding-top: $spacing-3;
+        border-top: 1px solid $color-gray-200;
+
+        .meta-item {
+          @include flex(column, center, center, $spacing-1);
+          text-align: center;
+
+          .meta-value {
+            font-weight: 600;
+            color: $color-primary;
+            font-size: 1.1rem;
+          }
+
+          .meta-label {
+            font-size: 0.75rem;
+            color: $color-gray-500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+        }
+      }
+
+      .scenario-actions {
+        @include flex(row, center, center, $spacing-3);
+
+        .action-btn {
+          flex: 1;
+          padding: $spacing-3 $spacing-4;
+          border: 2px solid $color-primary;
+          border-radius: $border-radius-md;
+          background: $color-white;
+          color: $color-primary;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          text-decoration: none;
+          text-align: center;
+
+          &:hover {
+            background: $color-primary;
+            color: $color-white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba($color-primary, 0.3);
+          }
+
+          &.primary {
+            background: $color-primary;
+            color: $color-white;
+
+            &:hover {
+              background: $color-primary-hover;
+              transform: translateY(-2px);
+              box-shadow: 0 6px 16px rgba($color-primary, 0.4);
+            }
+          }
+        }
+      }
+
+      &.list-view {
+        @include flex(row, space-between, center);
+        padding: $spacing-4;
+
+        .card-content {
+          flex: 1;
+          @include flex(row, space-between, center);
+
+          .left-content {
+            @include flex(row, flex-start, center, $spacing-4);
+
+            .scenario-info {
+              .scenario-title {
+                font-size: 1.1rem;
+                margin-bottom: $spacing-1;
+              }
+
+              .scenario-description {
+                font-size: 0.9rem;
+                margin: 0;
+                -webkit-line-clamp: 1;
+              }
+            }
+          }
+
+          .right-content {
+            @include flex(row, flex-end, center, $spacing-4);
+
+            .scenario-meta {
+              border: none;
+              padding: 0;
+              margin: 0;
+              gap: $spacing-6;
+
+              .meta-item {
+                .meta-value {
+                  font-size: 1rem;
+                }
+              }
+            }
+          }
+        }
+
+        .scenario-actions {
+          margin-left: $spacing-4;
+          gap: $spacing-2;
+
+          .action-btn {
+            flex: none;
+            min-width: 100px;
+            padding: $spacing-2 $spacing-3;
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: $spacing-8;
+      color: $color-gray-500;
+
+      .empty-icon {
+        font-size: 4rem;
+        margin-bottom: $spacing-4;
+        opacity: 0.5;
+      }
+
+      .empty-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: $spacing-2;
+        color: $color-gray-700;
+      }
+
+      .empty-description {
+        font-size: 1rem;
+        margin-bottom: $spacing-6;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .empty-action {
+        display: inline-flex;
+        align-items: center;
+        gap: $spacing-2;
+        padding: $spacing-3 $spacing-6;
+        background: $color-primary;
+        color: $color-white;
+        text-decoration: none;
+        border-radius: $border-radius-md;
+        font-weight: 500;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: $color-primary-hover;
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba($color-primary, 0.3);
+        }
+      }
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: $spacing-8;
+
+      .loading-spinner {
+        margin-bottom: $spacing-4;
+      }
+
+      .loading-text {
+        color: $color-gray-600;
+        font-size: 1.1rem;
+      }
+    }
+  }
+}
+
+@include responsive(sm) {
+  .scenarios-page {
+    padding: $spacing-2;
+
+    .page-header {
+      .search-section {
+        .filter-tabs {
+          justify-content: center;
+          gap: $spacing-1;
+
+          .filter-tab {
+            padding: $spacing-2 $spacing-3;
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+
+    .scenarios-content {
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: $spacing-3;
+      }
+
+      .scenario-card {
+        padding: $spacing-4;
+
+        &.list-view {
+          flex-direction: column;
+          align-items: flex-start;
+
+          .card-content {
+            width: 100%;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: $spacing-3;
+
+            .right-content {
+              width: 100%;
+              justify-content: flex-start;
+
+              .scenario-meta {
+                gap: $spacing-4;
+              }
+            }
+          }
+
+          .scenario-actions {
+            width: 100%;
+            margin-left: 0;
+            margin-top: $spacing-3;
+          }
+        }
+      }
+    }
+  }
+}
