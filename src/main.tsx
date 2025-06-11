@@ -12,15 +12,13 @@ import { ToastContainer } from "./components";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <AuthProvider>
-      <ToastProvider>
-        <UserProvider>
-          <ModalProvider>
-            <div>Hello World</div>
-            <ToastContainer />
-          </ModalProvider>
-        </UserProvider>
-      </ToastProvider>
-    </AuthProvider>
+    <ToastProvider>
+      <UserProvider>
+        <ModalProvider>
+          <div>Hello World</div>
+          <ToastContainer />
+        </ModalProvider>
+      </UserProvider>
+    </ToastProvider>
   </StrictMode>
 );
