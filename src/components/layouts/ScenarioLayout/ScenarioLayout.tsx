@@ -6,9 +6,7 @@ const ScenarioLayout = () => {
     scenarioId: string;
     dialogueId: string;
   }>();
-  if (!scenarioId) {
-    return <div className="center-absolute">No Scenario could be found</div>;
-  }
+  
   return (
     <ScenarioProvider dialogueId={dialogueId} scenarioId={scenarioId}>
       <div className="layout-container">
