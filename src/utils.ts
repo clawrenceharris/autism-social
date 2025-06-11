@@ -4,7 +4,7 @@ export function generateId(prefix: string): string {
   return `${prefix}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
-export const getScoreCategoryCount = (
+export const getScoreCategoryTotal = (
   category: ScoreCategory,
   dialogue: Dialogue
 ) => {
@@ -22,33 +22,19 @@ export const getScoreCategoryCount = (
   return count;
 };
 
-export const getScoreMultiplier = (difficulty: Difficulty) => {
-  let multiplier = 1;
-  if (difficulty === "medium") {
-    multiplier = 10;
-  }
-  if (difficulty === "hard") {
-    multiplier = 20;
-  }
-  if (difficulty === "extra hard") {
-    multiplier = 30;
-  }
-  return multiplier;
-};
 const calcDialogueScore = (
   category: keyof DialogueContext & ScoreCategory,
   dialogue: Dialogue,
   context: DialogueContext
 ) => {
+  const total =  getScoreCategoryTotal(category, dialogue);
   if (
-    context[category] === undefined &&
-    getScoreCategoryCount(category, dialogue) > 0
-  ) {
-    return 0;
+    context[category] === undefined && total > 0) {
+    return 0 + "/" + total;
   } else if (!context[category]) {
     return undefined;
   }
-  return context[category];
+  return context[category] + "/" + total;
 };
 
 export const getDialogueScores = (
@@ -67,16 +53,10 @@ export const getDialogueScores = (
   const selfAdvocacy = calcDialogueScore("selfAdvocacy", dialogue, context);
   const difficulty = dialogue.difficulty;
   return {
-    clarity: clarity ? clarity * getScoreMultiplier(difficulty) : undefined,
-    empathy: empathy ? empathy * getScoreMultiplier(difficulty) : undefined,
-    assertiveness: assertiveness
-      ? assertiveness * getScoreMultiplier(difficulty)
-      : undefined,
-    socialAwareness: socialAwareness
-      ? socialAwareness * getScoreMultiplier(difficulty)
-      : undefined,
-    selfAdvocacy: selfAdvocacy
-      ? selfAdvocacy * getScoreMultiplier(difficulty)
-      : undefined,
+    clarity: clarity  ?? undefined,
+    empathy: empathy ?? undefined,
+    assertiveness: assertiveness ?? undefined,
+    socialAwareness: socialAwareness ?? undefined,
+    selfAdvocacy: selfAdvocacy ?? undefined,
   };
 };
