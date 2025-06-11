@@ -21,27 +21,12 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const {
-    fetchUserAndProfile,
-    setUser,
-    user,
-    profile,
-    loading,
-  } = useUserStore();
+  const { fetchUserAndProfile, setUser, user, loading } = useUserStore();
 
   useEffect(() => {
     fetchUserAndProfile();
   }, [fetchUserAndProfile]);
   useEffect(() => {
-   
-    // Fallback timeout to ensure loading state is eventually set to false
-    const fallbackTimeout = setTimeout(() => {
-      if (loading) {
-        console.warn("Auth initialization timeout");
-        setLoading(false);
-      }
-    }, 15000);
-
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -55,16 +40,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } catch (err) {
         console.error("Auth state change error:", err);
         setError("Authentication error occurred");
-      } finally {
-        clearTimeout(fallbackTimeout);
       }
     });
 
     return () => {
-      clearTimeout(fallbackTimeout);
       subscription.unsubscribe();
     };
-  }, [loading]);
+  }, [setUser]);
 
   return (
     <AuthContext.Provider value={{ user, loading, error, isAdmin }}>
