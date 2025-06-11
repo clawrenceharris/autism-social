@@ -290,7 +290,7 @@ const DialoguePlayer = ({
             isOpen={state.status === "done"}
           >
             <DialogueCompletedModal
-              onExitClick={onExit}
+              onExitClick={closeModal}
               onReplayClick={onReplay}
               scores={getDialogueScores(state.context, dialogue)}
             />
