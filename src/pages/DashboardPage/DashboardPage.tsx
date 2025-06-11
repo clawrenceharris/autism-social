@@ -7,11 +7,14 @@ import {
   ChevronRight,
   Target,
   Zap,
+  Calendar,
+  Flame,
 } from "lucide-react";
 import "./DashboardPage.scss";
 import { ProgressSection, RecommendedDialogue } from "../../components";
 import type { AuthContextType } from "../../types";
 import { useRecommendationsStore } from "../../store/useRecommendations";
+import { useDailyChallengeStore } from "../../store/useDailyChallengeStore";
 import { useEffect } from "react";
 
 const DashboardPage = () => {
@@ -21,9 +24,19 @@ const DashboardPage = () => {
     recommendedDialogues: recommendations = [],
     loading: recommendationsLoading,
   } = useRecommendationsStore();
+  
+  const {
+    challenges,
+    loading: challengesLoading,
+    fetchDailyChallenges,
+    getDayChallenge,
+  } = useDailyChallengeStore();
+
   useEffect(() => {
     fetchRecommendedDialogues(user.id);
-  }, [fetchRecommendedDialogues, user.id]);
+    fetchDailyChallenges();
+  }, [fetchRecommendedDialogues, fetchDailyChallenges, user.id]);
+
   // Mock data - replace with real data from your services
   const mockStats = {
     scenariosCompleted: 12,
@@ -70,6 +83,9 @@ const DashboardPage = () => {
     return "User";
   };
 
+  // Get today's challenge
+  const todayChallenge = getDayChallenge(new Date().getDay());
+
   return (
     <div className="container">
       <div className="dashboard-header">
@@ -103,6 +119,65 @@ const DashboardPage = () => {
 
       <div className="dashboard-grid">
         <div className="main-content">
+          {/* Daily Challenge Call to Action */}
+          <div className="card-section continue-scenario">
+            <div className="section-header">
+              <h2>
+                <Calendar size={20} style={{ marginRight: "0.5rem" }} />
+                Today's Challenge
+              </h2>
+              <Link to="/daily-challenges" className="section-action">
+                View All <ChevronRight size={16} />
+              </Link>
+            </div>
+            <div className="section-content">
+              {challengesLoading ? (
+                <div className="loading-state">
+                  <p>Loading today's challenge...</p>
+                </div>
+              ) : todayChallenge ? (
+                <div className="challenge-info">
+                  <div className="scenario-title">
+                    {todayChallenge.dialogue?.title || "Daily Challenge"}
+                  </div>
+                  <div className="scenario-progress">
+                    <div className="progress-text">
+                      <Flame size={16} style={{ marginRight: "0.5rem", color: "#f59e0b" }} />
+                      Keep your streak alive! • Day {mockStats.currentStreak}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="challenge-info">
+                  <div className="scenario-title">No Challenge Today</div>
+                  <div className="scenario-progress">
+                    <div className="progress-text">
+                      Check back tomorrow for a new challenge!
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {todayChallenge ? (
+                <Link
+                  to={`/scenario/${todayChallenge.dialogue?.scenario_id}/dialogue/${todayChallenge.dialogue_id}`}
+                  className="btn btn-primary"
+                >
+                  <Play size={20} />
+                  Start Today's Challenge
+                </Link>
+              ) : (
+                <Link
+                  to="/daily-challenges"
+                  className="btn btn-primary"
+                >
+                  <Calendar size={20} />
+                  View Weekly Challenges
+                </Link>
+              )}
+            </div>
+          </div>
+
           {/* Continue Current Scenario */}
           <div className="card-section continue-scenario">
             <div className="section-header">

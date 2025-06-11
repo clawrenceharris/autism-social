@@ -17,6 +17,7 @@ import {
   SignUpPage,
   SettingsPage,
   PlayScenarioPage,
+  DailyChallengesPage,
 } from "./pages";
 
 function App() {
@@ -51,6 +52,7 @@ function App() {
             <Route path="/progress" element={<ProgressPage />} />
             <Route path="/explore" element={<ExplorePage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/daily-challenges" element={<DailyChallengesPage />} />
           </Route>
         </Route>
 

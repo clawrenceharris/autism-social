@@ -1,0 +1,283 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+.daily-challenges-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-4;
+
+  .challenges-header {
+    text-align: center;
+    margin-bottom: $spacing-8;
+
+    h1 {
+      margin-bottom: $spacing-2;
+      color: $color-gray-900;
+    }
+
+    .description {
+      color: $color-gray-600;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  }
+
+  .week-progress {
+    @include card;
+    margin-bottom: $spacing-8;
+    text-align: center;
+
+    .week-info {
+      margin-bottom: $spacing-6;
+
+      .week-dates {
+        font-size: 1.1rem;
+        color: $color-gray-700;
+        margin-bottom: $spacing-2;
+      }
+
+      .completion-stats {
+        @include flex(row, center, center, $spacing-4);
+        flex-wrap: wrap;
+
+        .stat-item {
+          @include flex(column, center, center, $spacing-1);
+          padding: $spacing-3;
+          background: $color-gray-50;
+          border-radius: $border-radius-md;
+          min-width: 100px;
+
+          .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: $color-primary;
+          }
+
+          .stat-label {
+            font-size: 0.875rem;
+            color: $color-gray-600;
+          }
+        }
+      }
+    }
+
+    .challenge-timeline {
+      position: relative;
+      @include flex(row, space-between, center);
+      padding: $spacing-6 0;
+      margin: 0 $spacing-4;
+
+      // Connecting line
+      &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          $color-gray-200 0%,
+          $color-primary 50%,
+          $color-gray-200 100%
+        );
+        z-index: 1;
+        transform: translateY(-50%);
+      }
+
+      .challenge-node {
+        position: relative;
+        z-index: 2;
+        @include flex(column, center, center, $spacing-2);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+
+        &:hover {
+          transform: translateY(-4px);
+
+          .node-circle {
+            box-shadow: 0 8px 20px rgba($color-primary, 0.3);
+            transform: scale(1.1);
+          }
+        }
+
+        .node-circle {
+          width: 60px;
+          height: 60px;
+          border-radius: $border-radius-full;
+          @include flex(row, center, center);
+          background: $color-white;
+          border: 3px solid $color-gray-300;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+          &.completed {
+            background: $color-primary;
+            border-color: $color-primary;
+            color: $color-white;
+          }
+
+          &.current {
+            border-color: $color-primary;
+            background: $color-primary-100;
+            color: $color-primary;
+            animation: pulse 2s infinite;
+          }
+
+          &.locked {
+            background: $color-gray-100;
+            border-color: $color-gray-200;
+            color: $color-gray-400;
+            cursor: not-allowed;
+          }
+
+          .node-icon {
+            font-size: 1.5rem;
+          }
+        }
+
+        .node-info {
+          text-align: center;
+          min-width: 80px;
+
+          .day-name {
+            font-weight: 600;
+            color: $color-gray-800;
+            margin-bottom: $spacing-1;
+            font-size: 0.9rem;
+          }
+
+          .challenge-title {
+            font-size: 0.8rem;
+            color: $color-gray-600;
+            line-height: 1.2;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          .difficulty-badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: $border-radius-full;
+            background: $color-gray-200;
+            color: $color-gray-700;
+            margin-top: $spacing-1;
+
+            &.easy {
+              background: $color-green-100;
+              color: $color-green-600;
+            }
+
+            &.medium {
+              background: #fef3c7;
+              color: #d97706;
+            }
+
+            &.hard {
+              background: $color-red-100;
+              color: $color-red-600;
+            }
+          }
+        }
+
+        &.locked {
+          pointer-events: none;
+
+          .node-info {
+            opacity: 0.5;
+          }
+        }
+      }
+    }
+  }
+
+  .challenge-details {
+    @include card;
+
+    .no-challenge {
+      text-align: center;
+      padding: $spacing-8;
+      color: $color-gray-500;
+
+      .empty-icon {
+        font-size: 3rem;
+        margin-bottom: $spacing-4;
+        opacity: 0.5;
+      }
+
+      .empty-message {
+        font-size: 1.1rem;
+        margin-bottom: $spacing-2;
+      }
+
+      .empty-description {
+        font-size: 0.9rem;
+        margin-bottom: $spacing-4;
+      }
+    }
+  }
+
+  .loading-state {
+    text-align: center;
+    padding: $spacing-8;
+    color: $color-gray-600;
+  }
+
+  .error-state {
+    text-align: center;
+    padding: $spacing-8;
+    color: $color-red-600;
+    background: $color-red-100;
+    border-radius: $border-radius-md;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba($color-primary, 0.2);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba($color-primary, 0.4);
+  }
+}
+
+@include responsive(sm) {
+  .daily-challenges-container {
+    padding: $spacing-2;
+
+    .week-progress {
+      .challenge-timeline {
+        flex-direction: column;
+        gap: $spacing-4;
+
+        &::before {
+          width: 3px;
+          height: 100%;
+          left: 50%;
+          top: 0;
+          bottom: 0;
+          transform: translateX(-50%);
+        }
+
+        .challenge-node {
+          .node-circle {
+            width: 50px;
+            height: 50px;
+          }
+
+          .node-info {
+            .challenge-title {
+              white-space: normal;
+              max-width: 150px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

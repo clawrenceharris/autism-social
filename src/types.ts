@@ -35,10 +35,12 @@ export interface AuthContextType {
   profile: UserProfile;
   user: User;
 }
+
 export interface Interest {
   id: string;
   name: string;
 }
+
 export interface UserProgress {
   user_id: string;
   clarity: number;
@@ -47,6 +49,7 @@ export interface UserProgress {
   social_awareness: number;
   self_advocacy: number;
 }
+
 export interface Goal {
   id: string;
   goal: string;
@@ -57,6 +60,16 @@ export interface UserProfile {
   user_id: string;
   name: string;
   created_at: string;
+}
+
+export interface DailyChallenge {
+  id: string;
+  day_of_week: number;
+  dialogue_id: string;
+  week_start_date: string;
+  is_active: boolean;
+  created_at: string;
+  dialogue?: Dialogue;
 }
 
 export interface Option {
