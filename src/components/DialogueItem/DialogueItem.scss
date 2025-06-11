@@ -3,7 +3,7 @@
 
 
     .scenario-item {
-      @include flex(row, space-between, center);
+      @include flex(row, space-between, end);
       padding: $spacing-4 0 $spacing-4  $spacing-4 ;
       background: $color-gray-50;
       border-radius: $border-radius-md;
@@ -28,11 +28,10 @@
           );
         }
       }
-
       .scenario-details {
 
         .scenario-header {
-          @include flex(row, space-between, start);
+          @include flex(row, space-between, center);
           align-items:start;
           .scenario-name {
             margin-top: 2.4rem;
