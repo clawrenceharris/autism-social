@@ -15,7 +15,7 @@ const Modal = ({
   onClose,
   title,
   children,
-  showsCloseButton,
+  showsCloseButton = false,
 
 }: ModalProps) => {
   useEffect(() => {
