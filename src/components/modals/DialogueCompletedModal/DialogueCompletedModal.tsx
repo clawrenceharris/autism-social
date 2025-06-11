@@ -13,6 +13,9 @@ const DialogueCompletedModal = ({
 }: DialogueCompletedModalProps) => {
   return (
     <div>
+       <p className="description">
+                  You've completed the dialogue. Here's how you performed:
+      </p>
       <div className="score-grid">
         {scores.clarity !== undefined && (
           <div className="score-item">
