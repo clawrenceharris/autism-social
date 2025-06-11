@@ -17,10 +17,7 @@ const UserHeader = () => {
             <Home />
             <span>Dashboard</span>
           </Link>
-          <Link to="/daily-challenges" className="taskbar-link">
-            <Calendar />
-            <span>Daily Challenges</span>
-          </Link>
+         
           <Link to="/your-scenarios" className="taskbar-link">
             <BookOpen />
             <span>Scenarios</span>
