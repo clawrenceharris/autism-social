@@ -32,11 +32,11 @@ const calcDialogueScore = (
   const total =  getScoreCategoryTotal(category, dialogue);
   if (
     context[category] === undefined && total > 0) {
-    return 0 + "/" + total;
+    return 0;
   } else if (!context[category]) {
     return undefined;
   }
-  return context[category] + "/" + total;
+  return context[category];
 };
 
 export const getDialogueScores = (
