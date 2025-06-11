@@ -1,5 +1,5 @@
-import { useInterests } from "../../hooks/queries/useInterests";
 import { ProgressIndicator } from "../../components";
+import { usePreferencesStore } from "../../store/usePreferencesStore";
 import "./SignUpStep.scss";
 
 interface SignUpStep3Props {
@@ -8,15 +8,15 @@ interface SignUpStep3Props {
 }
 
 const SignUpStep3 = ({ values, toggleSelection }: SignUpStep3Props) => {
-  const { data: interests = [], isLoading, error } = useInterests();
+  const { interests, loading, error } = usePreferencesStore();
 
-  if (isLoading)
+  if (loading)
     return (
       <div className="center-absolute">
         <ProgressIndicator />
       </div>
     );
-  if (error) return <div className="error">{error.message}</div>;
+  if (error) return <div className="error">{error}</div>;
 
   return (
     <div>

@@ -1,8 +1,7 @@
 import { Home, RotateCcw } from "lucide-react";
 import "./DialogueCompletedModal.scss";
-import type { DialogueContext } from "../../../xstate/createDialogueMachine";
 interface DialogueCompletedModalProps {
-  scores: DialogueContext;
+  scores: { [category: string]: number | undefined };
   onReplayClick: () => void;
   onExitClick: () => void;
 }
@@ -13,7 +12,7 @@ const DialogueCompletedModal = ({
 }: DialogueCompletedModalProps) => {
   return (
     <div>
-       <p className="description">
+      <p className="description">
         You've completed the dialogue. Here's how you performed:
       </p>
       <div className="score-grid">

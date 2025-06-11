@@ -54,7 +54,9 @@ const EditScenarioPage = () => {
           steps: dialogue.steps,
         }));
       } catch (err) {
-        showToast(err instanceof Error ? err.message : String(err), "error");
+        showToast(err instanceof Error ? err.message : String(err), {
+          type: "error",
+        });
       }
     };
     fetchDialogue();
@@ -84,14 +86,16 @@ const EditScenarioPage = () => {
 
   const handleUpdateDialogue = async () => {
     if (!dialogue) {
-      return showToast("This Dialogue could not be found.", "error");
+      return showToast("This Dialogue could not be found.", { type: "error" });
     }
 
     try {
       await updateDialogue(dialogue.id, form);
-      showToast("Dialogue updated successfully!", "success");
+      showToast("Dialogue updated successfully!", { type: "success" });
     } catch (err) {
-      showToast(err instanceof Error ? err.message : String(err), "error");
+      showToast(err instanceof Error ? err.message : String(err), {
+        type: "error",
+      });
     }
   };
 

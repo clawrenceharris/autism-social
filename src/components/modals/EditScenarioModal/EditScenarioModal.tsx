@@ -24,12 +24,12 @@ const EditScenarioModal = ({ scenario }: EditScenarioModalProps) => {
 
     try {
       await updateScenario(scenario.id, values);
-      showToast("Scenario created successfully!", "success");
+      showToast("Scenario created successfully!", { type: "success" });
       closeModal();
     } catch (err) {
       const message = "Failed to create Scenario. Please try again.";
       setError(message);
-      showToast(message, "error");
+      showToast(message, { type: "error" });
       console.error(err);
     } finally {
       setIsSubmitting(false);

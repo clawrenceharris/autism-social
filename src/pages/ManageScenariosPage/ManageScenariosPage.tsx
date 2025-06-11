@@ -1,21 +1,13 @@
 import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import {
-  fetchScenarios,
-  deleteScenario,
-  selectAllScenarios,
-  selectScenariosLoading,
-  selectScenariosError,
-  clearError,
-} from "../../store/slices/scenariosSlice";
-import { addToast } from "../../store/slices/uiSlice";
-import { useModal } from "../../context";
+
+import { useModal, useToast } from "../../context";
 import type { Scenario } from "../../types";
 import {
   ConfirmationModal,
   ScenarioListItem,
   Skeleton,
 } from "../../components";
+import { useScenarioStore } from "../../store/useScenarioStrore";
 
 const SkeletonScenario = () => (
   <div className="scenario-item">
@@ -42,22 +34,15 @@ const SkeletonScenario = () => (
 );
 
 const ManageScenariosRedux = () => {
-  const dispatch = useAppDispatch();
-  const scenarios = useAppSelector(selectAllScenarios);
-  const loading = useAppSelector(selectScenariosLoading);
-  const error = useAppSelector(selectScenariosError);
+  const { scenarios, error, loading, ids } = useScenarioStore();
   const { openModal } = useModal();
-
-  useEffect(() => {
-    dispatch(fetchScenarios());
-  }, [dispatch]);
-
+  const { showToast } = useToast();
+  const deleteScenario = useScenarioStore((s) => s.deleteScenario);
   useEffect(() => {
     if (error) {
-      dispatch(addToast({ message: error, type: "error" }));
-      dispatch(clearError());
+      showToast(error, { type: "error" });
     }
-  }, [error, dispatch]);
+  }, [error, showToast]);
 
   const handleDelete = async (scenario: Scenario) => {
     openModal(
@@ -66,21 +51,10 @@ const ManageScenariosRedux = () => {
         confirmText="Delete"
         onConfirm={async () => {
           try {
-            await dispatch(deleteScenario(scenario.id)).unwrap();
-            dispatch(
-              addToast({
-                message: "Scenario deleted successfully",
-                type: "success",
-              })
-            );
-          } catch (error) {
-            console.error(error);
-            dispatch(
-              addToast({
-                message: "Failed to delete scenario",
-                type: "error",
-              })
-            );
+            await deleteScenario(scenario.id);
+            showToast("Scenario deleted successfully", { type: "success" });
+          } catch {
+            showToast("Failed to delete scenario", { type: "error" });
           }
         }}
       />,
@@ -114,7 +88,7 @@ const ManageScenariosRedux = () => {
         </p>
       </header>
 
-      {scenarios?.length === 0 ? (
+      {ids.length === 0 ? (
         <div className="no-scenarios" role="status">
           <p>No scenarios found. Create your first scenario to get started.</p>
         </div>
@@ -124,11 +98,11 @@ const ManageScenariosRedux = () => {
           role="list"
           aria-label="List of scenarios"
         >
-          {scenarios?.map((scenario) => (
-            <div key={scenario.id} role="listitem">
+          {ids.map((id) => (
+            <div key={id} role="listitem">
               <ScenarioListItem
-                scenario={scenario}
-                onDeleteClick={() => handleDelete(scenario)}
+                scenario={scenarios[id]}
+                onDeleteClick={() => handleDelete(scenarios[id])}
               />
             </div>
           ))}

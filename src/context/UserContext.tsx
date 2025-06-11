@@ -1,48 +1,38 @@
 import { createContext, useContext, useEffect, type ReactNode } from "react";
-import { useAuth } from "./AuthContext";
-import { useAppDispatch, useUser } from "../store/hooks";
-import { userThunks } from "../store/thunks/userThunks";
-import type { UserProfile } from "../types";
+import { supabase } from "../lib/supabase";
+import { useUserStore } from "../store/useUserStore";
+import { useToast } from "./ToastContext";
 
-interface UserContextType {
-  profile: UserProfile | null;
-  loading: boolean;
-  error: string | null;
-  updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
-}
-
-const UserContext = createContext<UserContextType | undefined>(undefined);
+const UserContext = createContext<undefined>(undefined);
 
 export function UserProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
-  const dispatch = useAppDispatch();
-  const { user: profile, error, loading } = useUser();
-  const updateProfile = async (updates: Partial<UserProfile>) => {
-    if (user) {
-      dispatch(userThunks.updateUser({ data: updates, id: user.id }));
-    }
-  };
+  const fetchUserAndProfile = useUserStore((s) => s.fetchUserAndProfile);
+  const { showToast } = useToast();
+  const logout = useUserStore((s) => s.logout);
 
-  // Fetch profile when user changes
   useEffect(() => {
-    if (user) {
-      dispatch(userThunks.fetchUserById({ userId: user.id }));
-      dispatch(userThunks.fetchUserGoals({ userId: user.id }));
-      dispatch(userThunks.fetchUserInterests({ userId: user.id }));
-    }
-  }, [dispatch, user]);
+    fetchUserAndProfile();
+  }, [fetchUserAndProfile]);
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      try {
+        if (event === "SIGNED_OUT" || !session?.user) {
+          logout();
+        }
+      } catch (err) {
+        console.error("Auth state change error:", err);
+        showToast("Authentication error occurred", { type: "error" });
+      }
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [logout, showToast]);
 
   return (
-    <UserContext.Provider
-      value={{
-        profile,
-        loading,
-        error,
-        updateProfile,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
+    <UserContext.Provider value={undefined}>{children}</UserContext.Provider>
   );
 }
 

@@ -2,13 +2,16 @@ import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./ProgressSection.scss";
-import { useProgress } from "../../hooks/queries/useProgress";
+import { useProgressStore } from "../../store/useProgressStore";
 const ProgressSection = ({ userId }: { userId: string }) => {
-  const { data: progress, isLoading, error } = useProgress(userId);
+  const { fetchProgress, progress, loading, error } = useProgressStore();
+
   const [progressCategories, setProgressCategories] = useState<
     { name: string; score: number }[]
   >([]);
-
+  useEffect(() => {
+    fetchProgress(userId);
+  }, [fetchProgress, userId]);
   useEffect(() => {
     if (!progress) return;
     setProgressCategories([
@@ -21,7 +24,7 @@ const ProgressSection = ({ userId }: { userId: string }) => {
   if (error) {
     return (
       <div className="center-absolute">
-        <p className="danger"> {error.message}</p>
+        <p className="danger"> {error}</p>
       </div>
     );
   }
@@ -34,8 +37,8 @@ const ProgressSection = ({ userId }: { userId: string }) => {
         </Link>
       </div>
       <div className="section-content">
-        {isLoading ? (
-          <>Loading</>
+        {loading ? (
+          <>Loading your progress...</>
         ) : (
           <div className="progress-categories">
             {progressCategories.map((category) => (

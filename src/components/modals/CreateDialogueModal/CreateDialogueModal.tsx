@@ -1,11 +1,15 @@
 import React, { useState } from "react";
-import type { Dialogue, Scenario } from "../../../types";
+import type {
+  CreateDialogueData,
+  Dialogue,
+  Difficulty,
+  Scenario,
+} from "../../../types";
 import Select from "../../Select";
 import { PERSONA_TAGS } from "../../../constants/scenario";
 import { X } from "lucide-react";
 import "./CreateDialogueModal.scss";
 import { createDialogue } from "../../../services/dialogues";
-import { useScenarioDialogues } from "../../../hooks";
 import { useToast } from "../../../context";
 
 interface CreateDialogueModalProps {
@@ -24,19 +28,27 @@ const CreateDialogueModal = ({
   onSubmit,
 }: CreateDialogueModalProps) => {
   const [personaTags, setPersonaTags] = useState<string[]>([]);
-  const { addDialogue } = useScenarioDialogues(scenario.id);
+  // const { addDialogue } = useScenarioStore(scenario.id);
   const { showToast } = useToast();
 
   const [form, setForm] = useState<{
     title: string;
     personaTags: string[];
-    difficulty: string;
+    difficulty: Difficulty;
   }>({
     title: "",
     personaTags: [],
     difficulty: "easy",
   });
-
+  const handleAddDialogue = async (data: CreateDialogueData) => {
+    try {
+      await createDialogue(data);
+      showToast("Dialogue created successfully", { type: "success" });
+    } catch (err) {
+      console.error("Error creating Dialogue: " + err);
+      showToast("Could not create Dialogue", { type: "error" });
+    }
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -48,11 +60,13 @@ const CreateDialogueModal = ({
         placeholders: [],
         steps: [],
       });
-      addDialogue(result);
+      handleAddDialogue(result);
       onSubmit(result);
-      showToast("Dialogue created successfully!", "success");
+      showToast("Dialogue created successfully!", { type: "success" });
     } catch (err) {
-      showToast("Failed to create Dialogue. Please try again.", "error");
+      showToast("Failed to create Dialogue. Please try again.", {
+        type: "error",
+      });
       console.error(err);
     }
   };

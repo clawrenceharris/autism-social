@@ -23,7 +23,7 @@ export async function updateDialogue(id: string, data: Partial<Dialogue>) {
   return result.data;
 }
 
-export async function getAllDialogues() {
+export async function getDialogues() {
   const result = await DatabaseService.get<Dialogue>("dialogues");
   if (result.error) throw result.error;
   return result.data;

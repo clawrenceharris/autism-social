@@ -1,21 +1,19 @@
-import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { selectToasts, removeToast } from '../../store/slices/uiSlice';
-import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
+import { useEffect } from "react";
+import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from "lucide-react";
+import { useToast } from "../../context";
 
 const ToastContainer = () => {
-  const dispatch = useAppDispatch();
-  const toasts = useAppSelector(selectToasts);
+  const { toasts, removeToast } = useToast();
 
   const getIcon = (type: string) => {
     switch (type) {
-      case 'success':
+      case "success":
         return <CheckCircle size={20} />;
-      case 'error':
+      case "error":
         return <AlertCircle size={20} />;
-      case 'warning':
+      case "warning":
         return <AlertTriangle size={20} />;
-      case 'info':
+      case "info":
       default:
         return <Info size={20} />;
     }
@@ -28,7 +26,7 @@ const ToastContainer = () => {
           key={toast.id}
           {...toast}
           icon={getIcon(toast.type)}
-          onClose={() => dispatch(removeToast(toast.id))}
+          onClose={() => removeToast(toast.id)}
         />
       ))}
     </div>
@@ -38,7 +36,7 @@ const ToastContainer = () => {
 interface ToastProps {
   id: string;
   message: string;
-  type: 'success' | 'error' | 'info' | 'warning';
+  type: "success" | "error" | "info" | "warning";
   icon: React.ReactNode;
   onClose: () => void;
 }

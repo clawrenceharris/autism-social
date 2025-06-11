@@ -1,14 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useScenario } from "../../context";
-import { useDialogues } from "../../hooks/queries/useDialogues";
 import { X, Home } from "lucide-react";
 import "./PlayScenarioPage.scss";
 import { DialoguePlayer, ProgressIndicator } from "../../components";
+import { useDialogueStore } from "../../store/useDialogueStore";
+
 const PlayScenarioPage = () => {
   const navigate = useNavigate();
-  const { loading, error, scenario, dialogue } = useScenario();
-  const { data: dialogues = [], isLoading: dialoguesLoading } = useDialogues();
+  const {
+    loading: scenariosLoading,
+    error,
+    scenario,
+    dialogue,
+  } = useScenario();
+  const { dialogues, ids, loading: dialoguesLoading } = useDialogueStore();
 
   const [key, setKey] = useState<number>(0);
 
@@ -20,7 +26,7 @@ const PlayScenarioPage = () => {
     navigate("/");
   };
 
-  if (loading || dialoguesLoading) {
+  if (scenariosLoading || dialoguesLoading) {
     return (
       <div className="play-scenario-container">
         <div className="game-content">
@@ -91,18 +97,18 @@ const PlayScenarioPage = () => {
             </div>
 
             <div className="dialogue-options">
-              {dialogues?.map((dialogue) => (
+              {ids?.map((id) => (
                 <button
-                  key={dialogue.id}
+                  key={id}
                   onClick={() =>
-                    navigate(`/scenario/${scenario.id}/dialogue/${dialogue.id}`)
+                    navigate(`/scenario/${scenario.id}/dialogue/${id}`)
                   }
                   className="dialogue-option-card"
                 >
-                  <h3>{dialogue.title}</h3>
-                  <p>Difficulty: {dialogue.difficulty}</p>
+                  <h3>{dialogues[id].title}</h3>
+                  <p>Difficulty: {dialogues[id].difficulty}</p>
                   <div className="dialogue-tags">
-                    {dialogue.persona_tags.map((tag, index) => (
+                    {dialogues[id].persona_tags.map((tag, index) => (
                       <span key={index} className="tag">
                         {tag}
                       </span>

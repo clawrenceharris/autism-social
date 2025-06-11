@@ -1,20 +1,17 @@
 import { useState } from "react";
-import { useOnboarding } from "../../hooks/useOnboarding";
 import { useAuth, useToast } from "../../context";
 import type { SignUpFormValues } from "../../types";
 import { updateUserInterests } from "../../services/interests";
-import { useGoals, useInterests } from "../../hooks";
-import { useUser } from "../../store/hooks";
 import { updateUserGoals } from "../../services/user";
+import { usePreferencesStore } from "../../store/usePreferencesStore";
+import { useOnboarding } from "../../hooks";
 
 const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { data: interests = [] } = useInterests();
-  const { data: goals = [] } = useGoals();
+  const { interests, goals, userGoals, userInterests } = usePreferencesStore();
   const { showToast } = useToast();
   const { user } = useAuth();
-  const { goals: userGoals, interests: userInterests } = useUser();
   const { renderStep, step } = useOnboarding({
     handleSubmit: (data: Partial<SignUpFormValues>) => handleSubmit(data),
     error,
@@ -45,11 +42,11 @@ const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
         goals.filter((g) => data.goals?.includes(g.goal)).map((g) => g.id)
       );
 
-      showToast("Updated profile successfully!", "success");
+      showToast("Updated profile successfully!", { type: "success" });
       onSubmit();
     } catch {
       setError("Uh oh, Something went wrong. Please try again later.");
-      showToast("Failed to update profile.", "error");
+      showToast("Failed to update profile.", { type: "error" });
     } finally {
       setIsLoading(false);
     }
@@ -59,8 +56,8 @@ const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
     <>
       {renderStep({
         defaultValues: {
-          interests: userInterests.map((i) => i.name),
-          goals: userGoals.map((g) => g.goal),
+          interests: userInterests,
+          goals: userGoals,
         },
       })}
     </>

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth, useToast, useModal } from "../../context";
+import { useAuth, useModal } from "../../context";
 import { signOut } from "../../services/auth";
-import { ConfirmationModal } from "../../components/";
+import { ConfirmationModal, EditProfile } from "../../components/";
 import {
   User,
   Palette,
@@ -14,7 +14,7 @@ import {
   Edit3,
 } from "lucide-react";
 import "./SettingsPage.scss";
-import EditProfile from "../../components/EditProfile/EditProfile";
+import { useToast } from "../../context";
 
 type ColorScheme = "light" | "dark" | "auto";
 
@@ -36,11 +36,11 @@ const SettingsPage = () => {
         onConfirm={async () => {
           try {
             await signOut();
-            showToast("Logged out successfully", "success");
+            showToast("Logged out successfully", { type: "success" });
             navigate("/login", { replace: true });
             closeModal();
           } catch {
-            showToast("Failed to log out", "error");
+            showToast("Failed to log out", { type: "error" });
           }
         }}
       />,
@@ -55,7 +55,9 @@ const SettingsPage = () => {
         confirmText="Delete Account"
         onConfirm={() => {
           // TODO: Implement account deletion
-          showToast("Account deletion is not yet implemented", "info");
+          showToast("Account deletion is not yet implemented", {
+            type: "info",
+          });
         }}
       />,
       "Delete Account"
@@ -69,7 +71,7 @@ const SettingsPage = () => {
         confirmText="Reset Progress"
         onConfirm={() => {
           // TODO: Implement progress reset
-          showToast("Progress reset is not yet implemented", "info");
+          showToast("Progress reset is not yet implemented", { type: "info" });
         }}
       />,
       "Reset Progress"
@@ -78,7 +80,7 @@ const SettingsPage = () => {
 
   const handleManageHistory = () => {
     // TODO: Navigate to history management page
-    showToast("History management is not yet implemented", "info");
+    showToast("History management is not yet implemented", { type: "info" });
   };
 
   const handleEditProfile = () => {

@@ -1,14 +1,15 @@
 import { Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Dialogue } from "../../types";
-import { selectScenario, useAppSelector } from "../../store/hooks";
-import "./RecommendedDialogue.scss"
+import "./RecommendedDialogue.scss";
+import { useScenarioStore } from "../../store/useScenarioStrore";
 interface RecommendedItemProps {
   dialogue: Dialogue;
 }
 
 const RecommendedDialogue = ({ dialogue }: RecommendedItemProps) => {
-  const scenario = useAppSelector(selectScenario(dialogue.scenario_id));
+  const { scenarios } = useScenarioStore();
+  const scenario = scenarios[dialogue.scenario_id];
 
   return (
     <div key={dialogue.id} className="scenario-item recommended">

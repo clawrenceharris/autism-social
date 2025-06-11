@@ -20,7 +20,7 @@ interface UseOnboardingProps {
   isLoading?: boolean;
 }
 
-export const useOnboarding = ({
+const useOnboarding = ({
   onNext,
   onPrev,
   isLoading,
@@ -156,3 +156,5 @@ export const useOnboarding = ({
     renderStep,
   };
 };
+
+export default useOnboarding;

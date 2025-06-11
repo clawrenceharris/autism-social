@@ -1,6 +1,6 @@
-import { useGoals } from "../../hooks/queries/useGoals";
 import { ProgressIndicator } from "../";
 import "./SignUpStep.scss";
+import { usePreferencesStore } from "../../store/usePreferencesStore";
 
 interface SignUpStep2Props {
   values: string[];
@@ -8,15 +8,15 @@ interface SignUpStep2Props {
 }
 
 export const SignUpStep2 = ({ values, toggleSelection }: SignUpStep2Props) => {
-  const { data: goals = [], isLoading, error } = useGoals();
+  const { goals, error, loading } = usePreferencesStore();
 
-  if (isLoading)
+  if (loading)
     return (
       <div className="center-absolute">
         <ProgressIndicator />
       </div>
     );
-  if (error) return <div className="error">{error.message}</div>;
+  if (error) return <div className="error">{error}</div>;
 
   return (
     <div>

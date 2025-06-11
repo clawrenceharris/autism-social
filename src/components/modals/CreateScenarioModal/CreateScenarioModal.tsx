@@ -25,11 +25,11 @@ const CreateScenarioModal = () => {
       });
       closeModal();
       setTitle("");
-      showToast("Scenario created successfully!", "success");
+      showToast("Scenario created successfully!", { type: "success" });
     } catch (err) {
       const errorMessage = "Failed to create Scenario. Please try again.";
       setError(errorMessage);
-      showToast(errorMessage, "error");
+      showToast(errorMessage, { type: "error" });
       console.error(err);
     } finally {
       setIsSubmitting(false);

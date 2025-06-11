@@ -1,4 +1,3 @@
-import { useScenarioDialogues } from "../../hooks";
 import "./DialoguesPanel.css";
 import { Check, ChevronRight, Minus, Plus } from "lucide-react";
 import type { Scenario } from "../../types";
@@ -6,14 +5,18 @@ import { useModal } from "../../context";
 import { CreateDialogueModal } from "../";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useDialogueStore } from "../../store/useDialogueStore";
 interface DialoguesPanelProps {
   scenario: Scenario;
 }
 
 const DialoguesPanel = ({ scenario }: DialoguesPanelProps) => {
-  const { scenarioDialogues, loading, error } = useScenarioDialogues(
-    scenario.id
-  );
+  const {
+    scenarioDialogues: dialogues,
+    ids,
+    loading,
+    error,
+  } = useDialogueStore();
   const [selectedDialogueId, setSelectedDialogueId] = useState<string | null>(
     null
   );
@@ -43,19 +46,19 @@ const DialoguesPanel = ({ scenario }: DialoguesPanelProps) => {
 
   return (
     <div className="outlined flex-column dialogues-container">
-      {scenarioDialogues.length > 0 ? (
+      {ids.length > 0 ? (
         <div>
-          {scenarioDialogues.map((item, idx) => (
-            <div key={idx} className="dialogue-item ">
+          {ids.map((id) => (
+            <div key={id} className="dialogue-item ">
               <button
-                onClick={() => handleSelectDialogue(item.id)}
+                onClick={() => handleSelectDialogue(id)}
                 className={`squircle-btn ${
-                  selectedDialogueId === item.id ? "primary selected" : ""
+                  selectedDialogueId === id ? "primary selected" : ""
                 } outlined`}
               >
                 <Check
                   color={`${
-                    selectedDialogueId === item.id
+                    selectedDialogueId === id
                       ? "var(--color-primary)"
                       : "var(--color-gray-500)"
                   }`}
@@ -63,12 +66,12 @@ const DialoguesPanel = ({ scenario }: DialoguesPanelProps) => {
               </button>
               <Link
                 className="content-row"
-                to={`/scenario/${scenario.id}/dialogue/${item.id}`}
+                to={`/scenario/${scenario.id}/dialogue/${id}`}
               >
                 <div>
-                  <h2>{item.title}</h2>
+                  <h2>{dialogues[id].title}</h2>
                   <p>
-                    <small>ID: {item.id}</small>
+                    <small>ID: {id}</small>
                   </p>
                 </div>
                 <button>

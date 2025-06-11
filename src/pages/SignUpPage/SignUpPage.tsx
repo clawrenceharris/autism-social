@@ -4,10 +4,10 @@ import { supabase } from "../../lib/supabase";
 import { signUp } from "../../services/auth";
 import { addUserInterests } from "../../services/interests";
 import "./SignUpPage.scss";
-import { useToast } from "../../context";
 import type { SignUpFormValues } from "../../types";
 
-import { useOnboarding } from "../../hooks/useOnboarding";
+import { useOnboarding } from "../../hooks/";
+import { useToast } from "../../context/ToastContext";
 const NUM_STEPS = 4;
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -72,7 +72,7 @@ const SignUpPage = () => {
           );
         }
       }
-      showToast("Sign up was successful!", "success");
+      showToast("Sign up was successful!", { type: "success" });
       navigate("/", { replace: true });
     } catch (err) {
       setError("Sign up failed");

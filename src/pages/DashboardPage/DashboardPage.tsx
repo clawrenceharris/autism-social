@@ -1,5 +1,4 @@
 import { Link, useOutletContext } from "react-router-dom";
-import { useRecommendations } from "../../hooks/queries/useRecommendations";
 import {
   BookOpen,
   Clock,
@@ -12,12 +11,19 @@ import {
 import "./DashboardPage.scss";
 import { ProgressSection, RecommendedDialogue } from "../../components";
 import type { AuthContextType } from "../../types";
+import { useRecommendationsStore } from "../../store/useRecommendations";
+import { useEffect } from "react";
 
 const DashboardPage = () => {
   const { user, profile } = useOutletContext<AuthContextType>();
-  const { data: recommendations = [], isLoading: recommendationsLoading } =
-    useRecommendations(user.id);
-
+  const {
+    fetchRecommendedDialogues,
+    recommendedDialogues: recommendations = [],
+    loading: recommendationsLoading,
+  } = useRecommendationsStore();
+  useEffect(() => {
+    fetchRecommendedDialogues(user.id);
+  }, [fetchRecommendedDialogues, user.id]);
   // Mock data - replace with real data from your services
   const mockStats = {
     scenariosCompleted: 12,
@@ -68,9 +74,7 @@ const DashboardPage = () => {
     <div className="container">
       <div className="dashboard-header">
         <div className="welcome-section">
-          <h1 className="welcome-message">
-            Hi, {getUserDisplayName()}! 👋
-          </h1>
+          <h1 className="welcome-message">Hi, {getUserDisplayName()}! 👋</h1>
           <p className="description">
             Ready to continue building your social confidence? Let's practice
             some conversations today.
