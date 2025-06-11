@@ -17,7 +17,10 @@ const DialogueItem = ({
   const { scenarios } = useScenarioStore();
 
   return (
-    <div key={dialogue.id} className="scenario-item recommended">
+    < <Link
+        key={dialogue.id} className="scenario-item recommended"
+        to={`/scenario/${dialogue.scenario_id}/dialogue/${dialogue.id}`}
+      >
       <div className="scenario-details">
         <div className="scenario-header">
           <div className="scenario-name">{dialogue.title}</div>
@@ -32,12 +35,12 @@ const DialogueItem = ({
           {scenarios[dialogue.scenario_id].description || ""}
         </div>
       </div>
-      <Link
-        to={`/scenario/${dialogue.scenario_id}/dialogue/${dialogue.id}`}
+      <div
+        
         className="scenario-action"
       >
         Start
-      </Link>
+      </div>
     </div>
   );
 };
