@@ -89,10 +89,11 @@
         text-decoration: none;
         padding: 0.5rem 2rem;
         border-radius: 100px;
+        @include transition(background)
         
 
         &:hover {
-          background-color: white;
+          background: white;
           opacity: 0.7;
          
         }
