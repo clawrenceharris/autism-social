@@ -16,6 +16,8 @@ export const getScoreCategoryTotal = (
     for (let j = 0; j < dialogue.steps[i].options.length; j++) {
       if (dialogue.steps[i].options[j].scores.includes(category)) {
         count++;
+        break;
+        
       }
     }
   }
