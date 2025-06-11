@@ -12,8 +12,8 @@ interface UserStore {
   interests: Interest[];
   setUser: (user: User) => void;
   setProfile: (profile: UserProfile) => void;
-  fetchUserAndProfile: () => Promise<void>;
-  logout: () => Promise<void>;
+  fetchUserAndProfile: () => void;
+  logout: () => void;
 }
 
 export const useUserStore = create<UserStore>()(

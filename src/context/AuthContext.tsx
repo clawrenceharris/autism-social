@@ -7,6 +7,7 @@ import {
 } from "react";
 import { supabase } from "../lib/supabase";
 import type { User } from "@supabase/supabase-js";
+import { useUserStore } from "../store/useUserStore";
 
 interface AuthContextType {
   user: User | null;
@@ -18,12 +19,27 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const {
+    fetchUserAndProfile,
+    setUser,
+    user,
+    profile,
+    loading: loadingUserAndProfile,
+  } = useUserStore();
 
   useEffect(() => {
+    fetchUserAndProfile();
+  }, [fetchUserAndProfile]);
+  useEffect(() => {
+    if (loadingUserAndProfile) {
+      return;
+    } else if (user && profile) {
+      setLoading(false);
+      return;
+    }
     // Fallback timeout to ensure loading state is eventually set to false
     const fallbackTimeout = setTimeout(() => {
       if (loading) {
@@ -37,36 +53,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       try {
         if (event === "SIGNED_OUT" || !session?.user) {
-          setUser(null);
           setIsAdmin(false);
           setError(null);
         } else if (session?.user) {
           setUser(session.user);
-
-          // Fetch user role with timeout
-          try {
-            const rolePromise = supabase
-              .from("user_roles")
-              .select("role")
-              .eq("user_id", session.user.id)
-              .maybeSingle();
-
-            // Add timeout to role fetch
-            const roleTimeout = new Promise((_, reject) =>
-              setTimeout(() => reject(new Error("Role fetch timeout")), 10000)
-            );
-
-            const result = (await Promise.race([rolePromise, roleTimeout])) as {
-              data: { role: string } | null;
-            };
-            const roleData = result.data;
-
-            setIsAdmin(roleData?.role === "admin");
-          } catch (roleError) {
-            console.warn("Failed to fetch user role:", roleError);
-            // Continue without role - user can still access the app
-            setIsAdmin(false);
-          }
         }
       } catch (err) {
         console.error("Auth state change error:", err);
