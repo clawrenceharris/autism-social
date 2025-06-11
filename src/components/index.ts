@@ -22,7 +22,7 @@ export { default as CreateScenarioModal } from "./modals/CreateScenarioModal";
 export { default as EditScenarioModal } from "./modals/EditScenarioModal";
 export { default as DialogueCompletedModal } from "./modals/DialogueCompletedModal";
 
-export { default as RecommendedDialogue } from "./RecommendedDialogue";
+export { default as DialogueItem } from "./DialogueItem";
 export { default as UserHeader } from "./UserHeader";
 export { default as ProgressSection } from "./ProgressSection";
 export { default as ToastContainer } from "./ToastContainer";

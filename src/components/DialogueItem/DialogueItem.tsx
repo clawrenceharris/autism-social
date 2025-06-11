@@ -1,28 +1,35 @@
-import { Star } from "lucide-react";
 import { Link } from "react-router-dom";
-import type { Dialogue } from "../../types";
-import "./RecommendedDialogue.scss";
+import type { Dialogue as DialogueType } from "../../types";
+import "./DialogueItem.scss";
 import { useScenarioStore } from "../../store/useScenarioStrore";
+import type { ReactElement } from "react";
 interface RecommendedItemProps {
-  dialogue: Dialogue;
+  dialogue: DialogueType;
+  badgeTitle?: string;
+  badgeIcon?: ReactElement;
 }
 
-const RecommendedDialogue = ({ dialogue }: RecommendedItemProps) => {
+const DialogueItem = ({
+  dialogue,
+  badgeTitle,
+  badgeIcon,
+}: RecommendedItemProps) => {
   const { scenarios } = useScenarioStore();
-  const scenario = scenarios[dialogue.scenario_id];
 
   return (
     <div key={dialogue.id} className="scenario-item recommended">
       <div className="scenario-details">
         <div className="scenario-header">
           <div className="scenario-name">{dialogue.title}</div>
-          <div className="match-badge">
-            <Star size={14} />
-            Suggested
-          </div>
+          {badgeTitle && (
+            <div className="match-badge">
+              {badgeIcon && badgeIcon}
+              {badgeTitle}
+            </div>
+          )}
         </div>
         <div className="scenario-description">
-          {scenario?.description || ""}
+          {scenarios[dialogue.scenario_id].description || ""}
         </div>
       </div>
       <Link
@@ -35,4 +42,4 @@ const RecommendedDialogue = ({ dialogue }: RecommendedItemProps) => {
   );
 };
 
-export default RecommendedDialogue;
+export default DialogueItem;

@@ -9,9 +9,10 @@ import {
   Zap,
   Calendar,
   Flame,
+  Star,
 } from "lucide-react";
 import "./DashboardPage.scss";
-import { ProgressSection, RecommendedDialogue } from "../../components";
+import { ProgressSection, DialogueItem } from "../../components";
 import type { AuthContextType } from "../../types";
 import { useRecommendationsStore } from "../../store/useRecommendations";
 import { useDailyChallengeStore } from "../../store/useDailyChallengeStore";
@@ -24,9 +25,8 @@ const DashboardPage = () => {
     recommendedDialogues: recommendations = [],
     loading: recommendationsLoading,
   } = useRecommendationsStore();
-  
+
   const {
-    challenges,
     loading: challengesLoading,
     fetchDailyChallenges,
     getDayChallenge,
@@ -142,7 +142,10 @@ const DashboardPage = () => {
                   </div>
                   <div className="scenario-progress">
                     <div className="progress-text">
-                      <Flame size={16} style={{ marginRight: "0.5rem", color: "#f59e0b" }} />
+                      <Flame
+                        size={16}
+                        style={{ marginRight: "0.5rem", color: "#f59e0b" }}
+                      />
                       Keep your streak alive! • Day {mockStats.currentStreak}
                     </div>
                   </div>
@@ -157,7 +160,7 @@ const DashboardPage = () => {
                   </div>
                 </div>
               )}
-              
+
               {todayChallenge ? (
                 <Link
                   to={`/scenario/${todayChallenge.dialogue?.scenario_id}/dialogue/${todayChallenge.dialogue_id}`}
@@ -167,10 +170,7 @@ const DashboardPage = () => {
                   Start Today's Challenge
                 </Link>
               ) : (
-                <Link
-                  to="/daily-challenges"
-                  className="btn btn-primary"
-                >
+                <Link to="/daily-challenges" className="btn btn-primary">
                   <Calendar size={20} />
                   View Weekly Challenges
                 </Link>
@@ -231,7 +231,9 @@ const DashboardPage = () => {
               ) : recommendations.length > 0 ? (
                 <div className="scenario-list">
                   {recommendations.map((dialogue) => (
-                    <RecommendedDialogue
+                    <DialogueItem
+                      badgeIcon={<Star size={14} />}
+                      badgeTitle="Suggested"
                       key={dialogue.id}
                       dialogue={dialogue}
                     />
