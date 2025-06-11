@@ -7,14 +7,16 @@ interface ModalProps {
   onClose: () => void;
   title: string | ReactElement;
   children: ReactNode;
+  showsCloseButton?: boolean;
 }
 
 const Modal = ({
   isOpen,
-
   onClose,
   title,
   children,
+  showsCloseButton,
+
 }: ModalProps) => {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -40,9 +42,9 @@ const Modal = ({
         <div className="modal-content">
           <div className="modal-header">
             <h2 className="modal-title">{title}</h2>
-            <button onClick={onClose} className="modal-close">
+           {showsCloseButton && <button onClick={onClose} className="modal-close">
               <X />
-            </button>
+            </button>}
           </div>
           {children}
         </div>
