@@ -18,7 +18,12 @@ const UserRoute = () => {
   if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   } else if (!profile) {
-    return <div>Could not load your user profile</div>;
+    return (
+      <div>
+        <h1>Oops...</h1>
+        <p>We were unable to load your user data</p>
+      </div>
+    );
   } else {
     const context: AuthContextType = {
       user,

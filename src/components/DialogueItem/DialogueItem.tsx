@@ -4,6 +4,7 @@ import "./DialogueItem.scss";
 import { useScenarioStore } from "../../store/useScenarioStrore";
 import type { ReactElement } from "react";
 import { BookmarkPlus, Play } from "lucide-react";
+import ProgressIndicator from "../ProgressIndicator";
 interface RecommendedItemProps {
   dialogue: DialogueType;
   badgeTitle?: string;
@@ -17,8 +18,14 @@ const DialogueItem = ({
   badgeTitle,
   badgeIcon,
 }: RecommendedItemProps) => {
-  const { scenarios } = useScenarioStore();
-
+  const { scenarios, scenariosLoading } = useScenarioStore();
+  if (scenariosLoading) {
+    return (
+      <>
+        <ProgressIndicator />
+      </>
+    );
+  }
   return (
     <Link
       key={dialogue.id}
