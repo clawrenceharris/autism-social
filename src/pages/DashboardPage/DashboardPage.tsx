@@ -178,40 +178,7 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          {/* Continue Current Scenario */}
-          <div className="card-section continue-scenario">
-            <div className="section-header">
-              <h2>Continue Your Journey</h2>
-            </div>
-            <div className="section-content">
-              <div className="scenario-info">
-                <div className="scenario-title">
-                  {mockCurrentScenario.title}
-                </div>
-                <div className="scenario-progress">
-                  <div className="progress-bar">
-                    <div
-                      className="progress-fill"
-                      style={{ width: `${mockCurrentScenario.progress}%` }}
-                    />
-                  </div>
-                  <span className="progress-text">
-                    Step {mockCurrentScenario.step} •{" "}
-                    {mockCurrentScenario.progress}% complete
-                  </span>
-                </div>
-              </div>
-              {/* Updated to use the new user scenario playing route */}
-              <Link
-                to={`/play/${mockCurrentScenario.id}`}
-                className="btn btn-primary"
-              >
-                <Play size={20} />
-                Continue Scenario
-              </Link>
-            </div>
-          </div>
-
+          
           {/* Recommended Scenarios */}
           <div className="card-section">
             <div className="section-header">
