@@ -3,6 +3,7 @@ import { getScenarioById } from "../services/scenarios";
 import type { Dialogue, Scenario } from "../types";
 import { getDialogueById } from "../services/dialogues";
 import { useScenarioStore } from "../store/useScenarioStrore";
+import { useAuth } from "./AuthContext";
 
 interface AuthContextProps {
   children: React.ReactNode;
@@ -29,7 +30,7 @@ const ScenarioProvider = ({
   const [scenario, setScenario] = useState<Scenario | null>(null);
   const [dialogue, setDialogue] = useState<Dialogue | null>(null);
   const { fetchScenarios } = useScenarioStore();
-
+  const { user } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
@@ -67,8 +68,8 @@ const ScenarioProvider = ({
     }
   }, [scenarioId, dialogueId]);
   useEffect(() => {
-    fetchScenarios();
-  }, [fetchScenarios]);
+    if (user) fetchScenarios();
+  }, [fetchScenarios, user]);
   return (
     <ScenarioContext.Provider
       value={{
