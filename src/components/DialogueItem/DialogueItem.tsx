@@ -19,6 +19,7 @@ const DialogueItem = ({
   badgeIcon,
 }: RecommendedItemProps) => {
   const { scenarios, scenariosLoading } = useScenarioStore();
+  
   if (scenariosLoading) {
     return (
       <>
@@ -26,6 +27,13 @@ const DialogueItem = ({
       </>
     );
   }
+
+  // Check if the scenario exists before rendering
+  const scenario = scenarios[dialogue.scenario_id];
+  if (!scenario) {
+    return null;
+  }
+
   return (
     <Link
       key={dialogue.id}
@@ -43,7 +51,7 @@ const DialogueItem = ({
           <h3>{dialogue.title}</h3>
         </div>
         <div className="description">
-          {scenarios[dialogue.scenario_id]?.description || ""}
+          {scenario.description || ""}
         </div>
       </div>
       <div className="scenario-actions">
