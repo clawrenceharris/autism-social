@@ -1,4 +1,3 @@
-// stores/usePreferencesStore.ts
 import { create } from "zustand";
 import { getInterests, updateUserInterests } from "../services/interests";
 import {
