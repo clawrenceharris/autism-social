@@ -13,12 +13,19 @@ import type {
   Message,
   Scenario,
 } from "../../types";
+
 import "./DialoguePlayer.scss";
 import { DialogueCompletedModal } from "../";
 import { getDialogueScores } from "../../utils";
 import { createDialogueMachine } from "../../xstate/createDialogueMachine";
 import { RotateCcw, Send, Settings, Volume2, X } from "lucide-react";
 import { useUserStore } from "../../store/useUserStore";
+import { elevenlabs } from "../../lib/elevenlabs";
+import { play } from "@elevenlabs/elevenlabs-js";
+import { useToast } from "../../context";
+
+import { Readable } from "stream";
+
 interface DialoguePlayerProps {
   scenario: Scenario;
   dialogue: Dialogue;
@@ -43,9 +50,17 @@ const DialoguePlayer = ({
   const { profile: user } = useUserStore();
   const [messages, setMessages] = useState<Message[]>([]);
   const [customInput, setCustomInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [isVolumeOn, setIsVolumeOn] = useState<boolean>(false);
+  const [stream, setStream] = useState<Readable | null>(null);
 
   const messageWindowRef = useRef<HTMLDivElement>(null);
+  const { showToast } = useToast();
+  const tags = Array.from(state.tags) as unknown as DialogueStep[];
+  const currentTag = tags?.[0];
+  const [history, setHistory] = useState<{ speaker: string; text: string }[]>(
+    []
+  );
 
   // Create dialogue machine
 
@@ -82,7 +97,28 @@ const DialoguePlayer = ({
       }
     }
   }, [dialogue, renderMessage]);
+  const createPreviews = useCallback(async () => {
+    try {
+      const stream = await elevenlabs.textToSpeech.stream(dialogue.actor.name, {
+        outputFormat: `mp3_44100_128`,
 
+        text: currentTag.npc,
+        modelId: "eleven_multilingual_v2",
+      });
+      setStream(stream);
+    } catch {
+      showToast("Could not load Dialogue voice.", { type: "error" });
+    }
+  }, [currentTag.npc, dialogue.actor.name, showToast]);
+  useEffect(() => {
+    if (!stream) createPreviews();
+  }, [createPreviews, stream]);
+
+  useEffect(() => {
+    if (isVolumeOn && stream) {
+      play(stream);
+    }
+  }, [isVolumeOn, stream]);
   const handleOptionClick = async (option: DialogueOption) => {
     // Add user message
     const userMessage: Message = {
@@ -160,12 +196,6 @@ const DialoguePlayer = ({
     setIsTyping(false);
   };
 
-  const tags = Array.from(state.tags) as unknown as DialogueStep[];
-  const currentTag = tags?.[0];
-  const [history, setHistory] = useState<{ speaker: string; text: string }[]>(
-    []
-  );
-
   useEffect(() => {
     if (history.length === 0) {
       setHistory([{ speaker: "Alex", text: tags?.[0].npc }]);
@@ -186,6 +216,7 @@ const DialoguePlayer = ({
   }, [state.value, currentTag.npc, renderMessage]);
 
   const currentStep = getCurrentStep();
+
   return (
     <>
       <div className="game-content">
@@ -198,7 +229,10 @@ const DialoguePlayer = ({
                   <div className="scenario-badge">{dialogue.title}</div>
                 </div>
                 <div className="game-controls">
-                  <button className="control-btn">
+                  <button
+                    onClick={() => setIsVolumeOn(!isVolumeOn)}
+                    className="control-btn"
+                  >
                     <Volume2 size={20} />
                   </button>
                   <button className="control-btn">

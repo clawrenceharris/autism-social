@@ -153,6 +153,7 @@ export interface DialogueOption {
 
 export interface Actor {
   name: string;
+  bio: string;
 }
 
 export interface Message {

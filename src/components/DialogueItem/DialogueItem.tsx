@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import type { Dialogue as DialogueType } from "../../types";
 import "./DialogueItem.scss";
 import { useScenarioStore } from "../../store/useScenarioStrore";
