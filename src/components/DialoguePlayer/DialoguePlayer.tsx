@@ -21,10 +21,7 @@ import { createDialogueMachine } from "../../xstate/createDialogueMachine";
 import { RotateCcw, Send, Settings, Volume2, X } from "lucide-react";
 import { useUserStore } from "../../store/useUserStore";
 import { elevenlabs } from "../../lib/elevenlabs";
-import { play } from "@elevenlabs/elevenlabs-js";
 import { useToast } from "../../context";
-
-import { Readable } from "stream";
 
 interface DialoguePlayerProps {
   scenario: Scenario;
@@ -52,7 +49,7 @@ const DialoguePlayer = ({
   const [customInput, setCustomInput] = useState("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [isVolumeOn, setIsVolumeOn] = useState<boolean>(false);
-  const [stream, setStream] = useState<Readable | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   const messageWindowRef = useRef<HTMLDivElement>(null);
   const { showToast } = useToast();
@@ -99,26 +96,34 @@ const DialoguePlayer = ({
   }, [dialogue, renderMessage]);
   const createPreviews = useCallback(async () => {
     try {
-      const stream = await elevenlabs.textToSpeech.stream(dialogue.actor.name, {
+      const response = await elevenlabs.textToSpeech.stream(dialogue.actor.name, {
         outputFormat: `mp3_44100_128`,
-
         text: currentTag.npc,
         modelId: "eleven_multilingual_v2",
       });
-      setStream(stream);
+      
+      // Convert response to blob and create object URL for browser playback
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setAudioUrl(url);
     } catch {
       showToast("Could not load Dialogue voice.", { type: "error" });
     }
   }, [currentTag.npc, dialogue.actor.name, showToast]);
+  
   useEffect(() => {
-    if (!stream) createPreviews();
-  }, [createPreviews, stream]);
+    if (!audioUrl) createPreviews();
+  }, [createPreviews, audioUrl]);
 
   useEffect(() => {
-    if (isVolumeOn && stream) {
-      play(stream);
+    if (isVolumeOn && audioUrl) {
+      const audio = new Audio(audioUrl);
+      audio.play().catch(() => {
+        showToast("Could not play audio.", { type: "error" });
+      });
     }
-  }, [isVolumeOn, stream]);
+  }, [isVolumeOn, audioUrl, showToast]);
+  
   const handleOptionClick = async (option: DialogueOption) => {
     // Add user message
     const userMessage: Message = {
