@@ -366,7 +366,6 @@ button {
   }
 
   .card-section {
-    @include card;
     padding: $spacing-6;
 
     .section-header {
