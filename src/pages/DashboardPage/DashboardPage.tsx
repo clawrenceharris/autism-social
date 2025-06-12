@@ -120,7 +120,7 @@ const DashboardPage = () => {
       <div className="dashboard-grid">
         <div className="main-content">
           {/* Daily Challenge Call to Action */}
-          <div className="card-section hero">
+          <div className="card-section">
             <div className="section-header">
               <h2>
                 <Calendar size={20} style={{ marginRight: "0.5rem" }} />
