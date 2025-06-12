@@ -1,7 +1,7 @@
 @import "../../styles/variables";
 @import "../../styles/mixins";
 
-.dashboard-container{
+.container{
  
 
   .dashboard-header {
@@ -210,5 +210,26 @@
       padding: $spacing-4;
     }
 
-  
+    .scenario-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: $spacing-2;
+
+      .scenario-details {
+        .scenario-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: $spacing-1;
+        }
+
+        .match-reasons {
+          justify-content: flex-start;
+        }
+      }
+
+      .scenario-action {
+        align-self: flex-end;
+      }
+    }
+  }
 }
