@@ -43,7 +43,7 @@ const DialogueItem = ({
           <h3>{dialogue.title}</h3>
         </div>
         <div className="description">
-          {scenarios[dialogue.scenario_id].description || ""}
+          {scenarios[dialogue.scenario_id]?.description || ""}
         </div>
       </div>
       <div className="scenario-actions">
