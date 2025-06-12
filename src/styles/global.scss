@@ -51,12 +51,7 @@ main {
 .flex-column {
   @include flex(column, flex-start, stretch, $spacing-4);
 }
-.flex-content {
-  @include flex(column, flex-start, start, $spacing-4);
-  @include responsive(md) {
-    flex-direction: row;
-  }
-}
+
 .content-row {
   @include flex(row, flex-start, center, $spacing-4);
 }
