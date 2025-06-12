@@ -137,9 +137,7 @@ const DashboardPage = () => {
                 </div>
               ) : todayChallenge ? (
                 <div className="challenge-info">
-                  <div className="scenario-title">
-                    {todayChallenge.dialogue?.title || "Daily Challenge"}
-                  </div>
+                
                   <div className="scenario-progress">
                     <div className="progress-text">
                       <Flame
