@@ -18,7 +18,14 @@ import "./DialoguePlayer.scss";
 import { DialogueCompletedModal } from "../";
 import { getDialogueScores } from "../../utils";
 import { createDialogueMachine } from "../../xstate/createDialogueMachine";
-import { RotateCcw, Send, Settings, Volume2, X } from "lucide-react";
+import {
+  RotateCcw,
+  Send,
+  Settings,
+  Volume2,
+  VolumeXIcon,
+  X,
+} from "lucide-react";
 import { useUserStore } from "../../store/useUserStore";
 import { elevenlabs } from "../../lib/elevenlabs";
 import { useToast } from "../../context";
@@ -49,7 +56,9 @@ const DialoguePlayer = ({
   const [customInput, setCustomInput] = useState("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [isVolumeOn, setIsVolumeOn] = useState<boolean>(false);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [audioBase64, setAudioBase64] = useState<any>();
 
   const messageWindowRef = useRef<HTMLDivElement>(null);
   const { showToast } = useToast();
@@ -58,8 +67,6 @@ const DialoguePlayer = ({
   const [history, setHistory] = useState<{ speaker: string; text: string }[]>(
     []
   );
-
-  // Create dialogue machine
 
   // Auto-scroll to bottom of messages
   const scrollToBottom = () => {
@@ -79,51 +86,99 @@ const DialoguePlayer = ({
     scrollToBottom();
   }, [messages]);
 
-  // Initialize first message when dialogue is selected
-  useEffect(() => {
-    if (dialogue && dialogue.steps.length > 0) {
-      const firstStep = dialogue.steps[0];
-      if (firstStep.npc) {
-        setMessages([
-          {
-            id: "initial",
-            speaker: "npc",
-            text: renderMessage(firstStep.npc),
-          },
-        ]);
-      }
+  const playAudio = useCallback(() => {
+    if (isVolumeOn && audioBase64) {
+      const audio = new Audio(`data:audio/mpeg;base64,${audioBase64}`);
+      audio.play();
     }
-  }, [dialogue, renderMessage]);
-  const createPreviews = useCallback(async () => {
-    try {
-      const response = await elevenlabs.textToSpeech.stream(dialogue.actor.name, {
-        outputFormat: `mp3_44100_128`,
-        text: currentTag.npc,
-        modelId: "eleven_multilingual_v2",
-      });
-      
-      // Convert response to blob and create object URL for browser playback
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      setAudioUrl(url);
-    } catch {
-      showToast("Could not load Dialogue voice.", { type: "error" });
-    }
-  }, [currentTag.npc, dialogue.actor.name, showToast]);
-  
-  useEffect(() => {
-    if (!audioUrl) createPreviews();
-  }, [createPreviews, audioUrl]);
+  }, [audioBase64, isVolumeOn]);
 
   useEffect(() => {
-    if (isVolumeOn && audioUrl) {
-      const audio = new Audio(audioUrl);
-      audio.play().catch(() => {
-        showToast("Could not play audio.", { type: "error" });
-      });
+    if (isVolumeOn) {
+      playAudio();
     }
-  }, [isVolumeOn, audioUrl, showToast]);
-  
+  }, [isVolumeOn, playAudio]);
+  useEffect(() => {
+    if (
+      messages.length > 0 &&
+      messages[messages.length - 1].speaker === "npc"
+    ) {
+      playAudio();
+    }
+  }, [messages, playAudio]);
+  // Initialize first message when dialogue is selected
+  useEffect(() => {
+    const firstStep = dialogue.steps[0];
+    setMessages([
+      {
+        id: "initial",
+        speaker: "npc",
+        text: renderMessage(firstStep.npc),
+      },
+    ]);
+  }, [dialogue, renderMessage]);
+  const createPreviews = async () => {
+    try {
+      const response = await elevenlabs.textToSpeech.convert(
+        "OB0Jj6v9DGLLgz8dD57i",
+        {
+          text: renderMessage(currentTag.npc),
+          modelId: "eleven_multilingual_v2",
+        },
+        { apiKey: import.meta.env.VITE_ELEVENLABS_API_KEY }
+      );
+      // Convert Readable stream to ArrayBuffer
+      const streamToBuffer = async (stream: ReadableStream<Uint8Array>) => {
+        const reader = stream.getReader();
+        const chunks = [];
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          chunks.push(value);
+        }
+        // Concatenate all Uint8Arrays
+        let length = 0;
+        for (const chunk of chunks) {
+          length += chunk.length;
+        }
+        const buffer = new Uint8Array(length);
+        let offset = 0;
+        for (const chunk of chunks) {
+          buffer.set(chunk, offset);
+          offset += chunk.length;
+        }
+        return buffer.buffer;
+      };
+      const audioBuffer = await streamToBuffer(
+        response as unknown as ReadableStream<Uint8Array>
+      );
+      const uint8Array = new Uint8Array(audioBuffer);
+      let binary = "";
+      for (let i = 0; i < uint8Array.length; i++) {
+        binary += String.fromCharCode(uint8Array[i]);
+      }
+      setAudioBase64(window.btoa(binary));
+    } catch (err) {
+      console.error(
+        `Could not create Dialogue voice: ${
+          err instanceof Error
+            ? err.message
+            : String(err) || "An unknown error occured."
+        }`
+      );
+      showToast("Could not create Dialogue voice.", { type: "error" });
+    }
+  };
+  const hasRunRef = useRef(false);
+
+  useEffect(() => {
+    if (hasRunRef.current) {
+      createPreviews();
+      hasRunRef.current = true;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleOptionClick = async (option: DialogueOption) => {
     // Add user message
     const userMessage: Message = {
@@ -238,7 +293,11 @@ const DialoguePlayer = ({
                     onClick={() => setIsVolumeOn(!isVolumeOn)}
                     className="control-btn"
                   >
-                    <Volume2 size={20} />
+                    {isVolumeOn ? (
+                      <Volume2 size={20} />
+                    ) : (
+                      <VolumeXIcon size={20} />
+                    )}
                   </button>
                   <button className="control-btn">
                     <Settings size={20} />
@@ -258,7 +317,7 @@ const DialoguePlayer = ({
                 <div key={message.id} className={`message ${message.speaker}`}>
                   <p className="avatar">
                     {message.speaker === "npc"
-                      ? dialogue.actor.name.charAt(0)
+                      ? dialogue.actor?.name.charAt(0) || ""
                       : user?.name || ""}
                   </p>
                   <div className="message-content">
