@@ -5,26 +5,13 @@
   max-width: 1600px;
   margin: 0 auto;
   padding: $spacing-6 $spacing-4;
-  background: linear-gradient(135deg, $color-gray-50 0%, $color-secondary-100 100%);
+
   min-height: 100vh;
 
   .dashboard-header {
     margin-bottom: $spacing-12;
     text-align: center;
     position: relative;
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: -50px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle, rgba($color-secondary, 0.1) 0%, transparent 70%);
-      border-radius: 50%;
-      z-index: -1;
-    }
 
     .welcome-section {
       @include stack-layout($spacing-6);
@@ -35,10 +22,6 @@
         color: $color-gray-900;
         margin-bottom: $spacing-3;
         font-weight: 700;
-        background: linear-gradient(135deg, $color-gray-900, $color-secondary);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
 
         @include responsive(sm) {
           font-size: 2.5rem;
@@ -70,11 +53,11 @@
       .stat-item {
         @include flex(column, center, center, $spacing-2);
         padding: $spacing-6 $spacing-4;
-        background: linear-gradient(135deg, $color-white, $color-secondary-100);
+        background: linear-gradient(135deg, $color-white, $color-primary-100);
         border-radius: $border-radius-2xl;
-        box-shadow: 0 8px 32px rgba($color-secondary, 0.15);
+        box-shadow: 0 8px 22px rgba($color-primary, 0.15);
         min-width: 140px;
-        border: 1px solid rgba($color-secondary, 0.2);
+        border: 2px solid rgba($color-primary, 0.2);
         transition: all 0.3s ease;
 
         &:hover {
@@ -90,10 +73,7 @@
         .stat-number {
           font-size: 2.5rem;
           font-weight: 800;
-          background: linear-gradient(135deg, $color-primary, $color-secondary);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          color: $color-primary;
 
           @include responsive(sm) {
             font-size: 2rem;
@@ -130,24 +110,18 @@
     @include stack-layout($spacing-6);
   }
 
-  .hero {
+  .challenge-section {
     margin-bottom: $spacing-8;
-    background: linear-gradient(135deg, $color-secondary-100, $color-secondary-200);
+    background: linear-gradient(
+      135deg,
+      $color-secondary-100,
+      $color-secondary-200
+    );
+    display: flex;
+    flex-direction: column;
     border: 2px solid $color-secondary;
     border-radius: $border-radius-2xl;
     position: relative;
-    overflow: hidden;
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 100px;
-      height: 100px;
-      background: radial-gradient(circle, rgba($color-secondary, 0.3) 0%, transparent 70%);
-      border-radius: 50%;
-    }
 
     .scenario-info {
       @include stack-layout($spacing-4);
@@ -165,15 +139,13 @@
 
           .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, $color-secondary, $color-secondary-hover);
+            background: linear-gradient(
+              90deg,
+              $color-secondary,
+              $color-secondary-hover
+            );
             transition: width 0.3s ease;
           }
-        }
-
-        .progress-text {
-          font-size: 0.95rem;
-          color: $color-gray-700;
-          font-weight: 600;
         }
       }
     }
@@ -181,16 +153,20 @@
 
   .card-section {
     @include card;
-    background: linear-gradient(135deg, $color-white, rgba($color-secondary-100, 0.3));
+    background: linear-gradient(
+      135deg,
+      $color-white,
+      rgba($color-secondary-100, 0.3)
+    );
     border: 1px solid rgba($color-secondary, 0.1);
     border-radius: $border-radius-2xl;
     transition: all 0.3s ease;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba($color-secondary, 0.15);
+    p {
+      font-size: 0.95rem;
+      color: $color-gray-700;
+      font-weight: 600;
+      margin: $spacing-8 0;
     }
-
     .section-header {
       @include flex(row, space-between, center);
       margin-bottom: $spacing-6;
@@ -208,7 +184,7 @@
       }
 
       .section-action {
-        color: $color-secondary;
+        color: $color-primary;
         text-decoration: none;
         font-weight: 600;
         font-size: 0.95rem;
@@ -216,13 +192,9 @@
         @include flex(row, center, center, $spacing-1);
 
         &:hover {
-          color: $color-secondary-hover;
+          color: $color-primary-300;
         }
       }
-    }
-
-    .section-content {
-      @include stack-layout($spacing-4);
     }
   }
 
@@ -233,20 +205,32 @@
       .activity-item {
         @include flex(row, flex-start, center, $spacing-4);
         padding: $spacing-4;
-        background: linear-gradient(135deg, $color-gray-50, rgba($color-secondary-100, 0.5));
+        background: linear-gradient(
+          135deg,
+          $color-gray-50,
+          rgba($color-secondary-100, 0.5)
+        );
         border-radius: $border-radius-xl;
         border: 1px solid rgba($color-secondary, 0.1);
         transition: all 0.2s ease;
 
         &:hover {
-          background: linear-gradient(135deg, $color-secondary-100, rgba($color-secondary-200, 0.7));
+          background: linear-gradient(
+            135deg,
+            $color-secondary-100,
+            rgba($color-secondary-200, 0.7)
+          );
           transform: translateX(4px);
         }
 
         .activity-icon {
           width: 40px;
           height: 40px;
-          background: linear-gradient(135deg, $color-secondary-100, $color-secondary-200);
+          background: linear-gradient(
+            135deg,
+            $color-secondary-100,
+            $color-secondary-200
+          );
           border-radius: $border-radius-full;
           @include flex(row, center, center);
           color: $color-secondary;
@@ -311,19 +295,10 @@
     }
   }
 
-  .scenario-list {
-    @include stack-layout($spacing-4);
-  }
-
-  .challenge-info {
-    @include stack-layout($spacing-4);
-    
-    .scenario-title {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: $color-gray-900;
-      margin-bottom: $spacing-2;
-    }
+  .dialogue-list {
+    display: flex;
+    gap: 1rem;
+    padding: $spacing-6 0 $spacing-4;
   }
 }
 
@@ -365,14 +340,6 @@
     .dashboard-grid {
       grid-template-columns: 1fr;
       gap: $spacing-6;
-    }
-
-    .card-section {
-      padding: $spacing-4;
-    }
-
-    .hero {
-      margin-bottom: $spacing-6;
     }
   }
 }

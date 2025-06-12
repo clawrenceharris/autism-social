@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { Dialogue as DialogueType } from "../../types";
 import "./DialogueItem.scss";
 import { useScenarioStore } from "../../store/useScenarioStrore";
@@ -19,7 +19,7 @@ const DialogueItem = ({
   badgeIcon,
 }: RecommendedItemProps) => {
   const { scenarios, scenariosLoading } = useScenarioStore();
-  
+  const navigate = useNavigate();
   if (scenariosLoading) {
     return (
       <>
@@ -28,41 +28,44 @@ const DialogueItem = ({
     );
   }
 
-  // Check if the scenario exists before rendering
   const scenario = scenarios[dialogue.scenario_id];
+  const handlePlayClick = () => {
+    navigate(`/scenario/${scenario.id}/dialogue/${dialogue.id}`);
+  };
+
   if (!scenario) {
     return null;
   }
 
   return (
-    <Link
-      key={dialogue.id}
-      className="scenario-item recommended"
-      to={`/scenario/${dialogue.scenario_id}/dialogue/${dialogue.id}`}
-    >
-      <div className="scenario-details">
-        <div className="scenario-header">
-          {badgeTitle && (
-            <div className="match-badge">
-              {badgeIcon && badgeIcon}
-              {badgeTitle}
+    <div key={dialogue.id} className="dialogue-item recommended">
+      <div className="dialogue-details">
+        <div className="dialogue-header">
+          <div className="header-top">
+            {badgeTitle && (
+              <div className="match-badge">
+                {badgeIcon && badgeIcon}
+                {badgeTitle}
+              </div>
+            )}
+            <div className="dialogue-actions">
+              <button className="squircle-btn primary">
+                {buttonIcon || <BookmarkPlus />}
+              </button>
+              <button
+                onClick={handlePlayClick}
+                className="squircle-btn primary"
+              >
+                {buttonIcon || <Play />}
+              </button>
             </div>
-          )}
+          </div>
+
           <h3>{dialogue.title}</h3>
         </div>
-        <div className="description">
-          {scenario.description || ""}
-        </div>
+        <div className="description">{scenario.description || ""}</div>
       </div>
-      <div className="scenario-actions">
-        <button className="squircle-btn primary">
-          {buttonIcon || <BookmarkPlus />}
-        </button>
-        <button className="squircle-btn primary">
-          {buttonIcon || <Play />}
-        </button>
-      </div>
-    </Link>
+    </div>
   );
 };
 

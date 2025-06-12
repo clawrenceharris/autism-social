@@ -1,7 +1,7 @@
 @import "../../styles/variables";
 @import "../../styles/mixins";
 
-.scenario-item {
+.dialogue-item {
   @include flex(row, space-between, start);
   padding: $spacing-4;
   background: $color-gray-50;
@@ -10,6 +10,8 @@
   margin-bottom: 1rem;
   max-width: 500px;
   cursor: pointer;
+  color: black;
+  min-width: 350px;
   min-height: 130px;
   &:hover {
     background: $color-primary-100;
@@ -29,10 +31,13 @@
       );
     }
   }
-  .scenario-details {
-    .scenario-header {
+  .dialogue-details {
+    .dialogue-header {
       text-align: left;
-
+      .header-top {
+        @include flex(row, space-between, center);
+        margin-bottom: $spacing-3;
+      }
       .scenario-title {
         font-weight: 500;
         color: $color-gray-800;
@@ -53,41 +58,16 @@
     }
   }
 
-  .scenario-actions {
+  .dialogue-actions {
     @include transition(background);
+    @include flex(row, center, center);
     .squircle-btn {
       background-color: $color-white;
       border: 2px solid $color-primary-200;
       box-shadow: 0 1px 4px $color-primary-200;
-
       &:hover {
         background-color: $color-white;
       }
     }
   }
 }
-
-
-
-@include responsive(sm) {
-  
-    .scenario-item {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: $spacing-2;
-
-      .scenario-details {
-        .scenario-header {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: $spacing-1;
-        }
-
-       
-      }
-
-      .scenario-action {
-        align-self: flex-end;
-      }
-    }
-  }

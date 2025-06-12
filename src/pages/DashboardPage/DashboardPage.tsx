@@ -45,13 +45,6 @@ const DashboardPage = () => {
     averageScore: 78,
   };
 
-  const mockCurrentScenario = {
-    id: "1",
-    title: "Meeting a New Colleague",
-    progress: 65,
-    step: "3 of 5",
-  };
-
   const mockRecentActivity = [
     {
       id: "1",
@@ -120,7 +113,7 @@ const DashboardPage = () => {
       <div className="dashboard-grid">
         <div className="main-content">
           {/* Daily Challenge Call to Action */}
-          <div className="card-section hero">
+          <div className="card-section challenge-section">
             <div className="section-header">
               <h2>
                 <Calendar size={20} style={{ marginRight: "0.5rem" }} />
@@ -137,24 +130,22 @@ const DashboardPage = () => {
                 </div>
               ) : todayChallenge ? (
                 <div className="challenge-info">
-                
                   <div className="scenario-progress">
                     <div className="progress-text">
-                      <Flame
-                        size={16}
-                        style={{ marginRight: "0.5rem", color: "#f59e0b" }}
-                      />
-                      Keep your streak alive! • Day {mockStats.currentStreak}
+                      <p>
+                        <Flame
+                          size={16}
+                          style={{ marginRight: "0.5rem", color: "#f59e0b" }}
+                        />
+                        Keep your streak alive! • Day {mockStats.currentStreak}
+                      </p>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="challenge-info">
-                  <div className="scenario-title">No Challenge Today</div>
-                  <div className="scenario-progress">
-                    <div className="progress-text">
-                      Check back tomorrow for a new challenge!
-                    </div>
+                <div className="scenario-progress">
+                  <div className="progress-text">
+                    Check back tomorrow for a new challenge!
                   </div>
                 </div>
               )}
@@ -176,7 +167,6 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          
           {/* Recommended Scenarios */}
           <div className="card-section">
             <div className="section-header">
@@ -194,15 +184,18 @@ const DashboardPage = () => {
                   <p>Loading personalized recommendations...</p>
                 </div>
               ) : recommendations.length > 0 ? (
-                <div className="scenario-list">
-                  {recommendations.map((dialogue) => (
-                    <DialogueItem
-                      badgeIcon={<Star size={14} />}
-                      badgeTitle="Suggested"
-                      key={dialogue.id}
-                      dialogue={dialogue}
-                    />
-                  ))}
+                <div className="dialogue-list">
+                  {recommendations.map((dialogue, index) => {
+                    if (index < 2)
+                      return (
+                        <DialogueItem
+                          badgeIcon={<Star size={14} />}
+                          badgeTitle="Suggested"
+                          key={dialogue.id}
+                          dialogue={dialogue}
+                        />
+                      );
+                  })}
                 </div>
               ) : (
                 <div className="empty-state">

@@ -5,7 +5,7 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   position: relative;
   overflow: hidden;
-
+  min-height: 100vh;
   padding: $spacing-3;
 
   // Animated background particles
@@ -112,7 +112,7 @@
   .dialogue-selection {
     color: $color-white;
     .dialogue-options {
-      margin-top: $spacing-8;
+      padding: $spacing-8 0;
       overflow-y: scroll;
     }
   }
