@@ -37,6 +37,11 @@ interface DialoguePlayerProps {
   onExit: () => void;
   userFields: { [key: string]: string };
 }
+
+interface AudioCache {
+  [key: string]: string; // stepId -> audioUrl
+}
+
 const DialoguePlayer = ({
   scenario,
   onExit,
@@ -56,9 +61,8 @@ const DialoguePlayer = ({
   const [customInput, setCustomInput] = useState("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [isVolumeOn, setIsVolumeOn] = useState<boolean>(false);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [audioBase64, setAudioBase64] = useState<any>();
+  const [audioCache, setAudioCache] = useState<AudioCache>({});
+  const [isGeneratingAudio, setIsGeneratingAudio] = useState<boolean>(false);
 
   const messageWindowRef = useRef<HTMLDivElement>(null);
   const { showToast } = useToast();
@@ -74,6 +78,7 @@ const DialoguePlayer = ({
       top: messageWindowRef.current.scrollHeight,
     });
   };
+
   const renderMessage = useCallback(
     (template: string): string => {
       return template.replace(/{{\s*user\.(\w+)\s*}}/g, (_, key) => {
@@ -82,102 +87,172 @@ const DialoguePlayer = ({
     },
     [userFields]
   );
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  const playAudio = useCallback(() => {
-    if (isVolumeOn && audioBase64) {
-      const audio = new Audio(`data:audio/mpeg;base64,${audioBase64}`);
-      audio.play();
+  // Generate character-specific voice settings based on actor and persona tags
+  const getVoiceSettings = useCallback(() => {
+    const actor = dialogue.actor;
+    const personaTags = dialogue.persona_tags || [];
+    
+    // Default voice ID (you can customize this based on available voices)
+    let voiceId = "OB0Jj6v9DGLLgz8dD57i"; // Default voice
+    
+    // You can map different persona tags to different voice IDs
+    // This is a simplified example - you'd want to expand this based on available voices
+    if (personaTags.includes("formal")) {
+      voiceId = "OB0Jj6v9DGLLgz8dD57i"; // More formal voice
+    } else if (personaTags.includes("friendly")) {
+      voiceId = "OB0Jj6v9DGLLgz8dD57i"; // Friendly voice
+    } else if (personaTags.includes("nervous")) {
+      voiceId = "OB0Jj6v9DGLLgz8dD57i"; // Nervous voice
     }
-  }, [audioBase64, isVolumeOn]);
 
-  useEffect(() => {
-    if (isVolumeOn) {
-      playAudio();
+    // Voice settings based on persona tags
+    const voiceSettings = {
+      stability: 0.5,
+      similarity_boost: 0.5,
+      style: 0.0,
+      use_speaker_boost: true,
+    };
+
+    // Adjust voice settings based on persona tags
+    if (personaTags.includes("confident")) {
+      voiceSettings.stability = 0.7;
+      voiceSettings.style = 0.3;
+    } else if (personaTags.includes("shy")) {
+      voiceSettings.stability = 0.3;
+      voiceSettings.style = 0.1;
+    } else if (personaTags.includes("excited")) {
+      voiceSettings.stability = 0.4;
+      voiceSettings.style = 0.6;
     }
-  }, [isVolumeOn, playAudio]);
-  useEffect(() => {
-    if (
-      messages.length > 0 &&
-      messages[messages.length - 1].speaker === "npc"
-    ) {
-      playAudio();
+
+    return { voiceId, voiceSettings };
+  }, [dialogue.actor, dialogue.persona_tags]);
+
+  // Generate audio for a specific message
+  const generateAudio = useCallback(async (text: string, stepId: string) => {
+    if (!isVolumeOn || audioCache[stepId] || isGeneratingAudio) {
+      return;
     }
-  }, [messages, playAudio]);
-  // Initialize first message when dialogue is selected
-  useEffect(() => {
-    const firstStep = dialogue.steps[0];
-    setMessages([
-      {
-        id: "initial",
-        speaker: "npc",
-        text: renderMessage(firstStep.npc),
-      },
-    ]);
-  }, [dialogue, renderMessage]);
-  const createPreviews = async () => {
+
     try {
+      setIsGeneratingAudio(true);
+      const { voiceId, voiceSettings } = getVoiceSettings();
+      
       const response = await elevenlabs.textToSpeech.convert(
-        "OB0Jj6v9DGLLgz8dD57i",
+        voiceId,
         {
-          text: renderMessage(currentTag.npc),
-          modelId: "eleven_multilingual_v2",
+          text: renderMessage(text),
+          model_id: "eleven_multilingual_v2",
+          voice_settings: voiceSettings,
         },
         { apiKey: import.meta.env.VITE_ELEVENLABS_API_KEY }
       );
-      // Convert Readable stream to ArrayBuffer
-      const streamToBuffer = async (stream: ReadableStream<Uint8Array>) => {
-        const reader = stream.getReader();
-        const chunks = [];
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          chunks.push(value);
-        }
-        // Concatenate all Uint8Arrays
-        let length = 0;
-        for (const chunk of chunks) {
-          length += chunk.length;
-        }
-        const buffer = new Uint8Array(length);
-        let offset = 0;
-        for (const chunk of chunks) {
-          buffer.set(chunk, offset);
-          offset += chunk.length;
-        }
-        return buffer.buffer;
-      };
-      const audioBuffer = await streamToBuffer(
-        response as unknown as ReadableStream<Uint8Array>
-      );
-      const uint8Array = new Uint8Array(audioBuffer);
-      let binary = "";
-      for (let i = 0; i < uint8Array.length; i++) {
-        binary += String.fromCharCode(uint8Array[i]);
-      }
-      setAudioBase64(window.btoa(binary));
+
+      // Convert response to blob and create object URL
+      const audioBlob = new Blob([response as BlobPart], { type: "audio/mpeg" });
+      const audioUrl = URL.createObjectURL(audioBlob);
+      
+      // Cache the audio URL
+      setAudioCache(prev => ({
+        ...prev,
+        [stepId]: audioUrl
+      }));
+
     } catch (err) {
       console.error(
-        `Could not create Dialogue voice: ${
+        `Could not create dialogue voice: ${
           err instanceof Error
             ? err.message
-            : String(err) || "An unknown error occured."
+            : String(err) || "An unknown error occurred."
         }`
       );
-      showToast("Could not create Dialogue voice.", { type: "error" });
+      showToast("Could not create dialogue voice.", { type: "error" });
+    } finally {
+      setIsGeneratingAudio(false);
     }
-  };
-  const hasRunRef = useRef(false);
+  }, [isVolumeOn, audioCache, isGeneratingAudio, getVoiceSettings, renderMessage, showToast]);
 
-  useEffect(() => {
-    if (hasRunRef.current) {
-      createPreviews();
-      hasRunRef.current = true;
+  // Play audio for a specific step
+  const playAudio = useCallback((stepId: string) => {
+    if (!isVolumeOn || !audioCache[stepId]) {
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    try {
+      const audio = new Audio(audioCache[stepId]);
+      audio.play().catch(err => {
+        console.error("Failed to play audio:", err);
+      });
+    } catch (err) {
+      console.error("Audio playback error:", err);
+    }
+  }, [isVolumeOn, audioCache]);
+
+  // Initialize first message when dialogue is selected
+  useEffect(() => {
+    const firstStep = dialogue.steps[0];
+    if (firstStep) {
+      setMessages([
+        {
+          id: "initial",
+          speaker: "npc",
+          text: renderMessage(firstStep.npc),
+        },
+      ]);
+      
+      // Generate audio for first message if volume is on
+      if (isVolumeOn) {
+        generateAudio(firstStep.npc, firstStep.id);
+      }
+    }
+  }, [dialogue, renderMessage, isVolumeOn, generateAudio]);
+
+  // Generate audio when volume is turned on and there are messages
+  useEffect(() => {
+    if (isVolumeOn && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.speaker === "npc") {
+        const currentStep = dialogue.steps.find(step => 
+          renderMessage(step.npc) === lastMessage.text
+        );
+        if (currentStep) {
+          generateAudio(currentStep.npc, currentStep.id);
+        }
+      }
+    }
+  }, [isVolumeOn, messages, dialogue.steps, generateAudio, renderMessage]);
+
+  // Play audio when new NPC message is added and audio is ready
+  useEffect(() => {
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.speaker === "npc") {
+        const currentStep = dialogue.steps.find(step => 
+          renderMessage(step.npc) === lastMessage.text
+        );
+        if (currentStep && audioCache[currentStep.id]) {
+          // Small delay to ensure message is rendered
+          setTimeout(() => {
+            playAudio(currentStep.id);
+          }, 100);
+        }
+      }
+    }
+  }, [messages, dialogue.steps, audioCache, playAudio, renderMessage]);
+
+  // Clean up audio URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      Object.values(audioCache).forEach(url => {
+        URL.revokeObjectURL(url);
+      });
+    };
+  }, [audioCache]);
 
   const handleOptionClick = async (option: DialogueOption) => {
     // Add user message
@@ -214,6 +289,11 @@ const DialoguePlayer = ({
         };
 
         setMessages((prev) => [...prev, npcMessage]);
+        
+        // Generate audio for the new NPC message if volume is on
+        if (isVolumeOn) {
+          generateAudio(currentStep.npc, currentStep.id);
+        }
       }
 
       setIsTyping(false);
@@ -292,6 +372,7 @@ const DialoguePlayer = ({
                   <button
                     onClick={() => setIsVolumeOn(!isVolumeOn)}
                     className="control-btn"
+                    title={isVolumeOn ? "Turn off audio" : "Turn on audio"}
                   >
                     {isVolumeOn ? (
                       <Volume2 size={20} />
