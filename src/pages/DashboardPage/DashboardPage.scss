@@ -72,7 +72,10 @@
     background: linear-gradient(135deg, $color-primary-100, $color-primary-200);
     border: 2px solid $color-primary;
 
-   
+    .scenario-info {
+      @include stack-layout($spacing-3);
+      margin-bottom: $spacing-4;
+
 
       .scenario-progress {
         @include flex(row, flex-start, center, $spacing-2);
