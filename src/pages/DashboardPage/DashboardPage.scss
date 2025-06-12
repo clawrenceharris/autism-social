@@ -1,8 +1,8 @@
 @import "../../styles/variables";
 @import "../../styles/mixins";
 
-.container{
- 
+.dashboard-container{
+   max-width: 1600px;
 
   .dashboard-header {
     margin-bottom: $spacing-8;
