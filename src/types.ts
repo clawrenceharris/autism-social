@@ -89,6 +89,7 @@ export interface Scenario {
 export interface Dialogue {
   id: string;
   actor: Actor;
+  voice_id: string;
   scenario_id: string;
   title: string;
   persona_tags: string[];

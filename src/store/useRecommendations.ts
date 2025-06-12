@@ -1,4 +1,3 @@
-// stores/useDialogueStore.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Dialogue } from "../types";

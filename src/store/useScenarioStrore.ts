@@ -1,4 +1,3 @@
-// stores/useScenarioStore.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Dialogue, Scenario } from "../types";
