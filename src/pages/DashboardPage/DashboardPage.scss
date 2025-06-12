@@ -67,8 +67,7 @@
     }
   }
 
-  &.hero {
-    padding: $spacing-5;
+  .continue-scenario {
     margin-bottom: 2rem;
     background: linear-gradient(135deg, $color-primary-100, $color-primary-200);
     border: 2px solid $color-primary;
@@ -211,5 +210,5 @@
       padding: $spacing-4;
     }
 
-  }
+  
 }
