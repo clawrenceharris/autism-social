@@ -52,6 +52,7 @@ export async function createUser(
 export async function getUserById(userId: string): Promise<UserProfile | null> {
   const result = await DatabaseService.getSingle<UserProfile>(
     "user_profiles",
+    "user_id",
     userId
   );
 
