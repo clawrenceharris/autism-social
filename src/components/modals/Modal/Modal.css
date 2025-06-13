@@ -1,0 +1,50 @@
+@import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.modal-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 100vh;
+  padding: 1rem;
+}
+.modal-close {
+  font-size: 2rem;
+}
+.modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 70vw;
+  max-height: 90vh;
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: none;
+  padding: 1.5rem;
+  transform: translateY(0);
+  transition: transform 0.2s;
+}
+.modal-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 1.5rem;
+}
+.modal-footer {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+}/*# sourceMappingURL=Modal.css.map */

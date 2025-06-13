@@ -1,0 +1,77 @@
+@import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
+.dialogue-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  margin-bottom: 1rem;
+  max-width: 500px;
+  cursor: pointer;
+  color: black;
+  min-width: 350px;
+  min-height: 130px;
+}
+.dialogue-item:hover {
+  background: #d7e9f5;
+  transform: translateY(-1px);
+}
+.dialogue-item.recommended {
+  border: 2px solid #c1e6ff;
+  background: linear-gradient(135deg, #ffffff, #d7e9f5);
+}
+.dialogue-item.recommended:hover {
+  border-color: #54cbe2;
+  background: linear-gradient(135deg, #d7e9f5, #c1e6ff);
+}
+.dialogue-item .dialogue-details .dialogue-header {
+  text-align: left;
+}
+.dialogue-item .dialogue-details .dialogue-header .header-top {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.dialogue-item .dialogue-details .dialogue-header .scenario-title {
+  font-weight: 500;
+  color: #1f2937;
+}
+.dialogue-item .dialogue-details .dialogue-header .match-badge {
+  max-width: 100px;
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: #54cbe2;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 9999px;
+  border: 1px solid currentColor;
+}
+.dialogue-item .dialogue-actions {
+  transition: background 0.2s ease;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+}
+.dialogue-item .dialogue-actions .squircle-btn {
+  background-color: #ffffff;
+  border: 2px solid #c1e6ff;
+  box-shadow: 0 1px 4px #c1e6ff;
+}
+.dialogue-item .dialogue-actions .squircle-btn:hover {
+  background-color: #ffffff;
+}/*# sourceMappingURL=DialogueItem.css.map */

@@ -33,7 +33,7 @@ export async function getDialogues() {
 }
 
 export async function getCompletedDialogues(userId: string) {
-  const result = await DatabaseService.get<Dialogue>("completed_dialogues", {
+  const result = await DatabaseService.get<Dialogue>("user_completed_dialogues", {
     foreignKey: "user_id",
     foreignValue: userId,
   });

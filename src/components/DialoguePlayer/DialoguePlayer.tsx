@@ -61,7 +61,8 @@ const DialoguePlayer = ({
   const [isVolumeOn, setIsVolumeOn] = useState<boolean>(false);
   const [audioCache, setAudioCache] = useState<Map<string, string>>(new Map());
   const [isGeneratingAudio, setIsGeneratingAudio] = useState<boolean>(false);
-  const [showCompletionModal, setShowCompletionModal] = useState<boolean>(false);
+  const [showCompletionModal, setShowCompletionModal] =
+    useState<boolean>(false);
   const { fetchVoices, getAudioUrl } = useVoiceStore();
   const {
     selectedActor: actor,
@@ -82,7 +83,7 @@ const DialoguePlayer = ({
     fetchVoices();
     fetchActors();
   }, [fetchActors, fetchVoices, setActor]);
-  
+
   useEffect(() => {
     setActor(dialogue.actor_id);
   }, [dialogue.actor_id, setActor, actors]);

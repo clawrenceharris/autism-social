@@ -3,7 +3,7 @@ import type {
   DialogueEvent,
   DialogueStep,
   ScoreCategory,
-  ScoreSummary,
+  DialogueScores,
 } from "../types";
 
 export function createDialogueMachine(
@@ -29,7 +29,7 @@ export function createDialogueMachine(
       transitions[opt.event] = {
         target: opt.next,
         actions: opt.scores
-          ? assign(({ context }: { context: ScoreSummary }) => {
+          ? assign(({ context }: { context: DialogueScores }) => {
               const updated = { ...context };
               const seen = new Set<string>();
 
@@ -70,7 +70,7 @@ export function createDialogueMachine(
   return createMachine({
     types: {
       events: {} as DialogueEvent,
-      context: {} as ScoreSummary,
+      context: {} as DialogueScores,
     },
     context: Object.fromEntries(
       categories.map((c) => [c, { earned: 0, possible: 0 }])
