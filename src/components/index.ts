@@ -24,6 +24,7 @@ export { default as CreateScenarioModal } from "./modals/CreateScenarioModal";
 export { default as EditScenarioModal } from "./modals/EditScenarioModal";
 export { default as DialogueCompletedModal } from "./modals/DialogueCompletedModal";
 export { default as DialogueOnboardingModal } from "./modals/DialogueOnboardingModal";
+export { default as DialogueCompletionModal } from "./DialogueCompletionModal";
 
 export { default as DialogueItem } from "./DialogueItem";
 export { default as UserHeader } from "./UserHeader";

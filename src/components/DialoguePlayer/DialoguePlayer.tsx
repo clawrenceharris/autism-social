@@ -16,7 +16,7 @@ import type {
 } from "../../types";
 
 import "./DialoguePlayer.scss";
-import { DialogueCompletedModal, ProgressIndicator } from "../";
+import { DialogueCompletionModal, ProgressIndicator } from "../";
 import { getDialogueScores } from "../../utils";
 import { createDialogueMachine } from "../../xstate/createDialogueMachine";
 import {
@@ -61,6 +61,7 @@ const DialoguePlayer = ({
   const [isVolumeOn, setIsVolumeOn] = useState<boolean>(false);
   const [audioCache, setAudioCache] = useState<Map<string, string>>(new Map());
   const [isGeneratingAudio, setIsGeneratingAudio] = useState<boolean>(false);
+  const [showCompletionModal, setShowCompletionModal] = useState<boolean>(false);
   const { fetchVoices, getAudioUrl } = useVoiceStore();
   const {
     selectedActor: actor,
@@ -81,9 +82,18 @@ const DialoguePlayer = ({
     fetchVoices();
     fetchActors();
   }, [fetchActors, fetchVoices, setActor]);
+  
   useEffect(() => {
     setActor(dialogue.actor_id);
   }, [dialogue.actor_id, setActor, actors]);
+
+  // Check if dialogue is completed
+  useEffect(() => {
+    if (state.status === "done" && !showCompletionModal) {
+      setShowCompletionModal(true);
+    }
+  }, [state.status, showCompletionModal]);
+
   // Auto-scroll to bottom of messages
   const scrollToBottom = () => {
     messageWindowRef.current?.scrollTo({
@@ -279,6 +289,17 @@ const DialoguePlayer = ({
     setMessages((prev) => [...prev, aiResponse]);
     setIsTyping(false);
   };
+
+  const handleCompletionModalReplay = () => {
+    setShowCompletionModal(false);
+    onReplay();
+  };
+
+  const handleCompletionModalExit = () => {
+    setShowCompletionModal(false);
+    onExit();
+  };
+
   if (loading) {
     return (
       <div>
@@ -406,18 +427,22 @@ const DialoguePlayer = ({
                   </form>
                 </div>
               </div>
-            ) : (
-              <div className="response-section">
-                <DialogueCompletedModal
-                  onExitClick={onExit}
-                  onReplayClick={onReplay}
-                  scores={getDialogueScores(state.context)}
-                />
-              </div>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
+
+      {/* Completion Modal */}
+      {showCompletionModal && (
+        <DialogueCompletionModal
+          userId={user.user_id}
+          dialogueId={dialogue.id}
+          scores={getDialogueScores(state.context)}
+          onReplay={handleCompletionModalReplay}
+          onExit={handleCompletionModalExit}
+          isVisible={showCompletionModal}
+        />
+      )}
     </>
   );
 };

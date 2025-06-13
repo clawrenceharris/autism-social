@@ -1,0 +1,395 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+.completion-modal {
+  @include flex(column, center, center, $spacing-6);
+  padding: $spacing-8;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+
+  .completion-header {
+    @include flex(column, center, center, $spacing-4);
+    margin-bottom: $spacing-6;
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, $color-green-600, #10b981);
+      border-radius: $border-radius-full;
+      @include flex(row, center, center);
+      color: $color-white;
+      font-size: 2.5rem;
+      margin-bottom: $spacing-4;
+      animation: successPulse 2s ease-in-out infinite;
+      box-shadow: 0 8px 25px rgba($color-green-600, 0.3);
+    }
+
+    .completion-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: $color-gray-900;
+      margin-bottom: $spacing-2;
+    }
+
+    .completion-subtitle {
+      font-size: 1.1rem;
+      color: $color-gray-600;
+      max-width: 400px;
+    }
+  }
+
+  .progress-section {
+    width: 100%;
+    margin-bottom: $spacing-8;
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: $color-gray-800;
+      margin-bottom: $spacing-6;
+      text-align: center;
+    }
+
+    .progress-categories {
+      @include flex(column, flex-start, stretch, $spacing-4);
+      width: 100%;
+    }
+
+    .progress-item {
+      background: $color-white;
+      border-radius: $border-radius-xl;
+      padding: $spacing-4;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      }
+
+      .progress-header {
+        @include flex(row, space-between, center);
+        margin-bottom: $spacing-3;
+
+        .category-name {
+          font-weight: 600;
+          color: $color-gray-700;
+          font-size: 1rem;
+        }
+
+        .score-display {
+          @include flex(row, center, center, $spacing-2);
+
+          .score-change {
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: $border-radius-full;
+            background: $color-green-100;
+            color: $color-green-600;
+            opacity: 0;
+            transform: translateY(-10px);
+            animation: scoreChangeAppear 0.5s ease-out 0.8s forwards;
+
+            &.no-change {
+              background: $color-gray-100;
+              color: $color-gray-500;
+            }
+          }
+
+          .current-score {
+            font-size: 1.25rem;
+            font-weight: 700;
+            min-width: 60px;
+            text-align: right;
+
+            &.excellent {
+              color: $color-green-600;
+            }
+
+            &.good {
+              color: #f59e0b;
+            }
+
+            &.poor {
+              color: $color-red-600;
+            }
+          }
+        }
+      }
+
+      .progress-bar-container {
+        position: relative;
+        height: 12px;
+        background: $color-gray-200;
+        border-radius: $border-radius-full;
+        overflow: hidden;
+
+        .progress-bar {
+          height: 100%;
+          border-radius: $border-radius-full;
+          transition: width 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative;
+          overflow: hidden;
+
+          &.excellent {
+            background: linear-gradient(90deg, $color-green-600, #10b981);
+          }
+
+          &.good {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+          }
+
+          &.poor {
+            background: linear-gradient(90deg, $color-red-600, #f87171);
+          }
+
+          &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+              90deg,
+              transparent,
+              rgba(255, 255, 255, 0.4),
+              transparent
+            );
+            animation: shimmer 2s ease-in-out infinite;
+          }
+        }
+
+        .progress-percentage {
+          position: absolute;
+          right: $spacing-2;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: $color-white;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+      }
+    }
+  }
+
+  .completion-actions {
+    @include flex(row, center, center, $spacing-4);
+    flex-wrap: wrap;
+    margin-top: $spacing-4;
+
+    .action-btn {
+      @include flex(row, center, center, $spacing-2);
+      padding: $spacing-3 $spacing-6;
+      border-radius: $border-radius-md;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 140px;
+
+      &.primary {
+        background: $color-primary;
+        color: $color-white;
+        border: 2px solid $color-primary;
+
+        &:hover {
+          background: $color-primary-hover;
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba($color-primary, 0.3);
+        }
+      }
+
+      &.secondary {
+        background: $color-white;
+        color: $color-gray-700;
+        border: 2px solid $color-gray-300;
+
+        &:hover {
+          background: $color-gray-50;
+          border-color: $color-gray-400;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+  }
+
+  .loading-state {
+    @include flex(column, center, center, $spacing-4);
+    padding: $spacing-8;
+
+    .loading-spinner {
+      margin-bottom: $spacing-4;
+    }
+
+    .loading-text {
+      font-size: 1.1rem;
+      color: $color-gray-600;
+    }
+  }
+
+  .error-state {
+    @include flex(column, center, center, $spacing-4);
+    padding: $spacing-6;
+    background: $color-red-100;
+    border-radius: $border-radius-xl;
+    border: 2px solid $color-red-200;
+
+    .error-icon {
+      color: $color-red-600;
+      font-size: 2rem;
+      margin-bottom: $spacing-2;
+    }
+
+    .error-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: $color-red-600;
+      margin-bottom: $spacing-2;
+    }
+
+    .error-message {
+      color: $color-red-700;
+      text-align: center;
+      margin-bottom: $spacing-4;
+    }
+
+    .retry-btn {
+      background: $color-red-600;
+      color: $color-white;
+      border: none;
+      padding: $spacing-2 $spacing-4;
+      border-radius: $border-radius-md;
+      cursor: pointer;
+      font-weight: 600;
+
+      &:hover {
+        background: $color-red-700;
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes successPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 8px 25px rgba($color-green-600, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 12px 35px rgba($color-green-600, 0.4);
+  }
+}
+
+@keyframes scoreChangeAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+// Staggered animation delays for progress bars
+.progress-item {
+  &:nth-child(1) .progress-bar {
+    transition-delay: 0.2s;
+  }
+  &:nth-child(2) .progress-bar {
+    transition-delay: 0.4s;
+  }
+  &:nth-child(3) .progress-bar {
+    transition-delay: 0.6s;
+  }
+  &:nth-child(4) .progress-bar {
+    transition-delay: 0.8s;
+  }
+  &:nth-child(5) .progress-bar {
+    transition-delay: 1.0s;
+  }
+}
+
+// Responsive design
+@include responsive(sm) {
+  .completion-modal {
+    padding: $spacing-4;
+
+    .completion-header {
+      .success-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+      }
+
+      .completion-title {
+        font-size: 1.5rem;
+      }
+
+      .completion-subtitle {
+        font-size: 1rem;
+      }
+    }
+
+    .completion-actions {
+      flex-direction: column;
+      width: 100%;
+
+      .action-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  .progress-bar {
+    transition-duration: 0.3s !important;
+  }
+
+  .success-icon {
+    animation: none !important;
+  }
+
+  .progress-bar::after {
+    animation: none !important;
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .progress-item {
+    border: 2px solid $color-gray-400;
+  }
+
+  .progress-bar {
+    &.excellent {
+      background: #006400 !important;
+    }
+
+    &.good {
+      background: #ff8c00 !important;
+    }
+
+    &.poor {
+      background: #dc143c !important;
+    }
+  }
+}
