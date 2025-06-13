@@ -296,9 +296,12 @@
   }
 
   .dialogue-list {
-    display: flex;
-    gap: 1rem;
+    @include flex(column, center, center);
+
     padding: $spacing-6 0 $spacing-4;
+    @include responsive(md) {
+      flex-direction: row;
+    }
   }
 }
 

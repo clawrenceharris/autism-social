@@ -60,11 +60,11 @@ const DialoguePlayer = ({
 
   const messageWindowRef = useRef<HTMLDivElement>(null);
   const { showToast } = useToast();
-  const tags = Array.from(state.tags) as unknown as DialogueStep[];
-  const currentTag = tags?.[0];
-  const [history, setHistory] = useState<{ speaker: string; text: string }[]>(
-    []
-  );
+
+  const getCurrentStep = (): DialogueStep | undefined => {
+    return dialogue.steps.find((step) => step.id === state.value);
+  };
+  const currentStep = getCurrentStep();
   useEffect(() => {
     fetchVoices();
   }, [fetchVoices]);
@@ -91,35 +91,34 @@ const DialoguePlayer = ({
     scrollToBottom();
   }, [messages]);
 
-  const playAudio = useCallback(async () => {
-    if (isVolumeOn) {
-      try {
-        const audioUrl = await getAudioUrl(dialogue.voice_id, {
-          text: currentTag.npc,
-        });
+  const playAudio = useCallback(
+    async (text: string) => {
+      showToast("Could not play audio. Please try again another time.");
 
-        const audio = new Audio(audioUrl);
-        audio.play();
+      try {
+        if (isVolumeOn) {
+          const audioUrl = await getAudioUrl(dialogue.voice_id, {
+            text,
+          });
+
+          const audio = new Audio(audioUrl);
+          audio.play();
+        }
       } catch (err) {
         console.log(err);
         showToast("Could not play audio. Please try again another time.");
       }
-    }
-  }, [currentTag.npc, dialogue.voice_id, getAudioUrl, isVolumeOn, showToast]);
+    },
+    [dialogue.voice_id, getAudioUrl, isVolumeOn, showToast]
+  );
 
   useEffect(() => {
-    if (isVolumeOn) {
-      playAudio();
+    if (currentStep?.npc) {
+      const message = renderMessage(currentStep.npc);
+      playAudio(message);
     }
-  }, [isVolumeOn, playAudio]);
-  useEffect(() => {
-    if (
-      messages.length > 0 &&
-      messages[messages.length - 1].speaker === "npc"
-    ) {
-      playAudio();
-    }
-  }, [messages, playAudio]);
+  }, [currentStep?.npc, playAudio, renderMessage]);
+
   // Initialize first message when dialogue is selected
   useEffect(() => {
     const firstStep = dialogue.steps[0];
@@ -213,25 +212,6 @@ const DialoguePlayer = ({
     setIsTyping(false);
   };
 
-  useEffect(() => {
-    if (history.length === 0) {
-      setHistory([{ speaker: "Alex", text: tags?.[0].npc }]);
-    }
-  }, [history.length, tags]);
-
-  const previousStateRef = useRef(state.value);
-
-  useEffect(() => {
-    if (previousStateRef.current !== state.value) {
-      setHistory((prev) => [
-        ...prev,
-        { speaker: "npc", text: renderMessage(currentTag?.npc) },
-      ]);
-
-      previousStateRef.current = state.value;
-    }
-  }, [state.value, currentTag?.npc, renderMessage]);
-
   return (
     <>
       <div className="game-content">
@@ -273,7 +253,7 @@ const DialoguePlayer = ({
                   <p className="avatar">
                     {message.speaker === "npc"
                       ? dialogue.actor?.name.charAt(0) || ""
-                      : user?.name || ""}
+                      : user?.name.charAt(0) || ""}
                   </p>
                   <div className="message-content">
                     <div className="speaker-name">
@@ -300,12 +280,12 @@ const DialoguePlayer = ({
 
             {state.status !== "done" ? (
               <div className="response-section">
-                {currentTag.options && currentTag.options.length > 0 && (
+                {currentStep?.options && currentStep.options.length > 0 && (
                   <>
                     <div className="response-prompt"></div>
 
                     <div className="response-options">
-                      {currentTag.options.map((option, index) => (
+                      {currentStep.options.map((option, index) => (
                         <button
                           key={index}
                           onClick={() => handleOptionClick(option)}

@@ -4,7 +4,7 @@ import { elevenlabs } from "../lib/elevenlabs";
 import type { TextToSpeechRequest, Voice } from "@elevenlabs/elevenlabs-js/api";
 
 interface VoiceStore {
-  voices: Record<string, Voice>;
+  voices?: Record<string, Voice>;
   ids: string[];
   selectedVoice: Voice | null;
   setVoice: (voice: Voice) => void;
@@ -16,13 +16,13 @@ interface VoiceStore {
 export const useVoiceStore = create<VoiceStore>()(
   persist(
     (set, get) => ({
-      voices: {},
+      voices: undefined,
       ids: [],
       error: null,
       selectedVoice: null,
       loading: false,
       fetchVoices: async () => {
-        if (get().voices != null) return;
+        if (get().voices) return;
         const { voices } = await elevenlabs.voices.getAll();
         set({
           voices: voices.reduce<Record<string, Voice>>((acc, voice) => {
@@ -52,6 +52,10 @@ export const useVoiceStore = create<VoiceStore>()(
               body: JSON.stringify({
                 text: request.text,
                 model_id: "eleven_multilingual_v2",
+                voiceSettings: {
+                  stability: 0.5,
+                  similarity_boost: 0.75,
+                },
                 seed: 42,
               }),
             }
