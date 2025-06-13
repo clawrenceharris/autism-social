@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { elevenlabs } from "../lib/elevenlabs";
-import type { TextToSpeechRequest, Voice } from "@elevenlabs/elevenlabs-js/api";
+import type { Voice } from "@elevenlabs/elevenlabs-js/api";
 
 interface VoiceStore {
   voices?: Record<string, Voice>;
@@ -11,8 +11,20 @@ interface VoiceStore {
   fetchVoices: () => void;
   error: string | null;
   loading: boolean;
-  getAudioUrl: (id: string, request: TextToSpeechRequest) => Promise<string>;
+  getAudioUrl: (
+    id: string, 
+    request: { 
+      text: string; 
+      voice_settings?: {
+        stability?: number;
+        similarity_boost?: number;
+        style?: number;
+        use_speaker_boost?: boolean;
+      };
+    }
+  ) => Promise<string>;
 }
+
 export const useVoiceStore = create<VoiceStore>()(
   persist(
     (set, get) => ({
@@ -23,13 +35,17 @@ export const useVoiceStore = create<VoiceStore>()(
       loading: false,
       fetchVoices: async () => {
         if (get().voices) return;
-        const { voices } = await elevenlabs.voices.getAll();
-        set({
-          voices: voices.reduce<Record<string, Voice>>((acc, voice) => {
-            acc[voice.voiceId] = voice;
-            return acc;
-          }, {}),
-        });
+        try {
+          const { voices } = await elevenlabs.voices.getAll();
+          set({
+            voices: voices.reduce<Record<string, Voice>>((acc, voice) => {
+              acc[voice.voiceId] = voice;
+              return acc;
+            }, {}),
+          });
+        } catch (error) {
+          set({ error: "Failed to fetch voices" });
+        }
       },
 
       setVoice: (voice: Voice) => {
@@ -38,9 +54,19 @@ export const useVoiceStore = create<VoiceStore>()(
 
       getAudioUrl: async (
         voiceId: string,
-        request: Pick<TextToSpeechRequest, "text">
+        request: { 
+          text: string; 
+          voice_settings?: {
+            stability?: number;
+            similarity_boost?: number;
+            style?: number;
+            use_speaker_boost?: boolean;
+          };
+        }
       ): Promise<string> => {
         try {
+          set({ loading: true });
+          
           const response = await fetch(
             `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
             {
@@ -52,14 +78,21 @@ export const useVoiceStore = create<VoiceStore>()(
               body: JSON.stringify({
                 text: request.text,
                 model_id: "eleven_multilingual_v2",
-                voiceSettings: {
+                voice_settings: request.voice_settings || {
                   stability: 0.5,
                   similarity_boost: 0.75,
+                  style: 0.5,
+                  use_speaker_boost: true,
                 },
                 seed: 42,
               }),
             }
           );
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
           const blob = await response.blob();
           const audioUrl = URL.createObjectURL(blob);
           return audioUrl;
@@ -69,7 +102,7 @@ export const useVoiceStore = create<VoiceStore>()(
             `Could not create Dialogue voice: ${
               err instanceof Error
                 ? err.message
-                : String(err) || "An unknown error occured."
+                : String(err) || "An unknown error occurred."
             }`
           );
         } finally {
@@ -78,7 +111,7 @@ export const useVoiceStore = create<VoiceStore>()(
       },
     }),
     {
-      name: "voice-storage", // key for localStorage
+      name: "voice-storage",
       partialize: (state) => ({
         voices: state.voices,
         selectedVoice: state.selectedVoice,

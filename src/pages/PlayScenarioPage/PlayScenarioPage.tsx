@@ -20,38 +20,54 @@ const PlayScenarioPage = () => {
     dialoguesByScenario,
     error,
     dialoguesLoading,
-
     fetchDialoguesByScenario: fetchScenarioDialogues,
   } = useScenarioStore();
-  const [userFields, setUserFields] = useState({});
+  const [userFields, setUserFields] = useState<{ [key: string]: string } | null>(null);
   const [key, setKey] = useState<number>(0);
   const { scenario, dialogue } = useScenario();
-  const { openModal } = useModal();
+  const { openModal, closeModal } = useModal();
+
   const handleReplay = () => {
     setKey((prev) => prev + 1);
   };
+
   const handleSubmit = (data: { [key: string]: string }) => {
     setUserFields(data);
+    closeModal();
   };
+
   const handleExit = () => {
     navigate("/");
   };
+
   useEffect(() => {
     if (scenario) fetchScenarioDialogues(scenario.id);
   }, [fetchScenarioDialogues, scenario]);
 
   useEffect(() => {
-    //if we selected a dialogue and there are no user fields defined
-    if (!userFields && dialogue) {
-      //open modal so we can enter the user fields
+    // If we selected a dialogue and there are placeholders but no user fields defined
+    if (dialogue && dialogue.placeholders && dialogue.placeholders.length > 0 && !userFields) {
+      // Open modal so we can enter the user fields
       openModal(
-        <FormLayout<{ [key: string]: string }> onSubmit={handleSubmit}>
+        <FormLayout<{ [key: string]: string }>
+          onSubmit={handleSubmit}
+          submitText="Start Dialogue"
+          showsCancelButton={true}
+          cancelText="Cancel"
+          onCancel={() => {
+            closeModal();
+            navigate("/");
+          }}
+        >
           <DialogueOnboardingModal />
         </FormLayout>,
-        "Set Dialogue Inputs"
+        "Dialogue Setup"
       );
+    } else if (dialogue && (!dialogue.placeholders || dialogue.placeholders.length === 0) && !userFields) {
+      // If no placeholders are needed, set empty user fields
+      setUserFields({});
     }
-  });
+  }, [dialogue, userFields, openModal, closeModal, navigate]);
 
   if (scenariosLoading || dialoguesLoading) {
     return (
@@ -133,7 +149,7 @@ const PlayScenarioPage = () => {
             <div className="dialogue-options">
               {scenarioIds.map((id) => {
                 return dialoguesByScenario[id]?.map((dialogue) => (
-                  <DialogueItem dialogue={dialogue} />
+                  <DialogueItem key={dialogue.id} dialogue={dialogue} />
                 ));
               })}
             </div>
@@ -142,7 +158,9 @@ const PlayScenarioPage = () => {
       </div>
     );
   }
-  if (userFields) {
+
+  // Only render DialoguePlayer when we have user fields (or confirmed no placeholders needed)
+  if (userFields !== null) {
     return (
       <div key={key} className="play-scenario-container">
         <DialoguePlayer
@@ -155,6 +173,17 @@ const PlayScenarioPage = () => {
       </div>
     );
   }
+
+  // Show loading while waiting for user input
+  return (
+    <div className="play-scenario-container">
+      <div className="game-content">
+        <div className="center-absolute">
+          <ProgressIndicator />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default PlayScenarioPage;

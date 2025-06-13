@@ -37,6 +37,7 @@ interface DialoguePlayerProps {
   onExit: () => void;
   userFields: { [key: string]: string };
 }
+
 const DialoguePlayer = ({
   scenario,
   onExit,
@@ -56,6 +57,8 @@ const DialoguePlayer = ({
   const [customInput, setCustomInput] = useState("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [isVolumeOn, setIsVolumeOn] = useState<boolean>(false);
+  const [audioCache, setAudioCache] = useState<Map<string, string>>(new Map());
+  const [isGeneratingAudio, setIsGeneratingAudio] = useState<boolean>(false);
   const { fetchVoices, getAudioUrl } = useVoiceStore();
 
   const messageWindowRef = useRef<HTMLDivElement>(null);
@@ -65,6 +68,7 @@ const DialoguePlayer = ({
     return dialogue.steps.find((step) => step.id === state.value);
   };
   const currentStep = getCurrentStep();
+
   useEffect(() => {
     fetchVoices();
   }, [fetchVoices]);
@@ -75,70 +79,131 @@ const DialoguePlayer = ({
       top: messageWindowRef.current.scrollHeight,
     });
   };
+
   const renderMessage = useCallback(
     (template: string): string => {
       return template.replace(/{{\s*(\w+)\.(\w+)\s*}}/g, (_, object, key) => {
-        // For now, only userFields is supported, but you can expand this as needed
         if (object === "user") {
           return userFields[key] ?? "";
         }
         return "";
+      }).replace(/{{\s*(\w+)\s*}}/g, (_, key) => {
+        // Handle simple placeholders like {{name}}
+        return userFields[key] ?? "";
       });
     },
     [userFields]
   );
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
+  const getVoiceSettings = useCallback(() => {
+    const personaTags = dialogue.persona_tags || [];
+    const actorBio = dialogue.actor?.bio || "";
+    
+    // Base voice settings
+    let settings = {
+      stability: 0.5,
+      similarity_boost: 0.75,
+      style: 0.5,
+      use_speaker_boost: true,
+    };
+
+    // Adjust based on persona tags
+    if (personaTags.includes("confident")) {
+      settings.stability = 0.7;
+      settings.style = 0.8;
+    } else if (personaTags.includes("shy")) {
+      settings.stability = 0.3;
+      settings.style = 0.2;
+    } else if (personaTags.includes("excited")) {
+      settings.stability = 0.4;
+      settings.style = 0.9;
+    } else if (personaTags.includes("nervous")) {
+      settings.stability = 0.2;
+      settings.style = 0.3;
+    }
+
+    // Adjust based on actor bio keywords
+    if (actorBio.toLowerCase().includes("calm")) {
+      settings.stability = Math.max(settings.stability, 0.8);
+    }
+    if (actorBio.toLowerCase().includes("energetic")) {
+      settings.style = Math.max(settings.style, 0.8);
+    }
+
+    return settings;
+  }, [dialogue.persona_tags, dialogue.actor?.bio]);
+
   const playAudio = useCallback(
-    async (text: string) => {
-      showToast("Could not play audio. Please try again another time.");
+    async (text: string, stepId: string) => {
+      if (!isVolumeOn || isGeneratingAudio) return;
 
       try {
-        if (isVolumeOn) {
-          const audioUrl = await getAudioUrl(dialogue.voice_id, {
-            text,
-          });
-
+        // Check cache first
+        if (audioCache.has(stepId)) {
+          const audioUrl = audioCache.get(stepId)!;
           const audio = new Audio(audioUrl);
-          audio.play();
+          await audio.play();
+          return;
         }
+
+        setIsGeneratingAudio(true);
+        
+        const voiceSettings = getVoiceSettings();
+        const audioUrl = await getAudioUrl(dialogue.voice_id || "default", {
+          text,
+          voice_settings: voiceSettings,
+        });
+
+        // Cache the audio URL
+        setAudioCache(prev => new Map(prev).set(stepId, audioUrl));
+
+        const audio = new Audio(audioUrl);
+        await audio.play();
       } catch (err) {
-        console.log(err);
-        showToast("Could not play audio. Please try again another time.");
+        console.log("Audio playback error:", err);
+        showToast("Could not play audio. Please try again another time.", {
+          type: "warning",
+        });
+      } finally {
+        setIsGeneratingAudio(false);
       }
     },
-    [dialogue.voice_id, getAudioUrl, isVolumeOn, showToast]
+    [dialogue.voice_id, getAudioUrl, isVolumeOn, isGeneratingAudio, audioCache, getVoiceSettings, showToast]
   );
 
   useEffect(() => {
-    if (currentStep?.npc) {
+    if (currentStep?.npc && isVolumeOn) {
       const message = renderMessage(currentStep.npc);
-      playAudio(message);
+      playAudio(message, currentStep.id);
     }
-  }, [currentStep?.npc, playAudio, renderMessage]);
+  }, [currentStep?.npc, currentStep?.id, playAudio, renderMessage, isVolumeOn]);
 
   // Initialize first message when dialogue is selected
   useEffect(() => {
     const firstStep = dialogue.steps[0];
-    setMessages([
-      {
-        id: "initial",
-        speaker: "npc",
-        text: renderMessage(firstStep.npc),
-      },
-    ]);
+    if (firstStep) {
+      setMessages([
+        {
+          id: "initial",
+          speaker: "npc",
+          text: renderMessage(firstStep.npc),
+        },
+      ]);
+    }
   }, [dialogue, renderMessage]);
 
-  const hasRunRef = useRef(false);
-
+  // Cleanup audio URLs on unmount
   useEffect(() => {
-    if (hasRunRef.current) {
-      // createVoice();
-      hasRunRef.current = true;
-    }
-  }, []);
+    return () => {
+      audioCache.forEach(url => {
+        URL.revokeObjectURL(url);
+      });
+    };
+  }, [audioCache]);
 
   const handleOptionClick = async (option: DialogueOption) => {
     // Add user message
@@ -227,6 +292,7 @@ const DialoguePlayer = ({
                   <button
                     onClick={() => setIsVolumeOn(!isVolumeOn)}
                     className="control-btn"
+                    disabled={isGeneratingAudio}
                   >
                     {isVolumeOn ? (
                       <Volume2 size={20} />
@@ -252,12 +318,14 @@ const DialoguePlayer = ({
                 <div key={message.id} className={`message ${message.speaker}`}>
                   <p className="avatar">
                     {message.speaker === "npc"
-                      ? dialogue.actor?.name.charAt(0) || ""
-                      : user?.name.charAt(0) || ""}
+                      ? dialogue.actor?.name.charAt(0) || "A"
+                      : user?.name.charAt(0) || "U"}
                   </p>
                   <div className="message-content">
                     <div className="speaker-name">
-                      {message.speaker === "npc" ? "Alex" : "You"}
+                      {message.speaker === "npc" 
+                        ? dialogue.actor?.name || "Assistant"
+                        : "You"}
                     </div>
                     <div className="message-bubble">{message.text}</div>
                   </div>
@@ -266,7 +334,9 @@ const DialoguePlayer = ({
 
               {isTyping && (
                 <div className="typing-indicator">
-                  <div className="avatar">A</div>
+                  <div className="avatar">
+                    {dialogue.actor?.name.charAt(0) || "A"}
+                  </div>
                   <div className="typing-dots">
                     <div className="dot"></div>
                     <div className="dot"></div>
