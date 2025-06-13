@@ -1,4 +1,9 @@
-@mixin flex($direction: row, $justify: center, $align: center, $gap: $spacing-3) {
+@mixin flex(
+  $direction: row,
+  $justify: center,
+  $align: center,
+  $gap: $spacing-3
+) {
   display: flex;
   flex-direction: $direction;
   justify-content: $justify;
@@ -56,8 +61,11 @@
 }
 
 @mixin center-absolute {
+  @include center-content();
   position: absolute;
   top: 50%;
+  height: 100%;
+  width: 100%;
   left: 50%;
   transform: translate(-50%, -50%);
 }

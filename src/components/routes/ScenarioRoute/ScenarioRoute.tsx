@@ -6,6 +6,7 @@ const ScenarioRoute = () => {
     scenarioId: string;
     dialogueId: string;
   }>();
+
   return (
     <ScenarioProvider dialogueId={dialogueId} scenarioId={scenarioId}>
       <Outlet />

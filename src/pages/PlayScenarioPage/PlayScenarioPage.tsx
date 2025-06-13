@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { useModal, useScenario } from "../../context";
 import { X, Home } from "lucide-react";
 import "./PlayScenarioPage.scss";
@@ -11,6 +11,7 @@ import {
   ProgressIndicator,
 } from "../../components";
 import { useScenarioStore } from "../../store/useScenarioStrore";
+import type { AuthContextType } from "../../types";
 
 const PlayScenarioPage = () => {
   const navigate = useNavigate();
@@ -22,19 +23,24 @@ const PlayScenarioPage = () => {
     dialoguesLoading,
     fetchDialoguesByScenario: fetchScenarioDialogues,
   } = useScenarioStore();
-  const [userFields, setUserFields] = useState<{ [key: string]: string } | null>(null);
+  const [userFields, setUserFields] = useState<{
+    [key: string]: string;
+  } | null>(null);
   const [key, setKey] = useState<number>(0);
   const { scenario, dialogue } = useScenario();
   const { openModal, closeModal } = useModal();
-
+  const { profile: user } = useOutletContext<AuthContextType>();
   const handleReplay = () => {
     setKey((prev) => prev + 1);
   };
 
-  const handleSubmit = (data: { [key: string]: string }) => {
-    setUserFields(data);
-    closeModal();
-  };
+  const handleSubmit = useCallback(
+    (data: { [key: string]: string }) => {
+      setUserFields({ ...data, user_name: user.name });
+      closeModal();
+    },
+    [closeModal, user.name]
+  );
 
   const handleExit = () => {
     navigate("/");
@@ -46,7 +52,12 @@ const PlayScenarioPage = () => {
 
   useEffect(() => {
     // If we selected a dialogue and there are placeholders but no user fields defined
-    if (dialogue && dialogue.placeholders && dialogue.placeholders.length > 0 && !userFields) {
+    if (
+      dialogue &&
+      dialogue.placeholders &&
+      dialogue.placeholders.length > 0 &&
+      !userFields
+    ) {
       // Open modal so we can enter the user fields
       openModal(
         <FormLayout<{ [key: string]: string }>
@@ -59,23 +70,28 @@ const PlayScenarioPage = () => {
             navigate("/");
           }}
         >
-          <DialogueOnboardingModal />
+          <DialogueOnboardingModal
+            dialogue={dialogue}
+            placeholders={dialogue.placeholders}
+          />
         </FormLayout>,
-        "Dialogue Setup"
+        "Start Dialogue"
       );
-    } else if (dialogue && (!dialogue.placeholders || dialogue.placeholders.length === 0) && !userFields) {
+    } else if (
+      dialogue &&
+      (!dialogue.placeholders || dialogue.placeholders.length === 0) &&
+      !userFields
+    ) {
       // If no placeholders are needed, set empty user fields
       setUserFields({});
     }
-  }, [dialogue, userFields, openModal, closeModal, navigate]);
+  }, [dialogue, userFields, openModal, closeModal, navigate, handleSubmit]);
 
-  if (scenariosLoading || dialoguesLoading) {
+  if (scenariosLoading) {
     return (
-      <div className="play-scenario-container">
-        <div className="game-content">
-          <div className="center-absolute">
-            <ProgressIndicator />
-          </div>
+      <div className="play-scenario-container ">
+        <div className="center-absolute  ">
+          <ProgressIndicator />
         </div>
       </div>
     );
@@ -146,13 +162,19 @@ const PlayScenarioPage = () => {
               <p>Select a dialogue to begin your social interaction practice</p>
             </div>
 
-            <div className="dialogue-options">
-              {scenarioIds.map((id) => {
-                return dialoguesByScenario[id]?.map((dialogue) => (
-                  <DialogueItem key={dialogue.id} dialogue={dialogue} />
-                ));
-              })}
-            </div>
+            {!dialoguesLoading ? (
+              <div className="dialogue-options">
+                {scenarioIds.map((id) => {
+                  return dialoguesByScenario[id]?.map((dialogue) => (
+                    <DialogueItem key={dialogue.id} dialogue={dialogue} />
+                  ));
+                })}
+              </div>
+            ) : (
+              <div>
+                <ProgressIndicator />
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -164,6 +186,7 @@ const PlayScenarioPage = () => {
     return (
       <div key={key} className="play-scenario-container">
         <DialoguePlayer
+          user={user}
           userFields={userFields}
           onExit={handleExit}
           scenario={scenario}
@@ -176,11 +199,9 @@ const PlayScenarioPage = () => {
 
   // Show loading while waiting for user input
   return (
-    <div className="play-scenario-container">
-      <div className="game-content">
-        <div className="center-absolute">
-          <ProgressIndicator />
-        </div>
+    <div className="play-scenario-container ">
+      <div className="center-absolute  ">
+        <ProgressIndicator />
       </div>
     </div>
   );

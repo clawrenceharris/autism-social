@@ -12,9 +12,9 @@ interface VoiceStore {
   error: string | null;
   loading: boolean;
   getAudioUrl: (
-    id: string, 
-    request: { 
-      text: string; 
+    id: string,
+    request: {
+      text: string;
       voice_settings?: {
         stability?: number;
         similarity_boost?: number;
@@ -43,7 +43,7 @@ export const useVoiceStore = create<VoiceStore>()(
               return acc;
             }, {}),
           });
-        } catch (error) {
+        } catch {
           set({ error: "Failed to fetch voices" });
         }
       },
@@ -54,8 +54,8 @@ export const useVoiceStore = create<VoiceStore>()(
 
       getAudioUrl: async (
         voiceId: string,
-        request: { 
-          text: string; 
+        request: {
+          text: string;
           voice_settings?: {
             stability?: number;
             similarity_boost?: number;
@@ -66,7 +66,7 @@ export const useVoiceStore = create<VoiceStore>()(
       ): Promise<string> => {
         try {
           set({ loading: true });
-          
+
           const response = await fetch(
             `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
             {
@@ -88,11 +88,11 @@ export const useVoiceStore = create<VoiceStore>()(
               }),
             }
           );
-          
+
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
-          
+
           const blob = await response.blob();
           const audioUrl = URL.createObjectURL(blob);
           return audioUrl;

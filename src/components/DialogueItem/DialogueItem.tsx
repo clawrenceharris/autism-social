@@ -1,10 +1,10 @@
-import { useNavigate } from "react-router-dom";
 import type { Dialogue as DialogueType } from "../../types";
 import "./DialogueItem.scss";
 import { useScenarioStore } from "../../store/useScenarioStrore";
 import type { ReactElement } from "react";
 import { BookmarkPlus, Play } from "lucide-react";
 import ProgressIndicator from "../ProgressIndicator";
+import { useNavigate } from "react-router-dom";
 interface RecommendedItemProps {
   dialogue: DialogueType;
   badgeTitle?: string;
@@ -18,8 +18,8 @@ const DialogueItem = ({
   badgeTitle,
   badgeIcon,
 }: RecommendedItemProps) => {
-  const { scenarios, scenariosLoading } = useScenarioStore();
   const navigate = useNavigate();
+  const { scenarios, scenariosLoading } = useScenarioStore();
   if (scenariosLoading) {
     return (
       <>

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from "lucide-react";
 import { useToast } from "../../context";
-
+import "./ToastContainer.scss";
 const ToastContainer = () => {
   const { toasts, removeToast } = useToast();
 
@@ -18,7 +18,7 @@ const ToastContainer = () => {
         return <Info size={20} />;
     }
   };
-
+  console.log({ toasts });
   return (
     <div className="toast-container">
       {toasts.map((toast) => (

@@ -1,7 +1,6 @@
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { X, CheckCircle, AlertCircle } from "lucide-react";
-import { useToastStore } from "../store/useToastStore";
 
 export type ToastType = "success" | "error" | "info" | "warning";
 
@@ -13,37 +12,32 @@ interface Toast {
 
 interface ToastContextType {
   toasts: Toast[];
-  showToast: (
-    message: string,
-    options?: { type?: ToastType; duration?: number }
-  ) => void;
+  showToast: (message: string, options?: { type?: ToastType }) => void;
   removeToast: (id: string) => void;
-  clearToasts: () => void;
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 export function ToastProvider({ children }: { children: ReactNode }) {
-  const { toasts, showToast, removeToast, clearToasts } = useToastStore();
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const showToast = (message: string, options?: { type?: ToastType }) => {
+    const type = options?.type ?? "info";
+    const id = crypto.randomUUID();
 
+    const toast: Toast = { id, message, type };
+
+    setToasts((prev) => [...prev, toast]);
+
+    // Auto-remove after duration
+    setTimeout(() => {
+      removeToast(id);
+    }, 3000);
+  };
+  const removeToast = (id: string) =>
+    setToasts((prev) => prev.filter((t) => t.id !== id));
   return (
-    <ToastContext.Provider
-      value={{ showToast, removeToast, toasts, clearToasts }}
-    >
+    <ToastContext.Provider value={{ showToast, removeToast, toasts }}>
       {children}
-      <div
-        className="toast-container"
-        role="region"
-        aria-label="Notification messages"
-      >
-        {toasts.map((toast) => (
-          <Toast
-            key={toast.id}
-            {...toast}
-            onClose={() => removeToast(toast.id)}
-          />
-        ))}
-      </div>
     </ToastContext.Provider>
   );
 }
@@ -65,9 +59,9 @@ function Toast({ message, type, onClose }: ToastProps) {
     <div className={`toast ${type}`} role="alert" aria-live="polite">
       <div className="toast-content">
         {type === "success" ? (
-          <CheckCircle className="toast-icon\" aria-hidden="true" />
+          <CheckCircle className="toast-icon" aria-hidden="true" />
         ) : (
-          <AlertCircle className="toast-icon\" aria-hidden="true" />
+          <AlertCircle className="toast-icon" aria-hidden="true" />
         )}
         <p className="toast-message">{message}</p>
       </div>

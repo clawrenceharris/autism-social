@@ -1,10 +1,10 @@
 import { Navigate, useLocation, Outlet } from "react-router-dom";
 import { ProgressIndicator } from "../../";
 import type { AuthContextType } from "../../../types";
-import { useUserStore } from "../../../store/useUserStore";
+import { useAuth } from "../../../context";
 
 const UserRoute = () => {
-  const { profile, user, loading } = useUserStore();
+  const { profile, user, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
