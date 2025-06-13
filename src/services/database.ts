@@ -13,7 +13,7 @@ export type Table =
   | "user_roles"
   | "dialogue_goals"
   | "dialogue_interests"
-  | "completed_dialogues"
+  | "user_completed_dialogues"
   | "actors"
   | "daily_challenges";
 

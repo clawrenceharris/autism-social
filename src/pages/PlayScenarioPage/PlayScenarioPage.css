@@ -1,0 +1,194 @@
+@import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
+.play-scenario-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  padding: 0.75rem;
+}
+.play-scenario-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
+  animation: float 20s ease-in-out infinite;
+  pointer-events: none;
+}
+.play-scenario-container .game-header {
+  z-index: 100;
+  border-radius: 20px 20px 0 0;
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1rem 1.5rem;
+}
+.play-scenario-container .game-header .header-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.play-scenario-container .game-header .header-content .scenario-info {
+  display: block;
+}
+.play-scenario-container .game-header .header-content .scenario-info .scenario-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #374151;
+  margin: 0;
+}
+.play-scenario-container .game-header .header-content .scenario-info .scenario-badge {
+  background: rgba(0, 0, 0, 0.062745098);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: solid white 0.5px;
+}
+.play-scenario-container .game-header .header-content .game-controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+}
+.play-scenario-container .game-header .header-content .game-controls .control-btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(84, 203, 226, 0.2);
+  color: #54cbe2;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.play-scenario-container .game-header .header-content .game-controls .control-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(84, 203, 226, 0.3);
+  background: #54cbe2;
+  color: white;
+}
+.play-scenario-container .game-header .header-content .game-controls .control-btn.danger {
+  color: #dc2626;
+  border-color: rgba(220, 38, 38, 0.2);
+}
+.play-scenario-container .game-header .header-content .game-controls .control-btn.danger:hover {
+  background: #dc2626;
+  color: white;
+}
+.play-scenario-container .error-state {
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+.play-scenario-container .dialogue-selection {
+  color: #ffffff;
+}
+.play-scenario-container .dialogue-selection .dialogue-options {
+  padding: 2rem 0;
+  overflow-y: scroll;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-30px) rotate(120deg);
+  }
+  66% {
+    transform: translateY(-20px) rotate(240deg);
+  }
+}
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes typingDots {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@media (min-width: 640px) {
+  .play-scenario-container .game-header {
+    padding: 0.75rem 1rem;
+  }
+  .play-scenario-container .game-header .header-content .scenario-info {
+    display: block;
+  }
+  .play-scenario-container .game-header .header-content .scenario-info .scenario-title {
+    font-size: 1.25rem;
+  }
+  .play-scenario-container .game-header .header-content .game-controls .control-btn {
+    width: 40px;
+    height: 40px;
+  }
+  .play-scenario-container .dialogue-arena {
+    padding: 1rem;
+  }
+  .play-scenario-container .dialogue-arena .chat-window {
+    border-radius: 1.5rem;
+  }
+  .play-scenario-container .dialogue-arena .chat-window .chat-messages {
+    padding: 1rem;
+  }
+  .play-scenario-container .dialogue-arena .chat-window .chat-messages .message .message-content {
+    max-width: 85%;
+  }
+  .play-scenario-container .dialogue-arena .chat-window .chat-messages .message .avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+  .play-scenario-container .dialogue-arena .chat-window .response-section {
+    padding: 1rem;
+  }
+  .play-scenario-container .results-overlay .results-card {
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+  }
+  .play-scenario-container .results-overlay .results-card .score-grid {
+    grid-template-columns: 1fr;
+  }
+  .play-scenario-container .results-overlay .results-card .results-actions {
+    flex-direction: column;
+  }
+  .play-scenario-container .results-overlay .results-card .results-actions .btn {
+    width: 100%;
+  }
+}/*# sourceMappingURL=PlayScenarioPage.css.map */

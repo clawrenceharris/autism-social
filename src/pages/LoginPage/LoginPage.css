@@ -1,0 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin: auto;
+  width: 100%;
+  min-height: 100vh;
+  padding: 1rem;
+  background-color: #f9fafb;
+}
+.login-container .login-card {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 28rem;
+  padding: 1.5rem;
+}
+.login-container .login-card .login-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.login-container .login-card .login-header p {
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+.login-container .login-footer {
+  text-align: center;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+}
+.login-container .login-footer a {
+  color: #54cbe2;
+  text-decoration: none;
+  font-weight: 500;
+}
+.login-container .login-footer a:hover {
+  text-decoration: underline;
+}/*# sourceMappingURL=LoginPage.css.map */

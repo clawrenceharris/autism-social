@@ -1,9 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { CheckCircle, RotateCcw, Home, AlertCircle, RefreshCw } from 'lucide-react';
-import { ProgressIndicator } from '../';
-import { completeDialogue, type DialogueScores, type CompletionResult } from '../../services/dialogueCompletion';
-import { useToast } from '../../context';
-import './DialogueCompletionModal.scss';
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  CheckCircle,
+  RotateCcw,
+  Home,
+  AlertCircle,
+  RefreshCw,
+} from "lucide-react";
+import { ProgressIndicator } from "../";
+import { useToast } from "../../context";
+import "./DialogueCompletionModal.scss";
+import {
+  completeDialogue,
+  type CompletionResult,
+  type DialogueScores,
+} from "../../services/dialogueCompletion";
 
 interface DialogueCompletionModalProps {
   userId: string;
@@ -28,65 +38,69 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
   scores,
   onReplay,
   onExit,
-  isVisible
+  isVisible,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [completionResult, setCompletionResult] = useState<CompletionResult | null>(null);
+  const [completionResult, setCompletionResult] =
+    useState<CompletionResult | null>(null);
   const [animationStarted, setAnimationStarted] = useState(false);
   const { showToast } = useToast();
 
-  const getScoreLevel = (score: number): 'poor' | 'good' | 'excellent' => {
-    if (score >= 80) return 'excellent';
-    if (score >= 60) return 'good';
-    return 'poor';
+  const getScoreLevel = (score: number): "poor" | "good" | "excellent" => {
+    if (score >= 80) return "excellent";
+    if (score >= 60) return "good";
+    return "poor";
   };
 
   const getScoreLevelLabel = (score: number): string => {
-    if (score >= 80) return 'Excellent';
-    if (score >= 60) return 'Good';
-    return 'Needs Work';
+    if (score >= 80) return "Excellent";
+    if (score >= 60) return "Good";
+    return "Needs Work";
   };
 
-  const progressCategories: ProgressCategory[] = completionResult ? [
-    {
-      key: 'clarity',
-      label: 'Clarity',
-      previousValue: completionResult.previous_progress.clarity || 0,
-      newValue: completionResult.new_progress.clarity || 0,
-      earned: scores.clarity || 0
-    },
-    {
-      key: 'empathy',
-      label: 'Empathy',
-      previousValue: completionResult.previous_progress.empathy || 0,
-      newValue: completionResult.new_progress.empathy || 0,
-      earned: scores.empathy || 0
-    },
-    {
-      key: 'assertiveness',
-      label: 'Assertiveness',
-      previousValue: completionResult.previous_progress.assertiveness || 0,
-      newValue: completionResult.new_progress.assertiveness || 0,
-      earned: scores.assertiveness || 0
-    },
-    {
-      key: 'socialAwareness',
-      label: 'Social Awareness',
-      previousValue: completionResult.previous_progress.social_awareness || 0,
-      newValue: completionResult.new_progress.social_awareness || 0,
-      earned: scores.socialAwareness || 0
-    },
-    {
-      key: 'selfAdvocacy',
-      label: 'Self Advocacy',
-      previousValue: completionResult.previous_progress.self_advocacy || 0,
-      newValue: completionResult.new_progress.self_advocacy || 0,
-      earned: scores.selfAdvocacy || 0
-    }
-  ] : [];
+  const progressCategories: ProgressCategory[] = completionResult
+    ? [
+        {
+          key: "clarity",
+          label: "Clarity",
+          previousValue: completionResult.previous_progress.clarity || 0,
+          newValue: completionResult.new_progress.clarity || 0,
+          earned: scores.clarity || 0,
+        },
+        {
+          key: "empathy",
+          label: "Empathy",
+          previousValue: completionResult.previous_progress.empathy || 0,
+          newValue: completionResult.new_progress.empathy || 0,
+          earned: scores.empathy || 0,
+        },
+        {
+          key: "assertiveness",
+          label: "Assertiveness",
+          previousValue: completionResult.previous_progress.assertiveness || 0,
+          newValue: completionResult.new_progress.assertiveness || 0,
+          earned: scores.assertiveness || 0,
+        },
+        {
+          key: "socialAwareness",
+          label: "Social Awareness",
+          previousValue:
+            completionResult.previous_progress.social_awareness || 0,
+          newValue: completionResult.new_progress.social_awareness || 0,
+          earned: scores.socialAwareness || 0,
+        },
+        {
+          key: "selfAdvocacy",
+          label: "Self Advocacy",
+          previousValue: completionResult.previous_progress.self_advocacy || 0,
+          newValue: completionResult.new_progress.self_advocacy || 0,
+          earned: scores.selfAdvocacy || 0,
+        },
+      ]
+    : [];
 
-  const handleCompletion = async () => {
+  const handleCompletion = useCallback(async () => {
     if (!isVisible || completionResult) return;
 
     setIsLoading(true);
@@ -95,21 +109,22 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
     try {
       const result = await completeDialogue(userId, dialogueId, scores);
       setCompletionResult(result);
-      
+
       // Start animations after a brief delay
       setTimeout(() => {
         setAnimationStarted(true);
       }, 500);
 
-      showToast('Dialogue completed successfully! 🎉', { type: 'success' });
+      showToast("Dialogue completed successfully! 🎉", { type: "success" });
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to complete dialogue';
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to complete dialogue";
       setError(errorMessage);
-      showToast(errorMessage, { type: 'error' });
+      showToast(errorMessage, { type: "error" });
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [completionResult, dialogueId, isVisible, scores, showToast, userId]);
 
   const handleRetry = () => {
     setError(null);
@@ -122,7 +137,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
     if (isVisible && !completionResult && !isLoading && !error) {
       handleCompletion();
     }
-  }, [isVisible]);
+  }, [completionResult, error, handleCompletion, isLoading, isVisible]);
 
   if (!isVisible) return null;
 
@@ -163,25 +178,27 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
         </div>
         <h2 className="completion-title">Dialogue Complete!</h2>
         <p className="completion-subtitle">
-          Great job! You've successfully completed this social interaction scenario.
-          Here's how you performed:
+          Great job! You've successfully completed this social interaction
+          scenario. Here's how you performed:
         </p>
       </div>
 
       <div className="progress-section">
         <h3 className="section-title">Your Progress</h3>
         <div className="progress-categories">
-          {progressCategories.map((category, index) => (
+          {progressCategories.map((category) => (
             <div key={category.key} className="progress-item">
               <div className="progress-header">
                 <span className="category-name">{category.label}</span>
                 <div className="score-display">
                   {category.earned > 0 && (
-                    <span className="score-change">
-                      +{category.earned}
-                    </span>
+                    <span className="score-change">+{category.earned}</span>
                   )}
-                  <span className={`current-score ${getScoreLevel(category.newValue)}`}>
+                  <span
+                    className={`current-score ${getScoreLevel(
+                      category.newValue
+                    )}`}
+                  >
                     {category.newValue}%
                   </span>
                 </div>
@@ -190,13 +207,17 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                 <div
                   className={`progress-bar ${getScoreLevel(category.newValue)}`}
                   style={{
-                    width: animationStarted ? `${category.newValue}%` : `${category.previousValue}%`
+                    width: animationStarted
+                      ? `${category.newValue}%`
+                      : `${category.previousValue}%`,
                   }}
                   role="progressbar"
                   aria-valuenow={category.newValue}
                   aria-valuemin={0}
                   aria-valuemax={100}
-                  aria-label={`${category.label}: ${category.newValue}% - ${getScoreLevelLabel(category.newValue)}`}
+                  aria-label={`${category.label}: ${
+                    category.newValue
+                  }% - ${getScoreLevelLabel(category.newValue)}`}
                 >
                   <span className="progress-percentage">
                     {category.newValue}%

@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
+.progress-overview .progress-categories {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 1rem;
+  width: 100%;
+}
+.progress-overview .progress-categories .category-item .category-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.progress-overview .progress-categories .category-item .category-header .category-name {
+  font-weight: 500;
+  color: #374151;
+}
+.progress-overview .progress-categories .category-item .category-header .category-score {
+  font-weight: 600;
+  color: #54cbe2;
+}
+.progress-overview .progress-categories .category-item .category-bar {
+  height: 6px;
+  background: #edeff1;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.progress-overview .progress-categories .category-item .category-bar .category-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #54cbe2, #c1e6ff);
+  transition: width 0.3s ease;
+}/*# sourceMappingURL=ProgressSection.css.map */
