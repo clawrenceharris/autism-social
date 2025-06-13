@@ -16,12 +16,11 @@ const Modal = ({
   title,
   children,
   showsCloseButton = true,
-
 }: ModalProps) => {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape"){
-        if(onClose){
+      if (e.key === "Escape") {
+        if (onClose) {
           onClose();
         }
       }
@@ -41,14 +40,16 @@ const Modal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay">
       <div className="modal-container">
         <div className="modal-content">
           <div className="modal-header">
             <h2 className="modal-title">{title}</h2>
-           {showsCloseButton && <button onClick={onClose} className="modal-close">
-              <X />
-            </button>}
+            {showsCloseButton && (
+              <button onClick={onClose} className="modal-close">
+                <X />
+              </button>
+            )}
           </div>
           {children}
         </div>

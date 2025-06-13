@@ -13,11 +13,14 @@ interface ScenarioStore {
   completedDialogues: Record<string, Dialogue>;
   dialogues: Record<string, Dialogue>;
   dialoguesByScenario: Record<string, Dialogue[]>;
-
+  selectedScenario: Scenario | null;
+  selectedDialogue: Dialogue | null;
   scenarioIds: string[];
   dialogueIds: string[];
   scenariosLoading: boolean;
   dialoguesLoading: boolean;
+  setDialogue: (id: string) => void;
+  setScenario: (id: string) => void;
   error: string | null;
   fetchDialogues: () => void;
   fetchDialoguesByScenario: (scenarioId: string) => void;
@@ -35,6 +38,8 @@ export const useScenarioStore = create<ScenarioStore>()(
       scenarios: {},
       dialogues: {},
       completedDialogues: {},
+      selectedDialogue: null,
+      selectedScenario: null,
       dialoguesByScenario: {},
       scenarioIds: [],
       dialogueIds: [],
@@ -133,7 +138,12 @@ export const useScenarioStore = create<ScenarioStore>()(
           });
         }
       },
-
+      setDialogue: (id: string) => {
+        set({ selectedDialogue: get().dialogues[id] });
+      },
+      setScenario: (id: string) => {
+        set({ selectedScenario: get().scenarios[id] });
+      },
       clearDialogues: () => set({ dialogues: {} }),
 
       deleteScenario: async (id: string) => {
@@ -156,6 +166,9 @@ export const useScenarioStore = create<ScenarioStore>()(
       name: "scenarios-storage",
       partialize: (state) => ({
         scenarios: state.scenarios,
+        dialogues: state.dialogues,
+        dialogueIds: state.dialogueIds,
+        scenarioIds: state.scenarioIds,
       }),
     }
   )

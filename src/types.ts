@@ -88,11 +88,11 @@ export interface Scenario {
 
 export interface Dialogue {
   id: string;
-  actor: Actor;
-  voice_id: string;
+  actor_id: string;
   scenario_id: string;
   title: string;
   persona_tags: string[];
+  introduction: string;
   placeholders: string[];
   steps: DialogueStep[];
   difficulty: Difficulty;
@@ -153,7 +153,10 @@ export interface DialogueOption {
 }
 
 export interface Actor {
-  name: string;
+  id: string;
+  first_name: string;
+  last_name: string;
+  voice_id: string;
   bio: string;
 }
 

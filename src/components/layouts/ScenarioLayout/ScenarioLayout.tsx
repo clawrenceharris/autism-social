@@ -2,8 +2,8 @@ import { Outlet } from "react-router-dom";
 
 const ScenarioLayout = () => {
   return (
-    <div className="layout-container">
-      <div>
+    <div>
+      <div style={{ minHeight: "100vh" }}>
         <Outlet />
       </div>
     </div>

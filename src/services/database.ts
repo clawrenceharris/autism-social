@@ -14,6 +14,7 @@ export type Table =
   | "dialogue_goals"
   | "dialogue_interests"
   | "completed_dialogues"
+  | "actors"
   | "daily_challenges";
 
 export interface DatabaseResult<T> {

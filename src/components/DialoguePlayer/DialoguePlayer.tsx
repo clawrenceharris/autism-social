@@ -12,10 +12,11 @@ import type {
   DialogueStep,
   Message,
   Scenario,
+  UserProfile,
 } from "../../types";
 
 import "./DialoguePlayer.scss";
-import { DialogueCompletedModal } from "../";
+import { DialogueCompletedModal, ProgressIndicator } from "../";
 import { getDialogueScores } from "../../utils";
 import { createDialogueMachine } from "../../xstate/createDialogueMachine";
 import {
@@ -26,21 +27,23 @@ import {
   VolumeXIcon,
   X,
 } from "lucide-react";
-import { useUserStore } from "../../store/useUserStore";
 import { useToast } from "../../context";
 import { useVoiceStore } from "../../store/useVoiceStore";
+import { useActorStore } from "../../store/useActorStore";
 
 interface DialoguePlayerProps {
   scenario: Scenario;
   dialogue: Dialogue;
   onReplay: () => void;
   onExit: () => void;
+  user: UserProfile;
   userFields: { [key: string]: string };
 }
 
 const DialoguePlayer = ({
   scenario,
   onExit,
+  user,
   dialogue,
   userFields,
   onReplay,
@@ -52,7 +55,6 @@ const DialoguePlayer = ({
   const [state, send] = useMachine(
     machine || createDialogueMachine("empty", [])
   );
-  const { profile: user } = useUserStore();
   const [messages, setMessages] = useState<Message[]>([]);
   const [customInput, setCustomInput] = useState("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
@@ -60,7 +62,13 @@ const DialoguePlayer = ({
   const [audioCache, setAudioCache] = useState<Map<string, string>>(new Map());
   const [isGeneratingAudio, setIsGeneratingAudio] = useState<boolean>(false);
   const { fetchVoices, getAudioUrl } = useVoiceStore();
-
+  const {
+    selectedActor: actor,
+    setActor,
+    fetchActors,
+    actors,
+    loading,
+  } = useActorStore();
   const messageWindowRef = useRef<HTMLDivElement>(null);
   const { showToast } = useToast();
 
@@ -71,8 +79,11 @@ const DialoguePlayer = ({
 
   useEffect(() => {
     fetchVoices();
-  }, [fetchVoices]);
-
+    fetchActors();
+  }, [fetchActors, fetchVoices, setActor]);
+  useEffect(() => {
+    setActor(dialogue.actor_id);
+  }, [dialogue.actor_id, setActor, actors]);
   // Auto-scroll to bottom of messages
   const scrollToBottom = () => {
     messageWindowRef.current?.scrollTo({
@@ -82,14 +93,8 @@ const DialoguePlayer = ({
 
   const renderMessage = useCallback(
     (template: string): string => {
-      return template.replace(/{{\s*(\w+)\.(\w+)\s*}}/g, (_, object, key) => {
-        if (object === "user") {
-          return userFields[key] ?? "";
-        }
-        return "";
-      }).replace(/{{\s*(\w+)\s*}}/g, (_, key) => {
-        // Handle simple placeholders like {{name}}
-        return userFields[key] ?? "";
+      return template.replace(/{{\s*(\w+)\s*}}/g, (_, key) => {
+        return userFields[key]?.toString() ?? "";
       });
     },
     [userFields]
@@ -101,12 +106,10 @@ const DialoguePlayer = ({
 
   const getVoiceSettings = useCallback(() => {
     const personaTags = dialogue.persona_tags || [];
-    const actorBio = dialogue.actor?.bio || "";
-    
+
     // Base voice settings
-    let settings = {
+    const settings = {
       stability: 0.5,
-      similarity_boost: 0.75,
       style: 0.5,
       use_speaker_boost: true,
     };
@@ -126,16 +129,8 @@ const DialoguePlayer = ({
       settings.style = 0.3;
     }
 
-    // Adjust based on actor bio keywords
-    if (actorBio.toLowerCase().includes("calm")) {
-      settings.stability = Math.max(settings.stability, 0.8);
-    }
-    if (actorBio.toLowerCase().includes("energetic")) {
-      settings.style = Math.max(settings.style, 0.8);
-    }
-
     return settings;
-  }, [dialogue.persona_tags, dialogue.actor?.bio]);
+  }, [dialogue.persona_tags]);
 
   const playAudio = useCallback(
     async (text: string, stepId: string) => {
@@ -151,15 +146,15 @@ const DialoguePlayer = ({
         }
 
         setIsGeneratingAudio(true);
-        
+
         const voiceSettings = getVoiceSettings();
-        const audioUrl = await getAudioUrl(dialogue.voice_id || "default", {
+        const audioUrl = await getAudioUrl(actor?.voice_id || "default", {
           text,
           voice_settings: voiceSettings,
         });
 
         // Cache the audio URL
-        setAudioCache(prev => new Map(prev).set(stepId, audioUrl));
+        setAudioCache((prev) => new Map(prev).set(stepId, audioUrl));
 
         const audio = new Audio(audioUrl);
         await audio.play();
@@ -172,7 +167,15 @@ const DialoguePlayer = ({
         setIsGeneratingAudio(false);
       }
     },
-    [dialogue.voice_id, getAudioUrl, isVolumeOn, isGeneratingAudio, audioCache, getVoiceSettings, showToast]
+    [
+      isVolumeOn,
+      isGeneratingAudio,
+      audioCache,
+      getVoiceSettings,
+      getAudioUrl,
+      actor?.voice_id,
+      showToast,
+    ]
   );
 
   useEffect(() => {
@@ -199,7 +202,7 @@ const DialoguePlayer = ({
   // Cleanup audio URLs on unmount
   useEffect(() => {
     return () => {
-      audioCache.forEach(url => {
+      audioCache.forEach((url) => {
         URL.revokeObjectURL(url);
       });
     };
@@ -276,6 +279,13 @@ const DialoguePlayer = ({
     setMessages((prev) => [...prev, aiResponse]);
     setIsTyping(false);
   };
+  if (loading) {
+    return (
+      <div>
+        <ProgressIndicator />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -318,14 +328,14 @@ const DialoguePlayer = ({
                 <div key={message.id} className={`message ${message.speaker}`}>
                   <p className="avatar">
                     {message.speaker === "npc"
-                      ? dialogue.actor?.name.charAt(0) || "A"
-                      : user?.name.charAt(0) || "U"}
+                      ? actor?.first_name.charAt(0) || ""
+                      : user.name.charAt(0) || ""}
                   </p>
                   <div className="message-content">
                     <div className="speaker-name">
-                      {message.speaker === "npc" 
-                        ? dialogue.actor?.name || "Assistant"
-                        : "You"}
+                      {message.speaker === "npc"
+                        ? actor?.first_name || "Unknown"
+                        : user.name}
                     </div>
                     <div className="message-bubble">{message.text}</div>
                   </div>
@@ -335,7 +345,7 @@ const DialoguePlayer = ({
               {isTyping && (
                 <div className="typing-indicator">
                   <div className="avatar">
-                    {dialogue.actor?.name.charAt(0) || "A"}
+                    {actor?.first_name.charAt(0) || ""}
                   </div>
                   <div className="typing-dots">
                     <div className="dot"></div>
