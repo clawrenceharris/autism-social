@@ -329,13 +329,13 @@ const DialoguePlayer = ({
                   <p className="avatar">
                     {message.speaker === "npc"
                       ? actor?.first_name.charAt(0) || ""
-                      : user.name.charAt(0) || ""}
+                      : user.first_name.charAt(0) || ""}
                   </p>
                   <div className="message-content">
                     <div className="speaker-name">
                       {message.speaker === "npc"
                         ? actor?.first_name || "Unknown"
-                        : user.name}
+                        : user.first_name}
                     </div>
                     <div className="message-bubble">{message.text}</div>
                   </div>

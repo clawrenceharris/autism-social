@@ -36,10 +36,10 @@ const PlayScenarioPage = () => {
 
   const handleSubmit = useCallback(
     (data: { [key: string]: string }) => {
-      setUserFields({ ...data, user_name: user.name });
+      setUserFields({ ...data, user_name: user.first_name });
       closeModal();
     },
-    [closeModal, user.name]
+    [closeModal, user.first_name]
   );
 
   const handleExit = () => {

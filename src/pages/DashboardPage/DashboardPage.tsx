@@ -68,7 +68,7 @@ const DashboardPage = () => {
 
   // Get user's display name from profile or fallback to email
   const getUserDisplayName = () => {
-    if (profile?.name) return profile.name;
+    if (profile?.first_name) return profile.first_name;
     if (user?.email) {
       // Extract name from email (before @)
       return user.email.split("@")[0];
