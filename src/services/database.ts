@@ -95,6 +95,7 @@ export class DatabaseService {
   static async getSingle<T>(
     table: Table,
     id: string,
+
     select?: string
   ): Promise<DatabaseResult<T>> {
     const { data, error } = await supabase

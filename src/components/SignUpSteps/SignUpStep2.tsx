@@ -3,13 +3,11 @@ import "./SignUpStep.scss";
 import { usePreferencesStore } from "../../store/usePreferencesStore";
 
 interface SignUpStep2Props {
-  values: string[];
   toggleSelection: (type: "goals" | "interests", value: string) => void;
 }
 
-export const SignUpStep2 = ({ values, toggleSelection }: SignUpStep2Props) => {
-  const { goals, error, loading } = usePreferencesStore();
-
+export const SignUpStep2 = ({ toggleSelection }: SignUpStep2Props) => {
+  const { goals, userGoalIds, error, loading } = usePreferencesStore();
   if (loading)
     return (
       <div className="center-absolute">
@@ -29,7 +27,7 @@ export const SignUpStep2 = ({ values, toggleSelection }: SignUpStep2Props) => {
           <div
             key={goal.id}
             className={`checkbox-item ${
-              values.includes(goal.goal) ? "selected" : ""
+              userGoalIds.includes(goal.id) ? "selected" : ""
             }`}
             onClick={() => toggleSelection("goals", goal.goal)}
           >

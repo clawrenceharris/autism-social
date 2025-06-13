@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth, useModal } from "../../context";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { useModal } from "../../context";
 import { signOut } from "../../services/auth";
 import { ConfirmationModal, EditProfile } from "../../components/";
 import {
@@ -15,11 +15,12 @@ import {
 } from "lucide-react";
 import "./SettingsPage.scss";
 import { useToast } from "../../context";
+import type { AuthContextType } from "../../types";
 
 type ColorScheme = "light" | "dark" | "auto";
 
 const SettingsPage = () => {
-  const { user } = useAuth();
+  const { user } = useOutletContext<AuthContextType>();
   const { showToast } = useToast();
   const { openModal, closeModal } = useModal();
   const navigate = useNavigate();
@@ -84,7 +85,10 @@ const SettingsPage = () => {
   };
 
   const handleEditProfile = () => {
-    openModal(<EditProfile onSubmit={closeModal} />, "Edit Profile");
+    openModal(
+      <EditProfile user={user} onSubmit={closeModal} />,
+      "Edit Profile"
+    );
   };
 
   const getInitials = (name: string) => {

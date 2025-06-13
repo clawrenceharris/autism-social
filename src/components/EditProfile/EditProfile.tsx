@@ -1,17 +1,24 @@
-import { useState } from "react";
-import { useAuth, useToast } from "../../context";
+import { useEffect, useState } from "react";
+import { useToast } from "../../context";
 import type { SignUpFormValues } from "../../types";
 import { updateUserInterests } from "../../services/interests";
 import { updateUserGoals } from "../../services/user";
 import { usePreferencesStore } from "../../store/usePreferencesStore";
 import { useOnboarding } from "../../hooks";
+import type { User } from "@supabase/supabase-js";
 
-const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
+interface EditProfileProps {
+  onSubmit: () => void;
+  user: User;
+}
+const EditProfile = ({ onSubmit, user }: EditProfileProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { interests, goals, userGoals, userInterests } = usePreferencesStore();
+  const { interests, goals, fetchPreferences } = usePreferencesStore();
   const { showToast } = useToast();
-  const { user } = useAuth();
+  useEffect(() => {
+    fetchPreferences(user.id);
+  }, [fetchPreferences, user.id]);
   const { renderStep, step } = useOnboarding({
     handleSubmit: (data: Partial<SignUpFormValues>) => handleSubmit(data),
     error,
@@ -51,17 +58,7 @@ const EditProfile = ({ onSubmit }: { onSubmit: () => void }) => {
       setIsLoading(false);
     }
   };
-
-  return (
-    <>
-      {renderStep({
-        defaultValues: {
-          interests: userInterests,
-          goals: userGoals,
-        },
-      })}
-    </>
-  );
+  return <>{renderStep()}</>;
 };
 
 export default EditProfile;

@@ -6,12 +6,12 @@ import { ModalProvider, AuthProvider, ToastProvider } from "./context";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ToastProvider>
-      <AuthProvider>
+    <AuthProvider>
+      <ToastProvider>
         <ModalProvider>
           <App />
         </ModalProvider>
-      </AuthProvider>
-    </ToastProvider>
+      </ToastProvider>
+    </AuthProvider>
   </StrictMode>
 );

@@ -92,16 +92,7 @@ const useOnboarding = ({
             onCancel={prevStep}
             {...props}
           >
-            <>
-              <SignUpStep2
-                values={[
-                  ...(formData.goals || []),
-                  ...((props?.defaultValues?.goals as string[] | undefined) ||
-                    []),
-                ].filter((g): g is string => typeof g === "string")}
-                toggleSelection={toggleSelection}
-              />
-            </>
+            <SignUpStep2 toggleSelection={toggleSelection} />
           </FormLayout>
         );
 
@@ -118,14 +109,7 @@ const useOnboarding = ({
             cancelText="Back"
             {...props}
           >
-            <SignUpStep3
-              toggleSelection={toggleSelection}
-              values={[
-                ...(formData.interests || []),
-                ...((props?.defaultValues?.interests as string[] | undefined) ||
-                  []),
-              ].filter((g): g is string => typeof g === "string")}
-            />
+            <SignUpStep3 toggleSelection={toggleSelection} />
           </FormLayout>
         );
 

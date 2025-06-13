@@ -47,8 +47,10 @@ export const useUserStore = create<UserStore>()(
             set({ interests });
 
             const profile = await userService.getUserById(user.id);
+            if (profile === null) {
+              throw new Error("Profile could not be found");
+            }
             set({ profile });
-            console.log({ profile });
           }
           set({ loading: false });
         } catch (err) {

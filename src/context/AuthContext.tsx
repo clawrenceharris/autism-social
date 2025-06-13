@@ -8,20 +8,23 @@ import {
 import { supabase } from "../lib/supabase";
 import type { User } from "@supabase/supabase-js";
 import { useUserStore } from "../store/useUserStore";
+import type { UserProfile } from "../types";
 
-interface AuthContextType {
-  user: User | null;
-  loading: boolean;
-  error: string | null;
-  isAdmin: boolean;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<
+  | {
+      user: User | null;
+      loading: boolean;
+      error: string | null;
+      isAdmin: boolean;
+      profile: UserProfile | null;
+    }
+  | undefined
+>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const { fetchUserData, setUser, user, loading } = useUserStore();
+  const { fetchUserData, setUser, user, loading, profile } = useUserStore();
 
   useEffect(() => {
     fetchUserData();
@@ -49,7 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [setUser]);
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, isAdmin }}>
+    <AuthContext.Provider value={{ user, profile, loading, error, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );

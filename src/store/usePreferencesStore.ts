@@ -9,26 +9,39 @@ import { getGoals } from "../services/goals";
 import type { Goal, Interest } from "../types";
 
 interface PreferencesStore {
-  userGoals: string[];
-  userInterests: string[];
+  userGoals: Goal[];
+  userGoalIds: string[];
+
+  userInterests: Interest[];
+  userInterestIds: string[];
+
   interests: Interest[];
+  interestIds: string[];
+
   goals: Goal[];
+  goalIds: string[];
+
   loading: boolean;
   error: string | null;
   fetchGoals: () => void;
   fetchInterests: () => void;
   fetchPreferences: (userId: string) => void;
-  setInterests: (userId: string, interests: string[]) => void;
-  setGoals: (userId: string, goals: string[]) => void;
+  setInterests: (userId: string, interests: Interest[]) => void;
+  setGoals: (userId: string, goals: Goal[]) => void;
   clearUserGoals: () => void;
   clearUserInterests: () => void;
 }
 
 export const usePreferencesStore = create<PreferencesStore>((set) => ({
   interests: [],
+  interestIds: [],
+
   goals: [],
+  goalIds: [],
   userGoals: [],
+  userGoalIds: [],
   userInterests: [],
+  userInterestIds: [],
   loading: false,
   error: null,
 
@@ -36,14 +49,22 @@ export const usePreferencesStore = create<PreferencesStore>((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const [interests, goals] = await Promise.all([
+      const [interests, goals, userInterests, userGoals] = await Promise.all([
+        getInterests(),
+        getGoals(),
         getUserInterests(userId),
         getUserGoals(userId),
       ]);
 
       set({
-        userInterests: interests.map((i) => i.name),
-        userGoals: goals.map((g) => g.goal),
+        userInterests,
+        userGoals,
+        goals,
+        interests,
+        interestIds: interests.map((i) => i.id),
+        goalIds: goals.map((g) => g.id),
+        userInterestIds: userInterests.map((i) => i.id),
+        userGoalIds: userGoals.map((g) => g.id),
       });
     } catch (err) {
       console.error("Error fetching preferences:", err);
@@ -53,9 +74,12 @@ export const usePreferencesStore = create<PreferencesStore>((set) => ({
     }
   },
 
-  setInterests: async (userId, newInterests) => {
+  setInterests: async (userId: string, newInterests: Interest[]) => {
     try {
-      await updateUserInterests(userId, newInterests);
+      await updateUserInterests(
+        userId,
+        newInterests.map((i) => i.name)
+      );
       set({ userInterests: newInterests });
     } catch (err) {
       console.error("Error updating interests:", err);
@@ -81,9 +105,12 @@ export const usePreferencesStore = create<PreferencesStore>((set) => ({
     }
   },
 
-  setGoals: async (userId, newGoals) => {
+  setGoals: async (userId: string, newGoals: Goal[]) => {
     try {
-      await updateUserGoals(userId, newGoals);
+      await updateUserGoals(
+        userId,
+        newGoals.map((g) => g.goal)
+      );
       set({ userGoals: newGoals });
     } catch (err) {
       console.error("Error updating goals:", err);
