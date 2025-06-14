@@ -1,1 +1,0 @@
-export const DAPPIER_API_ENDPOINT = 'https://api.dappier.com/v1/completions';

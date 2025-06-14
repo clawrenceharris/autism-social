@@ -3,19 +3,19 @@ import type {
   DialogueEvent,
   DialogueStep,
   ScoreCategory,
-  DialogueScores,
+  ScoreSummary,
+  DialoguePossibleScores,
 } from "../types";
 
 export function createDialogueMachine(
   id: string,
-
   steps: DialogueStep[],
+  totalPossibleScores: DialoguePossibleScores,
   finalState = "end"
 ) {
   const stateConfig: Record<string, object> = {};
   const categories: ScoreCategory[] = [
     "clarity",
-    "empathy",
     "empathy",
     "assertiveness",
     "socialAwareness",
@@ -29,16 +29,12 @@ export function createDialogueMachine(
       transitions[opt.event] = {
         target: opt.next,
         actions: opt.scores
-          ? assign(({ context }: { context: DialogueScores }) => {
+          ? assign(({ context }: { context: ScoreSummary }) => {
               const updated = { ...context };
-              const seen = new Set<string>();
 
-              for (const cat of opt.scores) {
-                updated[cat].earned += 1;
-                if (!seen.has(cat)) {
-                  updated[cat].possible += 1;
-
-                  seen.add(cat);
+              for (const cat of categories) {
+                if (opt.scores[cat] !== undefined) {
+                  updated[cat].earned += opt.scores[cat];
                 }
               }
 
@@ -70,10 +66,16 @@ export function createDialogueMachine(
   return createMachine({
     types: {
       events: {} as DialogueEvent,
-      context: {} as DialogueScores,
+      context: {} as ScoreSummary,
     },
     context: Object.fromEntries(
-      categories.map((c) => [c, { earned: 0, possible: 0 }])
+      categories.map((c) => [
+        c,
+        {
+          earned: 0,
+          possible: totalPossibleScores[c] || 0,
+        },
+      ])
     ),
 
     id,

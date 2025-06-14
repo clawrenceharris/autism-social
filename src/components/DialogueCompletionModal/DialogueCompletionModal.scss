@@ -52,8 +52,7 @@
     }
 
     .progress-categories {
-      @include flex(column, flex-start, stretch, $spacing-4);
-      width: 100%;
+      @include stack-layout($spacing-4);
     }
 
     .progress-item {
@@ -81,21 +80,13 @@
         .score-display {
           @include flex(row, center, center, $spacing-2);
 
-          .score-change {
+          .dialogue-score {
             font-size: 0.875rem;
             font-weight: 600;
             padding: 0.25rem 0.5rem;
             border-radius: $border-radius-full;
-            background: $color-green-100;
-            color: $color-green-600;
-            opacity: 0;
-            transform: translateY(-10px);
-            animation: scoreChangeAppear 0.5s ease-out 0.8s forwards;
-
-            &.no-change {
-              background: $color-gray-100;
-              color: $color-gray-500;
-            }
+            background: $color-gray-100;
+            color: $color-gray-700;
           }
 
           .current-score {
@@ -125,6 +116,7 @@
         background: $color-gray-200;
         border-radius: $border-radius-full;
         overflow: hidden;
+        margin-bottom: $spacing-2;
 
         .progress-bar {
           height: 100%;
@@ -171,6 +163,31 @@
           font-weight: 600;
           color: $color-white;
           text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+      }
+
+      .dialogue-performance {
+        @include flex(row, space-between, center);
+        font-size: 0.875rem;
+
+        .performance-label {
+          color: $color-gray-600;
+        }
+
+        .performance-score {
+          font-weight: 600;
+
+          &.excellent {
+            color: $color-green-600;
+          }
+
+          &.good {
+            color: #f59e0b;
+          }
+
+          &.poor {
+            color: $color-red-600;
+          }
         }
       }
     }
@@ -283,17 +300,6 @@
   50% {
     transform: scale(1.05);
     box-shadow: 0 12px 35px rgba($color-green-600, 0.4);
-  }
-}
-
-@keyframes scoreChangeAppear {
-  0% {
-    opacity: 0;
-    transform: translateY(-10px) scale(0.8);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
   }
 }
 

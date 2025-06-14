@@ -49,11 +49,21 @@ const DialoguePlayer = ({
   onReplay,
 }: DialoguePlayerProps) => {
   const machine = useMemo(
-    () => createDialogueMachine(dialogue.id, dialogue.steps),
+    () => createDialogueMachine(
+      dialogue.id, 
+      dialogue.steps, 
+      dialogue.total_possible_scores
+    ),
     [dialogue]
   );
   const [state, send] = useMachine(
-    machine || createDialogueMachine("empty", [])
+    machine || createDialogueMachine("empty", [], {
+      clarity: 0,
+      empathy: 0,
+      assertiveness: 0,
+      socialAwareness: 0,
+      selfAdvocacy: 0,
+    })
   );
   const [messages, setMessages] = useState<Message[]>([]);
   const [customInput, setCustomInput] = useState("");
@@ -439,6 +449,7 @@ const DialoguePlayer = ({
           userId={user.user_id}
           dialogueId={dialogue.id}
           scores={getDialogueScores(state.context)}
+          possibleScores={dialogue.total_possible_scores}
           onReplay={handleCompletionModalReplay}
           onExit={handleCompletionModalExit}
           isVisible={showCompletionModal}

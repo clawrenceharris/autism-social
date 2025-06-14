@@ -44,11 +44,16 @@ export interface Interest {
 
 export interface UserProgress {
   user_id: string;
-  clarity: number;
-  empathy: number;
-  assertiveness: number;
-  social_awareness: number;
-  self_advocacy: number;
+  clarity_earned: number;
+  clarity_possible: number;
+  empathy_earned: number;
+  empathy_possible: number;
+  assertiveness_earned: number;
+  assertiveness_possible: number;
+  social_awareness_earned: number;
+  social_awareness_possible: number;
+  self_advocacy_earned: number;
+  self_advocacy_possible: number;
 }
 
 export interface Goal {
@@ -99,6 +104,7 @@ export interface Dialogue {
   steps: DialogueStep[];
   difficulty: Difficulty;
   scoring_categories: string[];
+  total_possible_scores: Record<ScoreCategory, number>;
   created_at?: string;
 }
 
@@ -138,6 +144,7 @@ export interface CreateDialogueData {
   steps: DialogueStep[];
   difficulty: Difficulty;
   scoring_categories: string[];
+  total_possible_scores: Record<ScoreCategory, number>;
 }
 
 export type DialogueEvent = { type: string };
@@ -147,10 +154,11 @@ export interface DialogueStep {
   npc: string;
   options: DialogueOption[];
 }
+
 export interface DialogueOption {
   label: string;
   event: string;
-  scores: ScoreCategory[];
+  scores: Record<ScoreCategory, number>;
   next: string;
 }
 

@@ -3,24 +3,29 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./ProgressSection.scss";
 import { useProgressStore } from "../../store/useProgressStore";
+
 const ProgressSection = ({ userId }: { userId: string }) => {
-  const { fetchProgress, progress, loading, error } = useProgressStore();
+  const { fetchProgress, progressPercentages, loading, error } = useProgressStore();
 
   const [progressCategories, setProgressCategories] = useState<
     { name: string; score: number }[]
   >([]);
+
   useEffect(() => {
     fetchProgress(userId);
   }, [fetchProgress, userId]);
+
   useEffect(() => {
-    if (!progress) return;
+    if (!progressPercentages) return;
     setProgressCategories([
-      { name: "Clarity", score: progress.clarity },
-      { name: "Empathy", score: progress.empathy },
-      { name: "Assertiveness", score: progress.assertiveness },
-      { name: "Self-advocacy", score: progress.self_advocacy },
+      { name: "Clarity", score: progressPercentages.clarity },
+      { name: "Empathy", score: progressPercentages.empathy },
+      { name: "Assertiveness", score: progressPercentages.assertiveness },
+      { name: "Social Awareness", score: progressPercentages.social_awareness },
+      { name: "Self-advocacy", score: progressPercentages.self_advocacy },
     ]);
-  }, [progress]);
+  }, [progressPercentages]);
+
   if (error) {
     return (
       <div className="center-absolute">
@@ -28,6 +33,7 @@ const ProgressSection = ({ userId }: { userId: string }) => {
       </div>
     );
   }
+
   return (
     <div>
       <div className="section-header">
@@ -50,7 +56,7 @@ const ProgressSection = ({ userId }: { userId: string }) => {
                 <div className="category-bar">
                   <div
                     className="category-fill"
-                    style={{ width: `${(category.score / 10) * 100}` }}
+                    style={{ width: `${category.score}%` }}
                   />
                 </div>
               </div>

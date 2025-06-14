@@ -6,11 +6,11 @@ export function generateId(prefix: string): string {
 }
 
 export const getDialogueScores = (scores: ScoreSummary): DialogueScores => {
-  const percentages: Record<string, number> = {};
+  const dialogueScores: DialogueScores = {};
 
-  for (const [cat, { earned, possible }] of Object.entries(scores)) {
-    percentages[cat] = possible > 0 ? Math.round((earned / possible) * 100) : 0;
+  for (const [cat, { earned }] of Object.entries(scores)) {
+    dialogueScores[cat as keyof DialogueScores] = earned;
   }
 
-  return percentages;
+  return dialogueScores;
 };

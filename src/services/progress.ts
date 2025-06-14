@@ -30,14 +30,13 @@ export async function getProgress(
 /**
  * Create initial progress record for a user
  * @param userId - The user ID to create progress for
- * @return  s Promise with created progress data
+ * @returns Promise with created progress data
  * @throws Error if creation fails
  */
 export async function createProgress(userId: string): Promise<UserProgress> {
   const { data: result, error } = await supabase
     .from("user_progress")
     .upsert({ user_id: userId }, { onConflict: "user_id" })
-
     .select()
     .single();
   if (error) {
@@ -70,4 +69,29 @@ export async function updateProgress(
   }
 
   return result.data[0];
+}
+
+/**
+ * Calculate progress percentages for display
+ * @param progress - User progress data
+ * @returns Object with percentage values for each category
+ */
+export function calculateProgressPercentages(progress: UserProgress) {
+  return {
+    clarity: progress.clarity_possible > 0 
+      ? Math.round((progress.clarity_earned / progress.clarity_possible) * 100) 
+      : 0,
+    empathy: progress.empathy_possible > 0 
+      ? Math.round((progress.empathy_earned / progress.empathy_possible) * 100) 
+      : 0,
+    assertiveness: progress.assertiveness_possible > 0 
+      ? Math.round((progress.assertiveness_earned / progress.assertiveness_possible) * 100) 
+      : 0,
+    social_awareness: progress.social_awareness_possible > 0 
+      ? Math.round((progress.social_awareness_earned / progress.social_awareness_possible) * 100) 
+      : 0,
+    self_advocacy: progress.self_advocacy_possible > 0 
+      ? Math.round((progress.self_advocacy_earned / progress.self_advocacy_possible) * 100) 
+      : 0,
+  };
 }

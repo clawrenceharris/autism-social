@@ -9,6 +9,14 @@ export interface DialogueScores {
   selfAdvocacy?: number;
 }
 
+export interface DialoguePossibleScores {
+  clarity: number;
+  empathy: number;
+  assertiveness: number;
+  socialAwareness: number;
+  selfAdvocacy: number;
+}
+
 export interface CompletionResult {
   success: boolean;
   previous_progress: UserProgress;
@@ -31,19 +39,22 @@ export interface ProgressPercentages {
  * Complete a dialogue and update user progress atomically
  * @param userId - The user's ID
  * @param dialogueId - The completed dialogue ID
- * @param scores - The scores earned in this dialogue
+ * @param earnedScores - The scores earned in this dialogue
+ * @param possibleScores - The maximum possible scores for this dialogue
  * @returns Promise with completion result including before/after progress
  */
 export async function completeDialogue(
   userId: string,
   dialogueId: string,
-  scores: DialogueScores
+  earnedScores: DialogueScores,
+  possibleScores: DialoguePossibleScores
 ): Promise<CompletionResult> {
   try {
     const { data, error } = await supabase.rpc("complete_dialogue", {
       p_user_id: userId,
       p_dialogue_id: dialogueId,
-      p_scores: scores,
+      p_earned_scores: earnedScores,
+      p_possible_scores: possibleScores,
     });
 
     if (error) {

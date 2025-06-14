@@ -13,12 +13,14 @@ import {
   completeDialogue,
   type CompletionResult,
   type DialogueScores,
+  type DialoguePossibleScores,
 } from "../../services/dialogueCompletion";
 
 interface DialogueCompletionModalProps {
   userId: string;
   dialogueId: string;
   scores: DialogueScores;
+  possibleScores: DialoguePossibleScores;
   onReplay: () => void;
   onExit: () => void;
   isVisible: boolean;
@@ -30,12 +32,15 @@ interface ProgressCategory {
   previousValue: number;
   newValue: number;
   earned: number;
+  possible: number;
+  dialoguePercentage: number;
 }
 
 const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
   userId,
   dialogueId,
   scores,
+  possibleScores,
   onReplay,
   onExit,
   isVisible,
@@ -64,41 +69,99 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
         {
           key: "clarity",
           label: "Clarity",
-          previousValue: completionResult.previous_progress.clarity || 0,
-          newValue: completionResult.new_progress.clarity || 0,
+          previousValue: calculatePercentage(
+            completionResult.previous_progress.clarity_earned,
+            completionResult.previous_progress.clarity_possible
+          ),
+          newValue: calculatePercentage(
+            completionResult.new_progress.clarity_earned,
+            completionResult.new_progress.clarity_possible
+          ),
           earned: scores.clarity || 0,
+          possible: possibleScores.clarity,
+          dialoguePercentage: calculatePercentage(
+            scores.clarity || 0,
+            possibleScores.clarity
+          ),
         },
         {
           key: "empathy",
           label: "Empathy",
-          previousValue: completionResult.previous_progress.empathy || 0,
-          newValue: completionResult.new_progress.empathy || 0,
+          previousValue: calculatePercentage(
+            completionResult.previous_progress.empathy_earned,
+            completionResult.previous_progress.empathy_possible
+          ),
+          newValue: calculatePercentage(
+            completionResult.new_progress.empathy_earned,
+            completionResult.new_progress.empathy_possible
+          ),
           earned: scores.empathy || 0,
+          possible: possibleScores.empathy,
+          dialoguePercentage: calculatePercentage(
+            scores.empathy || 0,
+            possibleScores.empathy
+          ),
         },
         {
           key: "assertiveness",
           label: "Assertiveness",
-          previousValue: completionResult.previous_progress.assertiveness || 0,
-          newValue: completionResult.new_progress.assertiveness || 0,
+          previousValue: calculatePercentage(
+            completionResult.previous_progress.assertiveness_earned,
+            completionResult.previous_progress.assertiveness_possible
+          ),
+          newValue: calculatePercentage(
+            completionResult.new_progress.assertiveness_earned,
+            completionResult.new_progress.assertiveness_possible
+          ),
           earned: scores.assertiveness || 0,
+          possible: possibleScores.assertiveness,
+          dialoguePercentage: calculatePercentage(
+            scores.assertiveness || 0,
+            possibleScores.assertiveness
+          ),
         },
         {
           key: "socialAwareness",
           label: "Social Awareness",
-          previousValue:
-            completionResult.previous_progress.social_awareness || 0,
-          newValue: completionResult.new_progress.social_awareness || 0,
+          previousValue: calculatePercentage(
+            completionResult.previous_progress.social_awareness_earned,
+            completionResult.previous_progress.social_awareness_possible
+          ),
+          newValue: calculatePercentage(
+            completionResult.new_progress.social_awareness_earned,
+            completionResult.new_progress.social_awareness_possible
+          ),
           earned: scores.socialAwareness || 0,
+          possible: possibleScores.socialAwareness,
+          dialoguePercentage: calculatePercentage(
+            scores.socialAwareness || 0,
+            possibleScores.socialAwareness
+          ),
         },
         {
           key: "selfAdvocacy",
           label: "Self Advocacy",
-          previousValue: completionResult.previous_progress.self_advocacy || 0,
-          newValue: completionResult.new_progress.self_advocacy || 0,
+          previousValue: calculatePercentage(
+            completionResult.previous_progress.self_advocacy_earned,
+            completionResult.previous_progress.self_advocacy_possible
+          ),
+          newValue: calculatePercentage(
+            completionResult.new_progress.self_advocacy_earned,
+            completionResult.new_progress.self_advocacy_possible
+          ),
           earned: scores.selfAdvocacy || 0,
+          possible: possibleScores.selfAdvocacy,
+          dialoguePercentage: calculatePercentage(
+            scores.selfAdvocacy || 0,
+            possibleScores.selfAdvocacy
+          ),
         },
       ]
     : [];
+
+  function calculatePercentage(earned: number, possible: number): number {
+    return possible > 0 ? Math.round((earned / possible) * 100) : 0;
+  }
 
   const handleCompletion = useCallback(async () => {
     if (!isVisible || completionResult) return;
@@ -107,7 +170,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
     setError(null);
 
     try {
-      const result = await completeDialogue(userId, dialogueId, scores);
+      const result = await completeDialogue(userId, dialogueId, scores, possibleScores);
       setCompletionResult(result);
 
       // Start animations after a brief delay
@@ -124,7 +187,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [completionResult, dialogueId, isVisible, scores, showToast, userId]);
+  }, [completionResult, dialogueId, isVisible, scores, possibleScores, showToast, userId]);
 
   const handleRetry = () => {
     setError(null);
@@ -184,16 +247,16 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
       </div>
 
       <div className="progress-section">
-        <h3 className="section-title">Your Progress</h3>
+        <h3 className="section-title">Your Performance</h3>
         <div className="progress-categories">
           {progressCategories.map((category) => (
             <div key={category.key} className="progress-item">
               <div className="progress-header">
                 <span className="category-name">{category.label}</span>
                 <div className="score-display">
-                  {category.earned > 0 && (
-                    <span className="score-change">+{category.earned}</span>
-                  )}
+                  <span className="dialogue-score">
+                    {category.earned}/{category.possible} pts
+                  </span>
                   <span
                     className={`current-score ${getScoreLevel(
                       category.newValue
@@ -223,6 +286,12 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                     {category.newValue}%
                   </span>
                 </div>
+              </div>
+              <div className="dialogue-performance">
+                <span className="performance-label">This dialogue:</span>
+                <span className={`performance-score ${getScoreLevel(category.dialoguePercentage)}`}>
+                  {category.dialoguePercentage}%
+                </span>
               </div>
             </div>
           ))}
