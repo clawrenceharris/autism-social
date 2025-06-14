@@ -11,7 +11,8 @@
 .scenario-title h2,
 .scenario-title p {
   overflow: hidden;
+
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 90%;
-}/*# sourceMappingURL=EditScenarioPage.css.map */
+}

@@ -63,7 +63,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 1.5rem 1rem;
-  background: linear-gradient(135deg, #ffffff, #d7e9f5);
+  background: linear-gradient(135deg, #ffffff, #e3f3fe);
   border-radius: 1.5rem;
   box-shadow: 0 8px 22px rgba(84, 203, 226, 0.15);
   min-width: 140px;
@@ -72,7 +72,7 @@
 }
 .dashboard-container .dashboard-header .quick-stats .stat-item:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(200, 147, 251, 0.25);
+  box-shadow: 0 12px 40px rgba(84, 203, 226, 0.25);
 }
 @media (min-width: 640px) {
   .dashboard-container .dashboard-header .quick-stats .stat-item {
@@ -101,11 +101,6 @@
   grid-template-columns: repeat(1, 1fr);
   gap: 2rem;
 }
-@media (min-width: 768px) {
-  .dashboard-container .dashboard-grid {
-    grid-template-columns: 2fr 1fr;
-  }
-}
 @media (min-width: 1024px) {
   .dashboard-container .dashboard-grid {
     grid-template-columns: 2fr 1fr;
@@ -129,10 +124,8 @@
 }
 .dashboard-container .challenge-section {
   margin-bottom: 2rem;
-  background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
   display: flex;
   flex-direction: column;
-  border: 2px solid #c893fb;
   border-radius: 1.5rem;
   position: relative;
 }
@@ -163,59 +156,6 @@
   height: 100%;
   background: linear-gradient(90deg, #c893fb, #9333ea);
   transition: width 0.3s ease;
-}
-.dashboard-container .card-section {
-  background-color: #ffffff;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  background: linear-gradient(135deg, #ffffff, rgba(243, 232, 255, 0.3));
-  border: 1px solid rgba(200, 147, 251, 0.1);
-  border-radius: 1.5rem;
-  transition: all 0.3s ease;
-}
-.dashboard-container .card-section p {
-  font-size: 0.95rem;
-  color: #374151;
-  font-weight: 600;
-  margin: 2rem 0;
-}
-.dashboard-container .card-section .section-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid rgba(200, 147, 251, 0.1);
-}
-.dashboard-container .card-section .section-header h2 {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 0.5rem;
-  color: #1f2937;
-  font-weight: 600;
-}
-.dashboard-container .card-section .section-header h2 .section-icon {
-  color: #c893fb;
-}
-.dashboard-container .card-section .section-header .section-action {
-  color: #54cbe2;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.95rem;
-  transition: color 0.2s ease;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 0.25rem;
-}
-.dashboard-container .card-section .section-header .section-action:hover {
-  color: #9ce5ff;
 }
 .dashboard-container .recent-activity .activity-list {
   display: flex;
@@ -302,10 +242,9 @@
 }
 .dashboard-container .dialogue-list {
   display: flex;
+  gap: 1rem;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
+  overflow: scroll;
   padding: 1.5rem 0 1rem;
 }
 @media (min-width: 768px) {
@@ -339,9 +278,5 @@
   }
   .dashboard-container .dashboard-header .quick-stats .stat-item .stat-label {
     font-size: 0.8rem;
-  }
-  .dashboard-container .dashboard-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
   }
 }/*# sourceMappingURL=DashboardPage.css.map */

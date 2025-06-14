@@ -18,7 +18,7 @@ import "./YourScenariosPage.scss";
 import { useScenarioStore } from "../../store/useScenarioStrore";
 import { ProgressIndicator } from "../../components";
 import type { Dialogue, Scenario } from "../../types";
-import { useRecommendationsStore } from "../../store/useRecommendations";
+import { useRecommendationsStore } from "../../store";
 
 type FilterType = "all" | "completed" | "trending" | "recommended";
 type ViewType = "grid" | "list";

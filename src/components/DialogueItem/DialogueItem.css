@@ -17,16 +17,16 @@
   min-height: 130px;
 }
 .dialogue-item:hover {
-  background: #d7e9f5;
+  background: #e3f3fe;
   transform: translateY(-1px);
 }
 .dialogue-item.recommended {
   border: 2px solid #c1e6ff;
-  background: linear-gradient(135deg, #ffffff, #d7e9f5);
+  background: linear-gradient(135deg, #ffffff, #e3f3fe);
 }
 .dialogue-item.recommended:hover {
   border-color: #54cbe2;
-  background: linear-gradient(135deg, #d7e9f5, #c1e6ff);
+  background: linear-gradient(135deg, #e3f3fe, #c1e6ff);
 }
 .dialogue-item .dialogue-details .dialogue-header {
   text-align: left;

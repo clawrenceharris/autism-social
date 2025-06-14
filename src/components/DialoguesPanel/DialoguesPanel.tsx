@@ -1,4 +1,4 @@
-import "./DialoguesPanel.css";
+import "./DialoguesPanel.scss";
 import { Check, ChevronRight, Minus, Plus } from "lucide-react";
 import type { Scenario } from "../../types";
 import { useModal } from "../../context";

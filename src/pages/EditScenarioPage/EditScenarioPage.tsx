@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import "./EditScenarioPage.css";
+import "./EditScenarioPage.scss";
 import { useModal, useScenario, useToast } from "../../context";
 import type { Dialogue, DialogueStep, Difficulty } from "../../types";
 import {
@@ -10,9 +10,10 @@ import {
 import { useParams } from "react-router-dom";
 import { getDialogueById, updateDialogue } from "../../services/dialogues";
 import { Pencil } from "lucide-react";
+import { useScenarioStore } from "../../store/useScenarioStrore";
 
 const EditScenarioPage = () => {
-  const { scenario, loading, error } = useScenario();
+  const { scenario, loading, error } = useScenarioStore();
   const { dialogueId } = useParams<{ dialogueId: string }>();
   const [dialogue, setDialogue] = useState<Dialogue | null>(null);
   const { showToast } = useToast();

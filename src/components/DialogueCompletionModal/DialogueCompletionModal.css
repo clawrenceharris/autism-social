@@ -1,0 +1,362 @@
+@import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
+.completion-modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.completion-modal .completion-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.completion-modal .completion-header .success-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #16a34a, #10b981);
+  border-radius: 9999px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  color: #ffffff;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  animation: successPulse 2s ease-in-out infinite;
+  box-shadow: 0 8px 25px rgba(22, 163, 74, 0.3);
+}
+.completion-modal .completion-header .completion-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+.completion-modal .completion-header .completion-subtitle {
+  font-size: 1.1rem;
+  color: #4b5563;
+  max-width: 400px;
+}
+.completion-modal .progress-section {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+.completion-modal .progress-section .section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.completion-modal .progress-section .progress-categories {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 1rem;
+  width: 100%;
+}
+.completion-modal .progress-section .progress-item {
+  background: #ffffff;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+.completion-modal .progress-section .progress-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+.completion-modal .progress-section .progress-item .progress-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.completion-modal .progress-section .progress-item .progress-header .category-name {
+  font-weight: 600;
+  color: #374151;
+  font-size: 1rem;
+}
+.completion-modal .progress-section .progress-item .progress-header .score-display {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+.completion-modal .progress-section .progress-item .progress-header .score-display .score-change {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  background: #dcfce7;
+  color: #16a34a;
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: scoreChangeAppear 0.5s ease-out 0.8s forwards;
+}
+.completion-modal .progress-section .progress-item .progress-header .score-display .score-change.no-change {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+.completion-modal .progress-section .progress-item .progress-header .score-display .current-score {
+  font-size: 1.25rem;
+  font-weight: 700;
+  min-width: 60px;
+  text-align: right;
+}
+.completion-modal .progress-section .progress-item .progress-header .score-display .current-score.excellent {
+  color: #16a34a;
+}
+.completion-modal .progress-section .progress-item .progress-header .score-display .current-score.good {
+  color: #f59e0b;
+}
+.completion-modal .progress-section .progress-item .progress-header .score-display .current-score.poor {
+  color: #dc2626;
+}
+.completion-modal .progress-section .progress-item .progress-bar-container {
+  position: relative;
+  height: 12px;
+  background: #edeff1;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.completion-modal .progress-section .progress-item .progress-bar-container .progress-bar {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+.completion-modal .progress-section .progress-item .progress-bar-container .progress-bar.excellent {
+  background: linear-gradient(90deg, #16a34a, #10b981);
+}
+.completion-modal .progress-section .progress-item .progress-bar-container .progress-bar.good {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+.completion-modal .progress-section .progress-item .progress-bar-container .progress-bar.poor {
+  background: linear-gradient(90deg, #dc2626, #f87171);
+}
+.completion-modal .progress-section .progress-item .progress-bar-container .progress-bar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: shimmer 2s ease-in-out infinite;
+}
+.completion-modal .progress-section .progress-item .progress-bar-container .progress-percentage {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.completion-modal .completion-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+.completion-modal .completion-actions .action-btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+}
+.completion-modal .completion-actions .action-btn.primary {
+  background: #54cbe2;
+  color: #ffffff;
+  border: 2px solid #54cbe2;
+}
+.completion-modal .completion-actions .action-btn.primary:hover {
+  background: #5f88fa;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(84, 203, 226, 0.3);
+}
+.completion-modal .completion-actions .action-btn.secondary {
+  background: #ffffff;
+  color: #374151;
+  border: 2px solid #d1d5db;
+}
+.completion-modal .completion-actions .action-btn.secondary:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.completion-modal .loading-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+}
+.completion-modal .loading-state .loading-spinner {
+  margin-bottom: 1rem;
+}
+.completion-modal .loading-state .loading-text {
+  font-size: 1.1rem;
+  color: #4b5563;
+}
+.completion-modal .error-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: #fee2e2;
+  border-radius: 1rem;
+  border: 2px solid #fdb0b0;
+}
+.completion-modal .error-state .error-icon {
+  color: #dc2626;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+.completion-modal .error-state .error-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #dc2626;
+  margin-bottom: 0.5rem;
+}
+.completion-modal .error-state .error-message {
+  color: #b91c1c;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.completion-modal .error-state .retry-btn {
+  background: #dc2626;
+  color: #ffffff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+.completion-modal .error-state .retry-btn:hover {
+  background: #b91c1c;
+}
+
+@keyframes successPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 8px 25px rgba(22, 163, 74, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 12px 35px rgba(22, 163, 74, 0.4);
+  }
+}
+@keyframes scoreChangeAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+.progress-item:nth-child(1) .progress-bar {
+  transition-delay: 0.2s;
+}
+.progress-item:nth-child(2) .progress-bar {
+  transition-delay: 0.4s;
+}
+.progress-item:nth-child(3) .progress-bar {
+  transition-delay: 0.6s;
+}
+.progress-item:nth-child(4) .progress-bar {
+  transition-delay: 0.8s;
+}
+.progress-item:nth-child(5) .progress-bar {
+  transition-delay: 1s;
+}
+
+@media (min-width: 640px) {
+  .completion-modal {
+    padding: 1rem;
+  }
+  .completion-modal .completion-header .success-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+  }
+  .completion-modal .completion-header .completion-title {
+    font-size: 1.5rem;
+  }
+  .completion-modal .completion-header .completion-subtitle {
+    font-size: 1rem;
+  }
+  .completion-modal .completion-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  .completion-modal .completion-actions .action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .progress-bar {
+    transition-duration: 0.3s !important;
+  }
+  .success-icon {
+    animation: none !important;
+  }
+  .progress-bar::after {
+    animation: none !important;
+  }
+}
+@media (prefers-contrast: high) {
+  .progress-item {
+    border: 2px solid #9ca3af;
+  }
+  .progress-bar.excellent {
+    background: #006400 !important;
+  }
+  .progress-bar.good {
+    background: #ff8c00 !important;
+  }
+  .progress-bar.poor {
+    background: #dc143c !important;
+  }
+}/*# sourceMappingURL=DialogueCompletionModal.css.map */

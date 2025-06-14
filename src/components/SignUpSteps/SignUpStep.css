@@ -176,7 +176,7 @@
   text-align: center;
 }
 .signup-final-step .motivation-section .motivation-card {
-  background: linear-gradient(135deg, #d7e9f5, #c1e6ff);
+  background: linear-gradient(135deg, #e3f3fe, #c1e6ff);
   border-radius: 1rem;
   padding: 1.5rem;
   border: 1px solid #54cbe2;
@@ -218,7 +218,7 @@
 .checkbox-item {
   position: relative;
   padding: 1rem 1rem;
-  border: 2px solid #edeff1;
+  border: 1px solid #edeff1;
   border-radius: 0.5rem;
   cursor: pointer;
   min-width: 250px;
@@ -239,19 +239,19 @@
 .checkbox-item input[type=checkbox]:checked + span + .checkbox-item {
   transform: translateY(-2px);
   border-color: #54cbe2;
-  background-color: #d7e9f5;
+  background-color: #e3f3fe;
   box-shadow: 0 4px 12px rgba(84, 203, 226, 0.2);
 }
 .checkbox-item:hover {
   transform: translateY(-2px);
   border-color: #c1e6ff;
-  background-color: #d7e9f5;
+  background-color: #e3f3fe;
   box-shadow: 0 4px 12px rgba(84, 203, 226, 0.1);
 }
 .checkbox-item.selected {
   transform: translateY(-2px);
-  border-color: #c1e6ff;
-  background-color: #d7e9f5;
+  border-color: #54cbe2;
+  background-color: #e3f3fe;
   box-shadow: 0 4px 12px rgba(84, 203, 226, 0.2);
 }
 .checkbox-item.selected span {

@@ -9,7 +9,7 @@ import { Plus, Trash2, Wand2 } from "lucide-react";
 import { Select } from "../";
 import { DIFFICULTY_LEVELS } from "../../constants/scenario";
 import { generateScenarioSteps } from "../../lib/gemini";
-
+import "./DialogueForm.scss";
 interface DialogueFormProps {
   scenario: Scenario;
   onChange: (data: Partial<Dialogue>) => void;

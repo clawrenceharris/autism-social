@@ -69,7 +69,7 @@ export async function getUserById(userId: string): Promise<UserProfile | null> {
  * @throws Error if database query fails
  */
 export async function getUserGoals(userId: string): Promise<Goal[]> {
-  const result = await DatabaseService.get<Goal>("user_goals", {
+  const result = await DatabaseService.get<{ goals: Goal }>("user_goals", {
     select: "goals(*)",
     foreignKey: "user_id",
     foreignValue: userId,
@@ -78,8 +78,9 @@ export async function getUserGoals(userId: string): Promise<Goal[]> {
   if (result.error) {
     throw result.error;
   }
+  const goals: Goal[] = result.data?.map((row) => row.goals) || [];
 
-  return result.data || [];
+  return goals;
 }
 
 /**
@@ -88,17 +89,21 @@ export async function getUserGoals(userId: string): Promise<Goal[]> {
  * @throws Error if database query fails
  */
 export async function getUserInterests(userId: string): Promise<Interest[]> {
-  const result = await DatabaseService.get<Interest>("user_interests", {
-    select: "interests(*)",
-    foreignKey: "user_id",
-    foreignValue: userId,
-  });
+  const result = await DatabaseService.get<{ interests: Interest }>(
+    "user_interests",
+    {
+      select: "interests(*)",
+      foreignKey: "user_id",
+      foreignValue: userId,
+    }
+  );
 
   if (result.error) {
     throw result.error;
   }
+  const interests: Interest[] = result.data?.map((row) => row.interests) || [];
 
-  return result.data || [];
+  return interests;
 }
 
 /**

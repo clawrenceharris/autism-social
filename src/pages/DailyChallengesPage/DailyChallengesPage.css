@@ -124,7 +124,7 @@
 }
 .daily-challenges-container .week-progress .challenge-timeline .challenge-node .node-circle.current {
   border-color: #54cbe2;
-  background: #d7e9f5;
+  background: #e3f3fe;
   color: #54cbe2;
   animation: pulse 2s infinite;
 }

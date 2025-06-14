@@ -19,7 +19,7 @@
   transition: all 0.2s ease;
 }
 .dialogue-step.selected {
-  border: 2px solid #d7e9f5;
+  border: 2px solid #e3f3fe;
 }
 .dialogue-step .step-header {
   display: flex;
@@ -80,7 +80,7 @@
   color: #6b7280;
 }
 .dialogue-option-item .score-btn.selected {
-  background-color: #d7e9f5;
+  background-color: #e3f3fe;
   color: #54cbe2;
 }
 .dialogue-option-item .score-field input[type=number] {

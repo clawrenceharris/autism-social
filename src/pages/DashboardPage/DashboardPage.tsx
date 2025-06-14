@@ -14,9 +14,9 @@ import {
 import "./DashboardPage.scss";
 import { ProgressSection, DialogueItem } from "../../components";
 import type { AuthContextType } from "../../types";
-import { useRecommendationsStore } from "../../store/useRecommendations";
 import { useDailyChallengeStore } from "../../store/useDailyChallengeStore";
 import { useEffect } from "react";
+import { useRecommendationsStore } from "../../store";
 
 const DashboardPage = () => {
   const { user, profile } = useOutletContext<AuthContextType>();

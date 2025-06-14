@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import "./Skeleton.css";
+import "./Skeleton.scss";
 
 interface SkeletonProps {
   variant?: "text" | "title" | "squircle-button" | "button" | "card";

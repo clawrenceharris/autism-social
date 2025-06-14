@@ -14,7 +14,7 @@ interface EditProfileProps {
 const EditProfile = ({ onSubmit, user }: EditProfileProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { interests, goals, fetchPreferences } = usePreferencesStore();
+  const { fetchPreferences } = usePreferencesStore();
   const { showToast } = useToast();
   useEffect(() => {
     fetchPreferences(user.id);
@@ -37,23 +37,15 @@ const EditProfile = ({ onSubmit, user }: EditProfileProps) => {
       }
       setIsLoading(true);
 
-      await updateUserInterests(
-        user.id,
-        interests
-          .filter((i) => data.interests?.includes(i.name))
-          .map((i) => i.id) || []
-      );
+      await updateUserInterests(user.id, data.interests || []);
 
-      await updateUserGoals(
-        user.id,
-        goals.filter((g) => data.goals?.includes(g.goal)).map((g) => g.id)
-      );
+      await updateUserGoals(user.id, data.goals || []);
 
       showToast("Updated profile successfully!", { type: "success" });
       onSubmit();
     } catch {
-      setError("Uh oh, Something went wrong. Please try again later.");
-      showToast("Failed to update profile.", { type: "error" });
+      setError("Something went wrong. Please try again later.");
+      showToast("Could not update profile.", { type: "error" });
     } finally {
       setIsLoading(false);
     }

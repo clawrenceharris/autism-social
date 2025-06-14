@@ -47,7 +47,7 @@
 }
 .settings-container .settings-section .section-header .section-icon {
   color: #54cbe2;
-  background: #d7e9f5;
+  background: #e3f3fe;
   padding: 0.5rem;
   border-radius: 0.5rem;
 }
@@ -110,7 +110,7 @@
 }
 .settings-container .settings-section .color-scheme-options .color-option.selected {
   border-color: #54cbe2;
-  background-color: #d7e9f5;
+  background-color: #e3f3fe;
 }
 .settings-container .settings-section .color-scheme-options .color-option .color-preview {
   width: 24px;
@@ -200,7 +200,7 @@
   width: 60px;
   height: 60px;
   border-radius: 9999px;
-  background: #d7e9f5;
+  background: #e3f3fe;
   display: flex;
   flex-direction: row;
   justify-content: center;

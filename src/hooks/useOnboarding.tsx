@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormLayout } from "../components";
 import type { SignUpFormValues } from "../types";
 import {
@@ -8,6 +8,7 @@ import {
   SignUpStep5,
 } from "../components/SignUpSteps";
 import type { FormLayoutProps } from "../components/layouts/FormLayout/FormLayout";
+import { usePreferencesStore } from "../store/usePreferencesStore";
 
 interface UseOnboardingProps {
   handleSubmit: (data: Partial<SignUpFormValues>) => void;
@@ -30,11 +31,14 @@ const useOnboarding = ({
   ...props
 }: UseOnboardingProps) => {
   const [step, setStep] = useState(stepStart || 1);
+  const { userGoalIds, userInterestIds } = usePreferencesStore();
   const [formData, setFormData] = useState<Partial<SignUpFormValues>>({
     goals: [],
     interests: [],
   });
-
+  useEffect(() => {
+    setFormData({ goals: userGoalIds, interests: userInterestIds });
+  }, [userGoalIds, userInterestIds]);
   const nextStep = () => {
     if (step === stepEnd) {
       return;
@@ -73,6 +77,7 @@ const useOnboarding = ({
             onSubmit={handleSubmit}
             submitText="Next"
             isLoading={isLoading}
+            error={error}
             {...props}
           >
             {({ register, formState: { errors } }) => (
@@ -84,15 +89,21 @@ const useOnboarding = ({
       case 2:
         return (
           <FormLayout<SignUpFormValues>
-            onSubmit={handleSubmit}
+            onSubmit={() => {
+              handleSubmit(formData);
+            }}
             submitText="Next"
             showsCancelButton={step != stepStart}
             isLoading={isLoading}
             cancelText="Back"
             onCancel={prevStep}
+            error={error}
             {...props}
           >
-            <SignUpStep2 toggleSelection={toggleSelection} />
+            <SignUpStep2
+              formData={{ goals: formData.goals || [] }}
+              toggleSelection={toggleSelection}
+            />
           </FormLayout>
         );
 
@@ -100,16 +111,20 @@ const useOnboarding = ({
         return (
           <FormLayout
             onSubmit={() => {
-              handleSubmit({ ...formData, interests: formData.interests });
+              handleSubmit(formData);
             }}
             submitText="Next"
             showsCancelButton={step != stepStart}
             onCancel={prevStep}
             isLoading={isLoading}
+            error={error}
             cancelText="Back"
             {...props}
           >
-            <SignUpStep3 toggleSelection={toggleSelection} />
+            <SignUpStep3
+              formData={{ interests: formData.interests || [] }}
+              toggleSelection={toggleSelection}
+            />
           </FormLayout>
         );
 

@@ -1,3 +1,4 @@
+// stores/useDialogueStore.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Dialogue } from "../types";
@@ -10,7 +11,7 @@ interface RecommendationsStore {
   fetchRecommendedDialogues: (userId: string) => void;
 }
 
-export const useRecommendationsStore = create<RecommendationsStore>()(
+const useRecommendationsStore = create<RecommendationsStore>()(
   persist(
     (set) => ({
       recommendedDialogues: [],
@@ -39,3 +40,5 @@ export const useRecommendationsStore = create<RecommendationsStore>()(
     }
   )
 );
+
+export default useRecommendationsStore;

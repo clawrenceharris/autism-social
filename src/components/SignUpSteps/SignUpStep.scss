@@ -212,14 +212,13 @@
   margin: $spacing-3;
   overflow: scroll;
   max-height: 35vh;
-  padding: $spacing-3
-  
+  padding: $spacing-3;
 }
 
 .checkbox-item {
   position: relative;
   padding: $spacing-4 $spacing-4;
-  border: 2px solid $color-gray-200;
+  border: 1px solid $color-gray-200;
   border-radius: $border-radius-md;
   cursor: pointer;
   min-width: 250px;
@@ -254,7 +253,7 @@
 
   &.selected {
     transform: translateY(-2px);
-    border-color: $color-primary-200;
+    border-color: $color-primary;
     background-color: $color-primary-100;
     box-shadow: 0 4px 12px rgba($color-primary, 0.2);
 

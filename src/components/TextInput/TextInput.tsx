@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import "./TextInput.css";
+import "./TextInput.scss";
 
 export interface TextInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
