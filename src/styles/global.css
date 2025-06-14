@@ -376,7 +376,7 @@ button {
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
-  min-width: 400px;
+  min-width: 350px;
 }
 .card-section .section-header {
   display: flex;

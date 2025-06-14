@@ -15,15 +15,39 @@ const SignUpStep1 = ({ register, errors }: SignUpStep1Props) => {
         social confidence through interactive scenarios. Sign up to get started!
       </p>
       <div className="form-group">
-        <label>Name</label>
+        <label>First name</label>
         <input
           type="text"
           className={`form-input ${errors.name ? "error" : ""}`}
-          {...register("name", { required: "Name is required" })}
+          {...register("first_name", {
+            required: "First name is required",
+            maxLength: {
+              value: 25,
+              message: "First name should not be greater than 25 characters",
+            },
+          })}
         />
-        {errors.name && <p className="form-error">{errors.name.message}</p>}
+        {errors.first_name && (
+          <p className="form-error">{errors.first_name.message}</p>
+        )}
       </div>
-
+      <div className="form-group">
+        <label>Last name</label>
+        <input
+          type="text"
+          className={`form-input ${errors.name ? "error" : ""}`}
+          {...register("last_name", {
+            required: "Last name is required",
+            maxLength: {
+              value: 25,
+              message: "Last name should not be greater than 25 characters",
+            },
+          })}
+        />
+        {errors.first_name && (
+          <p className="form-error">{errors.first_name.message}</p>
+        )}
+      </div>
       <div className="form-group">
         <label>Email</label>
         <input

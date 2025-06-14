@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../../lib/supabase";
 import { signUp } from "../../services/auth";
 import { addUserInterests } from "../../services/interests";
 import "./SignUpPage.scss";
 import type { SignUpFormValues } from "../../types";
 
-import { useOnboarding } from "../../hooks/";
+import { useSignUp } from "../../hooks/";
 import { useToast } from "../../context/ToastContext";
+import { createUser } from "../../services/user";
 const NUM_STEPS = 4;
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -16,67 +16,47 @@ const SignUpPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { renderStep, step } = useOnboarding({
-    handleSubmit: () => handleSubmit,
+  const { renderStep, step } = useSignUp({
+    handleSubmit: (data) => handleSubmit(data),
     error,
     isLoading,
   });
-  const handleSubmit = async (data: Partial<SignUpFormValues>) => {
+  const handleSubmit = async (data: SignUpFormValues) => {
+    console.log("Handle Submit");
     try {
       if (step < NUM_STEPS) {
         return;
       }
+      console.log("Submitting!");
 
       setIsLoading(true);
 
-      const { user, error: signUpError } = await signUp(
-        data.email!,
-        data.password!
-      );
+      const user = await signUp(data.email!, data.password!);
 
-      if (signUpError) throw signUpError;
       if (!user) throw new Error("Failed to create user");
 
-      const { error: profileError } = await supabase
-        .from("user_profiles")
-        .insert({
-          user_id: user.id,
-          name: data.name,
-        });
+      const { first_name, last_name } = data;
+      await Promise.all([
+        createUser({ user_id: user.id, first_name, last_name }),
+        () => {
+          if (data.interests?.length) {
+            return addUserInterests(user.id, data.interests);
+          }
+        },
+        () => {
+          if (data.goals?.length) {
+            return addUserInterests(user.id, data.goals);
+          }
+        },
+      ]);
 
-      if (profileError) throw profileError;
-
-      if (data.interests?.length) {
-        const { data: interestsData } = await supabase
-          .from("interests")
-          .select("id, name")
-          .in("name", data.interests);
-
-        if (interestsData) {
-          await addUserInterests(
-            user.id,
-            interestsData.map((i) => i.id)
-          );
-        }
-      }
-      if (data.goals?.length) {
-        const { data: goalsData } = await supabase
-          .from("goals")
-          .select("id, goal")
-          .in("goal", data.goals);
-
-        if (goalsData) {
-          await addUserInterests(
-            user.id,
-            goalsData.map((i) => i.id)
-          );
-        }
-      }
       showToast("Sign up was successful!", { type: "success" });
       navigate("/", { replace: true });
     } catch (err) {
-      setError("Sign up failed");
-      console.error("Sign up error:", err);
+      setError("Sign up failed: " + String(err));
+      showToast("Sign up failed.", { type: "error" });
+
+      console.error("Error signing up:", err);
     } finally {
       setIsLoading(false);
     }

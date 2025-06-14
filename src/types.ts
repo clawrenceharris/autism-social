@@ -23,7 +23,8 @@ export interface RecommendationOptions {
 }
 
 export interface SignUpFormValues extends FieldValues {
-  name: string;
+  first_name: string;
+  last_name: string;
   email: string;
   password: string;
   goals: string[];
@@ -129,9 +130,9 @@ export interface ScoreSummary {
 }
 
 export interface CreateDialogueData {
-  actorName: string;
   scenario_id: string;
   title: string;
+  actor_id: string;
   persona_tags: string[];
   placeholders: string[];
   steps: DialogueStep[];

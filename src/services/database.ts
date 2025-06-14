@@ -95,14 +95,13 @@ export class DatabaseService {
    */
   static async getSingle<T>(
     table: Table,
-    column: string,
-    value: string | number,
+    id: string,
     select?: string
   ): Promise<DatabaseResult<T>> {
     const { data, error } = await supabase
       .from(table)
       .select(select || "*")
-      .eq(column, value)
+      .eq("id", id)
       .single();
 
     return { data: data as T, error };

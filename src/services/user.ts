@@ -1,25 +1,16 @@
 import { supabase } from "../lib/supabase";
-import type { Goal, Interest } from "../types";
+import type { Goal, Interest, UserProfile } from "../types";
 import { DatabaseService } from "./database";
-
-export interface UserProfile {
-  id: string;
-  user_id: string;
-  name: string;
-  created_at: string;
-}
 
 export interface CreateUserProfileData {
   user_id: string;
-  name: string;
-  goals?: string[];
-  profile_photo_url?: string;
+  first_name: string;
+  last_name: string;
 }
 
 export interface UpdateUserProfileData {
-  name?: string;
-  goals?: string[];
-  profile_photo_url?: string;
+  first_name?: string;
+  last_name?: string;
 }
 
 /**

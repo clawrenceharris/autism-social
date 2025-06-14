@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useToast } from "../../context";
 import type { SignUpFormValues } from "../../types";
 import { updateUserInterests } from "../../services/interests";
 import { updateUserGoals } from "../../services/user";
-import { usePreferencesStore } from "../../store/usePreferencesStore";
-import { useOnboarding } from "../../hooks";
+import { useSignUp } from "../../hooks";
 import type { User } from "@supabase/supabase-js";
 
 interface EditProfileProps {
@@ -14,12 +13,9 @@ interface EditProfileProps {
 const EditProfile = ({ onSubmit, user }: EditProfileProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { fetchPreferences } = usePreferencesStore();
   const { showToast } = useToast();
-  useEffect(() => {
-    fetchPreferences(user.id);
-  }, [fetchPreferences, user.id]);
-  const { renderStep, step } = useOnboarding({
+
+  const { renderStep, step } = useSignUp({
     handleSubmit: (data: Partial<SignUpFormValues>) => handleSubmit(data),
     error,
     stepStart: 2,
