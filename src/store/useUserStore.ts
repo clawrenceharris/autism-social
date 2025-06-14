@@ -57,6 +57,7 @@ export const useUserStore = create<UserStore>()(
           throw err; // This is critical, so we throw
         } finally {
           set({ loading: false });
+
         }
       },
 
@@ -69,6 +70,7 @@ export const useUserStore = create<UserStore>()(
 
           if (error) {
             console.error("Logout error:", {
+
               message: error.message,
               status: error.status,
               name: error.name,
@@ -76,6 +78,7 @@ export const useUserStore = create<UserStore>()(
 
             throw error;
           } else {
+
             set({
               user: null,
               profile: null,
@@ -90,6 +93,7 @@ export const useUserStore = create<UserStore>()(
             err instanceof Error ? err.message : "Unknown error during logout";
 
           console.error("Unexpected error while loggin out", {
+
             error: errorMessage,
             errorType: err instanceof Error ? err.constructor.name : typeof err,
             stack: err instanceof Error ? err.stack : undefined,
