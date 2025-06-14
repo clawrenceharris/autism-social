@@ -1,0 +1,49 @@
+# Assets and public folders
+src/assets/
+public/
+
+# Constants folder
+src/constants/
+
+# CSS and CSS map files
+**/*.css
+**/*.css.map
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Vite configuration files
+vite.config.ts
+vite.config.js
+
+# TypeScript configuration files
+tsconfig.json
+tsconfig.*.json
+
+# Additional build and config files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Node modules (if not already ignored)
+node_modules/
+
+# Build outputs
+dist/
+build/
