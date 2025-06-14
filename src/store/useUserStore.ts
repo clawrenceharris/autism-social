@@ -34,7 +34,6 @@ export const useUserStore = create<UserStore>()(
       fetchUserData: async (userId: string) => {
         try {
           set({ loading: true, error: null });
-          // Step 4: Fetch user profile
 
           const profile = await userService.getUserById(userId);
           if (profile === null) {
@@ -54,10 +53,9 @@ export const useUserStore = create<UserStore>()(
             error: err instanceof Error ? err.message : String(err),
             stack: err instanceof Error ? err.stack : undefined,
           });
-          throw err; // This is critical, so we throw
+          throw err;
         } finally {
           set({ loading: false });
-
         }
       },
 
@@ -70,7 +68,6 @@ export const useUserStore = create<UserStore>()(
 
           if (error) {
             console.error("Logout error:", {
-
               message: error.message,
               status: error.status,
               name: error.name,
@@ -78,7 +75,6 @@ export const useUserStore = create<UserStore>()(
 
             throw error;
           } else {
-
             set({
               user: null,
               profile: null,
@@ -93,7 +89,6 @@ export const useUserStore = create<UserStore>()(
             err instanceof Error ? err.message : "Unknown error during logout";
 
           console.error("Unexpected error while loggin out", {
-
             error: errorMessage,
             errorType: err instanceof Error ? err.constructor.name : typeof err,
             stack: err instanceof Error ? err.stack : undefined,
