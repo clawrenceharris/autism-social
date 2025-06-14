@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Calendar, CheckCircle, Clock, Lock, Play, Target } from "lucide-react";
+import { Calendar, CheckCircle, Clock, Lock, Play, Target, X } from "lucide-react";
 import "./DailyChallengesPage.scss";
 import { useDailyChallengeStore } from "../../store/useDailyChallengeStore";
 import { DialogueItem, ProgressIndicator } from "../../components";
@@ -14,17 +14,17 @@ const DAYS_OF_WEEK = [
   "Saturday",
 ];
 type Status = "completed" | "locked" | "current";
+
 const DailyChallengesPage = () => {
   const { challenges, loading, error, fetchDailyChallenges, getDayChallenge } =
     useDailyChallengeStore();
 
-  const [selectedDay, setSelectedDay] = useState<number>(new Date().getDay());
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [showChallengeDetail, setShowChallengeDetail] = useState(false);
 
   useEffect(() => {
     fetchDailyChallenges();
   }, [fetchDailyChallenges]);
-
-  // Set current day as selected by default
 
   const getWeekDateRange = () => {
     const today = new Date();
@@ -64,12 +64,25 @@ const DailyChallengesPage = () => {
     }
   };
 
-  const selectedChallenge =
-    selectedDay !== null ? getDayChallenge(selectedDay) : null;
+  const handleChallengeClick = (dayIndex: number) => {
+    const challenge = getDayChallenge(dayIndex);
+    if (challenge && getNodeStatus(dayIndex) !== "locked") {
+      setSelectedDay(dayIndex);
+      setShowChallengeDetail(true);
+    }
+  };
+
+  const handleCloseChallengeDetail = () => {
+    setShowChallengeDetail(false);
+    setSelectedDay(null);
+  };
+
+  const selectedChallenge = selectedDay !== null ? getDayChallenge(selectedDay) : null;
   const weekRange = getWeekDateRange();
   const completedCount = challenges.filter(
     (_, index) => getNodeStatus(index) === "completed"
   ).length;
+
   if (loading) {
     return (
       <div className="daily-challenges-container">
@@ -106,55 +119,54 @@ const DailyChallengesPage = () => {
         <p className="description">
           Complete one dialogue challenge each day to increase your Social Score
           and maintain your practice streak. Complete all dialogues to win a
-          pize at the end of the week!
+          prize at the end of the week!
         </p>
       </div>
-      <div className="flex-content">
-        <div className="week-progress">
-          <div className="week-info">
-            <div className="week-dates">
-              Week of {weekRange.start} - {weekRange.end}
-            </div>
 
-            <div className="completion-stats">
-              <div className="stat-item">
-                <div className="stat-number">{completedCount}</div>
-                <div className="stat-label">Completed</div>
+      <div className="challenges-content">
+        {/* Timeline Section */}
+        <div className={`timeline-section ${showChallengeDetail ? 'hidden' : ''}`}>
+          <div className="week-progress">
+            <div className="week-info">
+              <div className="week-dates">
+                Week of {weekRange.start} - {weekRange.end}
               </div>
-              <div className="stat-item">
-                <div className="stat-number">{7 - completedCount}</div>
-                <div className="stat-label">Remaining</div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-number">
-                  {Math.round((completedCount / 7) * 100)}%
+
+              <div className="completion-stats">
+                <div className="stat-item">
+                  <div className="stat-number">{completedCount}</div>
+                  <div className="stat-label">Completed</div>
                 </div>
-                <div className="stat-label">Progress</div>
+                <div className="stat-item">
+                  <div className="stat-number">{7 - completedCount}</div>
+                  <div className="stat-label">Remaining</div>
+                </div>
+                <div className="stat-item">
+                  <div className="stat-number">
+                    {Math.round((completedCount / 7) * 100)}%
+                  </div>
+                  <div className="stat-label">Progress</div>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="challenge-timeline">
-            {DAYS_OF_WEEK.map((dayName, index) => {
-              const challenge = getDayChallenge(index);
-              const status = getNodeStatus(index);
-              const isSelected = selectedDay === index;
+            <div className="challenge-timeline">
+              {DAYS_OF_WEEK.map((dayName, index) => {
+                const challenge = getDayChallenge(index);
+                const status = getNodeStatus(index);
 
-              return (
-                <div
-                  key={index}
-                  className={`challenge-node ${status} ${
-                    isSelected ? "selected" : ""
-                  }`}
-                  onClick={() => setSelectedDay(index)}
-                >
-                  <div className={`node-circle ${status}`}>
-                    {getNodeIcon(status)}
-                  </div>
-                  <div className="node-info">
-                    <div className="day-name">{dayName.slice(0, 3)}</div>
-                    {challenge && (
-                      <>
+                return (
+                  <div
+                    key={index}
+                    className={`challenge-node ${status}`}
+                    onClick={() => handleChallengeClick(index)}
+                  >
+                    <div className={`node-circle ${status}`}>
+                      {getNodeIcon(status)}
+                    </div>
+                    <div className="node-info">
+                      <div className="day-name">{dayName.slice(0, 3)}</div>
+                      {challenge && (
                         <div
                           className={`difficulty-badge ${
                             challenge.dialogue?.difficulty || "easy"
@@ -162,22 +174,33 @@ const DailyChallengesPage = () => {
                         >
                           {challenge.dialogue?.difficulty || "Easy"}
                         </div>
-                      </>
-                    )}
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
 
-        <div className="challenge-details">
-          {selectedChallenge ? (
-            <div className="selected-challenge">
-              <div className="section-header">
-                <h2>{DAYS_OF_WEEK[selectedDay!]} Challenge</h2>
-              </div>
-              <div className="section-content">
+        {/* Challenge Detail Section */}
+        <div className={`challenge-detail-section ${showChallengeDetail ? 'visible' : ''}`}>
+          <div className="challenge-detail-header">
+            <h2>
+              {selectedDay !== null ? DAYS_OF_WEEK[selectedDay] : ''} Challenge
+            </h2>
+            <button 
+              className="close-button"
+              onClick={handleCloseChallengeDetail}
+              aria-label="Close challenge details"
+            >
+              <X size={24} />
+            </button>
+          </div>
+          
+          <div className="challenge-detail-content">
+            {selectedChallenge ? (
+              <div className="selected-challenge">
                 {selectedChallenge.dialogue && (
                   <DialogueItem
                     badgeTitle="Challenge"
@@ -186,16 +209,16 @@ const DailyChallengesPage = () => {
                   />
                 )}
               </div>
-            </div>
-          ) : (
-            <div className="no-challenge">
-              <Clock className="empty-icon" />
-              <div className="empty-message">No Challenge Available</div>
-              <div className="empty-description">
-                Select a day from the timeline above to view its challenge.
+            ) : (
+              <div className="no-challenge">
+                <Clock className="empty-icon" />
+                <div className="empty-message">No Challenge Available</div>
+                <div className="empty-description">
+                  This challenge is not yet available or has been completed.
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
