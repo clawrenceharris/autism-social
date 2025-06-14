@@ -41,7 +41,7 @@ export async function createUser(
  * @throws Error if database query fails
  */
 export async function getUserById(userId: string): Promise<UserProfile | null> {
-  const result = await DatabaseService.getSingle<UserProfile>(
+  const result = await DatabaseService.getSingleBy<UserProfile>(
     "user_profiles",
     "user_id",
     userId
