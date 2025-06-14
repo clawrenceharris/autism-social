@@ -1,6 +1,6 @@
 import type { Dialogue as DialogueType } from "../../types";
 import "./DialogueItem.scss";
-import { useScenarioStore } from "../../store/useScenarioStrore";
+import { useScenarioStore } from "../../store/useScenarioStore";
 import type { ReactElement } from "react";
 import { BookmarkPlus, Play } from "lucide-react";
 import ProgressIndicator from "../ProgressIndicator";

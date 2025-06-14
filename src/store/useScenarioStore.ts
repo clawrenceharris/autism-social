@@ -11,6 +11,7 @@ import {
 interface ScenarioStore {
   scenarios: Record<string, Scenario>;
   completedDialogues: Record<string, Dialogue>;
+  completedDialogueIds: string[];
   dialogues: Record<string, Dialogue>;
   dialoguesByScenario: Record<string, Dialogue[]>;
   selectedScenario: Scenario | null;
@@ -19,15 +20,15 @@ interface ScenarioStore {
   dialogueIds: string[];
   scenariosLoading: boolean;
   dialoguesLoading: boolean;
-  setDialogue: (id: string) => void;
-  setScenario: (id: string) => void;
+  setDialogue: (dialogue: Dialogue) => void;
+  setScenario: (scenario: Scenario) => void;
   error: string | null;
   fetchDialogues: () => void;
   fetchDialoguesByScenario: (scenarioId: string) => void;
   clearDialogues: () => void;
 
   fetchScenarios: () => void;
-  fetchCompletedScenarios: (userId: string) => void;
+  fetchCompletedDialogues: (userId: string) => void;
   clearScenarios: () => void;
   deleteScenario: (id: string) => Promise<void>;
 }
@@ -38,6 +39,7 @@ export const useScenarioStore = create<ScenarioStore>()(
       scenarios: {},
       dialogues: {},
       completedDialogues: {},
+      completedDialogueIds: [],
       selectedDialogue: null,
       selectedScenario: null,
       dialoguesByScenario: {},
@@ -89,13 +91,14 @@ export const useScenarioStore = create<ScenarioStore>()(
           });
         }
       },
-      fetchCompletedScenarios: async (userId: string) => {
+      fetchCompletedDialogues: async (userId: string) => {
         try {
           set({ scenariosLoading: true, error: null });
 
           const dialogues = (await getCompletedDialogues(userId)) || [];
 
           set({
+            completedDialogueIds: dialogues.map((d) => d.id),
             completedDialogues: dialogues.reduce<Record<string, Dialogue>>(
               (acc, dialogue) => {
                 acc[dialogue.id] = dialogue;
@@ -138,11 +141,11 @@ export const useScenarioStore = create<ScenarioStore>()(
           });
         }
       },
-      setDialogue: (id: string) => {
-        set({ selectedDialogue: get().dialogues[id] });
+      setDialogue: (dialogue: Dialogue) => {
+        set({ selectedDialogue: dialogue });
       },
-      setScenario: (id: string) => {
-        set({ selectedScenario: get().scenarios[id] });
+      setScenario: (scenario: Scenario) => {
+        set({ selectedScenario: scenario });
       },
       clearDialogues: () => set({ dialogues: {} }),
 

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
-import { useModal, useScenario } from "../../context";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useModal } from "../../context";
 import { X, Home } from "lucide-react";
 import "./PlayScenarioPage.scss";
 import {
@@ -10,7 +10,7 @@ import {
   FormLayout,
   ProgressIndicator,
 } from "../../components";
-import { useScenarioStore } from "../../store/useScenarioStrore";
+import { useScenarioStore } from "../../store/useScenarioStore";
 import type { AuthContextType } from "../../types";
 
 const PlayScenarioPage = () => {
@@ -21,19 +21,34 @@ const PlayScenarioPage = () => {
     dialoguesByScenario,
     error,
     dialoguesLoading,
-    fetchDialoguesByScenario: fetchScenarioDialogues,
+    fetchDialoguesByScenario,
+    fetchDialogues,
+    fetchScenarios,
+    selectedScenario: scenario,
+    selectedDialogue: dialogue,
+    scenarios,
+    setScenario,
   } = useScenarioStore();
+  const { scenarioId } = useParams<{ scenarioId: string }>();
   const [userFields, setUserFields] = useState<{
     [key: string]: string;
   } | null>(null);
   const [key, setKey] = useState<number>(0);
-  const { scenario, dialogue } = useScenario();
   const { openModal, closeModal } = useModal();
   const { profile: user } = useOutletContext<AuthContextType>();
   const handleReplay = () => {
     setKey((prev) => prev + 1);
   };
-
+  useEffect(() => {
+    if (scenarioId) {
+      fetchDialoguesByScenario(scenarioId);
+      setScenario(scenarios[scenarioId]);
+    }
+  }, [fetchDialoguesByScenario, setScenario, scenarioId, scenarios]);
+  useEffect(() => {
+    fetchDialogues();
+    fetchScenarios();
+  }, [fetchDialogues, fetchScenarios]);
   const handleSubmit = useCallback(
     (data: { [key: string]: string }) => {
       setUserFields({ ...data, user_name: user.first_name });
@@ -45,10 +60,7 @@ const PlayScenarioPage = () => {
   const handleExit = () => {
     navigate("/");
   };
-
-  useEffect(() => {
-    if (scenario) fetchScenarioDialogues(scenario.id);
-  }, [fetchScenarioDialogues, scenario]);
+  console.log({ scenarioIds });
 
   useEffect(() => {
     // If we selected a dialogue and there are placeholders but no user fields defined
@@ -87,7 +99,7 @@ const PlayScenarioPage = () => {
     }
   }, [dialogue, userFields, openModal, closeModal, navigate, handleSubmit]);
 
-  if (scenariosLoading) {
+  if (scenariosLoading || dialoguesLoading) {
     return (
       <div className="play-scenario-container ">
         <div className="center-absolute  ">
@@ -162,19 +174,14 @@ const PlayScenarioPage = () => {
               <p>Select a dialogue to begin your social interaction practice</p>
             </div>
 
-            {!dialoguesLoading ? (
-              <div className="dialogue-options">
-                {scenarioIds.map((id) => {
+            <div className="dialogue-options">
+              {scenarioIds.map((id) => {
+                if (dialoguesByScenario[id])
                   return dialoguesByScenario[id]?.map((dialogue) => (
                     <DialogueItem key={dialogue.id} dialogue={dialogue} />
                   ));
-                })}
-              </div>
-            ) : (
-              <div>
-                <ProgressIndicator />
-              </div>
-            )}
+              })}
+            </div>
           </div>
         </div>
       </div>

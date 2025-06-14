@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-import { useScenarioStore } from "../store/useScenarioStrore";
+import { useScenarioStore } from "../store/useScenarioStore";
 import { useUserStore } from "../store/useUserStore";
 import type { Dialogue, Scenario } from "../types";
 
@@ -52,17 +52,6 @@ const ScenarioProvider = ({
     setScenario,
   ]);
 
-  useEffect(() => {
-    if (dialogue) {
-      fetchDialoguesByScenario(dialogue.id);
-    }
-  }, [dialogue, fetchDialoguesByScenario]);
-  useEffect(() => {
-    if (user) {
-      fetchDialogues();
-      fetchScenarios();
-    }
-  }, [fetchDialogues, fetchScenarios, user]);
   return (
     <ScenarioContext.Provider value={{ scenario, dialogue }}>
       {children}

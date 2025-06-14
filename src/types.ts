@@ -41,6 +41,14 @@ export interface Interest {
   id: string;
   name: string;
 }
+export interface ScenarioWithDialogues extends Scenario {
+  isCompleted: boolean;
+  isTrending: boolean;
+  isRecommended: boolean;
+  lastPlayed?: string;
+  dialogues: Dialogue[];
+  completedCount: number;
+}
 
 export interface UserProgress {
   user_id: string;
@@ -90,11 +98,13 @@ export interface Scenario {
   id: string;
   title: string;
   description: string;
+  totalDialogues: number;
   createdAt?: string;
 }
 
 export interface Dialogue {
   id: string;
+
   actor_id: string;
   scenario_id: string;
   title: string;
@@ -106,6 +116,7 @@ export interface Dialogue {
   scoring_categories: string[];
   total_possible_scores: Record<ScoreCategory, number>;
   created_at?: string;
+  lastPlayed?: string;
 }
 
 export interface DialogueStep {

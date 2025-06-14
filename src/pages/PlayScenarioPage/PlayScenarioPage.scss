@@ -90,16 +90,6 @@
             background: $color-primary;
             color: white;
           }
-
-          &.danger {
-            color: $color-red-600;
-            border-color: rgba($color-red-600, 0.2);
-
-            &:hover {
-              background: $color-red-600;
-              color: white;
-            }
-          }
         }
       }
     }

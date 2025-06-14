@@ -15,31 +15,20 @@ import {
   Zap,
 } from "lucide-react";
 import "./YourScenariosPage.scss";
-import { useScenarioStore } from "../../store/useScenarioStrore";
-import { ProgressIndicator } from "../../components";
-import type { Dialogue, Scenario } from "../../types";
+import { useScenarioStore } from "../../store/useScenarioStore";
+import { ProgressIndicator, TextInput } from "../../components";
+import type { ScenarioWithDialogues } from "../../types";
 import { useRecommendationsStore } from "../../store";
 
 type FilterType = "all" | "completed" | "trending" | "recommended";
 type ViewType = "grid" | "list";
 
-interface ScenarioWithDialogues extends Scenario {
-  dialogues: Dialogue[];
-  completedCount: number;
-  totalDialogues: number;
-  isCompleted: boolean;
-  isTrending: boolean;
-  isRecommended: boolean;
-  difficulty: string;
-  lastPlayed?: string;
-}
-
 const YourScenariosPage = () => {
   const {
     scenarios,
-    completedDialogues,
     scenarioIds,
-    dialogues,
+    completedDialogueIds,
+    dialoguesByScenario,
     dialoguesLoading,
     fetchDialogues,
     scenariosLoading: scenariosLoading,
@@ -50,7 +39,6 @@ const YourScenariosPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [viewType, setViewType] = useState<ViewType>("grid");
-
   useEffect(() => {
     fetchScenarios();
     fetchDialogues();
@@ -60,51 +48,52 @@ const YourScenariosPage = () => {
   const scenariosWithDialogues: ScenarioWithDialogues[] = useMemo(() => {
     return scenarioIds.map((id) => {
       const scenario = scenarios[id];
-      const scenarioDialogues = Object.values(dialogues).filter(
-        (dialogue) => dialogue.scenario_id === id
+
+      const dialogues = Object.values(dialoguesByScenario).flatMap(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        ([_, value]) => value
       );
-
-      const completedCount = Math.floor(
-        Math.random() * scenarioDialogues.length
-      ); // Mock data
-      const totalDialogues = scenarioDialogues.length;
-
+      console.log({ scenario });
+      const totalDialogues = Object.keys(dialoguesByScenario).length;
       return {
         ...scenario,
-        dialogues: scenarioDialogues,
-        completedCount,
+        dialogues,
+        completedCount: dialogues.filter((d) =>
+          completedDialogueIds.includes(d.id)
+        ).length,
         totalDialogues,
         isCompleted:
-          Object.values(completedDialogues).filter((d) => d.scenario_id === id)
-            .length > 0,
+          completedDialogueIds?.length > 0 &&
+          dialogues.every((d) => completedDialogueIds.includes(d.id)),
         isTrending: false,
         isRecommended:
           Object.values(recommendedDialogues).filter(
             (d) => d.scenario_id === id
           ).length > 0,
-        difficulty: scenarioDialogues[0]?.difficulty || "easy",
         lastPlayed: Math.random() > 0.5 ? "2 days ago" : undefined,
       };
     });
   }, [
     scenarioIds,
     scenarios,
-    dialogues,
-    completedDialogues,
+    dialoguesByScenario,
+    completedDialogueIds,
     recommendedDialogues,
   ]);
 
   // Filter scenarios based on search and active filter
   const filteredScenarios = useMemo(() => {
-    let filtered = scenariosWithDialogues;
-
+    let filtered = scenariosWithDialogues.filter(Boolean);
+    if (!searchQuery) {
+      return filtered;
+    }
     // Apply search filter
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
+    if (searchQuery?.trim()) {
+      const query = searchQuery?.toLowerCase();
       filtered = filtered.filter(
         (scenario) =>
           scenario.title.toLowerCase().includes(query) ||
-          scenario.description?.toLowerCase().includes(query)
+          scenario.description.toLowerCase().includes(query)
       );
     }
 
@@ -216,11 +205,6 @@ const YourScenariosPage = () => {
                 {scenario.isTrending && (
                   <span className="badge trending-badge">Trending</span>
                 )}
-                <span
-                  className={`badge difficulty-badge ${scenario.difficulty}`}
-                >
-                  {scenario.difficulty}
-                </span>
               </div>
               <div className="scenario-info">
                 <h3 className="scenario-title">{scenario.title}</h3>
@@ -282,9 +266,6 @@ const YourScenariosPage = () => {
             {scenario.isTrending && (
               <span className="badge trending-badge">Trending</span>
             )}
-            <span className={`badge difficulty-badge ${scenario.difficulty}`}>
-              {scenario.difficulty}
-            </span>
           </div>
         </div>
 
@@ -413,12 +394,11 @@ const YourScenariosPage = () => {
         <div className="search-section">
           <div className="search-container">
             <Search className="search-icon" size={20} />
-            <input
+            <TextInput
               type="text"
               placeholder="Search scenarios..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
             />
             {searchQuery && (
               <button onClick={handleClearSearch} className="clear-search">
