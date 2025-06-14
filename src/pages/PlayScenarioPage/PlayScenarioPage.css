@@ -81,14 +81,6 @@
   background: #54cbe2;
   color: white;
 }
-.play-scenario-container .game-header .header-content .game-controls .control-btn.danger {
-  color: #dc2626;
-  border-color: rgba(220, 38, 38, 0.2);
-}
-.play-scenario-container .game-header .header-content .game-controls .control-btn.danger:hover {
-  background: #dc2626;
-  color: white;
-}
 .play-scenario-container .error-state {
   color: #ffffff;
   display: flex;

@@ -3,32 +3,23 @@ import {
   createProgress,
   getProgress,
   updateProgress,
-  calculateProgressPercentages,
 } from "../services/progress";
 import type { UserProgress } from "../types";
 
 interface ProgressStore {
   progress: UserProgress | null;
-  progressPercentages: {
-    clarity: number;
-    empathy: number;
-    assertiveness: number;
-    social_awareness: number;
-    self_advocacy: number;
-  } | null;
   loading: boolean;
   error: string | null;
   fetchProgress: (userId: string) => Promise<void>;
   updateProgressValue: (category: keyof UserProgress, delta: number) => void;
+  calcAverageScore: () => void;
   resetProgress: () => void;
 }
-
 export const useProgressStore = create<ProgressStore>((set, get) => ({
   progress: null,
-  progressPercentages: null,
   loading: false,
   error: null,
-
+  calcAverageScore: () => {},
   fetchProgress: async (userId: string) => {
     try {
       set({ loading: true, error: null });
@@ -39,9 +30,7 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
         progress = await createProgress(userId);
       }
 
-      const progressPercentages = calculateProgressPercentages(progress);
-
-      set({ progress, progressPercentages });
+      set({ progress });
     } catch (error) {
       console.error("Progress fetch failed:", error);
       set({ error: "Failed to load progress" });
@@ -59,11 +48,8 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
       [category]: (current[category] as number) + delta,
     };
 
-    // Recalculate percentages
-    const progressPercentages = calculateProgressPercentages(updated);
-
     // optimistic update
-    set({ progress: updated, progressPercentages });
+    set({ progress: updated });
 
     // optional: persist to DB
     updateProgress(updated.user_id, updated).catch((err) => {
@@ -77,21 +63,14 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
 
     const reset = {
       ...current,
-      clarity_earned: 0,
-      clarity_possible: 0,
-      empathy_earned: 0,
-      empathy_possible: 0,
-      assertiveness_earned: 0,
-      assertiveness_possible: 0,
-      social_awareness_earned: 0,
-      social_awareness_possible: 0,
-      self_advocacy_earned: 0,
-      self_advocacy_possible: 0,
+      clarity: 0,
+      empathy: 0,
+      assertiveness: 0,
+      social_awareness: 0,
+      self_advocacy: 0,
     };
 
-    const progressPercentages = calculateProgressPercentages(reset);
-
-    set({ progress: reset, progressPercentages });
+    set({ progress: reset });
 
     updateProgress(reset.user_id, reset).catch((err) =>
       console.error("Failed to reset progress", err)

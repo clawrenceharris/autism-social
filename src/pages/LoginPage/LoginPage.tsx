@@ -3,6 +3,7 @@ import { FormLayout } from "../../components";
 import { useState } from "react";
 import { signIn, getUserRole } from "../../services/auth";
 import "./LoginPage.scss";
+import { AuthError } from "@supabase/supabase-js";
 
 interface LoginFormValues {
   email: string;
@@ -19,12 +20,8 @@ const LoginPage = () => {
       setIsLoading(true);
       setError(null);
 
-      const { user, error: signInError } = await signIn(
-        data.email,
-        data.password
-      );
+      const user = await signIn(data.email, data.password);
 
-      if (signInError) throw signInError;
       if (!user) throw new Error("No user data received");
 
       const { role, error: roleError } = await getUserRole(user.id);
@@ -35,8 +32,11 @@ const LoginPage = () => {
 
       const redirectPath = role === "admin" ? "/admin" : "/";
       navigate(redirectPath, { replace: true });
-    } catch {
-      setError("Failed to log in");
+    } catch (err) {
+      setError(
+        "Failed to log in: " +
+          (err instanceof AuthError ? err.message : String(err))
+      );
     } finally {
       setIsLoading(false);
     }

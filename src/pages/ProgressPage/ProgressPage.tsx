@@ -20,7 +20,7 @@ import {
 import "./ProgressPage.scss";
 import type { AuthContextType } from "../../types";
 import { useProgressStore } from "../../store/useProgressStore";
-import { useScenarioStore } from "../../store/useScenarioStrore";
+import { useScenarioStore } from "../../store/useScenarioStore";
 import { ProgressIndicator } from "../../components";
 import { Link } from "react-router-dom";
 
@@ -37,40 +37,40 @@ interface Achievement {
 
 const ProgressPage = () => {
   const { user } = useOutletContext<AuthContextType>();
-  const { 
-    progress, 
-    progressPercentages, 
-    loading: progressLoading, 
-    error: progressError, 
-    fetchProgress 
+  const {
+    progress,
+    loading: progressLoading,
+    error: progressError,
+    fetchProgress,
   } = useProgressStore();
   const { scenarioIds, fetchScenarios, scenariosLoading } = useScenarioStore();
-  
+
   const [socialScore, setSocialScore] = useState(0);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
-  
+
   useEffect(() => {
     fetchProgress(user.id);
     fetchScenarios();
   }, [fetchProgress, fetchScenarios, user.id]);
-  
-  // Calculate social score when progress percentages change
+
+  // Calculate social score when progress data changes
   useEffect(() => {
-    if (progressPercentages) {
+    if (progress) {
       // Calculate average of all progress categories
       const categories = [
-        progressPercentages.clarity,
-        progressPercentages.empathy,
-        progressPercentages.assertiveness,
-        progressPercentages.social_awareness,
-        progressPercentages.self_advocacy
+        progress.clarity_earned,
+        progress.empathy_earned,
+        progress.assertiveness_earned,
+        progress.social_awareness_earned,
+        progress.self_advocacy_earned,
       ];
-      
-      const average = categories.reduce((sum, val) => sum + val, 0) / categories.length;
+
+      const average =
+        categories.reduce((sum, val) => sum + val, 0) / categories.length;
       setSocialScore(Math.round(average));
     }
-  }, [progressPercentages]);
-  
+  }, [progress]);
+
   // Mock achievements data
   useEffect(() => {
     // In a real app, this would come from an API call
@@ -82,7 +82,7 @@ const ProgressPage = () => {
         icon: <MessageSquare />,
         category: "milestone",
         earned: true,
-        earnedDate: "May 15, 2025"
+        earnedDate: "May 15, 2025",
       },
       {
         id: "2",
@@ -90,8 +90,8 @@ const ProgressPage = () => {
         description: "Achieved a score of 80+ in Empathy",
         icon: <Heart />,
         category: "skill",
-        earned: progressPercentages?.empathy >= 80,
-        earnedDate: progressPercentages?.empathy >= 80 ? "May 18, 2025" : undefined
+        earned: progress?.empathy_earned >= 80,
+        earnedDate: progress?.empathy_earned >= 80 ? "May 18, 2025" : undefined,
       },
       {
         id: "3",
@@ -100,7 +100,7 @@ const ProgressPage = () => {
         icon: <Calendar />,
         category: "streak",
         earned: true,
-        earnedDate: "May 20, 2025"
+        earnedDate: "May 20, 2025",
       },
       {
         id: "4",
@@ -108,8 +108,8 @@ const ProgressPage = () => {
         description: "Achieved a score of 80+ in Clarity",
         icon: <Lightbulb />,
         category: "skill",
-        earned: progressPercentages?.clarity >= 80,
-        earnedDate: progressPercentages?.clarity >= 80 ? "May 22, 2025" : undefined
+        earned: progress?.clarity >= 80,
+        earnedDate: progress?.clarity >= 80 ? "May 22, 2025" : undefined,
       },
       {
         id: "5",
@@ -117,7 +117,7 @@ const ProgressPage = () => {
         description: "Completed 10 different dialogue scenarios",
         icon: <Zap />,
         category: "milestone",
-        earned: false
+        earned: false,
       },
       {
         id: "6",
@@ -125,8 +125,8 @@ const ProgressPage = () => {
         description: "Achieved a score of 80+ in Assertiveness",
         icon: <Target />,
         category: "skill",
-        earned: progressPercentages?.assertiveness >= 80,
-        earnedDate: progressPercentages?.assertiveness >= 80 ? "May 25, 2025" : undefined
+        earned: progress?.assertiveness >= 80,
+        earnedDate: progress?.assertiveness >= 80 ? "May 25, 2025" : undefined,
       },
       {
         id: "7",
@@ -134,8 +134,9 @@ const ProgressPage = () => {
         description: "Achieved a score of 90+ in Social Awareness",
         icon: <Brain />,
         category: "mastery",
-        earned: progressPercentages?.social_awareness >= 90,
-        earnedDate: progressPercentages?.social_awareness >= 90 ? "May 28, 2025" : undefined
+        earned: progress?.social_awareness >= 90,
+        earnedDate:
+          progress?.social_awareness >= 90 ? "May 28, 2025" : undefined,
       },
       {
         id: "8",
@@ -143,23 +144,23 @@ const ProgressPage = () => {
         description: "Achieved a score of 80+ in Self-Advocacy",
         icon: <Award />,
         category: "skill",
-        earned: progressPercentages?.self_advocacy >= 80,
-        earnedDate: progressPercentages?.self_advocacy >= 80 ? "May 30, 2025" : undefined
-      }
+        earned: progress?.self_advocacy >= 80,
+        earnedDate: progress?.self_advocacy >= 80 ? "May 30, 2025" : undefined,
+      },
     ]);
-  }, [progressPercentages]);
-  
+  }, [progress]);
+
   const getScoreLevel = (score: number): "poor" | "good" | "excellent" => {
     if (score >= 80) return "excellent";
     if (score >= 60) return "good";
     return "poor";
   };
-  
+
   const getImprovementTip = (category: string, score: number): string => {
     if (score >= 80) {
       return "You're doing great! Keep practicing to maintain your skills.";
     }
-    
+
     if (score >= 60) {
       switch (category) {
         case "clarity":
@@ -176,7 +177,7 @@ const ProgressPage = () => {
           return "Keep practicing to improve your skills further.";
       }
     }
-    
+
     switch (category) {
       case "clarity":
         return "Focus on organizing your thoughts before speaking and use clear language.";
@@ -192,7 +193,7 @@ const ProgressPage = () => {
         return "Regular practice will help you improve in this area.";
     }
   };
-  
+
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case "clarity":
@@ -209,14 +210,14 @@ const ProgressPage = () => {
         return <HelpCircle />;
     }
   };
-  
+
   const formatCategoryName = (category: string): string => {
     return category
-      .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
-  
+
   if (progressLoading || scenariosLoading) {
     return (
       <div className="progress-page">
@@ -227,7 +228,7 @@ const ProgressPage = () => {
       </div>
     );
   }
-  
+
   if (progressError) {
     return (
       <div className="progress-page">
@@ -235,10 +236,11 @@ const ProgressPage = () => {
           <Frown className="error-icon" />
           <h2 className="error-title">Unable to Load Progress</h2>
           <p className="error-message">
-            We encountered an error while loading your progress data. Please try again later.
+            We encountered an error while loading your progress data. Please try
+            again later.
           </p>
-          <button 
-            onClick={() => fetchProgress(user.id)} 
+          <button
+            onClick={() => fetchProgress(user.id)}
             className="btn btn-primary"
           >
             Try Again
@@ -247,7 +249,7 @@ const ProgressPage = () => {
       </div>
     );
   }
-  
+
   if (!progress) {
     return (
       <div className="progress-page">
@@ -255,7 +257,8 @@ const ProgressPage = () => {
           <HelpCircle className="error-icon" />
           <h2 className="error-title">No Progress Data Found</h2>
           <p className="error-message">
-            We couldn't find any progress data for your account. Start practicing with some scenarios to build your progress!
+            We couldn't find any progress data for your account. Start
+            practicing with some scenarios to build your progress!
           </p>
           <Link to="/explore" className="btn btn-primary">
             <Play size={20} />
@@ -265,17 +268,17 @@ const ProgressPage = () => {
       </div>
     );
   }
-  
+
   // Calculate stats
   const completedScenarios = 8; // This would come from actual data in a real app
-  const totalPoints = 
-    progress.clarity_earned + 
-    progress.empathy_earned + 
-    progress.assertiveness_earned + 
-    progress.social_awareness_earned + 
-    progress.self_advocacy_earned;
-  const earnedAchievements = achievements.filter(a => a.earned).length;
-  
+  const totalPoints =
+    progress.clarity +
+    progress.empathy +
+    progress.assertiveness +
+    progress.social_awareness +
+    progress.self_advocacy;
+  const earnedAchievements = achievements.filter((a) => a.earned).length;
+
   return (
     <div className="progress-page">
       <div className="progress-header">
@@ -284,7 +287,7 @@ const ProgressPage = () => {
           Track your social skills development and achievements
         </p>
       </div>
-      
+
       <section className="hero-section">
         <div className="hero-content">
           <div className="social-score">
@@ -294,10 +297,11 @@ const ProgressPage = () => {
             </div>
             <h2 className="score-title">Social Confidence Score</h2>
             <p className="score-description">
-              Your overall social interaction proficiency based on all skill categories
+              Your overall social interaction proficiency based on all skill
+              categories
             </p>
           </div>
-          
+
           <div className="quick-stats">
             <h3 className="stats-title">Your Progress at a Glance</h3>
             <div className="stats-grid">
@@ -308,7 +312,13 @@ const ProgressPage = () => {
                 <div className="stat-value">{totalPoints}</div>
                 <div className="stat-label">Total Points</div>
               </div>
-              
+              <div className="stat-card">
+                <div className="stat-icon">
+                  <Award size={20} />
+                </div>
+                <div className="stat-value">{averageScore}</div>
+                <div className="stat-label">Average Score</div>
+              </div>
               <div className="stat-card">
                 <div className="stat-icon">
                   <CheckCircle size={20} />
@@ -316,7 +326,7 @@ const ProgressPage = () => {
                 <div className="stat-value">{completedScenarios}</div>
                 <div className="stat-label">Scenarios Completed</div>
               </div>
-              
+
               <div className="stat-card">
                 <div className="stat-icon">
                   <Award size={20} />
@@ -328,7 +338,7 @@ const ProgressPage = () => {
           </div>
         </div>
       </section>
-      
+
       <div className="progress-grid">
         <section className="skills-section card-section">
           <div className="section-header">
@@ -337,7 +347,7 @@ const ProgressPage = () => {
               Skill Categories
             </h2>
           </div>
-          
+
           <div className="skills-grid">
             {/* Clarity */}
             <div className="skill-card">
@@ -348,34 +358,36 @@ const ProgressPage = () => {
                   </div>
                   <h3 className="skill-name">Clarity</h3>
                 </div>
-                <div className={`skill-score ${getScoreLevel(progressPercentages?.clarity || 0)}`}>
-                  {progressPercentages?.clarity || 0}%
+                <div
+                  className={`skill-score ${getScoreLevel(progress.clarity)}`}
+                >
+                  {progress.clarity}%
                 </div>
               </div>
-              
+
               <div className="progress-bar-container">
-                <div 
-                  className={`progress-bar ${getScoreLevel(progressPercentages?.clarity || 0)}`}
-                  style={{ width: `${progressPercentages?.clarity || 0}%` }}
+                <div
+                  className={`progress-bar ${getScoreLevel(progress.clarity)}`}
+                  style={{ width: `${progress.clarity}%` }}
                 ></div>
               </div>
-              
+
               <p className="skill-description">
-                Clarity measures how well you communicate your thoughts and ideas in a clear, 
-                concise, and understandable manner.
+                Clarity measures how well you communicate your thoughts and
+                ideas in a clear, concise, and understandable manner.
               </p>
-              
+
               <div className="improvement-tips">
                 <h4 className="tips-title">
                   <Zap className="tips-icon" size={16} />
                   Improvement Tips
                 </h4>
                 <p className="tips-content">
-                  {getImprovementTip("clarity", progressPercentages?.clarity || 0)}
+                  {getImprovementTip("clarity", progress.clarity)}
                 </p>
               </div>
             </div>
-            
+
             {/* Empathy */}
             <div className="skill-card">
               <div className="skill-header">
@@ -385,34 +397,37 @@ const ProgressPage = () => {
                   </div>
                   <h3 className="skill-name">Empathy</h3>
                 </div>
-                <div className={`skill-score ${getScoreLevel(progressPercentages?.empathy || 0)}`}>
-                  {progressPercentages?.empathy || 0}%
+                <div
+                  className={`skill-score ${getScoreLevel(progress.empathy)}`}
+                >
+                  {progress.empathy}%
                 </div>
               </div>
-              
+
               <div className="progress-bar-container">
-                <div 
-                  className={`progress-bar ${getScoreLevel(progressPercentages?.empathy || 0)}`}
-                  style={{ width: `${progressPercentages?.empathy || 0}%` }}
+                <div
+                  className={`progress-bar ${getScoreLevel(progress.empathy)}`}
+                  style={{ width: `${progress.empathy}%` }}
                 ></div>
               </div>
-              
+
               <p className="skill-description">
-                Empathy reflects your ability to understand and share the feelings of others,
-                responding with appropriate emotional support.
+                Empathy reflects your ability to understand and share the
+                feelings of others, responding with appropriate emotional
+                support.
               </p>
-              
+
               <div className="improvement-tips">
                 <h4 className="tips-title">
                   <Zap className="tips-icon" size={16} />
                   Improvement Tips
                 </h4>
                 <p className="tips-content">
-                  {getImprovementTip("empathy", progressPercentages?.empathy || 0)}
+                  {getImprovementTip("empathy", progress.empathy)}
                 </p>
               </div>
             </div>
-            
+
             {/* Assertiveness */}
             <div className="skill-card">
               <div className="skill-header">
@@ -422,34 +437,40 @@ const ProgressPage = () => {
                   </div>
                   <h3 className="skill-name">Assertiveness</h3>
                 </div>
-                <div className={`skill-score ${getScoreLevel(progressPercentages?.assertiveness || 0)}`}>
-                  {progressPercentages?.assertiveness || 0}%
+                <div
+                  className={`skill-score ${getScoreLevel(
+                    progress.assertiveness
+                  )}`}
+                >
+                  {progress.assertiveness}%
                 </div>
               </div>
-              
+
               <div className="progress-bar-container">
-                <div 
-                  className={`progress-bar ${getScoreLevel(progressPercentages?.assertiveness || 0)}`}
-                  style={{ width: `${progressPercentages?.assertiveness || 0}%` }}
+                <div
+                  className={`progress-bar ${getScoreLevel(
+                    progress.assertiveness
+                  )}`}
+                  style={{ width: `${progress.assertiveness}%` }}
                 ></div>
               </div>
-              
+
               <p className="skill-description">
-                Assertiveness measures your ability to express your opinions, needs, and boundaries
-                confidently while respecting others.
+                Assertiveness measures your ability to express your opinions,
+                needs, and boundaries confidently while respecting others.
               </p>
-              
+
               <div className="improvement-tips">
                 <h4 className="tips-title">
                   <Zap className="tips-icon" size={16} />
                   Improvement Tips
                 </h4>
                 <p className="tips-content">
-                  {getImprovementTip("assertiveness", progressPercentages?.assertiveness || 0)}
+                  {getImprovementTip("assertiveness", progress.assertiveness)}
                 </p>
               </div>
             </div>
-            
+
             {/* Social Awareness */}
             <div className="skill-card">
               <div className="skill-header">
@@ -459,34 +480,44 @@ const ProgressPage = () => {
                   </div>
                   <h3 className="skill-name">Social Awareness</h3>
                 </div>
-                <div className={`skill-score ${getScoreLevel(progressPercentages?.social_awareness || 0)}`}>
-                  {progressPercentages?.social_awareness || 0}%
+                <div
+                  className={`skill-score ${getScoreLevel(
+                    progress.social_awareness
+                  )}`}
+                >
+                  {progress.social_awareness}%
                 </div>
               </div>
-              
+
               <div className="progress-bar-container">
-                <div 
-                  className={`progress-bar ${getScoreLevel(progressPercentages?.social_awareness || 0)}`}
-                  style={{ width: `${progressPercentages?.social_awareness || 0}%` }}
+                <div
+                  className={`progress-bar ${getScoreLevel(
+                    progress.social_awareness
+                  )}`}
+                  style={{ width: `${progress.social_awareness}%` }}
                 ></div>
               </div>
-              
+
               <p className="skill-description">
-                Social awareness reflects your ability to understand social contexts, read social cues,
-                and navigate social situations appropriately.
+                Social awareness reflects your ability to understand social
+                contexts, read social cues, and navigate social situations
+                appropriately.
               </p>
-              
+
               <div className="improvement-tips">
                 <h4 className="tips-title">
                   <Zap className="tips-icon" size={16} />
                   Improvement Tips
                 </h4>
                 <p className="tips-content">
-                  {getImprovementTip("social_awareness", progressPercentages?.social_awareness || 0)}
+                  {getImprovementTip(
+                    "social_awareness",
+                    progress.social_awareness
+                  )}
                 </p>
               </div>
             </div>
-            
+
             {/* Self Advocacy */}
             <div className="skill-card">
               <div className="skill-header">
@@ -496,36 +527,42 @@ const ProgressPage = () => {
                   </div>
                   <h3 className="skill-name">Self Advocacy</h3>
                 </div>
-                <div className={`skill-score ${getScoreLevel(progressPercentages?.self_advocacy || 0)}`}>
-                  {progressPercentages?.self_advocacy || 0}%
+                <div
+                  className={`skill-score ${getScoreLevel(
+                    progress.self_advocacy
+                  )}`}
+                >
+                  {progress.self_advocacy}%
                 </div>
               </div>
-              
+
               <div className="progress-bar-container">
-                <div 
-                  className={`progress-bar ${getScoreLevel(progressPercentages?.self_advocacy || 0)}`}
-                  style={{ width: `${progressPercentages?.self_advocacy || 0}%` }}
+                <div
+                  className={`progress-bar ${getScoreLevel(
+                    progress.self_advocacy
+                  )}`}
+                  style={{ width: `${progress.self_advocacy}%` }}
                 ></div>
               </div>
-              
+
               <p className="skill-description">
-                Self advocacy measures your ability to speak up for yourself and your needs
-                in various social situations.
+                Self advocacy measures your ability to speak up for yourself and
+                your needs in various social situations.
               </p>
-              
+
               <div className="improvement-tips">
                 <h4 className="tips-title">
                   <Zap className="tips-icon" size={16} />
                   Improvement Tips
                 </h4>
                 <p className="tips-content">
-                  {getImprovementTip("self_advocacy", progressPercentages?.self_advocacy || 0)}
+                  {getImprovementTip("self_advocacy", progress.self_advocacy)}
                 </p>
               </div>
             </div>
           </div>
         </section>
-        
+
         <section className="achievements-section card-section">
           <div className="section-header">
             <h2>
@@ -533,26 +570,29 @@ const ProgressPage = () => {
               Achievements
             </h2>
           </div>
-          
+
           <div className="achievements-grid">
-            {achievements.map(achievement => (
-              <div 
-                key={achievement.id} 
-                className={`achievement-card ${!achievement.earned ? 'locked' : ''}`}
+            {achievements.map((achievement) => (
+              <div
+                key={achievement.id}
+                className={`achievement-card ${
+                  !achievement.earned ? "locked" : ""
+                }`}
               >
-                <div className="achievement-icon">
-                  {achievement.icon}
-                </div>
+                <div className="achievement-icon">{achievement.icon}</div>
                 <div className="achievement-content">
                   <h3 className="achievement-name">{achievement.name}</h3>
-                  <p className="achievement-description">{achievement.description}</p>
+                  <p className="achievement-description">
+                    {achievement.description}
+                  </p>
                   <div className="achievement-meta">
                     <span className={`category-badge ${achievement.category}`}>
-                      {achievement.category.charAt(0).toUpperCase() + achievement.category.slice(1)}
+                      {achievement.category.charAt(0).toUpperCase() +
+                        achievement.category.slice(1)}
                     </span>
                     {achievement.earned && achievement.earnedDate && (
                       <span className="earned-date">
-                        <Clock size={12} style={{ marginRight: '4px' }} />
+                        <Clock size={12} style={{ marginRight: "4px" }} />
                         {achievement.earnedDate}
                       </span>
                     )}
@@ -563,12 +603,13 @@ const ProgressPage = () => {
           </div>
         </section>
       </div>
-      
+
       <section className="cta-section">
         <h2 className="cta-message">Ready to improve your social skills?</h2>
         <p className="cta-description">
-          Continue practicing with more scenarios to build your skills and earn achievements.
-          The more you practice, the more confident you'll become in social situations.
+          Continue practicing with more scenarios to build your skills and earn
+          achievements. The more you practice, the more confident you'll become
+          in social situations.
         </p>
         <div className="cta-buttons">
           <Link to="/explore" className="btn btn-primary">

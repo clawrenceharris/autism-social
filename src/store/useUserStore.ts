@@ -13,7 +13,7 @@ interface UserStore {
   interests: Interest[];
   setUser: (user: User) => void;
   setProfile: (profile: UserProfile) => void;
-  fetchUserData: () => void;
+  fetchUserData: (userId: string) => void;
   logout: () => void;
   error: string | null;
 }
@@ -31,121 +31,33 @@ export const useUserStore = create<UserStore>()(
       setUser: (user) => set({ user }),
       setProfile: (profile) => set({ profile }),
 
-      fetchUserData: async () => {
+      fetchUserData: async (userId: string) => {
         try {
           set({ loading: true, error: null });
-
-          // Step 1: Get authenticated user
-          const {
-            data: { user },
-            error: authError,
-          } = await supabase.auth.getUser();
-
-          if (authError) {
-            console.error("❌ Authentication error:", {
-              message: authError.message,
-              status: authError.status,
-              name: authError.name,
-            });
-            throw new Error(`Authentication failed: ${authError.message}`);
-          }
-
-          if (!user) {
-            console.warn("⚠️ No authenticated user found");
-            set({ loading: false, user: null, profile: null });
-            return;
-          }
-
-          console.log("✅ User authenticated:", {
-            id: user.id,
-            email: user.email,
-          });
-
-          set({ user });
-
-          // Step 2: Fetch user goals
-          try {
-            const goals = await userService.getUserGoals(user.id);
-            console.log("✅ User goals fetched:", {
-              count: goals.length,
-              goals: goals.map(g => g.goal),
-            });
-            set({ goals });
-          } catch (goalsError) {
-            console.error("❌ Failed to fetch user goals:", {
-              userId: user.id,
-              error: goalsError instanceof Error ? goalsError.message : String(goalsError),
-              stack: goalsError instanceof Error ? goalsError.stack : undefined,
-            });
-            // Don't throw here, continue with other data
-            set({ goals: [] });
-          }
-
-          // Step 3: Fetch user interests
-          try {
-            const interests = await userService.getUserInterests(user.id);
-            console.log("✅ User interests fetched:", {
-              count: interests.length,
-              interests: interests.map(i => i.name),
-            });
-            set({ interests });
-          } catch (interestsError) {
-            console.error("❌ Failed to fetch user interests:", {
-              userId: user.id,
-              error: interestsError instanceof Error ? interestsError.message : String(interestsError),
-              stack: interestsError instanceof Error ? interestsError.stack : undefined,
-            });
-            // Don't throw here, continue with other data
-            set({ interests: [] });
-          }
-
           // Step 4: Fetch user profile
-          try {
-            const profile = await userService.getUserById(user.id);
-            if (profile === null) {
-              console.error("❌ User profile not found:", {
-                userId: user.id,
-                message: "Profile record does not exist in database",
-              });
-              throw new Error("User profile not found. Please contact support or try signing up again.");
-            }
-            console.log("✅ User profile fetched:", {
-              id: profile.id,
-              firstName: profile.first_name,
-              lastName: profile.last_name,
+
+          const profile = await userService.getUserById(userId);
+          if (profile === null) {
+            console.error("User profile not found:", {
+              userId: userId,
+              message: "Profile record does not exist in database",
             });
-            set({ profile });
-          } catch (profileError) {
-            console.error("❌ Failed to fetch user profile:", {
-              userId: user.id,
-              error: profileError instanceof Error ? profileError.message : String(profileError),
-              stack: profileError instanceof Error ? profileError.stack : undefined,
-            });
-            throw profileError; // This is critical, so we throw
+            throw new Error(
+              "User profile not found. Please contact support or try signing up again."
+            );
           }
 
-          set({ loading: false });
-          console.log("✅ User data fetch completed successfully");
-
+          set({ profile });
         } catch (err) {
-          const errorMessage = err instanceof Error ? err.message : "Unknown error occurred while loading user data";
-          
-          console.error("❌ Critical error in fetchUserData:", {
-            error: errorMessage,
-            errorType: err instanceof Error ? err.constructor.name : typeof err,
+          console.error("Failed to fetch user profile:", {
+            userId: userId,
+            error: err instanceof Error ? err.message : String(err),
             stack: err instanceof Error ? err.stack : undefined,
-            timestamp: new Date().toISOString(),
           });
+          throw err; // This is critical, so we throw
+        } finally {
+          set({ loading: false });
 
-          set({ 
-            error: errorMessage, 
-            loading: false,
-            // Clear user data on critical errors
-            user: null,
-            profile: null,
-            goals: [],
-            interests: [],
-          });
         }
       },
 
@@ -155,19 +67,18 @@ export const useUserStore = create<UserStore>()(
           set({ user: null, profile: null, loading: true, error: null });
 
           const { error } = await supabase.auth.signOut();
-          
+
           if (error) {
-            console.error("❌ Logout error:", {
+            console.error("Logout error:", {
+
               message: error.message,
               status: error.status,
               name: error.name,
             });
-            set({
-              error: `Logout failed: ${error.message}`,
-              loading: false,
-            });
+
+            throw error;
           } else {
-            console.log("✅ Logout successful");
+
             set({
               user: null,
               profile: null,
@@ -178,9 +89,11 @@ export const useUserStore = create<UserStore>()(
             });
           }
         } catch (err) {
-          const errorMessage = err instanceof Error ? err.message : "Unknown error during logout";
-          
-          console.error("❌ Unexpected logout error:", {
+          const errorMessage =
+            err instanceof Error ? err.message : "Unknown error during logout";
+
+          console.error("Unexpected error while loggin out", {
+
             error: errorMessage,
             errorType: err instanceof Error ? err.constructor.name : typeof err,
             stack: err instanceof Error ? err.stack : undefined,
