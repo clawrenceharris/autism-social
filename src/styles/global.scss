@@ -361,7 +361,7 @@ button {
 .card-section {
   @include card;
   padding: $spacing-6;
-  min-width: 400px;
+  min-width: 350px;
 
   .section-header {
     @include flex(row, space-between, center);

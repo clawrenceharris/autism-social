@@ -8,37 +8,40 @@ export async function deleteDialogue(id: string) {
 }
 
 export async function createDialogue(data: CreateDialogueData) {
-  const { actorName, ...rest } = data;
-
-  const result = await DatabaseService.create<Dialogue>("dialogues", {
-    id: "",
-    actor: { name: actorName },
-    ...rest,
-  });
+  const result = await DatabaseService.create<Dialogue>(
+    "dialogues",
+    data as Dialogue
+  );
   if (result.error || !result.data) throw result.error;
   return result.data;
 }
 
-export async function updateDialogue(id: string, data: Partial<Dialogue>) {
-  const result = await DatabaseService.update<Dialogue>("dialogues", id, data);
-  if (result.error) throw result.error;
-  if (!result.data) throw new Error(`Dialogue not found with id: ${id}`);
-  return result.data;
+export async function updateDialogue(id: string, updates: Partial<Dialogue>) {
+  const { data, error } = await DatabaseService.update<Dialogue>(
+    "dialogues",
+    id,
+    updates
+  );
+  if (error) throw error;
+  return data;
 }
 
 export async function getDialogues() {
-  const result = await DatabaseService.get<Dialogue>("dialogues");
-  if (result.error) throw result.error;
-  return result.data;
+  const { data, error } = await DatabaseService.get<Dialogue>("dialogues");
+  if (error) throw error;
+  return data;
 }
 
 export async function getCompletedDialogues(userId: string) {
-  const result = await DatabaseService.get<Dialogue>("user_completed_dialogues", {
-    foreignKey: "user_id",
-    foreignValue: userId,
-  });
-  if (result.error) throw result.error;
-  return result.data;
+  const { data, error } = await DatabaseService.get<Dialogue>(
+    "user_completed_dialogues",
+    {
+      foreignKey: "user_id",
+      foreignValue: userId,
+    }
+  );
+  if (error) throw error;
+  return data;
 }
 export async function getScenarioDialogues(scenarioId: string) {
   const result = await DatabaseService.get<Dialogue>("dialogues", {
@@ -50,8 +53,10 @@ export async function getScenarioDialogues(scenarioId: string) {
 }
 
 export async function getDialogueById(id: string) {
-  const result = await DatabaseService.getSingle<Dialogue>("dialogues", id);
-  if (result.error) throw result.error;
-  if (!result.data) throw new Error(`Dialogue not found with id: ${id}`);
-  return result.data;
+  const { data, error } = await DatabaseService.getSingle<Dialogue>(
+    "dialogues",
+    id
+  );
+  if (error) throw error;
+  return data;
 }

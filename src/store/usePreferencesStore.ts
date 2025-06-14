@@ -25,9 +25,10 @@ interface PreferencesStore {
   error: string | null;
   fetchGoals: () => void;
   fetchInterests: () => void;
-  fetchPreferences: (userId: string) => void;
-  setInterests: (userId: string, interests: Interest[]) => void;
-  setGoals: (userId: string, goals: Goal[]) => void;
+  fetchUserPreferences: (userId: string) => void;
+
+  setUserInterests: (userId: string, interests: Interest[]) => void;
+  setUserGoals: (userId: string, goals: Goal[]) => void;
   clearUserGoals: () => void;
   clearUserInterests: () => void;
 }
@@ -45,13 +46,47 @@ export const usePreferencesStore = create<PreferencesStore>((set) => ({
   loading: false,
   error: null,
 
-  fetchPreferences: async (userId: string) => {
+  fetchGoals: async () => {
     try {
       set({ loading: true, error: null });
 
-      const [interests, goals, userInterests, userGoals] = await Promise.all([
-        getInterests(),
-        getGoals(),
+      const goals = await getGoals();
+
+      set({
+        goals,
+
+        goalIds: goals.map((g) => g.id),
+      });
+    } catch (err) {
+      console.error("Error fetching goals:", err);
+      set({ error: "Could not load selections" });
+    } finally {
+      set({ loading: false });
+    }
+  },
+  fetchInterests: async () => {
+    try {
+      set({ loading: true, error: null });
+
+      const interests = await getInterests();
+
+      set({
+        interests,
+
+        interestIds: interests.map((g) => g.id),
+      });
+    } catch (err) {
+      console.error("Error fetching interests:", err);
+      set({ error: "Could not load selections" });
+    } finally {
+      set({ loading: false });
+    }
+  },
+  fetchUserPreferences: async (userId: string) => {
+    try {
+      set({ loading: true, error: null });
+
+      const [userInterests, userGoals] = await Promise.all([
         getUserInterests(userId),
         getUserGoals(userId),
       ]);
@@ -59,10 +94,7 @@ export const usePreferencesStore = create<PreferencesStore>((set) => ({
       set({
         userInterests,
         userGoals,
-        goals,
-        interests,
-        interestIds: interests.map((i) => i.id),
-        goalIds: goals.map((g) => g.id),
+
         userInterestIds: userInterests.map((i) => i.id),
         userGoalIds: userGoals.map((g) => g.id),
       });
@@ -73,8 +105,7 @@ export const usePreferencesStore = create<PreferencesStore>((set) => ({
       set({ loading: false });
     }
   },
-
-  setInterests: async (userId: string, newInterests: Interest[]) => {
+  setUserInterests: async (userId: string, newInterests: Interest[]) => {
     try {
       await updateUserInterests(
         userId,
@@ -86,26 +117,8 @@ export const usePreferencesStore = create<PreferencesStore>((set) => ({
       set({ error: "Could not update interests" });
     }
   },
-  fetchGoals: async () => {
-    try {
-      const goals = await getGoals();
-      set({ goals });
-    } catch (err) {
-      console.error("Error loading goals:", err);
-      set({ error: "Could not load goals" });
-    }
-  },
-  fetchInterests: async () => {
-    try {
-      const interests = await getInterests();
-      set({ interests });
-    } catch (err) {
-      console.error("Error loading interests:", err);
-      set({ error: "Could not load interests" });
-    }
-  },
 
-  setGoals: async (userId: string, newGoals: Goal[]) => {
+  setUserGoals: async (userId: string, newGoals: Goal[]) => {
     try {
       await updateUserGoals(
         userId,

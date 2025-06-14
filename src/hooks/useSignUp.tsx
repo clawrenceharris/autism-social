@@ -10,8 +10,9 @@ import {
 import type { FormLayoutProps } from "../components/layouts/FormLayout/FormLayout";
 import { usePreferencesStore } from "../store/usePreferencesStore";
 
-interface UseOnboardingProps {
-  handleSubmit: (data: Partial<SignUpFormValues>) => void;
+interface UseSignUpProps {
+  userId?: string;
+  handleSubmit: (data: SignUpFormValues) => void;
   onNext?: () => void;
   onPrev?: () => void;
   error?: string | null;
@@ -21,24 +22,48 @@ interface UseOnboardingProps {
   isLoading?: boolean;
 }
 
-const useOnboarding = ({
+const useSignUp = ({
   onNext,
   onPrev,
+  userId,
   isLoading,
   stepStart,
-  stepEnd,
+  stepEnd = 4,
   error,
   ...props
-}: UseOnboardingProps) => {
+}: UseSignUpProps) => {
   const [step, setStep] = useState(stepStart || 1);
   const { userGoalIds, userInterestIds } = usePreferencesStore();
-  const [formData, setFormData] = useState<Partial<SignUpFormValues>>({
+  const { fetchUserPreferences, fetchGoals, fetchInterests } =
+    usePreferencesStore();
+
+  const [formData, setFormData] = useState<SignUpFormValues>({
+    agreement: false,
+    password: "",
+    email: "",
+    first_name: "",
+    last_name: "",
     goals: [],
     interests: [],
   });
   useEffect(() => {
-    setFormData({ goals: userGoalIds, interests: userInterestIds });
+    setFormData((prev) => ({
+      ...prev,
+      goals: userGoalIds,
+      interests: userInterestIds,
+    }));
   }, [userGoalIds, userInterestIds]);
+
+  useEffect(() => {
+    fetchInterests();
+    fetchGoals();
+  }, [fetchGoals, fetchInterests]);
+
+  useEffect(() => {
+    if (userId) {
+      fetchUserPreferences(userId);
+    }
+  }, [fetchUserPreferences, userId]);
   const nextStep = () => {
     if (step === stepEnd) {
       return;
@@ -63,7 +88,7 @@ const useOnboarding = ({
       return { ...prev, [type]: newArray };
     });
   };
-  const handleSubmit = (data: Partial<SignUpFormValues>) => {
+  const handleSubmit = (data: SignUpFormValues) => {
     const updatedData = { ...formData, ...data };
     setFormData(updatedData);
     props.handleSubmit(updatedData);
@@ -156,4 +181,4 @@ const useOnboarding = ({
   };
 };
 
-export default useOnboarding;
+export default useSignUp;
