@@ -13,6 +13,7 @@ src/constants/
 .env
 .env.*
 !.env.example
+.vite-env.d.ts
 
 # Vite configuration files
 vite.config.ts
