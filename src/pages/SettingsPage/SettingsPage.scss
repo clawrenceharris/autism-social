@@ -2,7 +2,7 @@
 @import "../../styles/mixins";
 
 .settings-container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: $spacing-4;
 
@@ -51,31 +51,58 @@
     }
 
     .section-content {
-      @include stack-layout($spacing-4);
+      @include stack-layout($spacing-6);
     }
 
     .setting-item {
-      @include flex(row, space-between, center);
-      padding: $spacing-3 0;
+      @include flex(row, space-between, flex-start);
+      padding: $spacing-4 0;
+      gap: $spacing-6;
+
+      @include responsive(sm) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: $spacing-4;
+      }
 
       .setting-info {
         flex: 1;
+        min-width: 0; // Prevent flex item from overflowing
 
         .setting-label {
           font-weight: 500;
           color: $color-gray-800;
-          margin-bottom: $spacing-1;
+          margin-bottom: $spacing-2;
+          font-size: 1.1rem;
+        }
+
+        .description {
+          color: $color-gray-600;
+          font-size: 0.9rem;
+          line-height: 1.5;
+          margin: 0;
         }
       }
 
       .setting-control {
-        margin-left: $spacing-4;
+        flex-shrink: 0;
+        min-width: 120px;
+
+        @include responsive(sm) {
+          width: 100%;
+          min-width: unset;
+        }
       }
     }
 
     .color-scheme-options {
-      @include flex(row, flex-start, center, $spacing-3);
+      @include flex(row, flex-start, center, $spacing-4);
       flex-wrap: wrap;
+      margin-top: $spacing-4;
+
+      @include responsive(sm) {
+        justify-content: center;
+      }
 
       .color-option {
         @include flex(column, center, center, $spacing-2);
@@ -126,16 +153,16 @@
     }
 
     .danger-zone {
-      margin-top: $spacing-6;
+      margin-top: $spacing-8;
       padding-top: $spacing-6;
       border-top: 2px solid $color-red-100;
 
       .danger-header {
-        margin-bottom: $spacing-4;
+        margin-bottom: $spacing-6;
 
         h3 {
           color: $color-red-600;
-          margin-bottom: $spacing-1;
+          margin-bottom: $spacing-2;
         }
 
         p {
@@ -146,7 +173,7 @@
       }
 
       .danger-actions {
-        @include flex(column, flex-start, stretch, $spacing-3);
+        @include flex(column, flex-start, stretch, $spacing-4);
 
         @include responsive(md) {
           flex-direction: row;
@@ -186,35 +213,55 @@
 
   .profile-info {
     @include flex(row, flex-start, center, $spacing-4);
-    padding: $spacing-4;
+    padding: $spacing-6;
     background: $color-gray-50;
-    border-radius: $border-radius-md;
-    margin-bottom: $spacing-4;
+    border-radius: $border-radius-xl;
+    margin-bottom: $spacing-6;
+
+    @include responsive(sm) {
+      flex-direction: column;
+      text-align: center;
+      padding: $spacing-4;
+    }
 
     .profile-avatar {
-      width: 60px;
-      height: 60px;
+      width: 80px;
+      height: 80px;
       border-radius: $border-radius-full;
       background: $color-primary-100;
       @include flex(row, center, center);
       color: $color-primary;
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       font-weight: 600;
+      flex-shrink: 0;
+
+      @include responsive(sm) {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+      }
     }
 
     .profile-details {
       flex: 1;
+      min-width: 0;
 
       .profile-name {
         font-weight: 600;
         color: $color-gray-800;
         margin-bottom: $spacing-1;
+        font-size: 1.25rem;
+
+        @include responsive(sm) {
+          font-size: 1.1rem;
+        }
       }
 
       .profile-email {
         color: $color-gray-600;
         font-size: 0.875rem;
         margin: 0;
+        word-break: break-word;
       }
     }
   }
@@ -226,21 +273,17 @@
 
     .settings-section {
       padding: $spacing-4;
-    }
 
-    .setting-item {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: $spacing-3;
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: $spacing-2;
+        text-align: left;
 
-      .setting-control {
-        margin-left: 0;
-        width: 100%;
+        h2 {
+          font-size: 1.25rem;
+        }
       }
-    }
-
-    .color-scheme-options {
-      justify-content: center;
     }
   }
 }
