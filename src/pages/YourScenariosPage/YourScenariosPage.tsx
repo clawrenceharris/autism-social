@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import {
   Search,
   X,
-  Grid,
-  List,
   Play,
   BookOpen,
   TrendingUp,
@@ -16,12 +14,11 @@ import {
 } from "lucide-react";
 import "./YourScenariosPage.scss";
 import { useScenarioStore } from "../../store/useScenarioStore";
-import { ProgressIndicator, TextInput } from "../../components";
+import { ProgressIndicator } from "../../components";
 import type { ScenarioWithDialogues } from "../../types";
 import { useRecommendationsStore } from "../../store";
 
 type FilterType = "all" | "completed" | "trending" | "recommended";
-type ViewType = "grid" | "list";
 
 const YourScenariosPage = () => {
   const {
@@ -38,7 +35,6 @@ const YourScenariosPage = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
-  const [viewType, setViewType] = useState<ViewType>("grid");
   useEffect(() => {
     fetchScenarios();
     fetchDialogues();
@@ -115,17 +111,6 @@ const YourScenariosPage = () => {
     return filtered;
   }, [scenariosWithDialogues, searchQuery, activeFilter]);
 
-  // Count scenarios for each filter
-  const filterCounts = useMemo(
-    () => ({
-      all: scenariosWithDialogues.length,
-      completed: scenariosWithDialogues.filter((s) => s.isCompleted).length,
-      trending: scenariosWithDialogues.filter((s) => s.isTrending).length,
-      recommended: scenariosWithDialogues.filter((s) => s.isRecommended).length,
-    }),
-    [scenariosWithDialogues]
-  );
-
   const handleClearSearch = () => {
     setSearchQuery("");
   };
@@ -187,68 +172,6 @@ const YourScenariosPage = () => {
       scenario.totalDialogues > 0
         ? Math.round((scenario.completedCount / scenario.totalDialogues) * 100)
         : 0;
-
-    if (viewType === "list") {
-      return (
-        <div
-          key={scenario.id}
-          className={`scenario-card list-view ${
-            scenario.isCompleted ? "completed" : ""
-          } ${scenario.isTrending ? "trending" : ""}`}
-        >
-          <div className="card-content">
-            <div className="left-content">
-              <div className="badges">
-                {scenario.isCompleted && (
-                  <span className="badge completion-badge">Completed</span>
-                )}
-                {scenario.isTrending && (
-                  <span className="badge trending-badge">Trending</span>
-                )}
-              </div>
-              <div className="scenario-info">
-                <h3 className="scenario-title">{scenario.title}</h3>
-                <p className="description">{scenario.description}</p>
-              </div>
-            </div>
-            <div className="right-content">
-              <div className="scenario-meta">
-                <div className="meta-item">
-                  <span className="meta-value">{scenario.totalDialogues}</span>
-                  <span className="meta-label">Dialogues</span>
-                </div>
-                <div className="meta-item">
-                  <span className="meta-value">{progressPercentage}%</span>
-                  <span className="meta-label">Progress</span>
-                </div>
-                {scenario.lastPlayed && (
-                  <div className="meta-item">
-                    <span className="meta-value">{scenario.lastPlayed}</span>
-                    <span className="meta-label">Last Played</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="scenario-actions">
-            {scenario.isCompleted ? (
-              <Link to={`/scenario/${scenario.id}`} className="action-btn">
-                <Award size={16} />
-                Review
-              </Link>
-            ) : (
-              <Link
-                to={`/scenario/${scenario.id}`}
-                className="action-btn primary"
-              >
-                <Play size={16} />
-                {scenario.completedCount > 0 ? "Continue" : "Start"}
-              </Link>
-            )}
-          </div>
-        </div>
-      );
-    }
 
     return (
       <div
@@ -394,8 +317,9 @@ const YourScenariosPage = () => {
         <div className="search-section">
           <div className="search-container">
             <Search className="search-icon" size={20} />
-            <TextInput
+            <input
               type="text"
+              className="form-input"
               placeholder="Search scenarios..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -420,7 +344,6 @@ const YourScenariosPage = () => {
               >
                 {getFilterIcon(filter)}
                 {getFilterLabel(filter)}
-                <span className="tab-count">({filterCounts[filter]})</span>
               </button>
             ))}
           </div>
@@ -441,28 +364,10 @@ const YourScenariosPage = () => {
               </span>
             )}
           </h2>
-          <div className="view-toggle">
-            <button
-              onClick={() => setViewType("grid")}
-              className={`toggle-btn ${viewType === "grid" ? "active" : ""}`}
-            >
-              <Grid size={16} />
-            </button>
-            <button
-              onClick={() => setViewType("list")}
-              className={`toggle-btn ${viewType === "list" ? "active" : ""}`}
-            >
-              <List size={16} />
-            </button>
-          </div>
         </div>
 
         {filteredScenarios.length > 0 ? (
-          <div
-            className={`scenarios-grid ${
-              viewType === "list" ? "list-view" : ""
-            }`}
-          >
+          <div className="scenarios-grid">
             {filteredScenarios.map(renderScenarioCard)}
           </div>
         ) : (

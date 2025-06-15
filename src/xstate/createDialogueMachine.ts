@@ -4,8 +4,8 @@ import type {
   DialogueStep,
   ScoreCategory,
   ScoreSummary,
-  DialoguePossibleScores,
 } from "../types";
+import type { DialoguePossibleScores } from "../services/dialogueCompletion";
 
 export function createDialogueMachine(
   id: string,

@@ -4,36 +4,40 @@ import { signUp } from "../../services/auth";
 import { addUserInterests } from "../../services/interests";
 import "./SignUpPage.scss";
 import type { SignUpFormValues } from "../../types";
-
 import { useSignUp } from "../../hooks/";
 import { useToast } from "../../context/ToastContext";
 import { createUser } from "../../services/user";
+import { useErrorHandler } from "../../hooks/useErrorHandler";
+
 const NUM_STEPS = 4;
+
 const SignUpPage = () => {
   const navigate = useNavigate();
-
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { handleError } = useErrorHandler({ component: 'SignUpPage' });
 
   const { renderStep, step } = useSignUp({
     handleSubmit: (data) => handleSubmit(data),
     error,
     isLoading,
   });
+
   const handleSubmit = async (data: SignUpFormValues) => {
-    console.log("Handle Submit");
     try {
       if (step < NUM_STEPS) {
         return;
       }
-      console.log("Submitting!");
 
       setIsLoading(true);
+      setError(null);
 
       const user = await signUp(data.email!, data.password!);
 
-      if (!user) throw new Error("Failed to create user");
+      if (!user) {
+        throw new Error("Failed to create user");
+      }
 
       const { first_name, last_name } = data;
       await Promise.all([
@@ -53,14 +57,13 @@ const SignUpPage = () => {
       showToast("Sign up was successful!", { type: "success" });
       navigate("/", { replace: true });
     } catch (err) {
-      setError("Sign up failed: " + String(err));
-      showToast("Sign up failed.", { type: "error" });
-
-      console.error("Error signing up:", err);
+      const normalizedError = handleError(err, 'signup');
+      setError(normalizedError.message);
     } finally {
       setIsLoading(false);
     }
   };
+
   return (
     <div className="form signup-container">
       <div className="signup-card">

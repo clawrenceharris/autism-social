@@ -5,26 +5,13 @@ import "./ProgressSection.scss";
 import { useProgressStore } from "../../store/useProgressStore";
 
 const ProgressSection = ({ userId }: { userId: string }) => {
-  const { fetchProgress, progressPercentages, loading, error } = useProgressStore();
+  const { fetchProgress, loading, error } = useProgressStore();
 
-  const [progressCategories, setProgressCategories] = useState<
-    { name: string; score: number }[]
-  >([]);
+  const [progressCategories] = useState<{ name: string; score: number }[]>([]);
 
   useEffect(() => {
     fetchProgress(userId);
   }, [fetchProgress, userId]);
-
-  useEffect(() => {
-    if (!progressPercentages) return;
-    setProgressCategories([
-      { name: "Clarity", score: progressPercentages.clarity },
-      { name: "Empathy", score: progressPercentages.empathy },
-      { name: "Assertiveness", score: progressPercentages.assertiveness },
-      { name: "Social Awareness", score: progressPercentages.social_awareness },
-      { name: "Self-advocacy", score: progressPercentages.self_advocacy },
-    ]);
-  }, [progressPercentages]);
 
   if (error) {
     return (

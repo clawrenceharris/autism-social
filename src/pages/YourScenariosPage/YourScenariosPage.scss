@@ -10,18 +10,6 @@
     text-align: center;
     margin-bottom: $spacing-8;
 
-    h1 {
-      margin-bottom: $spacing-2;
-      color: $color-gray-900;
-    }
-
-    .description {
-      color: $color-gray-600;
-      font-size: 1.1rem;
-      max-width: 600px;
-      margin: 0 auto $spacing-6;
-    }
-
     .search-section {
       max-width: 500px;
       margin: 0 auto;
@@ -29,26 +17,6 @@
       .search-container {
         position: relative;
         margin-bottom: $spacing-4;
-
-        .search-input {
-          width: 100%;
-          padding: $spacing-3 $spacing-4 $spacing-3 3rem;
-          border: 2px solid $color-gray-200;
-          border-radius: $border-radius-full;
-          font-size: 1rem;
-          background: $color-white;
-          transition: all 0.3s ease;
-
-          &:focus {
-            outline: none;
-            border-color: $color-primary;
-            box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
-          }
-
-          &::placeholder {
-            color: $color-gray-400;
-          }
-        }
 
         .search-icon {
           position: absolute;
@@ -82,34 +50,26 @@
       .filter-tabs {
         @include flex(row, center, center, $spacing-2);
         flex-wrap: wrap;
-
         .filter-tab {
+          @include flex(row, center, center);
           padding: $spacing-2 $spacing-4;
           border: 2px solid $color-gray-200;
           border-radius: $border-radius-full;
-          background: $color-white;
           color: $color-gray-600;
           cursor: pointer;
+
           transition: all 0.3s ease;
-          font-size: 0.9rem;
-          font-weight: 500;
 
           &:hover {
             background: $color-primary-100;
             color: $color-primary;
+            border-color: $color-primary-100;
           }
 
           &.active {
             border-color: $color-primary;
             background: $color-primary;
             color: $color-white;
-            box-shadow: 0 4px 12px rgba($color-primary, 0.3);
-          }
-
-          .tab-count {
-            margin-left: $spacing-1;
-            font-size: 0.8rem;
-            opacity: 0.8;
           }
         }
       }
@@ -130,33 +90,6 @@
           color: $color-primary;
         }
       }
-
-      .view-toggle {
-        @include flex(row, center, center, $spacing-1);
-        background: $color-gray-100;
-        border-radius: $border-radius-md;
-        padding: $spacing-1;
-
-        .toggle-btn {
-          padding: $spacing-2;
-          border: none;
-          background: none;
-          border-radius: $border-radius-sm;
-          color: $color-gray-500;
-          cursor: pointer;
-          transition: all 0.2s ease;
-
-          &.active {
-            background: $color-white;
-            color: $color-primary;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          }
-
-          &:hover:not(.active) {
-            color: $color-gray-700;
-          }
-        }
-      }
     }
 
     .scenarios-grid {
@@ -169,11 +102,6 @@
       @include responsive(lg) {
         grid-template-columns: repeat(3, 1fr);
       }
-
-      &.list-view {
-        grid-template-columns: 1fr;
-        gap: $spacing-3;
-      }
     }
 
     .scenario-card {
@@ -182,7 +110,8 @@
       transition: all 0.3s ease;
       cursor: pointer;
       border: 2px solid transparent;
-
+      display: flex;
+      flex-direction: column;
       &:hover {
         transform: translateY(-4px);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
@@ -212,6 +141,7 @@
       .card-header {
         @include flex(row, space-between, flex-start);
         margin-bottom: $spacing-4;
+        flex: 0.5;
 
         .scenario-title {
           font-size: 1.25rem;
@@ -241,31 +171,13 @@
               background: #f59e0b;
               color: $color-white;
             }
-
-            &.difficulty-badge {
-              background: $color-gray-200;
-              color: $color-gray-700;
-
-              &.easy {
-                background: $color-green-100;
-                color: $color-green-600;
-              }
-
-              &.medium {
-                background: #fef3c7;
-                color: #d97706;
-              }
-
-              &.hard {
-                background: $color-red-100;
-                color: $color-red-600;
-              }
-            }
           }
         }
       }
 
       .scenario-description {
+        flex: 1;
+
         color: $color-gray-600;
         margin-bottom: $spacing-4;
         line-height: 1.5;
@@ -336,63 +248,6 @@
           }
         }
       }
-
-      &.list-view {
-        @include flex(row, space-between, center);
-        padding: $spacing-4;
-
-        .card-content {
-          flex: 1;
-          @include flex(row, space-between, center);
-
-          .left-content {
-            @include flex(row, flex-start, center, $spacing-4);
-
-            .scenario-info {
-              .scenario-title {
-                font-size: 1.1rem;
-                margin-bottom: $spacing-1;
-              }
-
-              .scenario-description {
-                font-size: 0.9rem;
-                margin: 0;
-                -webkit-line-clamp: 1;
-                line-clamp: 1;
-              }
-            }
-          }
-
-          .right-content {
-            @include flex(row, flex-end, center, $spacing-4);
-
-            .scenario-meta {
-              border: none;
-              padding: 0;
-              margin: 0;
-              gap: $spacing-6;
-
-              .meta-item {
-                .meta-value {
-                  font-size: 1rem;
-                }
-              }
-            }
-          }
-        }
-
-        .scenario-actions {
-          margin-left: $spacing-4;
-          gap: $spacing-2;
-
-          .action-btn {
-            flex: none;
-            min-width: 100px;
-            padding: $spacing-2 $spacing-3;
-            font-size: 0.9rem;
-          }
-        }
-      }
     }
 
     .empty-state {
@@ -440,20 +295,6 @@
         }
       }
     }
-
-    .loading-state {
-      text-align: center;
-      padding: $spacing-8;
-
-      .loading-spinner {
-        margin-bottom: $spacing-4;
-      }
-
-      .loading-text {
-        color: $color-gray-600;
-        font-size: 1.1rem;
-      }
-    }
   }
 }
 
@@ -466,11 +307,6 @@
         .filter-tabs {
           justify-content: center;
           gap: $spacing-1;
-
-          .filter-tab {
-            padding: $spacing-2 $spacing-3;
-            font-size: 0.8rem;
-          }
         }
       }
     }
@@ -484,33 +320,6 @@
 
       .scenario-card {
         padding: $spacing-4;
-
-        &.list-view {
-          flex-direction: column;
-          align-items: flex-start;
-
-          .card-content {
-            width: 100%;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: $spacing-3;
-
-            .right-content {
-              width: 100%;
-              justify-content: flex-start;
-
-              .scenario-meta {
-                gap: $spacing-4;
-              }
-            }
-          }
-
-          .scenario-actions {
-            width: 100%;
-            margin-left: 0;
-            margin-top: $spacing-3;
-          }
-        }
       }
     }
   }

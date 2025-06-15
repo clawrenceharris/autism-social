@@ -1,8 +1,6 @@
-export { default as TextInput } from "./TextInput";
 export { default as Select } from "./Select";
 export { default as ScenarioLayout } from "./layouts/ScenarioLayout";
 export { default as Skeleton } from "./Skeleton";
-export { default as ScenarioListItem } from "./ScenarioListItem";
 export { default as UserLayout } from "./layouts/UserLayout/UserLayout";
 export { default as FormLayout } from "./layouts/FormLayout";
 export { default as ScenarioRoute } from "./routes/ScenarioRoute";

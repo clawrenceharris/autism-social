@@ -17,7 +17,6 @@ import type {
 
 import "./DialoguePlayer.scss";
 import { DialogueCompletionModal, ProgressIndicator } from "../";
-import { getDialogueScores } from "../../utils";
 import { createDialogueMachine } from "../../xstate/createDialogueMachine";
 import {
   RotateCcw,
@@ -30,6 +29,7 @@ import {
 import { useToast } from "../../context";
 import { useVoiceStore } from "../../store/useVoiceStore";
 import { useActorStore } from "../../store/useActorStore";
+import { getDialogueScores } from "../../utils/dialogueUtils";
 
 interface DialoguePlayerProps {
   scenario: Scenario;
@@ -49,21 +49,23 @@ const DialoguePlayer = ({
   onReplay,
 }: DialoguePlayerProps) => {
   const machine = useMemo(
-    () => createDialogueMachine(
-      dialogue.id, 
-      dialogue.steps, 
-      dialogue.total_possible_scores
-    ),
+    () =>
+      createDialogueMachine(
+        dialogue.id,
+        dialogue.steps,
+        dialogue.total_possible_scores
+      ),
     [dialogue]
   );
   const [state, send] = useMachine(
-    machine || createDialogueMachine("empty", [], {
-      clarity: 0,
-      empathy: 0,
-      assertiveness: 0,
-      socialAwareness: 0,
-      selfAdvocacy: 0,
-    })
+    machine ||
+      createDialogueMachine("empty", [], {
+        clarity: 0,
+        empathy: 0,
+        assertiveness: 0,
+        socialAwareness: 0,
+        selfAdvocacy: 0,
+      })
   );
   const [messages, setMessages] = useState<Message[]>([]);
   const [customInput, setCustomInput] = useState("");

@@ -29,6 +29,8 @@
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
 }
 .settings-container .settings-section .section-header {
   display: flex;
@@ -74,11 +76,6 @@
   font-weight: 500;
   color: #1f2937;
   margin-bottom: 0.25rem;
-}
-.settings-container .settings-section .setting-item .setting-info .setting-description {
-  font-size: 0.875rem;
-  color: #4b5563;
-  margin: 0;
 }
 .settings-container .settings-section .setting-item .setting-control {
   margin-left: 1rem;

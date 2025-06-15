@@ -1,0 +1,116 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+.error-boundary {
+  min-height: 100vh;
+  background: $color-gray-50;
+  @include flex(column, center, center);
+  padding: $spacing-4;
+
+  &__container {
+    max-width: 600px;
+    width: 100%;
+    @include card;
+    text-align: center;
+  }
+
+  &__icon {
+    color: $color-red-600;
+    margin-bottom: $spacing-6;
+    
+    svg {
+      filter: drop-shadow(0 4px 8px rgba($color-red-600, 0.2));
+    }
+  }
+
+  &__content {
+    @include stack-layout($spacing-4);
+  }
+
+  &__title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: $color-gray-900;
+    margin-bottom: $spacing-2;
+  }
+
+  &__message {
+    font-size: 1.1rem;
+    color: $color-gray-600;
+    line-height: 1.6;
+    margin-bottom: $spacing-6;
+  }
+
+  &__details {
+    text-align: left;
+    margin: $spacing-4 0;
+    border: 1px solid $color-gray-200;
+    border-radius: $border-radius-md;
+    
+    summary {
+      padding: $spacing-3;
+      background: $color-gray-100;
+      cursor: pointer;
+      font-weight: 500;
+      border-radius: $border-radius-md $border-radius-md 0 0;
+      
+      &:hover {
+        background: $color-gray-200;
+      }
+    }
+  }
+
+  &__error-text {
+    padding: $spacing-4;
+    background: $color-gray-50;
+    border-radius: 0 0 $border-radius-md $border-radius-md;
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+    color: $color-red-700;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  &__actions {
+    @include flex(row, center, center, $spacing-3);
+    flex-wrap: wrap;
+    margin: $spacing-6 0 $spacing-4;
+  }
+
+  &__error-id {
+    font-size: 0.875rem;
+    color: $color-gray-500;
+    font-family: 'Courier New', monospace;
+    margin-top: $spacing-4;
+    padding: $spacing-2;
+    background: $color-gray-100;
+    border-radius: $border-radius-sm;
+  }
+}
+
+@include responsive(sm) {
+  .error-boundary {
+    padding: $spacing-2;
+
+    &__container {
+      padding: $spacing-4;
+    }
+
+    &__title {
+      font-size: 1.5rem;
+    }
+
+    &__message {
+      font-size: 1rem;
+    }
+
+    &__actions {
+      flex-direction: column;
+      
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+}

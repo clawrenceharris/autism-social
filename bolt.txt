@@ -1,0 +1,23 @@
+This application is a web-based platform designed to help autistic users practice social interactions through interactive, dialogue-based scenarios.
+
+Key Features:
+
+Scenario-based Dialogues: Users engage in interactive dialogues, choosing from multiple responses to social prompts.
+Scoring System: Evaluates user performance in categories such as clarity, empathy, assertiveness, social awareness, and self-advocacy.
+Progress Tracking: Users can monitor their development and receive feedback for improvement.
+Daily Challenges: Provides structured daily practice opportunities.
+Personalized Recommendations: Offers scenario suggestions based on user goals and interests.
+Voice Integration: Utilizes ElevenLabs for realistic dialogue narration.
+User Management: Includes profiles, goals, and interests managed through Supabase.
+Technical Stack:
+
+Frontend: React, TypeScript, SASS (for styling), Vite (for development server).
+State Management: XState (for dialogue flow) and Zustand (for global application state).
+Backend: Supabase (for database, authentication, and serverless functions).
+AI Integration: Designed to optionally integrate with AI tools like Gemini or Dappier for content generation.
+Architectural Principles:
+
+Modularity and Scalability: Code is structured for easy expansion of scenarios and features.
+Accessibility: UI components are designed to be screen reader-friendly and keyboard-navigable, with support for high contrast and reduced motion.
+Type Safety: Extensive use of TypeScript for robust data handling.
+Database Design: Features a comprehensive schema with Row Level Security (RLS) for secure data access.

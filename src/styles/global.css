@@ -166,7 +166,7 @@ a {
   line-height: 1.25rem;
   color: #111827;
   background-color: #f3f4f6;
-  border: 2px solid rgba(32, 0, 0, 0.1);
+  border: 2px solid #edeff1;
   border-radius: 0.5rem;
   transition: all 0.2s ease;
   font-family: "Lexend Deca", sans-serif;
@@ -175,7 +175,7 @@ a {
 .form-select:focus,
 .form-textarea:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(84, 203, 226, 0.3);
+  border-color: #54cbe2;
 }
 .error.form-input,
 .error.form-select,

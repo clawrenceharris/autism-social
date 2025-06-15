@@ -1,6 +1,5 @@
 import React, { forwardRef, useRef, useState } from "react";
 import "./Select.css";
-import { TextInput } from "../";
 import { X } from "lucide-react";
 
 type Option = {
@@ -51,15 +50,21 @@ const Select = forwardRef<HTMLInputElement, SelectProps>(
     };
     return (
       <div style={style} className="select-container">
-        <TextInput
-          {...props}
-          ref={ref}
-          value={inputValue}
-          onChange={handleInputChange}
-          onFocus={() => setShowOptions(true)}
-          icon={<X />}
-          onIconClick={handleClose}
-        />
+        <div className="search-container">
+          <button onClick={handleClose} className="clear-search">
+            <X size={16} />
+          </button>
+          <input
+            ref={ref}
+            type="text"
+            onFocus={() => setShowOptions(true)}
+            placeholder="Search scenarios..."
+            value={inputValue}
+            onChange={handleInputChange}
+            {...props}
+          />
+        </div>
+
         {showOptions && (
           <div ref={optionsRef} className="options-list">
             {filteredOptions.map((option) => (

@@ -133,14 +133,14 @@ a {
   line-height: 1.25rem;
   color: $color-gray-900;
   background-color: $color-gray-100;
-  border: 2px solid rgba(32, 0, 0, 0.1);
+  border: 2px solid $color-gray-200;
   border-radius: $border-radius-md;
   @include transition(all);
   font-family: $font-family-primary;
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba($color-primary, 0.3);
+    border-color: $color-primary;
   }
 
   &.error {

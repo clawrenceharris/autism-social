@@ -3,7 +3,7 @@ import { FormLayout } from "../../components";
 import { useState } from "react";
 import { signIn, getUserRole } from "../../services/auth";
 import "./LoginPage.scss";
-import { AuthError } from "@supabase/supabase-js";
+import { useErrorHandler } from "../../hooks/useErrorHandler";
 
 interface LoginFormValues {
   email: string;
@@ -14,6 +14,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { handleError } = useErrorHandler({ component: 'LoginPage' });
 
   const handleSubmit = async (data: LoginFormValues) => {
     try {
@@ -22,7 +23,9 @@ const LoginPage = () => {
 
       const user = await signIn(data.email, data.password);
 
-      if (!user) throw new Error("No user data received");
+      if (!user) {
+        throw new Error("No user data received");
+      }
 
       const { role, error: roleError } = await getUserRole(user.id);
 
@@ -33,10 +36,8 @@ const LoginPage = () => {
       const redirectPath = role === "admin" ? "/admin" : "/";
       navigate(redirectPath, { replace: true });
     } catch (err) {
-      setError(
-        "Failed to log in: " +
-          (err instanceof AuthError ? err.message : String(err))
-      );
+      const normalizedError = handleError(err, 'login');
+      setError(normalizedError.message);
     } finally {
       setIsLoading(false);
     }

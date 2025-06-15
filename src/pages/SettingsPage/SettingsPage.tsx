@@ -131,7 +131,7 @@ const SettingsPage = () => {
             <div className="setting-item">
               <div className="setting-info">
                 <div className="setting-label">Edit Profile</div>
-                <p className="setting-description">
+                <p className="description">
                   Update your name, goals, interests, and profile photo
                 </p>
               </div>
@@ -155,7 +155,7 @@ const SettingsPage = () => {
             <div className="setting-item">
               <div className="setting-info">
                 <div className="setting-label">Color Scheme</div>
-                <p className="setting-description">
+                <p className="description">
                   Choose your preferred color scheme for the app
                 </p>
               </div>
@@ -202,7 +202,7 @@ const SettingsPage = () => {
             <div className="setting-item">
               <div className="setting-info">
                 <div className="setting-label">Notifications</div>
-                <p className="setting-description">
+                <p className="description">
                   Receive notifications about progress and new scenarios
                 </p>
               </div>
@@ -220,7 +220,7 @@ const SettingsPage = () => {
             <div className="setting-item">
               <div className="setting-info">
                 <div className="setting-label">Auto-save Progress</div>
-                <p className="setting-description">
+                <p className="description">
                   Automatically save your progress during scenarios
                 </p>
               </div>
@@ -248,7 +248,7 @@ const SettingsPage = () => {
             <div className="setting-item">
               <div className="setting-info">
                 <div className="setting-label">Manage History</div>
-                <p className="setting-description">
+                <p className="description">
                   View and manage your scenario completion history
                 </p>
               </div>
@@ -262,7 +262,7 @@ const SettingsPage = () => {
             <div className="setting-item">
               <div className="setting-info">
                 <div className="setting-label">Reset Progress</div>
-                <p className="setting-description">
+                <p className="description">
                   Clear all your progress and start fresh
                 </p>
               </div>
@@ -286,7 +286,7 @@ const SettingsPage = () => {
             <div className="setting-item">
               <div className="setting-info">
                 <div className="setting-label">Log Out</div>
-                <p className="setting-description">
+                <p className="description">
                   Sign out of your account on this device
                 </p>
               </div>
