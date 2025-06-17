@@ -327,6 +327,8 @@ const DialoguePlayer = ({
         userId={user.user_id}
         dialogueId={dialogue.id}
         scores={state.context}
+        dialogueSteps={dialogue.steps}
+        userMessages={messages.filter(m => m.speaker === 'user')}
       />,
       "Your Performance"
     );
