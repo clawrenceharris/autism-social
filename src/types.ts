@@ -216,3 +216,23 @@ export interface StreakUpdateResult {
   streakReset: boolean;
   message?: string;
 }
+
+// User Ranking System
+export interface UserRank {
+  level: number;
+  title: string;
+  minPoints: number;
+  maxPoints: number;
+  icon: string;
+  color: string;
+}
+
+export interface RankProgress {
+  currentRank: UserRank;
+  nextRank: UserRank | null;
+  currentPoints: number;
+  pointsForNextRank: number;
+  pointsInCurrentRank: number;
+  percentToNextRank: number;
+  remainingPoints: number;
+}

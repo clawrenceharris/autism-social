@@ -18,3 +18,4 @@ export { default as ProgressSection } from "./ProgressSection";
 export { default as ToastContainer } from "./ToastContainer";
 export { default as EditProfile } from "./EditProfile";
 export { default as StreakDisplay } from "./StreakDisplay";
+export { default as RankDisplay } from "./RankDisplay";
