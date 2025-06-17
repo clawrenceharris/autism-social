@@ -10,7 +10,7 @@ src/constants/
 **/*.css.map
 
 src/components/SignUpSteps/
-
+src/pages/
 # Environment files
 .env
 .env.*
