@@ -25,8 +25,8 @@
   &-content {
     position: relative;
     width: 100%;
+    overflow: hidden;
     max-width: 70vw;
-    max-height: 90vh;
     background-color: $color-white;
     border-radius: $border-radius-md;
     box-shadow: none;

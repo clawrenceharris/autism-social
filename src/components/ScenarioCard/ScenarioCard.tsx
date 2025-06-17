@@ -1,14 +1,14 @@
 import { useMemo } from "react";
 import type { Scenario } from "../../types";
-import { useScenarioStore } from "../../store/useScenarioStore";
 import { Link } from "react-router-dom";
 import { Award, Play } from "lucide-react";
+import { useDialogueStore } from "../../store/useDialogueStore";
 
 interface ScenarioCardProps {
   scenario: Scenario;
 }
 const ScenarioCard = ({ scenario }: ScenarioCardProps) => {
-  const { completedDialogueIds, dialoguesByScenario } = useScenarioStore();
+  const { completedDialogueIds, dialoguesByScenario } = useDialogueStore();
   const isTrending = false;
   const isCompleted = useMemo(
     () =>

@@ -1,10 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import {
-  ScenarioLayout,
-  ScenarioRoute,
-  UserLayout,
-  UserRoute,
-} from "./components";
+import { ScenarioLayout, UserLayout, UserRoute } from "./components";
 import {
   LoginPage,
   DashboardPage,
@@ -35,17 +30,15 @@ function App() {
         </Route>
 
         <Route element={<ScenarioLayout />}>
-          <Route element={<ScenarioRoute />}>
-            <Route element={<UserRoute />}>
-              <Route
-                path="/scenario/:scenarioId/dialogue/:dialogueId"
-                element={<PlayScenarioPage />}
-              />
-              <Route
-                path="/scenario/:scenarioId"
-                element={<PlayScenarioPage />}
-              />
-            </Route>
+          <Route element={<UserRoute />}>
+            <Route
+              path="/scenario/:scenarioId/dialogue/:dialogueId"
+              element={<PlayScenarioPage />}
+            />
+            <Route
+              path="/scenario/:scenarioId"
+              element={<PlayScenarioPage />}
+            />
           </Route>
         </Route>
       </Routes>

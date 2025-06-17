@@ -45,7 +45,7 @@ const ProgressPage = () => {
     fetchProgress,
     calcAverageScore,
   } = useProgressStore();
-  const { fetchScenarios, scenariosLoading } = useScenarioStore();
+  const { fetchScenarios, loading: scenariosLoading } = useScenarioStore();
   const [socialScore, setSocialScore] = useState(0);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const scores = useMemo(() => {

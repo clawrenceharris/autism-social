@@ -12,6 +12,7 @@ import type {
   DialogueStep,
   Message,
   Scenario,
+  UserMessage,
   UserProfile,
 } from "../../types";
 
@@ -35,21 +36,19 @@ import { useActorStore } from "../../store/useActorStore";
 import { useDialogueCompletion } from "../../hooks";
 import { useProgressStore } from "../../store/useProgressStore";
 import { Link } from "react-router-dom";
-import { useScenarioStore } from "../../store/useScenarioStore";
+import { usePlayScenarioStore } from "../../store/usePlayScenarioStore";
 
 interface DialoguePlayerProps {
   scenario: Scenario;
   dialogue: Dialogue;
   onReplay: () => void;
   user: UserProfile;
-  userFields: { [key: string]: string };
 }
 
 const DialoguePlayer = ({
   scenario,
   user,
   dialogue,
-  userFields,
   onReplay,
 }: DialoguePlayerProps) => {
   const machine = useMemo(
@@ -58,7 +57,7 @@ const DialoguePlayer = ({
   );
   const { progress, fetchProgress } = useProgressStore();
   const [state, send] = useMachine(machine);
-  const { setDialogue } = useScenarioStore();
+  const { userFields, setDialogue } = usePlayScenarioStore();
   const [messages, setMessages] = useState<Message[]>([]);
   const [customInput, setCustomInput] = useState("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
@@ -112,6 +111,7 @@ const DialoguePlayer = ({
 
   const renderMessage = useCallback(
     (template: string): string => {
+      if (!userFields) return "";
       return template.replace(/{{\s*(\w+)\s*}}/g, (_, key) => {
         return userFields[key]?.toString() ?? "";
       });
@@ -227,12 +227,13 @@ const DialoguePlayer = ({
     };
   }, [audioCache]);
 
-  const handleOptionClick = async (option: DialogueOption) => {
+  const handleOptionClick = async (opt: DialogueOption) => {
     // Add user message
-    const userMessage: Message = {
+    const userMessage: UserMessage = {
       id: `user-${Date.now()}`,
       speaker: "user",
-      text: renderMessage(option.label),
+      text: renderMessage(opt.label),
+      scoring: opt.scoring,
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -246,13 +247,11 @@ const DialoguePlayer = ({
     );
 
     // Send event to state machine
-    send({ type: option.event });
+    send({ type: opt.event });
 
     // Get next step and add NPC response
     setTimeout(() => {
-      const currentStep = dialogue?.steps.find(
-        (step) => step.id === option.next
-      );
+      const currentStep = dialogue?.steps.find((step) => step.id === opt.next);
 
       if (currentStep?.npc) {
         const npcMessage: Message = {
@@ -324,13 +323,12 @@ const DialoguePlayer = ({
   const handleResultsClick = () => {
     openModal(
       <DialogueCompletionModal
-        userId={user.user_id}
-        dialogueId={dialogue.id}
         scores={state.context}
         dialogueSteps={dialogue.steps}
-        userMessages={messages.filter(m => m.speaker === 'user')}
+        userMessages={messages.filter((m) => m.speaker === "user")}
+        actorMessages={messages.filter((m) => m.speaker === "npc")}
       />,
-      "Your Performance"
+      ""
     );
   };
 

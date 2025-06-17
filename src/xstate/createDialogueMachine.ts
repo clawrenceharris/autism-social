@@ -31,8 +31,10 @@ export function createDialogueMachine(
               const updated = { ...context };
 
               for (const cat of categories) {
-                if (opt.scoring[cat] !== undefined) {
-                  updated[cat] += 1;
+                if (opt.scoring[cat]) {
+                  updated[cat] = updated[cat]
+                    ? updated[cat] + opt.scoring[cat]
+                    : opt.scoring[cat];
                   console.log(updated);
                 }
               }
@@ -68,13 +70,7 @@ export function createDialogueMachine(
       events: {} as DialogueEvent,
       context: {} as ScoreSummary,
     },
-    context: {
-      assertiveness: 0,
-      empathy: 0,
-      clarity: 0,
-      self_advocacy: 0,
-      social_awareness: 0,
-    },
+    context: {},
     id,
     initial: steps[0].id,
 

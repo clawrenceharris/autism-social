@@ -5,6 +5,7 @@ import type { ReactElement } from "react";
 import { BookmarkPlus, Play } from "lucide-react";
 import ProgressIndicator from "../ProgressIndicator";
 import { useNavigate } from "react-router-dom";
+import { useDialogueStore } from "../../store/useDialogueStore";
 
 interface RecommendedItemProps {
   dialogue: DialogueType;
@@ -20,8 +21,9 @@ const DialogueItem = ({
   badgeIcon,
 }: RecommendedItemProps) => {
   const navigate = useNavigate();
-  const { scenarios, scenariosLoading, setDialogue } = useScenarioStore();
-  if (scenariosLoading) {
+  const { scenarios, loading } = useScenarioStore();
+  const { setDialogue } = useDialogueStore();
+  if (loading) {
     return (
       <>
         <ProgressIndicator />

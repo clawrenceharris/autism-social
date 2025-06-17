@@ -3,7 +3,6 @@ export { default as ScenarioLayout } from "./layouts/ScenarioLayout";
 export { default as Skeleton } from "./Skeleton";
 export { default as UserLayout } from "./layouts/UserLayout/UserLayout";
 export { default as FormLayout } from "./layouts/FormLayout";
-export { default as ScenarioRoute } from "./routes/ScenarioRoute";
 
 export { default as UserRoute } from "./routes/UserRoute";
 export { default as ProgressIndicator } from "./ProgressIndicator";
