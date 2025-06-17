@@ -13,7 +13,6 @@ import {
   Lightbulb,
   MessageSquare,
   Play,
-  Smile,
   Target,
   Zap,
 } from "lucide-react";
@@ -39,37 +38,32 @@ const ProgressPage = () => {
   const { user } = useOutletContext<AuthContextType>();
   const {
     progress,
+    scores,
     loading: progressLoading,
     error: progressError,
+    setScores,
     fetchProgress,
+    calcAverageScore,
   } = useProgressStore();
-  const { scenarioIds, fetchScenarios, scenariosLoading } = useScenarioStore();
-
+  const { fetchScenarios, scenariosLoading } = useScenarioStore();
   const [socialScore, setSocialScore] = useState(0);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
 
   useEffect(() => {
     fetchProgress(user.id);
     fetchScenarios();
-  }, [fetchProgress, fetchScenarios, user.id]);
+    setScores();
+  }, [fetchProgress, fetchScenarios, setScores, user.id]);
+  console.log({ scores });
 
   // Calculate social score when progress data changes
   useEffect(() => {
     if (progress) {
       // Calculate average of all progress categories
-      const categories = [
-        progress.clarity_earned,
-        progress.empathy_earned,
-        progress.assertiveness_earned,
-        progress.social_awareness_earned,
-        progress.self_advocacy_earned,
-      ];
-
-      const average =
-        categories.reduce((sum, val) => sum + val, 0) / categories.length;
-      setSocialScore(Math.round(average));
+      console.log({ progress });
+      setSocialScore(Math.round(calcAverageScore(progress)));
     }
-  }, [progress]);
+  }, [calcAverageScore, progress]);
 
   // Mock achievements data
   useEffect(() => {
@@ -90,8 +84,8 @@ const ProgressPage = () => {
         description: "Achieved a score of 80+ in Empathy",
         icon: <Heart />,
         category: "skill",
-        earned: progress?.empathy_earned >= 80,
-        earnedDate: progress?.empathy_earned >= 80 ? "May 18, 2025" : undefined,
+        earned: scores.empathy >= 80,
+        earnedDate: scores.empathy >= 80 ? "May 18, 2025" : undefined,
       },
       {
         id: "3",
@@ -108,8 +102,8 @@ const ProgressPage = () => {
         description: "Achieved a score of 80+ in Clarity",
         icon: <Lightbulb />,
         category: "skill",
-        earned: progress?.clarity >= 80,
-        earnedDate: progress?.clarity >= 80 ? "May 22, 2025" : undefined,
+        earned: scores.clarity >= 80,
+        earnedDate: scores.clarity >= 80 ? "May 22, 2025" : undefined,
       },
       {
         id: "5",
@@ -125,8 +119,8 @@ const ProgressPage = () => {
         description: "Achieved a score of 80+ in Assertiveness",
         icon: <Target />,
         category: "skill",
-        earned: progress?.assertiveness >= 80,
-        earnedDate: progress?.assertiveness >= 80 ? "May 25, 2025" : undefined,
+        earned: scores.assertiveness >= 80,
+        earnedDate: scores.assertiveness >= 80 ? "May 25, 2025" : undefined,
       },
       {
         id: "7",
@@ -134,9 +128,8 @@ const ProgressPage = () => {
         description: "Achieved a score of 90+ in Social Awareness",
         icon: <Brain />,
         category: "mastery",
-        earned: progress?.social_awareness >= 90,
-        earnedDate:
-          progress?.social_awareness >= 90 ? "May 28, 2025" : undefined,
+        earned: scores.social_awareness >= 90,
+        earnedDate: scores.social_awareness >= 90 ? "May 28, 2025" : undefined,
       },
       {
         id: "8",
@@ -144,11 +137,11 @@ const ProgressPage = () => {
         description: "Achieved a score of 80+ in Self-Advocacy",
         icon: <Award />,
         category: "skill",
-        earned: progress?.self_advocacy >= 80,
-        earnedDate: progress?.self_advocacy >= 80 ? "May 30, 2025" : undefined,
+        earned: scores.self_advocacy >= 80,
+        earnedDate: scores.self_advocacy >= 80 ? "May 30, 2025" : undefined,
       },
     ]);
-  }, [progress]);
+  }, [progress, scores]);
 
   const getScoreLevel = (score: number): "poor" | "good" | "excellent" => {
     if (score >= 80) return "excellent";
@@ -194,29 +187,29 @@ const ProgressPage = () => {
     }
   };
 
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case "clarity":
-        return <Lightbulb />;
-      case "empathy":
-        return <Heart />;
-      case "assertiveness":
-        return <Target />;
-      case "social_awareness":
-        return <Brain />;
-      case "self_advocacy":
-        return <MessageSquare />;
-      default:
-        return <HelpCircle />;
-    }
-  };
+  // const getCategoryIcon = (category: string) => {
+  //   switch (category) {
+  //     case "clarity":
+  //       return <Lightbulb />;
+  //     case "empathy":
+  //       return <Heart />;
+  //     case "assertiveness":
+  //       return <Target />;
+  //     case "social_awareness":
+  //       return <Brain />;
+  //     case "self_advocacy":
+  //       return <MessageSquare />;
+  //     default:
+  //       return <HelpCircle />;
+  //   }
+  // };
 
-  const formatCategoryName = (category: string): string => {
-    return category
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
+  // const formatCategoryName = (category: string): string => {
+  //   return category
+  //     .split("_")
+  //     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+  //     .join(" ");
+  // };
 
   if (progressLoading || scenariosLoading) {
     return (
@@ -272,11 +265,11 @@ const ProgressPage = () => {
   // Calculate stats
   const completedScenarios = 8; // This would come from actual data in a real app
   const totalPoints =
-    progress.clarity +
-    progress.empathy +
-    progress.assertiveness +
-    progress.social_awareness +
-    progress.self_advocacy;
+    scores.clarity +
+    scores.empathy +
+    scores.assertiveness +
+    scores.social_awareness +
+    scores.self_advocacy;
   const earnedAchievements = achievements.filter((a) => a.earned).length;
 
   return (
@@ -292,7 +285,7 @@ const ProgressPage = () => {
         <div className="hero-content">
           <div className="social-score">
             <div className="score-circle">
-              <div className="score-value">{socialScore}%</div>
+              <div className="score-value">{socialScore}</div>
               <div className="score-label">Social Score</div>
             </div>
             <h2 className="score-title">Social Confidence Score</h2>
@@ -316,7 +309,7 @@ const ProgressPage = () => {
                 <div className="stat-icon">
                   <Award size={20} />
                 </div>
-                <div className="stat-value">{averageScore}</div>
+                <div className="stat-value">{calcAverageScore(progress)}</div>
                 <div className="stat-label">Average Score</div>
               </div>
               <div className="stat-card">
@@ -358,17 +351,15 @@ const ProgressPage = () => {
                   </div>
                   <h3 className="skill-name">Clarity</h3>
                 </div>
-                <div
-                  className={`skill-score ${getScoreLevel(progress.clarity)}`}
-                >
-                  {progress.clarity}%
+                <div className={`skill-score ${getScoreLevel(scores.clarity)}`}>
+                  {scores.clarity}%
                 </div>
               </div>
 
               <div className="progress-bar-container">
                 <div
-                  className={`progress-bar ${getScoreLevel(progress.clarity)}`}
-                  style={{ width: `${progress.clarity}%` }}
+                  className={`progress-bar ${getScoreLevel(scores.clarity)}`}
+                  style={{ width: `${scores.clarity}%` }}
                 ></div>
               </div>
 
@@ -383,7 +374,7 @@ const ProgressPage = () => {
                   Improvement Tips
                 </h4>
                 <p className="tips-content">
-                  {getImprovementTip("clarity", progress.clarity)}
+                  {getImprovementTip("clarity", scores.clarity)}
                 </p>
               </div>
             </div>
@@ -397,17 +388,15 @@ const ProgressPage = () => {
                   </div>
                   <h3 className="skill-name">Empathy</h3>
                 </div>
-                <div
-                  className={`skill-score ${getScoreLevel(progress.empathy)}`}
-                >
-                  {progress.empathy}%
+                <div className={`skill-score ${getScoreLevel(scores.empathy)}`}>
+                  {scores.empathy}%
                 </div>
               </div>
 
               <div className="progress-bar-container">
                 <div
-                  className={`progress-bar ${getScoreLevel(progress.empathy)}`}
-                  style={{ width: `${progress.empathy}%` }}
+                  className={`progress-bar ${getScoreLevel(scores.empathy)}`}
+                  style={{ width: `${scores.empathy}%` }}
                 ></div>
               </div>
 
@@ -423,7 +412,7 @@ const ProgressPage = () => {
                   Improvement Tips
                 </h4>
                 <p className="tips-content">
-                  {getImprovementTip("empathy", progress.empathy)}
+                  {getImprovementTip("empathy", scores.empathy)}
                 </p>
               </div>
             </div>
@@ -439,19 +428,19 @@ const ProgressPage = () => {
                 </div>
                 <div
                   className={`skill-score ${getScoreLevel(
-                    progress.assertiveness
+                    scores.assertiveness
                   )}`}
                 >
-                  {progress.assertiveness}%
+                  {scores.assertiveness}%
                 </div>
               </div>
 
               <div className="progress-bar-container">
                 <div
                   className={`progress-bar ${getScoreLevel(
-                    progress.assertiveness
+                    scores.assertiveness
                   )}`}
-                  style={{ width: `${progress.assertiveness}%` }}
+                  style={{ width: `${scores.assertiveness}%` }}
                 ></div>
               </div>
 
@@ -466,7 +455,7 @@ const ProgressPage = () => {
                   Improvement Tips
                 </h4>
                 <p className="tips-content">
-                  {getImprovementTip("assertiveness", progress.assertiveness)}
+                  {getImprovementTip("assertiveness", scores.assertiveness)}
                 </p>
               </div>
             </div>
@@ -482,19 +471,19 @@ const ProgressPage = () => {
                 </div>
                 <div
                   className={`skill-score ${getScoreLevel(
-                    progress.social_awareness
+                    scores.social_awareness
                   )}`}
                 >
-                  {progress.social_awareness}%
+                  {scores.social_awareness}%
                 </div>
               </div>
 
               <div className="progress-bar-container">
                 <div
                   className={`progress-bar ${getScoreLevel(
-                    progress.social_awareness
+                    scores.social_awareness
                   )}`}
-                  style={{ width: `${progress.social_awareness}%` }}
+                  style={{ width: `${scores.social_awareness}%` }}
                 ></div>
               </div>
 
@@ -512,7 +501,7 @@ const ProgressPage = () => {
                 <p className="tips-content">
                   {getImprovementTip(
                     "social_awareness",
-                    progress.social_awareness
+                    scores.social_awareness
                   )}
                 </p>
               </div>
@@ -529,19 +518,19 @@ const ProgressPage = () => {
                 </div>
                 <div
                   className={`skill-score ${getScoreLevel(
-                    progress.self_advocacy
+                    scores.self_advocacy
                   )}`}
                 >
-                  {progress.self_advocacy}%
+                  {scores.self_advocacy}%
                 </div>
               </div>
 
               <div className="progress-bar-container">
                 <div
                   className={`progress-bar ${getScoreLevel(
-                    progress.self_advocacy
+                    scores.self_advocacy
                   )}`}
-                  style={{ width: `${progress.self_advocacy}%` }}
+                  style={{ width: `${scores.self_advocacy}%` }}
                 ></div>
               </div>
 
@@ -556,7 +545,7 @@ const ProgressPage = () => {
                   Improvement Tips
                 </h4>
                 <p className="tips-content">
-                  {getImprovementTip("self_advocacy", progress.self_advocacy)}
+                  {getImprovementTip("self_advocacy", scores.self_advocacy)}
                 </p>
               </div>
             </div>

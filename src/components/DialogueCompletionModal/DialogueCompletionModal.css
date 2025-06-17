@@ -7,8 +7,8 @@
   gap: 1.5rem;
   padding: 2rem;
   text-align: center;
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 860px;
+  overflow-y: scroll;
 }
 .completion-modal .completion-header {
   display: flex;
@@ -17,28 +17,6 @@
   align-items: center;
   gap: 1rem;
   margin-bottom: 1.5rem;
-}
-.completion-modal .completion-header .success-icon {
-  width: 80px;
-  height: 80px;
-  background: linear-gradient(135deg, #16a34a, #10b981);
-  border-radius: 9999px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-  color: #ffffff;
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  animation: successPulse 2s ease-in-out infinite;
-  box-shadow: 0 8px 25px rgba(22, 163, 74, 0.3);
-}
-.completion-modal .completion-header .completion-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #111827;
-  margin-bottom: 0.5rem;
 }
 .completion-modal .completion-header .completion-subtitle {
   font-size: 1.1rem;
@@ -95,20 +73,13 @@
   align-items: center;
   gap: 0.5rem;
 }
-.completion-modal .progress-section .progress-item .progress-header .score-display .score-change {
+.completion-modal .progress-section .progress-item .progress-header .score-display .dialogue-score {
   font-size: 0.875rem;
   font-weight: 600;
   padding: 0.25rem 0.5rem;
   border-radius: 9999px;
-  background: #dcfce7;
-  color: #16a34a;
-  opacity: 0;
-  transform: translateY(-10px);
-  animation: scoreChangeAppear 0.5s ease-out 0.8s forwards;
-}
-.completion-modal .progress-section .progress-item .progress-header .score-display .score-change.no-change {
   background: #f3f4f6;
-  color: #6b7280;
+  color: #374151;
 }
 .completion-modal .progress-section .progress-item .progress-header .score-display .current-score {
   font-size: 1.25rem;
@@ -131,6 +102,7 @@
   background: #edeff1;
   border-radius: 9999px;
   overflow: hidden;
+  margin-bottom: 0.5rem;
 }
 .completion-modal .progress-section .progress-item .progress-bar-container .progress-bar {
   height: 100%;
@@ -167,6 +139,29 @@
   font-weight: 600;
   color: #ffffff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.completion-modal .progress-section .progress-item .dialogue-performance {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+}
+.completion-modal .progress-section .progress-item .dialogue-performance .performance-label {
+  color: #4b5563;
+}
+.completion-modal .progress-section .progress-item .dialogue-performance .performance-score {
+  font-weight: 600;
+}
+.completion-modal .progress-section .progress-item .dialogue-performance .performance-score.excellent {
+  color: #16a34a;
+}
+.completion-modal .progress-section .progress-item .dialogue-performance .performance-score.good {
+  color: #f59e0b;
+}
+.completion-modal .progress-section .progress-item .dialogue-performance .performance-score.poor {
+  color: #dc2626;
 }
 .completion-modal .completion-actions {
   display: flex;
@@ -275,16 +270,6 @@
   50% {
     transform: scale(1.05);
     box-shadow: 0 12px 35px rgba(22, 163, 74, 0.4);
-  }
-}
-@keyframes scoreChangeAppear {
-  0% {
-    opacity: 0;
-    transform: translateY(-10px) scale(0.8);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
   }
 }
 @keyframes shimmer {

@@ -5,12 +5,10 @@ import type {
   ScoreCategory,
   ScoreSummary,
 } from "../types";
-import type { DialoguePossibleScores } from "../services/dialogueCompletion";
 
 export function createDialogueMachine(
   id: string,
   steps: DialogueStep[],
-  totalPossibleScores: DialoguePossibleScores,
   finalState = "end"
 ) {
   const stateConfig: Record<string, object> = {};
@@ -18,8 +16,8 @@ export function createDialogueMachine(
     "clarity",
     "empathy",
     "assertiveness",
-    "socialAwareness",
-    "selfAdvocacy",
+    "social_awareness",
+    "self_advocacy",
   ];
 
   for (const step of steps) {
@@ -28,13 +26,14 @@ export function createDialogueMachine(
     for (const opt of step.options) {
       transitions[opt.event] = {
         target: opt.next,
-        actions: opt.scores
+        actions: opt.scoring
           ? assign(({ context }: { context: ScoreSummary }) => {
               const updated = { ...context };
 
               for (const cat of categories) {
-                if (opt.scores[cat] !== undefined) {
-                  updated[cat].earned += opt.scores[cat];
+                if (opt.scoring[cat] !== undefined) {
+                  updated[cat] += 1;
+                  console.log(updated);
                 }
               }
 
@@ -49,6 +48,7 @@ export function createDialogueMachine(
         npc: step.npc,
         options: [...step.options],
       },
+
       ...(step.options.length > 0
         ? {
             on: transitions,
@@ -68,16 +68,13 @@ export function createDialogueMachine(
       events: {} as DialogueEvent,
       context: {} as ScoreSummary,
     },
-    context: Object.fromEntries(
-      categories.map((c) => [
-        c,
-        {
-          earned: 0,
-          possible: totalPossibleScores[c] || 0,
-        },
-      ])
-    ),
-
+    context: {
+      assertiveness: 0,
+      empathy: 0,
+      clarity: 0,
+      self_advocacy: 0,
+      social_awareness: 0,
+    },
     id,
     initial: steps[0].id,
 

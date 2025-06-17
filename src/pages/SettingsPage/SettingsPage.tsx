@@ -6,7 +6,6 @@ import { ConfirmationModal, EditProfile } from "../../components/";
 import {
   User,
   Palette,
-  Shield,
   Trash2,
   LogOut,
   RotateCcw,
@@ -20,14 +19,12 @@ import type { AuthContextType } from "../../types";
 type ColorScheme = "light" | "dark" | "auto";
 
 const SettingsPage = () => {
-  const { user } = useOutletContext<AuthContextType>();
+  const { user, profile } = useOutletContext<AuthContextType>();
   const { showToast } = useToast();
   const { openModal, closeModal } = useModal();
   const navigate = useNavigate();
 
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
-  const [notifications, setNotifications] = useState(true);
-  const [autoSave, setAutoSave] = useState(true);
 
   const handleLogout = async () => {
     openModal(
@@ -123,7 +120,7 @@ const SettingsPage = () => {
               </div>
               <div className="profile-details">
                 <div className="profile-name">
-                  {user?.user_metadata?.name || "User"}
+                  {profile.first_name + " " + profile.last_name || ""}
                 </div>
                 <p className="profile-email">{user?.email}</p>
               </div>
@@ -187,52 +184,6 @@ const SettingsPage = () => {
               >
                 <div className="color-preview auto"></div>
                 <span className="color-label">Auto</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Preferences Section */}
-        <div className="settings-section">
-          <div className="section-header">
-            <h2>Preferences</h2>
-            <Shield className="section-icon" size={24} />
-          </div>
-          <div className="section-content">
-            <div className="setting-item">
-              <div className="setting-info">
-                <div className="setting-label">Notifications</div>
-                <p className="description">
-                  Receive notifications about progress and new scenarios
-                </p>
-              </div>
-              <div className="setting-control">
-                <label className="toggle-switch">
-                  <input
-                    type="checkbox"
-                    checked={notifications}
-                    onChange={(e) => setNotifications(e.target.checked)}
-                  />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-            </div>
-            <div className="setting-item">
-              <div className="setting-info">
-                <div className="setting-label">Auto-save Progress</div>
-                <p className="description">
-                  Automatically save your progress during scenarios
-                </p>
-              </div>
-              <div className="setting-control">
-                <label className="toggle-switch">
-                  <input
-                    type="checkbox"
-                    checked={autoSave}
-                    onChange={(e) => setAutoSave(e.target.checked)}
-                  />
-                  <span className="toggle-slider"></span>
-                </label>
               </div>
             </div>
           </div>

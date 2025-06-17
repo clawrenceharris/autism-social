@@ -1,36 +1,92 @@
 import { create } from "zustand";
-import {
-  createProgress,
-  getProgress,
-  updateProgress,
-} from "../services/progress";
-import type { UserProgress } from "../types";
+import { getProgress } from "../services/progress";
+import type { ScoreSummary, UserProgress } from "../types";
 
 interface ProgressStore {
-  progress: UserProgress | null;
+  progress: UserProgress[] | null;
+  progressByDialogueId: Record<string, UserProgress[]>;
+  scores: ScoreSummary;
   loading: boolean;
   error: string | null;
+  setScores: () => void;
   fetchProgress: (userId: string) => Promise<void>;
   updateProgressValue: (category: keyof UserProgress, delta: number) => void;
-  calcAverageScore: () => void;
+  calcAverageScore: (progress: UserProgress[]) => number;
   resetProgress: () => void;
 }
 export const useProgressStore = create<ProgressStore>((set, get) => ({
   progress: null,
+  progressByDialogueId: {},
+  scores: {
+    assertiveness: 0,
+    clarity: 0,
+    empathy: 0,
+    social_awareness: 0,
+    self_advocacy: 0,
+  },
   loading: false,
   error: null,
-  calcAverageScore: () => {},
+
+  setScores: () => {
+    const progress = get().progress;
+    if (!progress) return;
+    set({
+      scores: progress.reduce<ScoreSummary>(
+        (acc, p) =>
+          ({
+            assertiveness: p.assertiveness + acc.assertiveness,
+            clarity: p.clarity + acc.clarity,
+            empathy: p.empathy + acc.empathy,
+            social_awareness: p.social_awareness + acc.social_awareness,
+            self_advocacy: p.self_advocacy + acc.self_advocacy,
+          } as ScoreSummary),
+        {
+          assertiveness: 0,
+          clarity: 0,
+          empathy: 0,
+          social_awareness: 0,
+          self_advocacy: 0,
+        } as ScoreSummary
+      ),
+    });
+  },
+  calcAverageScore: (): number => {
+    const progress = get().progress;
+    if (!progress) {
+      return 0;
+    }
+    const total = progress.length;
+    const sum = progress.reduce<number>(
+      (acc, p) =>
+        acc +
+        p.assertiveness +
+        p.clarity +
+        p.empathy +
+        p.social_awareness +
+        p.self_advocacy,
+      0
+    );
+    return sum / total;
+  },
   fetchProgress: async (userId: string) => {
     try {
       set({ loading: true, error: null });
 
-      let progress = await getProgress(userId);
+      const progress = await getProgress(userId);
 
-      if (!progress) {
-        progress = await createProgress(userId);
-      }
-
-      set({ progress });
+      set({
+        progress,
+        progressByDialogueId: progress.reduce<Record<string, UserProgress[]>>(
+          (acc, progress) => {
+            if (!acc[progress.dialogue_id]) {
+              acc[progress.dialogue_id] = [];
+            }
+            acc[progress.dialogue_id].push(progress);
+            return acc;
+          },
+          {}
+        ),
+      });
     } catch (error) {
       console.error("Progress fetch failed:", error);
       set({ error: "Failed to load progress" });
@@ -39,22 +95,20 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
     }
   },
 
-  updateProgressValue: (category, delta) => {
-    const current = get().progress;
-    if (!current) return;
-
-    const updated = {
-      ...current,
-      [category]: (current[category] as number) + delta,
-    };
-
-    // optimistic update
-    set({ progress: updated });
-
-    // optional: persist to DB
-    updateProgress(updated.user_id, updated).catch((err) => {
-      console.error("Failed to persist progress", err);
-    });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  updateProgressValue: (_category, _delta) => {
+    // const current = get().progress;
+    // if (!current) return;
+    // const updated = {
+    //   ...current,
+    //   [category]: (current[category] as number) + delta,
+    // };
+    // // optimistic update
+    // set({ progress: updated });
+    // // optional: persist to DB
+    // updateProgress(updated.user_id, updated).catch((err) => {
+    //   console.error("Failed to persist progress", err);
+    // });
   },
 
   resetProgress: () => {
@@ -71,9 +125,5 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
     };
 
     set({ progress: reset });
-
-    updateProgress(reset.user_id, reset).catch((err) =>
-      console.error("Failed to reset progress", err)
-    );
   },
 }));

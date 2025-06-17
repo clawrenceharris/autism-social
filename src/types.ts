@@ -52,16 +52,12 @@ export interface ScenarioWithDialogues extends Scenario {
 
 export interface UserProgress {
   user_id: string;
-  clarity_earned: number;
-  clarity_possible: number;
-  empathy_earned: number;
-  empathy_possible: number;
-  assertiveness_earned: number;
-  assertiveness_possible: number;
-  social_awareness_earned: number;
-  social_awareness_possible: number;
-  self_advocacy_earned: number;
-  self_advocacy_possible: number;
+  dialogue_id: string;
+  clarity: number;
+  empathy: number;
+  assertiveness: number;
+  social_awareness: number;
+  self_advocacy: number;
 }
 
 export interface Goal {
@@ -70,7 +66,6 @@ export interface Goal {
 }
 
 export interface UserProfile {
-  id: string;
   user_id: string;
   first_name: string;
   last_name: string;
@@ -98,7 +93,6 @@ export interface Scenario {
   id: string;
   title: string;
   description: string;
-  totalDialogues: number;
   createdAt?: string;
 }
 
@@ -129,8 +123,8 @@ export type ScoreCategory =
   | "clarity"
   | "empathy"
   | "assertiveness"
-  | "socialAwareness"
-  | "selfAdvocacy";
+  | "social_awareness"
+  | "self_advocacy";
 
 export type Difficulty = "easy" | "medium" | "hard" | "extra hard";
 
@@ -140,10 +134,11 @@ export interface CreateScenarioData {
 }
 
 export interface ScoreSummary {
-  [category: string]: {
-    earned: number;
-    possible: number;
-  };
+  clarity: number;
+  empathy: number;
+  assertiveness: number;
+  social_awareness: number;
+  self_advocacy: number;
 }
 
 export interface CreateDialogueData {
@@ -169,7 +164,8 @@ export interface DialogueStep {
 export interface DialogueOption {
   label: string;
   event: string;
-  scores: Record<ScoreCategory, number>;
+  maxScoring: Record<ScoreCategory, number>;
+  scoring: Record<ScoreCategory, number>;
   next: string;
 }
 

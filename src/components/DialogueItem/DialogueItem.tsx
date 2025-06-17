@@ -20,7 +20,7 @@ const DialogueItem = ({
   badgeIcon,
 }: RecommendedItemProps) => {
   const navigate = useNavigate();
-  const { scenarios, scenariosLoading } = useScenarioStore();
+  const { scenarios, scenariosLoading, setDialogue } = useScenarioStore();
   if (scenariosLoading) {
     return (
       <>
@@ -31,6 +31,7 @@ const DialogueItem = ({
 
   const scenario = scenarios[dialogue.scenario_id];
   const handlePlayClick = () => {
+    setDialogue(dialogue);
     navigate(`/scenario/${scenario.id}/dialogue/${dialogue.id}`);
   };
 

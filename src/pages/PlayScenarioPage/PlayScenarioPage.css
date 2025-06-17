@@ -91,6 +91,7 @@
 }
 .play-scenario-container .dialogue-selection {
   color: #ffffff;
+  margin-top: 100px;
 }
 .play-scenario-container .dialogue-selection .dialogue-options {
   padding: 2rem 0;

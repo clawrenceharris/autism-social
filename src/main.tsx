@@ -4,16 +4,19 @@ import "./styles/global.scss";
 import App from "./App.tsx";
 import { ModalProvider, AuthProvider, ToastProvider } from "./context";
 import { ToastContainer } from "./components/index.ts";
+import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <AuthProvider>
-      <ToastProvider>
-        <ModalProvider>
-          <App />
-          <ToastContainer />
-        </ModalProvider>
-      </ToastProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <ToastProvider>
+          <ModalProvider>
+            <App />
+            <ToastContainer />
+          </ModalProvider>
+        </ToastProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   </StrictMode>
 );

@@ -18,12 +18,14 @@ body {
 body {
   line-height: 1.5;
   background-color: $color-gray-50;
+
   font-family: $font-family-primary;
 }
 
 main {
-  max-width: 1200px;
   padding: $spacing-4 $spacing-8;
+  max-width: 1000px;
+  margin: auto;
 }
 
 // Layout

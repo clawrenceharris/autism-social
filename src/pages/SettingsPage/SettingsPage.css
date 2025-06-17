@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
 .settings-container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
 }
@@ -58,35 +58,59 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  gap: 1rem;
+  gap: 1.5rem;
   width: 100%;
 }
 .settings-container .settings-section .setting-item {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.75rem;
-  padding: 0.75rem 0;
+  padding: 1rem 0;
+  gap: 1.5rem;
+}
+@media (min-width: 640px) {
+  .settings-container .settings-section .setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
 }
 .settings-container .settings-section .setting-item .setting-info {
   flex: 1;
+  min-width: 0;
 }
 .settings-container .settings-section .setting-item .setting-info .setting-label {
   font-weight: 500;
   color: #1f2937;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+.settings-container .settings-section .setting-item .setting-info .description {
+  color: #4b5563;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
 }
 .settings-container .settings-section .setting-item .setting-control {
-  margin-left: 1rem;
+  flex-shrink: 0;
+  min-width: 120px;
+}
+@media (min-width: 640px) {
+  .settings-container .settings-section .setting-item .setting-control {
+    width: 100%;
+    min-width: unset;
+  }
 }
 .settings-container .settings-section .color-scheme-options {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
   flex-wrap: wrap;
+  margin-top: 1rem;
 }
 .settings-container .settings-section .color-scheme-options .color-option {
   display: flex;
@@ -132,16 +156,16 @@
   text-align: center;
 }
 .settings-container .settings-section .danger-zone {
-  margin-top: 1.5rem;
+  margin-top: 2rem;
   padding-top: 1.5rem;
   border-top: 2px solid #fee2e2;
 }
 .settings-container .settings-section .danger-zone .danger-header {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 .settings-container .settings-section .danger-zone .danger-header h3 {
   color: #dc2626;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 .settings-container .settings-section .danger-zone .danger-header p {
   color: #4b5563;
@@ -153,7 +177,7 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 @media (min-width: 768px) {
   .settings-container .settings-section .danger-zone .danger-actions {
@@ -186,16 +210,22 @@
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  align-items: center;
+  align-items: start;
   gap: 1rem;
-  padding: 1rem;
+  padding: 2rem;
   background: #f9fafb;
-  border-radius: 0.5rem;
-  margin-bottom: 1rem;
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+}
+@media (min-width: 640px) {
+  .settings-container .profile-info {
+    flex-direction: column;
+    padding: 2rem;
+  }
 }
 .settings-container .profile-info .profile-avatar {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   border-radius: 9999px;
   background: #e3f3fe;
   display: flex;
@@ -204,21 +234,37 @@
   align-items: center;
   gap: 0.75rem;
   color: #54cbe2;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 600;
+  flex-shrink: 0;
+}
+@media (min-width: 640px) {
+  .settings-container .profile-info .profile-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
 }
 .settings-container .profile-info .profile-details {
   flex: 1;
+  min-width: 0;
 }
 .settings-container .profile-info .profile-details .profile-name {
   font-weight: 600;
   color: #1f2937;
   margin-bottom: 0.25rem;
+  font-size: 1.25rem;
+}
+@media (min-width: 640px) {
+  .settings-container .profile-info .profile-details .profile-name {
+    font-size: 1.1rem;
+  }
 }
 .settings-container .profile-info .profile-details .profile-email {
   color: #4b5563;
   font-size: 0.875rem;
   margin: 0;
+  word-break: break-word;
 }
 
 @media (min-width: 640px) {
@@ -228,16 +274,13 @@
   .settings-container .settings-section {
     padding: 1rem;
   }
-  .settings-container .setting-item {
+  .settings-container .settings-section .section-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.75rem;
+    gap: 0.5rem;
+    text-align: left;
   }
-  .settings-container .setting-item .setting-control {
-    margin-left: 0;
-    width: 100%;
-  }
-  .settings-container .color-scheme-options {
-    justify-content: center;
+  .settings-container .settings-section .section-header h2 {
+    font-size: 1.25rem;
   }
 }/*# sourceMappingURL=SettingsPage.css.map */

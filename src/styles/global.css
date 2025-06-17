@@ -20,8 +20,9 @@ body {
 }
 
 main {
-  max-width: 1200px;
   padding: 1rem 2rem;
+  max-width: 1000px;
+  margin: auto;
 }
 
 .container {

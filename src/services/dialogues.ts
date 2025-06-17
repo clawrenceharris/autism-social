@@ -1,5 +1,29 @@
-import type { CreateDialogueData, Dialogue } from "../types";
+import type {
+  UserProgress,
+  CreateDialogueData,
+  Dialogue,
+  ScoreSummary,
+} from "../types";
 import { DatabaseService } from "./database";
+
+export interface DialoguePossibleScores {
+  clarity?: number;
+  empathy?: number;
+  assertiveness?: number;
+  socialAwareness?: number;
+  selfAdvocacy?: number;
+}
+
+export interface ProgressPercentages {
+  clarity: number;
+  empathy: number;
+  assertiveness: number;
+  social_awareness: number;
+  self_advocacy: number;
+  overall: number;
+  user_completed_dialogues: number;
+  total_dialogues: number;
+}
 
 export async function deleteDialogue(id: string) {
   const result = await DatabaseService.delete("dialogues", id);
@@ -56,6 +80,42 @@ export async function getDialogueById(id: string) {
   const { data, error } = await DatabaseService.getSingle<Dialogue>(
     "dialogues",
     id
+  );
+  if (error) throw error;
+  return data;
+}
+
+export async function addDialogueProgress(
+  userId: string,
+  dialogueId: string,
+  scores: ScoreSummary
+) {
+  const { data, error } = await DatabaseService.create<UserProgress>(
+    "user_progress",
+    {
+      user_id: userId,
+      dialogue_id: dialogueId,
+      ...scores,
+    }
+  );
+  if (error) throw error;
+  return data;
+}
+
+export async function updateDialogueProgress(
+  userId: string,
+  dialogueId: string,
+  scores: ScoreSummary
+) {
+  const { data, error } = await DatabaseService.updateBy<UserProgress>(
+    "user_progress",
+    "dialogue_id",
+    dialogueId,
+    {
+      user_id: userId,
+      dialogue_id: dialogueId,
+      ...scores,
+    }
   );
   if (error) throw error;
   return data;

@@ -172,6 +172,7 @@ export const useScenarioStore = create<ScenarioStore>()(
         dialogues: state.dialogues,
         dialogueIds: state.dialogueIds,
         scenarioIds: state.scenarioIds,
+        dialoguesByScenario: state.dialoguesByScenario,
       }),
     }
   )

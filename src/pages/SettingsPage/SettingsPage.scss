@@ -100,10 +100,6 @@
       flex-wrap: wrap;
       margin-top: $spacing-4;
 
-      @include responsive(sm) {
-        justify-content: center;
-      }
-
       .color-option {
         @include flex(column, center, center, $spacing-2);
         padding: $spacing-3;
@@ -212,16 +208,15 @@
   }
 
   .profile-info {
-    @include flex(row, flex-start, center, $spacing-4);
-    padding: $spacing-6;
+    @include flex(row, flex-start, start, $spacing-4);
+    padding: $spacing-8;
     background: $color-gray-50;
     border-radius: $border-radius-xl;
     margin-bottom: $spacing-6;
 
     @include responsive(sm) {
       flex-direction: column;
-      text-align: center;
-      padding: $spacing-4;
+      padding: $spacing-8;
     }
 
     .profile-avatar {

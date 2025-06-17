@@ -8,25 +8,45 @@ import { supabase } from "../lib/supabase";
  * @returns Promise with user progress data or null if not found
  * @throws Error if database error occurs
  */
-export async function getProgress(
-  userId: string
-): Promise<UserProgress | null> {
-  const { data: result, error } =
-    await DatabaseService.getMaybeSingleBy<UserProgress>(
-      "user_progress",
-      "user_id",
-      userId
-    );
-  if (!result) {
-    return await createProgress(userId);
+export async function getProgress(userId: string): Promise<UserProgress[]> {
+  const { data, error } = await DatabaseService.get<UserProgress>(
+    "user_progress",
+
+    { foreignKey: "user_id", foreignValue: userId }
+  );
+  if (!data) {
+    throw new Error("User progress not found");
   }
   if (error) {
     throw error;
   }
 
-  return result;
+  return data;
 }
 
+/**
+ * Get user progress by dialogue ID
+ * @param dialogueId - The dialogue ID to get progress for
+ * @returns Promise with user progress data or null if not found
+ * @throws Error if database error occurs
+ */
+export async function getProgressByDialogueId(
+  dialogueId: string
+): Promise<UserProgress[]> {
+  const { data, error } = await DatabaseService.get<UserProgress>(
+    "user_progress",
+
+    { foreignKey: "dialogue_id", foreignValue: dialogueId }
+  );
+  if (!data) {
+    throw new Error("User progress not found");
+  }
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
 /**
  * Create initial progress record for a user
  * @param userId - The user ID to create progress for
@@ -64,34 +84,9 @@ export async function updateProgress(
     updates
   );
 
-  if (result.error || !result.data || result.data.length === 0) {
+  if (result.error || !result.data) {
     throw result.error || new Error("Failed to update progress");
   }
 
-  return result.data[0];
-}
-
-/**
- * Calculate progress percentages for display
- * @param progress - User progress data
- * @returns Object with percentage values for each category
- */
-export function calculateProgressPercentages(progress: UserProgress) {
-  return {
-    clarity: progress.clarity_possible > 0 
-      ? Math.round((progress.clarity_earned / progress.clarity_possible) * 100) 
-      : 0,
-    empathy: progress.empathy_possible > 0 
-      ? Math.round((progress.empathy_earned / progress.empathy_possible) * 100) 
-      : 0,
-    assertiveness: progress.assertiveness_possible > 0 
-      ? Math.round((progress.assertiveness_earned / progress.assertiveness_possible) * 100) 
-      : 0,
-    social_awareness: progress.social_awareness_possible > 0 
-      ? Math.round((progress.social_awareness_earned / progress.social_awareness_possible) * 100) 
-      : 0,
-    self_advocacy: progress.self_advocacy_possible > 0 
-      ? Math.round((progress.self_advocacy_earned / progress.self_advocacy_possible) * 100) 
-      : 0,
-  };
+  return result.data;
 }

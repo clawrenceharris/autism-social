@@ -19,6 +19,9 @@ import "./DialoguePlayer.scss";
 import { DialogueCompletionModal, ProgressIndicator } from "../";
 import { createDialogueMachine } from "../../xstate/createDialogueMachine";
 import {
+  AlertCircle,
+  Eye,
+  Home,
   RotateCcw,
   Send,
   Settings,
@@ -26,10 +29,12 @@ import {
   VolumeXIcon,
   X,
 } from "lucide-react";
-import { useToast } from "../../context";
+import { useModal, useToast } from "../../context";
 import { useVoiceStore } from "../../store/useVoiceStore";
 import { useActorStore } from "../../store/useActorStore";
-import { getDialogueScores } from "../../utils/dialogueUtils";
+import { useDialogueCompletion } from "../../hooks";
+import { useProgressStore } from "../../store/useProgressStore";
+import { Link } from "react-router-dom";
 
 interface DialoguePlayerProps {
   scenario: Scenario;
@@ -49,30 +54,20 @@ const DialoguePlayer = ({
   onReplay,
 }: DialoguePlayerProps) => {
   const machine = useMemo(
-    () =>
-      createDialogueMachine(
-        dialogue.id,
-        dialogue.steps,
-        dialogue.total_possible_scores
-      ),
+    () => createDialogueMachine(dialogue.id, dialogue.steps),
     [dialogue]
   );
-  const [state, send] = useMachine(
-    machine ||
-      createDialogueMachine("empty", [], {
-        clarity: 0,
-        empathy: 0,
-        assertiveness: 0,
-        socialAwareness: 0,
-        selfAdvocacy: 0,
-      })
-  );
+  const { progress, fetchProgress } = useProgressStore();
+  const [state, send] = useMachine(machine);
   const [messages, setMessages] = useState<Message[]>([]);
   const [customInput, setCustomInput] = useState("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [isVolumeOn, setIsVolumeOn] = useState<boolean>(false);
   const [audioCache, setAudioCache] = useState<Map<string, string>>(new Map());
   const [isGeneratingAudio, setIsGeneratingAudio] = useState<boolean>(false);
+  const { updateDialogueProgress, addDialogueProgress, error, isCompleting } =
+    useDialogueCompletion();
+  const [isComplete, setIsComplete] = useState(false);
   const [showCompletionModal, setShowCompletionModal] =
     useState<boolean>(false);
   const { fetchVoices, getAudioUrl } = useVoiceStore();
@@ -85,7 +80,7 @@ const DialoguePlayer = ({
   } = useActorStore();
   const messageWindowRef = useRef<HTMLDivElement>(null);
   const { showToast } = useToast();
-
+  const { openModal } = useModal();
   const getCurrentStep = (): DialogueStep | undefined => {
     return dialogue.steps.find((step) => step.id === state.value);
   };
@@ -94,7 +89,8 @@ const DialoguePlayer = ({
   useEffect(() => {
     fetchVoices();
     fetchActors();
-  }, [fetchActors, fetchVoices, setActor]);
+    fetchProgress(user.user_id);
+  }, [fetchActors, fetchProgress, fetchVoices, setActor, user.user_id]);
 
   useEffect(() => {
     setActor(dialogue.actor_id);
@@ -303,14 +299,37 @@ const DialoguePlayer = ({
     setIsTyping(false);
   };
 
-  const handleCompletionModalReplay = () => {
-    setShowCompletionModal(false);
-    onReplay();
-  };
-
-  const handleCompletionModalExit = () => {
-    setShowCompletionModal(false);
-    onExit();
+  useEffect(() => {
+    if (state.status === "done" && !isComplete) {
+      if (progress?.map((p) => p.dialogue_id).includes(dialogue.id)) {
+        updateDialogueProgress(user.user_id, dialogue.id, state.context);
+        setIsComplete(true);
+      } else {
+        addDialogueProgress(user.user_id, dialogue.id, state.context);
+        setIsComplete(true);
+      }
+    }
+  }, [
+    addDialogueProgress,
+    dialogue.id,
+    error,
+    isComplete,
+    isCompleting,
+    progress,
+    state.context,
+    state.status,
+    updateDialogueProgress,
+    user.user_id,
+  ]);
+  const handleResultsClick = () => {
+    openModal(
+      <DialogueCompletionModal
+        userId={user.user_id}
+        dialogueId={dialogue.id}
+        scores={state.context}
+      />,
+      "Your Performance"
+    );
   };
 
   if (loading) {
@@ -369,7 +388,7 @@ const DialoguePlayer = ({
                     <div className="speaker-name">
                       {message.speaker === "npc"
                         ? actor?.first_name || "Unknown"
-                        : user.first_name}
+                        : "You"}
                     </div>
                     <div className="message-bubble">{message.text}</div>
                   </div>
@@ -443,20 +462,42 @@ const DialoguePlayer = ({
             ) : null}
           </div>
         </div>
+        {isCompleting && (
+          <div className="completion-modal">
+            <div className="loading-state">
+              <ProgressIndicator size={60} />
+              <p className="loading-text">Saving...</p>
+            </div>
+          </div>
+        )}
+        {error && (
+          <div className="completion-modal">
+            <div className="error-state">
+              <AlertCircle className="error-icon" />
+              <h3 className="error-title">Completion Failed</h3>
+              <p className="error-message">{error}</p>
+              <button
+                onClick={() => setIsComplete(false)}
+                className="btn danger"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        )}
+        {showCompletionModal && (
+          <div className="flex-content">
+            <button onClick={handleResultsClick} className="btn btn-primary">
+              <Eye /> View Results
+            </button>
+            <Link to={"/"} className="btn btn-secondary">
+              <Home /> Dashboard
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Completion Modal */}
-      {showCompletionModal && (
-        <DialogueCompletionModal
-          userId={user.user_id}
-          dialogueId={dialogue.id}
-          scores={getDialogueScores(state.context)}
-          possibleScores={dialogue.total_possible_scores}
-          onReplay={handleCompletionModalReplay}
-          onExit={handleCompletionModalExit}
-          isVisible={showCompletionModal}
-        />
-      )}
     </>
   );
 };

@@ -115,11 +115,11 @@ export async function updateUser(
     updates
   );
 
-  if (result.error || !result.data || result.data.length === 0) {
+  if (result.error || !result.data) {
     throw result.error || new Error("Failed to update user profile");
   }
 
-  return result.data[0];
+  return result.data;
 }
 
 /**

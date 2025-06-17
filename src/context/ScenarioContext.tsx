@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 import { useScenarioStore } from "../store/useScenarioStore";
-import { useUserStore } from "../store/useUserStore";
 import type { Dialogue, Scenario } from "../types";
 
 interface AuthContextProps {
@@ -22,8 +21,6 @@ const ScenarioProvider = ({
   dialogueId,
   scenarioId,
 }: AuthContextProps) => {
-  const { fetchScenarios, fetchDialogues } = useScenarioStore();
-  const { user } = useUserStore();
   const {
     dialogues,
     scenarios,

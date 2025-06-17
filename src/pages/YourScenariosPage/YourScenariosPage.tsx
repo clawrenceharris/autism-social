@@ -15,23 +15,19 @@ import {
 import "./YourScenariosPage.scss";
 import { useScenarioStore } from "../../store/useScenarioStore";
 import { ProgressIndicator } from "../../components";
-import type { ScenarioWithDialogues } from "../../types";
-import { useRecommendationsStore } from "../../store";
+import ScenarioCard from "../../components/ScenarioCard/ScenarioCard";
 
 type FilterType = "all" | "completed" | "trending" | "recommended";
 
 const YourScenariosPage = () => {
   const {
     scenarios,
-    scenarioIds,
-    completedDialogueIds,
-    dialoguesByScenario,
+
     dialoguesLoading,
     fetchDialogues,
     scenariosLoading: scenariosLoading,
     fetchScenarios,
   } = useScenarioStore();
-  const { recommendedDialogues } = useRecommendationsStore();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
@@ -41,45 +37,10 @@ const YourScenariosPage = () => {
   }, [fetchScenarios, fetchDialogues]);
 
   // Combine scenarios with their dialogues and metadata
-  const scenariosWithDialogues: ScenarioWithDialogues[] = useMemo(() => {
-    return scenarioIds.map((id) => {
-      const scenario = scenarios[id];
-
-      const dialogues = Object.values(dialoguesByScenario).flatMap(
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([_, value]) => value
-      );
-      console.log({ scenario });
-      const totalDialogues = Object.keys(dialoguesByScenario).length;
-      return {
-        ...scenario,
-        dialogues,
-        completedCount: dialogues.filter((d) =>
-          completedDialogueIds.includes(d.id)
-        ).length,
-        totalDialogues,
-        isCompleted:
-          completedDialogueIds?.length > 0 &&
-          dialogues.every((d) => completedDialogueIds.includes(d.id)),
-        isTrending: false,
-        isRecommended:
-          Object.values(recommendedDialogues).filter(
-            (d) => d.scenario_id === id
-          ).length > 0,
-        lastPlayed: Math.random() > 0.5 ? "2 days ago" : undefined,
-      };
-    });
-  }, [
-    scenarioIds,
-    scenarios,
-    dialoguesByScenario,
-    completedDialogueIds,
-    recommendedDialogues,
-  ]);
 
   // Filter scenarios based on search and active filter
   const filteredScenarios = useMemo(() => {
-    let filtered = scenariosWithDialogues.filter(Boolean);
+    let filtered = Object.values(scenarios).filter(Boolean);
     if (!searchQuery) {
       return filtered;
     }
@@ -94,22 +55,9 @@ const YourScenariosPage = () => {
     }
 
     // Apply category filter
-    switch (activeFilter) {
-      case "completed":
-        filtered = filtered.filter((scenario) => scenario.isCompleted);
-        break;
-      case "trending":
-        filtered = filtered.filter((scenario) => scenario.isTrending);
-        break;
-      case "recommended":
-        filtered = filtered.filter((scenario) => scenario.isRecommended);
-        break;
-      default:
-        break;
-    }
 
     return filtered;
-  }, [scenariosWithDialogues, searchQuery, activeFilter]);
+  }, [searchQuery, scenarios]);
 
   const handleClearSearch = () => {
     setSearchQuery("");
@@ -165,77 +113,6 @@ const YourScenariosPage = () => {
       default:
         return <BookOpen className="section-icon" size={24} />;
     }
-  };
-
-  const renderScenarioCard = (scenario: ScenarioWithDialogues) => {
-    const progressPercentage =
-      scenario.totalDialogues > 0
-        ? Math.round((scenario.completedCount / scenario.totalDialogues) * 100)
-        : 0;
-
-    return (
-      <div
-        key={scenario.id}
-        className={`scenario-card ${scenario.isCompleted ? "completed" : ""} ${
-          scenario.isTrending ? "trending" : ""
-        }`}
-      >
-        <div className="card-header">
-          <h3 className="scenario-title">{scenario.title}</h3>
-          <div className="badges">
-            {scenario.isCompleted && (
-              <span className="badge completion-badge">Completed</span>
-            )}
-            {scenario.isTrending && (
-              <span className="badge trending-badge">Trending</span>
-            )}
-          </div>
-        </div>
-
-        <p className="scenario-description">{scenario.description}</p>
-
-        <div className="scenario-meta">
-          <div className="meta-item">
-            <span className="meta-value">{scenario.totalDialogues}</span>
-            <span className="meta-label">Dialogues</span>
-          </div>
-          <div className="meta-item">
-            <span className="meta-value">{progressPercentage}%</span>
-            <span className="meta-label">Complete</span>
-          </div>
-          <div className="meta-item">
-            <span className="meta-value">{scenario.completedCount}</span>
-            <span className="meta-label">Finished</span>
-          </div>
-        </div>
-
-        <div className="scenario-actions">
-          {scenario.isCompleted ? (
-            <>
-              <Link to={`/scenario/${scenario.id}`} className="action-btn">
-                <Award size={16} />
-                Review
-              </Link>
-              <Link
-                to={`/scenario/${scenario.id}`}
-                className="action-btn primary"
-              >
-                <Play size={16} />
-                Replay
-              </Link>
-            </>
-          ) : (
-            <Link
-              to={`/scenario/${scenario.id}`}
-              className="action-btn primary"
-            >
-              <Play size={16} />
-              {scenario.completedCount > 0 ? "Continue" : "Start"}
-            </Link>
-          )}
-        </div>
-      </div>
-    );
   };
 
   const renderEmptyState = () => {
@@ -368,7 +245,9 @@ const YourScenariosPage = () => {
 
         {filteredScenarios.length > 0 ? (
           <div className="scenarios-grid">
-            {filteredScenarios.map(renderScenarioCard)}
+            {filteredScenarios.map((scenario) => (
+              <ScenarioCard scenario={scenario} />
+            ))}
           </div>
         ) : (
           renderEmptyState()

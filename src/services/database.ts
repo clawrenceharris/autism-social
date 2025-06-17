@@ -15,7 +15,9 @@ export type Table =
   | "dialogue_interests"
   | "user_completed_dialogues"
   | "actors"
-  | "daily_challenges";
+  | "daily_challenges"
+  | "scoring_categories"
+  | "dialogue_scoring_events";
 
 export interface DatabaseResult<T> {
   data: T | null;
@@ -188,14 +190,15 @@ export class DatabaseService {
     column: string,
     value: string | number,
     data: Partial<T>
-  ): Promise<DatabaseResult<T[]>> {
+  ): Promise<DatabaseResult<T>> {
     const { data: result, error } = await supabase
       .from(table)
       .update(data)
       .eq(column, value)
-      .select();
+      .select()
+      .single();
 
-    return { data: result as T[], error };
+    return { data: result as T, error };
   }
 
   /**

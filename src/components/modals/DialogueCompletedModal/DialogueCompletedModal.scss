@@ -39,13 +39,4 @@
       }
     }
   }
-
-  .results-actions {
-    @include flex(row, center, center, $spacing-3);
-    flex-wrap: wrap;
-    margin-top: $spacing-3;
-    .btn {
-      min-width: 120px;
-    }
-  }
 }

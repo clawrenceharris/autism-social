@@ -39,16 +39,4 @@
 }
 .results-content .score-grid .score-item .score-value.low {
   color: #f78585;
-}
-.results-content .results-actions {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  margin-top: 0.75rem;
-}
-.results-content .results-actions .btn {
-  min-width: 120px;
 }/*# sourceMappingURL=DialogueCompletedModal.css.map */

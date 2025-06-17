@@ -147,6 +147,9 @@ const PlayScenarioPage = () => {
   }
 
   if (!dialogue) {
+    console.log({ dialoguesByScenario });
+    console.log({ scenarioIds });
+
     return (
       <div className="play-scenario-container">
         <div className="game-header">
@@ -175,7 +178,7 @@ const PlayScenarioPage = () => {
             </div>
 
             <div className="dialogue-options">
-              {scenarioIds.map((id) => {
+              {Object.keys(scenarios).map((id) => {
                 if (dialoguesByScenario[id])
                   return dialoguesByScenario[id]?.map((dialogue) => (
                     <DialogueItem key={dialogue.id} dialogue={dialogue} />
