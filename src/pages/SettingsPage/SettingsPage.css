@@ -87,11 +87,6 @@
   margin-bottom: 0.5rem;
   font-size: 1.1rem;
 }
-.settings-container .settings-section .setting-item .setting-info .description {
-  color: #4b5563;
-  font-size: 0.9rem;
-  margin: 0;
-}
 .settings-container .settings-section .setting-item .setting-control {
   flex-shrink: 0;
   min-width: 120px;
@@ -126,7 +121,7 @@
 }
 .settings-container .settings-section .color-scheme-options .color-option:hover {
   border-color: #c1e6ff;
-  background-color: #f9fafb;
+  background-color: #f4f8fc;
 }
 .settings-container .settings-section .color-scheme-options .color-option.selected {
   border-color: #54cbe2;
@@ -212,7 +207,7 @@
   align-items: start;
   gap: 1rem;
   padding: 2rem;
-  background: #f9fafb;
+  background: #f4f8fc;
   border-radius: 1rem;
   margin-bottom: 1.5rem;
 }

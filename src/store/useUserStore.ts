@@ -2,8 +2,8 @@ import type { User } from "@supabase/supabase-js";
 import { persist } from "zustand/middleware";
 import type { Goal, Interest, UserProfile } from "../types";
 import { create } from "zustand";
-import { supabase } from "../lib/supabase";
 import * as userService from "../services/user";
+import { signOut } from "../services/auth";
 
 interface UserStore {
   user: User | null;
@@ -48,12 +48,12 @@ export const useUserStore = create<UserStore>()(
 
           set({ profile });
         } catch (err) {
-          console.error("Failed to fetch user profile:", {
-            userId: userId,
-            error: err instanceof Error ? err.message : String(err),
-            stack: err instanceof Error ? err.stack : undefined,
-          });
-          throw err;
+          const errorMessage =
+            err instanceof Error
+              ? err.message
+              : "Unknown error while loading user data";
+
+          set({ error: errorMessage });
         } finally {
           set({ loading: false });
         }
@@ -61,39 +61,21 @@ export const useUserStore = create<UserStore>()(
 
       logout: async () => {
         try {
-          console.log("🔄 Starting logout process...");
           set({ user: null, profile: null, loading: true, error: null });
 
-          const { error } = await supabase.auth.signOut();
+          await signOut();
 
-          if (error) {
-            console.error("Logout error:", {
-              message: error.message,
-              status: error.status,
-              name: error.name,
-            });
-
-            throw error;
-          } else {
-            set({
-              user: null,
-              profile: null,
-              goals: [],
-              interests: [],
-              error: null,
-              loading: false,
-            });
-          }
+          set({
+            user: null,
+            profile: null,
+            goals: [],
+            interests: [],
+            error: null,
+            loading: false,
+          });
         } catch (err) {
           const errorMessage =
             err instanceof Error ? err.message : "Unknown error during logout";
-
-          console.error("Unexpected error while loggin out", {
-            error: errorMessage,
-            errorType: err instanceof Error ? err.constructor.name : typeof err,
-            stack: err instanceof Error ? err.stack : undefined,
-            timestamp: new Date().toISOString(),
-          });
 
           set({
             error: errorMessage,

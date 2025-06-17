@@ -12,13 +12,23 @@ export interface CreateCategoryScoringEvent {
 
 export interface Category {
   id: string;
-  name: string;
+  name: ScoreCategory;
+  description: string;
 }
 export const getCategoryByName = async (name: ScoreCategory) => {
   const { data, error } = await DatabaseService.getSingleBy<Category>(
     "scoring_categories",
     "name",
     name
+  );
+  if (error) throw error;
+
+  return data;
+};
+
+export const getCategories = async () => {
+  const { data, error } = await DatabaseService.get<Category>(
+    "scoring_categories"
   );
   if (error) throw error;
 

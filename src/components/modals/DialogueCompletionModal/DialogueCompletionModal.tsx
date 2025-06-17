@@ -184,9 +184,9 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                       </div>
                     </div>
 
-                    <div className="category-description">
-                      {getCategoryDescription(category)}
-                    </div>
+                    <p className="description">
+                      <em>{getCategoryDescription(category)}</em>
+                    </p>
                   </div>
                 );
             })}

@@ -13,12 +13,6 @@
   margin-bottom: 0.5rem;
   color: #111827;
 }
-.progress-page .progress-header .description {
-  color: #4b5563;
-  font-size: 1.1rem;
-  max-width: 600px;
-  margin: 0 auto;
-}
 .progress-page .hero-section {
   position: relative;
   background: linear-gradient(135deg, #e3f3fe, #c1e6ff);
@@ -115,12 +109,6 @@
   color: #1f2937;
   text-align: center;
 }
-.progress-page .hero-section .hero-content .social-score .score-description {
-  font-size: 1rem;
-  color: #4b5563;
-  text-align: center;
-  max-width: 300px;
-}
 .progress-page .hero-section .hero-content .quick-stats {
   display: flex;
   flex-direction: column;
@@ -173,7 +161,7 @@
   width: 40px;
   height: 40px;
   border-radius: 0.5rem;
-  background: #e3f3fe;
+  background: white;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -249,6 +237,9 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
   border: 1px solid #f3f4f6;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 .progress-page .skills-section .skill-card:hover {
   transform: translateY(-4px);
@@ -291,47 +282,18 @@
   font-size: 1.5rem;
   font-weight: 700;
   color: #54cbe2;
-}
-.progress-page .skills-section .skill-card .skill-header .skill-score.excellent {
-  color: #16a34a;
-}
-.progress-page .skills-section .skill-card .skill-header .skill-score.good {
-  color: #f59e0b;
-}
-.progress-page .skills-section .skill-card .skill-header .skill-score.poor {
-  color: #dc2626;
-}
-.progress-page .skills-section .skill-card .progress-bar-container {
-  height: 8px;
-  background: #edeff1;
   border-radius: 9999px;
-  margin-bottom: 1rem;
-  overflow: hidden;
+  padding: 0.1rem 1rem;
 }
-.progress-page .skills-section .skill-card .progress-bar-container .progress-bar {
-  height: 100%;
-  border-radius: 9999px;
-  transition: width 1s ease-in-out;
-}
-.progress-page .skills-section .skill-card .progress-bar-container .progress-bar.excellent {
-  background: linear-gradient(90deg, #16a34a, #10b981);
-}
-.progress-page .skills-section .skill-card .progress-bar-container .progress-bar.good {
-  background: linear-gradient(90deg, #f59e0b, #fbbf24);
-}
-.progress-page .skills-section .skill-card .progress-bar-container .progress-bar.poor {
-  background: linear-gradient(90deg, #dc2626, #f87171);
-}
-.progress-page .skills-section .skill-card .skill-description {
-  color: #4b5563;
-  font-size: 0.95rem;
-  margin-bottom: 1rem;
+.progress-page .skills-section .skill-card .skill-header .skill-score span {
+  font-size: 1rem;
+  margin-left: 0.25rem;
+  font-weight: normal;
 }
 .progress-page .skills-section .skill-card .improvement-tips {
-  background: #f9fafb;
+  background: #f4f8fc;
   border-radius: 0.5rem;
   padding: 1rem;
-  border-left: 3px solid #54cbe2;
 }
 .progress-page .skills-section .skill-card .improvement-tips .tips-title {
   font-weight: 600;
@@ -396,7 +358,7 @@
 }
 .progress-page .achievements-section .achievement-card.locked {
   opacity: 0.6;
-  background: #f9fafb;
+  background: #f4f8fc;
 }
 .progress-page .achievements-section .achievement-card.locked .achievement-icon {
   background: #edeff1;
@@ -423,11 +385,6 @@
   font-weight: 600;
   color: #1f2937;
   margin-bottom: 0.25rem;
-}
-.progress-page .achievements-section .achievement-card .achievement-content .achievement-description {
-  font-size: 0.875rem;
-  color: #4b5563;
-  margin-bottom: 0.5rem;
 }
 .progress-page .achievements-section .achievement-card .achievement-content .achievement-meta {
   display: flex;
@@ -553,7 +510,7 @@
     padding: 0.5rem;
   }
   .progress-page .hero-section {
-    padding: 1rem 0.5rem;
+    padding: 1rem 2rem;
   }
   .progress-page .hero-section .hero-content .social-score .score-circle {
     width: 140px;

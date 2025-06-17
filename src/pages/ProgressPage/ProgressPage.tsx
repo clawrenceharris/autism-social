@@ -19,9 +19,9 @@ import {
 import "./ProgressPage.scss";
 import type { AuthContextType } from "../../types";
 import { useProgressStore } from "../../store/useProgressStore";
-import { useScenarioStore } from "../../store/useScenarioStore";
 import { ProgressIndicator, RankDisplay } from "../../components";
 import { Link } from "react-router-dom";
+import { useScoreCategoryStore } from "../../store/useScoreCategoryStore";
 
 interface Achievement {
   id: string;
@@ -41,26 +41,33 @@ const ProgressPage = () => {
     error: progressError,
     fetchProgress,
     calcAverageScore,
-    getTotalScore,
-    scores,
+    averageScore,
+    totalPoints: totalPoints,
+    calcCategoryScores,
+    calcTotalPoints,
+    categoryScores,
   } = useProgressStore();
-  const { fetchScenarios, loading: scenariosLoading } = useScenarioStore();
-  const [socialScore, setSocialScore] = useState(0);
-  const [previousScore, setPreviousScore] = useState(0);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const {
+    categories,
+    fetchCategories,
+    loading: categoriesLoading,
+  } = useScoreCategoryStore();
 
   useEffect(() => {
     fetchProgress(user.id);
-    fetchScenarios();
-  }, [fetchProgress, fetchScenarios, user.id]);
-
-  useEffect(() => {
-    if (progress) {
-      // Store previous score for rank-up detection
-      setPreviousScore(socialScore);
-      setSocialScore(getTotalScore());
-    }
-  }, [getTotalScore, progress, socialScore]);
+    fetchCategories();
+    calcTotalPoints();
+    calcCategoryScores();
+    calcAverageScore();
+  }, [
+    fetchCategories,
+    calcTotalPoints,
+    fetchProgress,
+    user.id,
+    calcAverageScore,
+    calcCategoryScores,
+  ]);
 
   // Mock achievements data
   useEffect(() => {
@@ -81,8 +88,9 @@ const ProgressPage = () => {
         description: "Achieved a score of 80+ in Empathy",
         icon: <Heart />,
         category: "skill",
-        earned: (scores.empathy || 0) >= 80,
-        earnedDate: (scores.empathy || 0) >= 80 ? "May 18, 2025" : undefined,
+        earned: (categoryScores.empathy || 0) >= 80,
+        earnedDate:
+          (categoryScores.empathy || 0) >= 80 ? "May 18, 2025" : undefined,
       },
       {
         id: "3",
@@ -99,8 +107,9 @@ const ProgressPage = () => {
         description: "Achieved a score of 80+ in Clarity",
         icon: <Lightbulb />,
         category: "skill",
-        earned: (scores.clarity || 0) >= 80,
-        earnedDate: (scores.clarity || 0) >= 80 ? "May 22, 2025" : undefined,
+        earned: (categoryScores.clarity || 0) >= 80,
+        earnedDate:
+          (categoryScores.clarity || 0) >= 80 ? "May 22, 2025" : undefined,
       },
       {
         id: "5",
@@ -116,9 +125,11 @@ const ProgressPage = () => {
         description: "Achieved a score of 80+ in Assertiveness",
         icon: <Target />,
         category: "skill",
-        earned: (scores.assertiveness || 0) >= 80,
+        earned: (categoryScores.assertiveness || 0) >= 80,
         earnedDate:
-          (scores.assertiveness || 0) >= 80 ? "May 25, 2025" : undefined,
+          (categoryScores.assertiveness || 0) >= 80
+            ? "May 25, 2025"
+            : undefined,
       },
       {
         id: "7",
@@ -126,9 +137,11 @@ const ProgressPage = () => {
         description: "Achieved a score of 90+ in Social Awareness",
         icon: <Brain />,
         category: "mastery",
-        earned: (scores.social_awareness || 0) >= 90,
+        earned: (categoryScores.social_awareness || 0) >= 90,
         earnedDate:
-          (scores.social_awareness || 0) >= 90 ? "May 28, 2025" : undefined,
+          (categoryScores.social_awareness || 0) >= 90
+            ? "May 28, 2025"
+            : undefined,
       },
       {
         id: "8",
@@ -136,12 +149,14 @@ const ProgressPage = () => {
         description: "Achieved a score of 80+ in Self-Advocacy",
         icon: <Award />,
         category: "skill",
-        earned: (scores.self_advocacy || 0) >= 80,
+        earned: (categoryScores.self_advocacy || 0) >= 80,
         earnedDate:
-          (scores.self_advocacy || 0) >= 80 ? "May 30, 2025" : undefined,
+          (categoryScores.self_advocacy || 0) >= 80
+            ? "May 30, 2025"
+            : undefined,
       },
     ]);
-  }, [progress, scores]);
+  }, [progress, categoryScores]);
 
   const getScoreLevel = (score: number): "poor" | "good" | "excellent" => {
     if (score >= 80) return "excellent";
@@ -149,6 +164,29 @@ const ProgressPage = () => {
     return "poor";
   };
 
+  // const getCategoryIcon = (category: string) => {
+  //   switch (category) {
+  //     case "clarity":
+  //       return <Lightbulb />;
+  //     case "empathy":
+  //       return <Heart />;
+  //     case "assertiveness":
+  //       return <Target />;
+  //     case "social_awareness":
+  //       return <Brain />;
+  //     case "self_advocacy":
+  //       return <MessageSquare />;
+  //     default:
+  //       return <HelpCircle />;
+  //   }
+  // };
+
+  const formatCategoryName = (category: string): string => {
+    return category
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
   const getImprovementTip = (category: string, score: number): string => {
     if (score >= 80) {
       return "You're doing great! Keep practicing to maintain your skills.";
@@ -193,7 +231,7 @@ const ProgressPage = () => {
     [progress, user.id]
   );
 
-  if (progressLoading || scenariosLoading) {
+  if (progressLoading) {
     return (
       <div className="progress-page">
         <div className="loading-state">
@@ -256,15 +294,11 @@ const ProgressPage = () => {
       <section className="hero-section">
         <div className="hero-content">
           <div className="social-score">
-            <RankDisplay 
-              totalPoints={socialScore} 
-              previousPoints={previousScore}
+            <RankDisplay
+              totalPoints={totalPoints}
+              previousPoints={2}
               size="large"
             />
-            <p className="score-description">
-              Your overall social interaction proficiency based on all skill
-              categories
-            </p>
           </div>
 
           <div className="quick-stats">
@@ -274,14 +308,14 @@ const ProgressPage = () => {
                 <div className="stat-icon">
                   <BarChart2 size={20} />
                 </div>
-                <div className="stat-value">{getTotalScore()}</div>
+                <div className="stat-value">{totalPoints}</div>
                 <div className="stat-label">Total Points</div>
               </div>
               <div className="stat-card">
                 <div className="stat-icon">
                   <Award size={20} />
                 </div>
-                <div className="stat-value">{calcAverageScore()}%</div>
+                <div className="stat-value">{averageScore}%</div>
                 <div className="stat-label">Average Score</div>
               </div>
               <div className="stat-card">
@@ -314,231 +348,38 @@ const ProgressPage = () => {
           </div>
 
           <div className="skills-grid">
-            {/* Clarity */}
-            <div className="skill-card">
-              <div className="skill-header">
-                <div className="skill-info">
-                  <div className="skill-icon">
-                    <Lightbulb size={20} />
+            {categoriesLoading && <ProgressIndicator />}
+            {categories.map((cat) => (
+              <div className="skill-card">
+                <div className="skill-header">
+                  <div className="skill-info">
+                    <div className="skill-icon">
+                      <Lightbulb size={20} />
+                    </div>
+                    <h3 className="skill-name">
+                      {formatCategoryName(cat.name)}
+                    </h3>
                   </div>
-                  <h3 className="skill-name">Clarity</h3>
-                </div>
-                <div
-                  className={`skill-score ${getScoreLevel(
-                    scores.clarity || 0
-                  )}`}
-                >
-                  {scores.clarity}%
-                </div>
-              </div>
-
-              <div className="progress-bar-container">
-                <div
-                  className={`progress-bar ${getScoreLevel(
-                    scores.clarity || 0
-                  )}`}
-                  style={{ width: `${scores.clarity}%` }}
-                ></div>
-              </div>
-
-              <p className="skill-description">
-                Clarity measures how well you communicate your thoughts and
-                ideas in a clear, concise, and understandable manner.
-              </p>
-
-              <div className="improvement-tips">
-                <h4 className="tips-title">
-                  <Zap className="tips-icon" size={16} />
-                  Improvement Tips
-                </h4>
-                <p className="tips-content">
-                  {getImprovementTip("clarity", scores.clarity || 0)}
-                </p>
-              </div>
-            </div>
-
-            {/* Empathy */}
-            <div className="skill-card">
-              <div className="skill-header">
-                <div className="skill-info">
-                  <div className="skill-icon">
-                    <Heart size={20} />
+                  <div
+                    className={`skill-score ${getScoreLevel(
+                      categoryScores[cat.name] || 0
+                    )}`}
+                  >
+                    {categoryScores[cat.name] || 0}
+                    <span>pts</span>
                   </div>
-                  <h3 className="skill-name">Empathy</h3>
                 </div>
-                <div
-                  className={`skill-score ${getScoreLevel(
-                    scores.empathy || 0
-                  )}`}
-                >
-                  {scores.empathy}%
-                </div>
-              </div>
 
-              <div className="progress-bar-container">
-                <div
-                  className={`progress-bar ${getScoreLevel(
-                    scores.empathy || 0
-                  )}`}
-                  style={{ width: `${scores.empathy}%` }}
-                ></div>
-              </div>
+                <p className="description">{cat.description}</p>
 
-              <p className="skill-description">
-                Empathy reflects your ability to understand and share the
-                feelings of others, responding with appropriate emotional
-                support.
-              </p>
-
-              <div className="improvement-tips">
-                <h4 className="tips-title">
-                  <Zap className="tips-icon" size={16} />
-                  Improvement Tips
-                </h4>
-                <p className="tips-content">
-                  {getImprovementTip("empathy", scores.empathy || 0)}
-                </p>
-              </div>
-            </div>
-
-            {/* Assertiveness */}
-            <div className="skill-card">
-              <div className="skill-header">
-                <div className="skill-info">
-                  <div className="skill-icon">
-                    <Target size={20} />
-                  </div>
-                  <h3 className="skill-name">Assertiveness</h3>
-                </div>
-                <div
-                  className={`skill-score ${getScoreLevel(
-                    scores.assertiveness || 0
-                  )}`}
-                >
-                  {scores.assertiveness}%
+                <div className="improvement-tips">
+                  <h4 className="tips-title">Improvement Tips</h4>
+                  <p className="tips-content">
+                    {getImprovementTip(cat.name, categoryScores[cat.name] || 0)}
+                  </p>
                 </div>
               </div>
-
-              <div className="progress-bar-container">
-                <div
-                  className={`progress-bar ${getScoreLevel(
-                    scores.assertiveness || 0
-                  )}`}
-                  style={{ width: `${scores.assertiveness}%` }}
-                ></div>
-              </div>
-
-              <p className="skill-description">
-                Assertiveness measures your ability to express your opinions,
-                needs, and boundaries confidently while respecting others.
-              </p>
-
-              <div className="improvement-tips">
-                <h4 className="tips-title">
-                  <Zap className="tips-icon" size={16} />
-                  Improvement Tips
-                </h4>
-                <p className="tips-content">
-                  {getImprovementTip(
-                    "assertiveness",
-                    scores.assertiveness || 0
-                  )}
-                </p>
-              </div>
-            </div>
-
-            {/* Social Awareness */}
-            <div className="skill-card">
-              <div className="skill-header">
-                <div className="skill-info">
-                  <div className="skill-icon">
-                    <Brain size={20} />
-                  </div>
-                  <h3 className="skill-name">Social Awareness</h3>
-                </div>
-                <div
-                  className={`skill-score ${getScoreLevel(
-                    scores.social_awareness || 0
-                  )}`}
-                >
-                  {scores.social_awareness}%
-                </div>
-              </div>
-
-              <div className="progress-bar-container">
-                <div
-                  className={`progress-bar ${getScoreLevel(
-                    scores.social_awareness || 0
-                  )}`}
-                  style={{ width: `${scores.social_awareness}%` }}
-                ></div>
-              </div>
-
-              <p className="skill-description">
-                Social awareness reflects your ability to understand social
-                contexts, read social cues, and navigate social situations
-                appropriately.
-              </p>
-
-              <div className="improvement-tips">
-                <h4 className="tips-title">
-                  <Zap className="tips-icon" size={16} />
-                  Improvement Tips
-                </h4>
-                <p className="tips-content">
-                  {getImprovementTip(
-                    "social_awareness",
-                    scores.social_awareness || 0
-                  )}
-                </p>
-              </div>
-            </div>
-
-            {/* Self Advocacy */}
-            <div className="skill-card">
-              <div className="skill-header">
-                <div className="skill-info">
-                  <div className="skill-icon">
-                    <MessageSquare size={20} />
-                  </div>
-                  <h3 className="skill-name">Self Advocacy</h3>
-                </div>
-                <div
-                  className={`skill-score ${getScoreLevel(
-                    scores.self_advocacy || 0
-                  )}`}
-                >
-                  {scores.self_advocacy}%
-                </div>
-              </div>
-
-              <div className="progress-bar-container">
-                <div
-                  className={`progress-bar ${getScoreLevel(
-                    scores.self_advocacy || 0
-                  )}`}
-                  style={{ width: `${scores.self_advocacy}%` }}
-                ></div>
-              </div>
-
-              <p className="skill-description">
-                Self advocacy measures your ability to speak up for yourself and
-                your needs in various social situations.
-              </p>
-
-              <div className="improvement-tips">
-                <h4 className="tips-title">
-                  <Zap className="tips-icon" size={16} />
-                  Improvement Tips
-                </h4>
-                <p className="tips-content">
-                  {getImprovementTip(
-                    "self_advocacy",
-                    scores.self_advocacy || 0
-                  )}
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
 

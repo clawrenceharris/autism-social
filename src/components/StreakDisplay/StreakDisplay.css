@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
+.streak-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.streak-display.small {
+  font-size: 0.875rem;
+}
+.streak-display.small .streak-icon {
+  width: 24px;
+  height: 24px;
+}
+.streak-display.small .streak-count {
+  font-size: 1rem;
+}
+.streak-display.medium {
+  font-size: 1rem;
+}
+.streak-display.medium .streak-icon {
+  width: 32px;
+  height: 32px;
+}
+.streak-display.medium .streak-count {
+  font-size: 1.25rem;
+}
+.streak-display.large {
+  font-size: 1.25rem;
+}
+.streak-display.large .streak-icon {
+  width: 40px;
+  height: 40px;
+}
+.streak-display.large .streak-count {
+  font-size: 1.75rem;
+}
+.streak-display .streak-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background: #edeff1;
+  color: #6b7280;
+  transition: all 0.3s ease;
+}
+.streak-display .streak-icon.active {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  color: #ffffff;
+  animation: flame-pulse 2s infinite ease-in-out;
+}
+.streak-display .streak-count {
+  font-weight: 700;
+  color: #1f2937;
+}
+.streak-display .streak-label {
+  color: #4b5563;
+  font-weight: 500;
+}
+.streak-display .streak-loading {
+  color: #9ca3af;
+  font-weight: 500;
+}
+.streak-display .streak-error {
+  color: #dc2626;
+  font-weight: 700;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background: #fee2e2;
+}
+
+@keyframes flame-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.5);
+  }
+}/*# sourceMappingURL=StreakDisplay.css.map */

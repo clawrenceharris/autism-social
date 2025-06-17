@@ -132,6 +132,14 @@
     height: fit-content;
   }
 }
+.dashboard-container .rank-section {
+  margin-bottom: 2rem;
+}
+.dashboard-container .rank-section .rank-display-container {
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+}
 .dashboard-container .challenge-section {
   margin-bottom: 2rem;
   display: flex;
@@ -182,7 +190,7 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: linear-gradient(135deg, #f9fafb, rgba(243, 232, 255, 0.5));
+  background: linear-gradient(135deg, #f4f8fc, rgba(243, 232, 255, 0.5));
   border-radius: 1rem;
   border: 1px solid rgba(200, 147, 251, 0.1);
   transition: all 0.2s ease;
@@ -236,10 +244,6 @@
   margin-bottom: 0.75rem;
   color: #374151;
   font-weight: 600;
-}
-.dashboard-container .empty-state .empty-description {
-  font-size: 1rem;
-  margin-bottom: 1.5rem;
 }
 .dashboard-container .loading-state {
   text-align: center;

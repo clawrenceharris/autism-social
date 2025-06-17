@@ -1,0 +1,333 @@
+@import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
+.rank-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+.rank-display.small .rank-badge {
+  width: 60px;
+  height: 60px;
+  font-size: 1.5rem;
+}
+.rank-display.small .rank-title {
+  font-size: 1rem;
+}
+.rank-display.small .rank-level {
+  font-size: 0.875rem;
+}
+.rank-display.medium .rank-badge {
+  width: 80px;
+  height: 80px;
+  font-size: 2rem;
+}
+.rank-display.medium .rank-title {
+  font-size: 1.25rem;
+}
+.rank-display.medium .rank-level {
+  font-size: 1rem;
+}
+.rank-display.large .rank-badge {
+  width: 120px;
+  height: 120px;
+  font-size: 3rem;
+}
+.rank-display.large .rank-title {
+  font-size: 1.5rem;
+}
+.rank-display.large .rank-level {
+  font-size: 1.25rem;
+}
+.rank-display .rank-badge {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 8px 30px rgba(84, 203, 226, 0.3);
+  position: relative;
+  transition: all 0.3s ease;
+}
+.rank-display .rank-badge::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--rank-color, #54cbe2), var(--rank-color, #54cbe2), var(--rank-color, #54cbe2));
+  z-index: -1;
+  animation: rotate 3s linear infinite;
+  opacity: 0.7;
+}
+.rank-display .rank-badge .rank-icon {
+  font-size: inherit;
+  line-height: 1;
+}
+.rank-display .rank-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  text-align: center;
+}
+.rank-display .rank-title {
+  font-weight: 700;
+  color: var(--rank-color, #54cbe2);
+}
+.rank-display .rank-level {
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.rank-progress {
+  width: 100%;
+  margin: 1rem 0;
+}
+.rank-progress .progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  gap: 2rem;
+  padding: 0.5rem;
+  border-radius: 9999px;
+  margin-bottom: 0.5rem;
+}
+.rank-progress .progress-header .current-points {
+  font-weight: 700;
+  color: #1f2937;
+}
+.rank-progress .progress-header .next-rank {
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+.rank-progress .progress-header .next-rank .highlight {
+  color: var(--rank-color, #54cbe2);
+  font-weight: 600;
+}
+.rank-progress .progress-bar-container {
+  height: 20px;
+  background: #ffffff;
+  border-radius: 9999px;
+  overflow: hidden;
+  background-color: #f3f4f6;
+  position: relative;
+}
+.rank-progress .progress-bar-container .progress-bar {
+  height: 100%;
+  width: 0%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--rank-color, #54cbe2), var(--rank-color, #54cbe2));
+  position: relative;
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.rank-progress .progress-bar-container .progress-bar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+.rank-progress .progress-bar-container .progress-percentage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #1f2937;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
+}
+.rank-progress .progress-details {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+}
+.rank-progress .progress-details .remaining-points {
+  color: #4b5563;
+}
+.rank-progress .progress-details .total-required {
+  color: #4b5563;
+}
+
+.rank-up-celebration {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.5s ease-out;
+}
+.rank-up-celebration .celebration-content {
+  background: #ffffff;
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  position: relative;
+  animation: scaleIn 0.5s ease-out;
+}
+.rank-up-celebration .celebration-content .confetti {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+.rank-up-celebration .celebration-content .rank-badge {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 8px 30px rgba(var(--rank-color, #54cbe2), 0.3);
+  position: relative;
+  font-size: 3rem;
+  animation: pulse 2s infinite;
+}
+.rank-up-celebration .celebration-content .rank-badge::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--rank-color, #54cbe2), var(--rank-color, #54cbe2), var(--rank-color, #54cbe2));
+  z-index: -1;
+  animation: rotate 3s linear infinite;
+}
+.rank-up-celebration .celebration-content .celebration-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, var(--rank-color, #54cbe2), var(--rank-color, #54cbe2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.rank-up-celebration .celebration-content .celebration-message {
+  font-size: 1.1rem;
+  color: #4b5563;
+  margin-bottom: 1.5rem;
+}
+.rank-up-celebration .celebration-content .rank-details {
+  background: #f4f8fc;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+.rank-up-celebration .celebration-content .rank-details .new-rank {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--rank-color, #54cbe2);
+  margin-bottom: 0.5rem;
+}
+.rank-up-celebration .celebration-content .rank-details .rank-perks {
+  font-size: 0.95rem;
+  color: #374151;
+}
+.rank-up-celebration .celebration-content .celebration-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 8px 30px rgba(var(--rank-color, #54cbe2), 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 12px 40px rgba(var(--rank-color, #54cbe2), 0.4);
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes confettiDrop {
+  0% {
+    transform: translateY(-100vh);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+@media (max-width: 640px) {
+  .rank-display.large .rank-badge {
+    width: 100px;
+    height: 100px;
+    font-size: 2.5rem;
+  }
+  .rank-up-celebration .celebration-content {
+    padding: 1.5rem;
+  }
+  .rank-up-celebration .celebration-content .rank-badge {
+    width: 100px;
+    height: 100px;
+    font-size: 2.5rem;
+  }
+  .rank-up-celebration .celebration-content .celebration-title {
+    font-size: 1.75rem;
+  }
+  .rank-up-celebration .celebration-content .celebration-message {
+    font-size: 1rem;
+  }
+  .rank-up-celebration .celebration-content .rank-details {
+    padding: 0.75rem;
+  }
+  .rank-up-celebration .celebration-content .rank-details .new-rank {
+    font-size: 1.25rem;
+  }
+}/*# sourceMappingURL=RankDisplay.css.map */
