@@ -95,11 +95,11 @@ export async function addDialogueProgress(
     {
       user_id: userId,
       dialogue_id: dialogueId,
-      assertiveness: 0,
-      clarity: 0,
-      self_advocacy: 0,
-      social_awareness: 0,
-      empathy: 0,
+      assertiveness: null,
+      clarity: null,
+      self_advocacy: null,
+      social_awareness: null,
+      empathy: null,
       ...scores,
     }
   );

@@ -8,47 +8,68 @@ interface ProgressStore {
   scores: ScoreSummary;
   loading: boolean;
   error: string | null;
-  setScores: () => void;
-  fetchProgress: (userId: string) => void;
+
+  getTotalScore: () => number;
+  fetchProgress: (userId: string) => Promise<void>;
   updateProgressValue: (category: keyof UserProgress, delta: number) => void;
-  calcAverageScore: (progress: UserProgress[]) => number;
+  calcAverageScore: () => number;
   resetProgress: () => void;
 }
 export const useProgressStore = create<ProgressStore>((set, get) => ({
   progress: [],
   progressByDialogueId: {},
-  scores: {
-    assertiveness: 0,
-    clarity: 0,
-    empathy: 0,
-    social_awareness: 0,
-    self_advocacy: 0,
-  },
+  scores: {},
   loading: false,
   error: null,
-
-  setScores: () => {
+  getTotalScore: () => {
+    const categories = [
+      "assertiveness",
+      "clarity",
+      "empathy",
+      "social_awareness",
+      "self_advocacy",
+    ] as const;
     const progress = get().progress;
-    if (!progress) return;
+
+    let score = 0;
+
+    for (const entry of progress) {
+      for (const category of categories) {
+        score += entry[category] || 0;
+      }
+    }
+
+    return score;
   },
 
-  calcAverageScore: (): number => {
+  calcAverageScore: () => {
     const progress = get().progress;
     if (!progress) {
       return 0;
     }
-    const total = progress.length;
-    const sum = progress.reduce<number>(
-      (acc, p) =>
-        acc +
-        p.assertiveness +
-        p.clarity +
-        p.empathy +
-        p.social_awareness +
-        p.self_advocacy,
-      0
-    );
-    return sum / total;
+    const categories = [
+      "assertiveness",
+      "clarity",
+      "empathy",
+      "social_awareness",
+      "self_advocacy",
+    ] as const;
+
+    const totalDialogues = progress.length;
+    const totalCategories = categories.length;
+
+    let totalNormalizedScore = 0;
+
+    for (const entry of progress) {
+      for (const category of categories) {
+        const rawScore = entry[category] || 0;
+        totalNormalizedScore += rawScore / 5; // assuming 5 is the max score per category per dialogue
+      }
+    }
+
+    const maxPossibleScore = totalDialogues * totalCategories;
+    const averageScorePercent = (totalNormalizedScore / maxPossibleScore) * 100;
+    return averageScorePercent;
   },
   fetchProgress: async (userId: string) => {
     try {

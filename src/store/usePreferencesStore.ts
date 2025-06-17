@@ -23,9 +23,9 @@ interface PreferencesStore {
 
   loading: boolean;
   error: string | null;
-  fetchGoals: () => void;
-  fetchInterests: () => void;
-  fetchUserPreferences: (userId: string) => void;
+  fetchGoals: () => Promise<void>;
+  fetchInterests: () => Promise<void>;
+  fetchUserPreferences: (userId: string) => Promise<void>;
 
   setUserInterests: (userId: string, interests: Interest[]) => void;
   setUserGoals: (userId: string, goals: Goal[]) => void;

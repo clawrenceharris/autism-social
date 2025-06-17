@@ -31,12 +31,15 @@ export const useDialogueCompletion = (
 
         // Update streak when dialogue is completed
         const streakResult = await incrementStreak(userId);
-        
+
         // Show streak notification if streak was incremented
         if (streakResult.streakIncremented) {
-          showToast(`🔥 Streak increased to ${streakResult.streakData.currentStreak} days!`, { 
-            type: "success" 
-          });
+          showToast(
+            `🔥Daily Streak increased to ${streakResult.streakData.currentStreak}!`,
+            {
+              type: "success",
+            }
+          );
         }
 
         if (options.onSuccess && result) {
@@ -62,7 +65,7 @@ export const useDialogueCompletion = (
     },
     [options, showToast, incrementStreak]
   );
-  
+
   const updateDialogueProgress = useCallback(
     async (userId: string, dialogueId: string, scores: ScoreSummary) => {
       setIsCompleting(true);
@@ -77,12 +80,15 @@ export const useDialogueCompletion = (
 
         // Update streak when dialogue is completed
         const streakResult = await incrementStreak(userId);
-        
+
         // Show streak notification if streak was incremented
         if (streakResult.streakIncremented) {
-          showToast(`🔥 Streak increased to ${streakResult.streakData.currentStreak} days!`, { 
-            type: "success" 
-          });
+          showToast(
+            `🔥 Streak increased to ${streakResult.streakData.currentStreak} days!`,
+            {
+              type: "success",
+            }
+          );
         }
 
         if (options.onSuccess && result) {

@@ -319,13 +319,12 @@
   .step-analysis {
     background: $color-white;
     border-radius: $border-radius-xl;
-    border: 1px solid $color-gray-200;
+    border: 2px solid $color-gray-200;
     overflow: hidden;
     transition: all 0.3s ease;
 
     &:hover {
       border-color: $color-primary-200;
-      box-shadow: 0 4px 12px rgba($color-primary, 0.1);
     }
 
     .step-header {

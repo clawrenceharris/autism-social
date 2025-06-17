@@ -324,13 +324,12 @@
 .analysis-section .step-analysis {
   background: #ffffff;
   border-radius: 1rem;
-  border: 1px solid #edeff1;
+  border: 2px solid #edeff1;
   overflow: hidden;
   transition: all 0.3s ease;
 }
 .analysis-section .step-analysis:hover {
   border-color: #c1e6ff;
-  box-shadow: 0 4px 12px rgba(84, 203, 226, 0.1);
 }
 .analysis-section .step-analysis .step-header {
   display: flex;

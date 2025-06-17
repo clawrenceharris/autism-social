@@ -11,8 +11,8 @@ interface DialogueStore {
   dialogueIds: string[];
   loading: boolean;
   error: string | null;
-  fetchDialogues: () => void;
-  fetchDialoguesByScenario: (scenarioId: string) => void;
+  fetchDialogues: () => Promise<void>;
+  fetchDialoguesByScenario: (scenarioId: string) => Promise<void>;
 }
 
 export const useDialogueStore = create<DialogueStore>()(

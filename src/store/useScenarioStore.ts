@@ -9,7 +9,7 @@ interface ScenarioStore {
   loading: boolean;
   error: string | null;
 
-  fetchScenarios: () => void;
+  fetchScenarios: () => Promise<void>;
 }
 
 export const useScenarioStore = create<ScenarioStore>()(

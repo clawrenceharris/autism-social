@@ -27,32 +27,32 @@ const DashboardPage = () => {
     recommendedDialogues: recommendations = [],
     loading: recommendationsLoading,
   } = useRecommendationsStore();
-  const { progress } = useProgressStore();
+  const { progress, calcAverageScore } = useProgressStore();
   const {
     loading: challengesLoading,
     fetchDailyChallenges,
     getDayChallenge,
   } = useDailyChallengeStore();
-  const { 
-    streakData, 
-    fetchStreak, 
-    checkAndUpdateStreak, 
-    loading: streakLoading 
+  const {
+    streakData,
+    fetchStreak,
+    checkAndUpdateStreak,
+    loading: streakLoading,
   } = useStreakStore();
 
   useEffect(() => {
     fetchRecommendedDialogues(user.id);
     fetchDailyChallenges();
     fetchStreak(user.id);
-    
+
     // Check if streak needs to be updated (e.g., if user missed a day)
     checkAndUpdateStreak(user.id);
   }, [
-    fetchRecommendedDialogues, 
-    fetchDailyChallenges, 
-    fetchStreak, 
-    checkAndUpdateStreak, 
-    user.id
+    fetchRecommendedDialogues,
+    fetchDailyChallenges,
+    fetchStreak,
+    checkAndUpdateStreak,
+    user.id,
   ]);
 
   // Get today's challenge
@@ -70,28 +70,32 @@ const DashboardPage = () => {
         </div>
 
         <div className="quick-stats">
-          <div className="stat-item">
+          <Link to="/progress" className="stat-item">
             <div className="stat-number">{progress.length}</div>
             <div className="stat-label">Scenarios Completed</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">{streakLoading ? '...' : streakData?.currentStreak || 0}</div>
+          </Link>
+          <Link to="/progress" className="stat-item">
+            <div className="stat-number">
+              {streakLoading ? "..." : streakData?.currentStreak || 0}
+            </div>
             <div className="stat-label">Day Streak</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">{streakLoading ? '...' : streakData?.longestStreak || 0}</div>
+          </Link>
+          <Link to="/progress" className="stat-item">
+            <div className="stat-number">
+              {streakLoading ? "..." : streakData?.longestStreak || 0}
+            </div>
             <div className="stat-label">Best Streak</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">{progress.length > 0 ? Math.round((progress.reduce((acc, p) => acc + p.clarity + p.empathy + p.assertiveness + p.social_awareness + p.self_advocacy, 0) / (progress.length * 5))) : 0}%</div>
+          </Link>
+          <Link to="/progress" className="stat-item">
+            <div className="stat-number">{calcAverageScore()}%</div>
             <div className="stat-label">Average Score</div>
-          </div>
+          </Link>
         </div>
       </div>
 
       <div className="dashboard-grid">
         <div className="main-content">
-          {/* Daily Challenge Call to Action */}
+          {/* Daily Challenge*/}
           <div className="card-section challenge-section">
             <div className="section-header">
               <h2>
@@ -116,7 +120,8 @@ const DashboardPage = () => {
                           size={16}
                           style={{ marginRight: "0.5rem", color: "#f59e0b" }}
                         />
-                        Keep your streak alive! • Day {streakLoading ? '...' : streakData?.currentStreak || 0}
+                        Keep your streak alive! • Day{" "}
+                        {streakLoading ? "..." : streakData?.currentStreak || 0}
                       </p>
                     </div>
                   </div>
@@ -217,15 +222,18 @@ const DashboardPage = () => {
               {progress.length > 0 ? (
                 <div className="activity-list">
                   {progress.slice(0, 3).map((activity, index) => {
-                    const IconComponent = index === 0 ? Award : (index === 1 ? Play : Target);
+                    const IconComponent =
+                      index === 0 ? Award : index === 1 ? Play : Target;
                     return (
                       <div key={activity.dialogue_id} className="activity-item">
                         <div className="activity-icon">
                           <IconComponent size={16} />
                         </div>
                         <div className="activity-details">
-                          <div className="activity-text">Completed dialogue</div>
-                          <div className="activity-time">{new Date(activity.created_at || Date.now()).toLocaleDateString()}</div>
+                          <div className="activity-text">
+                            Completed dialogue
+                          </div>
+                          {/* <div className="activity-time">{new Date(activity.created_at || Date.now()).toLocaleDateString()}</div> */}
                         </div>
                       </div>
                     );

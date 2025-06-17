@@ -17,13 +17,12 @@ import {
   Zap,
 } from "lucide-react";
 import "./ProgressPage.scss";
-import type { AuthContextType, ScoreSummary } from "../../types";
+import type { AuthContextType } from "../../types";
 import { useProgressStore } from "../../store/useProgressStore";
 import { useScenarioStore } from "../../store/useScenarioStore";
 import { ProgressIndicator } from "../../components";
 import { Link } from "react-router-dom";
 
-// Types for achievement data
 interface Achievement {
   id: string;
   name: string;
@@ -41,54 +40,25 @@ const ProgressPage = () => {
     loading: progressLoading,
     error: progressError,
 
-    setScores,
     fetchProgress,
     calcAverageScore,
+    getTotalScore,
+    scores,
   } = useProgressStore();
   const { fetchScenarios, loading: scenariosLoading } = useScenarioStore();
   const [socialScore, setSocialScore] = useState(0);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
-  const scores = useMemo(() => {
-    return (
-      progress?.reduce<ScoreSummary>(
-        (acc, p) => ({
-          assertiveness: p.assertiveness + (acc.assertiveness || 0),
-          clarity: p.clarity + (acc.clarity || 0),
-          empathy: p.empathy + (acc.empathy || 0),
-          social_awareness: p.social_awareness + (acc.social_awareness || 0),
-          self_advocacy: p.self_advocacy + (acc.self_advocacy || 0),
-        }),
-        {
-          assertiveness: 0,
-          clarity: 0,
-          empathy: 0,
-          social_awareness: 0,
-          self_advocacy: 0,
-        }
-      ) || {
-        assertiveness: 0,
-        clarity: 0,
-        empathy: 0,
-        social_awareness: 0,
-        self_advocacy: 0,
-      }
-    );
-  }, [progress]);
+
   useEffect(() => {
     fetchProgress(user.id);
     fetchScenarios();
-    setScores();
-  }, [fetchProgress, fetchScenarios, setScores, user.id]);
-  console.log({ scores });
+  }, [fetchProgress, fetchScenarios, user.id]);
 
-  // Calculate social score when progress data changes
   useEffect(() => {
     if (progress) {
-      // Calculate average of all progress categories
-      console.log({ progress });
-      setSocialScore(Math.round(calcAverageScore(progress)));
+      setSocialScore(getTotalScore());
     }
-  }, [calcAverageScore, progress]);
+  }, [getTotalScore, progress]);
 
   // Mock achievements data
   useEffect(() => {
@@ -215,37 +185,6 @@ const ProgressPage = () => {
     }
   };
 
-  // const getCategoryIcon = (category: string) => {
-  //   switch (category) {
-  //     case "clarity":
-  //       return <Lightbulb />;
-  //     case "empathy":
-  //       return <Heart />;
-  //     case "assertiveness":
-  //       return <Target />;
-  //     case "social_awareness":
-  //       return <Brain />;
-  //     case "self_advocacy":
-  //       return <MessageSquare />;
-  //     default:
-  //       return <HelpCircle />;
-  //   }
-  // };
-
-  // const formatCategoryName = (category: string): string => {
-  //   return category
-  //     .split("_")
-  //     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-  //     .join(" ");
-  // };
-
-  // Calculate stats
-  const totalPoints =
-    (scores.clarity || 0) +
-    (scores.empathy || 0) +
-    (scores.assertiveness || 0) +
-    (scores.social_awareness || 0) +
-    (scores.self_advocacy || 0);
   const earnedAchievements = achievements.filter((a) => a.earned).length;
   const completedScenarios = useMemo(
     () => progress?.filter((p) => p.user_id === user.id).length,
@@ -333,14 +272,14 @@ const ProgressPage = () => {
                 <div className="stat-icon">
                   <BarChart2 size={20} />
                 </div>
-                <div className="stat-value">{totalPoints}</div>
+                <div className="stat-value">{getTotalScore()}</div>
                 <div className="stat-label">Total Points</div>
               </div>
               <div className="stat-card">
                 <div className="stat-icon">
                   <Award size={20} />
                 </div>
-                <div className="stat-value">{calcAverageScore(progress)}</div>
+                <div className="stat-value">{calcAverageScore()}%</div>
                 <div className="stat-label">Average Score</div>
               </div>
               <div className="stat-card">

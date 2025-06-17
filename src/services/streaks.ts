@@ -1,5 +1,5 @@
 import { DatabaseService } from "./database";
-import type { UserStreak, StreakData, StreakUpdateResult } from "../types";
+import type { UserStreak, StreakData } from "../types";
 import { supabase } from "../lib/supabase";
 
 /**
@@ -8,7 +8,9 @@ import { supabase } from "../lib/supabase";
  * @returns Promise with user streak data or null if not found
  * @throws Error if database error occurs
  */
-export async function getUserStreak(userId: string): Promise<StreakData | null> {
+export async function getUserStreak(
+  userId: string
+): Promise<StreakData | null> {
   const result = await DatabaseService.getSingleBy<UserStreak>(
     "user_streaks",
     "user_id",
@@ -44,7 +46,7 @@ export async function upsertUserStreak(
 ): Promise<StreakData> {
   const { data, error } = await supabase.rpc("upsert_user_streak", {
     p_user_id: userId,
-    p_current_streak: streakData.currentStreak,
+    p_current_streak: streakData.currentStreak + 1,
     p_longest_streak: streakData.longestStreak,
     p_last_completion_date: streakData.lastCompletionDate,
     p_timezone: streakData.lastCompletionTimezone,
@@ -70,7 +72,7 @@ export async function upsertUserStreak(
  */
 export async function resetUserStreak(userId: string): Promise<StreakData> {
   const currentData = await getUserStreak(userId);
-  
+
   const resetData: StreakData = {
     currentStreak: 0,
     longestStreak: currentData?.longestStreak || 0,
@@ -88,11 +90,11 @@ export async function resetUserStreak(userId: string): Promise<StreakData> {
  */
 export function getCurrentDateInTimezone(timezone: string): string {
   const now = new Date();
-  const formatter = new Intl.DateTimeFormat('en-CA', {
+  const formatter = new Intl.DateTimeFormat("en-CA", {
     timeZone: timezone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   });
   return formatter.format(now);
 }
@@ -104,12 +106,12 @@ export function getCurrentDateInTimezone(timezone: string): string {
  * @returns True if date2 is the day after date1
  */
 export function areConsecutiveDays(date1: string, date2: string): boolean {
-  const d1 = new Date(date1 + 'T00:00:00');
-  const d2 = new Date(date2 + 'T00:00:00');
-  
+  const d1 = new Date(date1 + "T00:00:00");
+  const d2 = new Date(date2 + "T00:00:00");
+
   const diffTime = d2.getTime() - d1.getTime();
   const diffDays = diffTime / (1000 * 60 * 60 * 24);
-  
+
   return Math.abs(diffDays) === 1 && diffDays > 0;
 }
 
@@ -131,9 +133,9 @@ export function isToday(date: string, timezone: string): boolean {
  * @returns Number of days between dates
  */
 export function daysBetween(date1: string, date2: string): number {
-  const d1 = new Date(date1 + 'T00:00:00');
-  const d2 = new Date(date2 + 'T00:00:00');
-  
+  const d1 = new Date(date1 + "T00:00:00");
+  const d2 = new Date(date2 + "T00:00:00");
+
   const diffTime = d2.getTime() - d1.getTime();
   return Math.floor(diffTime / (1000 * 60 * 60 * 24));
 }

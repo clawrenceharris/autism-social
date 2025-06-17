@@ -22,7 +22,6 @@ import { createDialogueMachine } from "../../xstate/createDialogueMachine";
 import {
   AlertCircle,
   Eye,
-  Home,
   RotateCcw,
   Send,
   Settings,
@@ -35,7 +34,6 @@ import { useVoiceStore } from "../../store/useVoiceStore";
 import { useActorStore } from "../../store/useActorStore";
 import { useDialogueCompletion } from "../../hooks";
 import { useProgressStore } from "../../store/useProgressStore";
-import { Link } from "react-router-dom";
 import { usePlayScenarioStore } from "../../store/usePlayScenarioStore";
 
 interface DialoguePlayerProps {
@@ -490,9 +488,7 @@ const DialoguePlayer = ({
             <button onClick={handleResultsClick} className="btn btn-primary">
               <Eye /> View Results
             </button>
-            <Link to={"/"} className="btn btn-secondary">
-              <Home /> Dashboard
-            </Link>
+
             <button
               onClick={() => setDialogue(null)}
               className="btn btn-tertiary"

@@ -58,7 +58,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
   // Mock step analysis data - in real app this would come from the dialogue completion
   const stepAnalyses: StepAnalysis[] = dialogueContext.path
     //ignore the last step
-    .filter((_, i) => i < dialogueContext.path.length - 1)
+
     .map((opt, index) => ({
       userResponse: userMessages[index]?.text || "",
       npcMessage: actorMessages[index]?.text || "",

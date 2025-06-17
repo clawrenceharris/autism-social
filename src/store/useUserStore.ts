@@ -13,8 +13,8 @@ interface UserStore {
   interests: Interest[];
   setUser: (user: User) => void;
   setProfile: (profile: UserProfile) => void;
-  fetchUserData: (userId: string) => void;
-  logout: () => void;
+  fetchUserData: (userId: string) => Promise<void>;
+  logout: () => Promise<void>;
   error: string | null;
 }
 

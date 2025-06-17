@@ -53,11 +53,11 @@ export interface ScenarioWithDialogues extends Scenario {
 export interface UserProgress {
   user_id: string;
   dialogue_id: string;
-  clarity: number;
-  empathy: number;
-  assertiveness: number;
-  social_awareness: number;
-  self_advocacy: number;
+  clarity: number | null;
+  empathy: number | null;
+  assertiveness: number | null;
+  social_awareness: number | null;
+  self_advocacy: number | null;
 }
 
 export interface Goal {
