@@ -10,9 +10,8 @@ export { default as ProgressIndicator } from "./ProgressIndicator";
 export { default as DialoguePlayer } from "./DialoguePlayer";
 export { default as Modal } from "./modals/Modal";
 export { default as ConfirmationModal } from "./modals/ConfirmationModal";
-export { default as DialogueCompletedModal } from "./modals/DialogueCompletedModal";
 export { default as DialogueOnboardingModal } from "./modals/DialogueOnboardingModal";
-export { default as DialogueCompletionModal } from "./DialogueCompletionModal";
+export { default as DialogueCompletionModal } from "./modals/DialogueCompletionModal";
 
 export { default as DialogueItem } from "./DialogueItem";
 export { default as UserHeader } from "./UserHeader";

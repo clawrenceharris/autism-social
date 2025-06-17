@@ -1,8 +1,8 @@
 import React from "react";
 import "./DialogueCompletionModal.scss";
 
-import type { ScoreSummary, ScoreCategory } from "../../types";
-import { useProgressStore } from "../../store/useProgressStore";
+import type { ScoreSummary, ScoreCategory } from "../../../types";
+import { useProgressStore } from "../../../store/useProgressStore";
 // import { addDialogueProgress } from "../../services/dialogues";
 
 interface DialogueCompletionModalProps {
