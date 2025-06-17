@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from "react-router-dom";
 import { useModal } from "../../context";
 import { X, Home } from "lucide-react";
 import "./PlayScenarioPage.scss";
@@ -57,9 +62,6 @@ const PlayScenarioPage = () => {
     [closeModal, user.first_name]
   );
 
-  const handleExit = () => {
-    navigate("/");
-  };
   console.log({ scenarioIds });
 
   useEffect(() => {
@@ -116,10 +118,10 @@ const PlayScenarioPage = () => {
           <div className="error-state">
             <h1>Oops! Something went wrong</h1>
             <p>{error}</p>
-            <button onClick={handleExit} className="btn btn-primary">
+            <Link to={"/"} className="btn btn-primary">
               <Home size={20} />
               Return to Dashboard
-            </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -136,10 +138,10 @@ const PlayScenarioPage = () => {
               <p>The requested scenario could not be found.</p>
             </div>
 
-            <button onClick={handleExit} className="btn btn-primary">
+            <Link to={"/"} className="btn btn-primary">
               <Home size={20} />
               Return to Dashboard
-            </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -147,9 +149,6 @@ const PlayScenarioPage = () => {
   }
 
   if (!dialogue) {
-    console.log({ dialoguesByScenario });
-    console.log({ scenarioIds });
-
     return (
       <div className="play-scenario-container">
         <div className="game-header">
@@ -163,9 +162,9 @@ const PlayScenarioPage = () => {
               </h1>
             </div>
             <div className="game-controls">
-              <button onClick={handleExit} className="control-btn danger">
+              <Link to={"/"} className="control-btn danger">
                 <X size={20} />
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -198,7 +197,6 @@ const PlayScenarioPage = () => {
         <DialoguePlayer
           user={user}
           userFields={userFields}
-          onExit={handleExit}
           scenario={scenario}
           onReplay={handleReplay}
           dialogue={dialogue}

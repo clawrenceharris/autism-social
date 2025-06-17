@@ -41,14 +41,12 @@ interface DialoguePlayerProps {
   scenario: Scenario;
   dialogue: Dialogue;
   onReplay: () => void;
-  onExit: () => void;
   user: UserProfile;
   userFields: { [key: string]: string };
 }
 
 const DialoguePlayer = ({
   scenario,
-  onExit,
   user,
   dialogue,
   userFields,
