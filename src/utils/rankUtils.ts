@@ -6,14 +6,14 @@ export const RANKS: UserRank[] = [
     level: 1,
     title: "Beginner",
     minPoints: 0,
-    maxPoints: 29,
-    icon: "🌱👶",
+    maxPoints: 9,
+    icon: "🌱",
     color: "#4ade80", // green-400
   },
   {
     level: 2,
     title: "Initiate",
-    minPoints: 30,
+    minPoints: 10,
     maxPoints: 49,
     icon: "🌿",
     color: "#4ade80", // green-400

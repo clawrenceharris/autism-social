@@ -208,18 +208,6 @@
   padding-bottom: 1rem;
   border-bottom: 2px solid #f3f4f6;
 }
-.progress-page .skills-section .section-header h2 {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 0.5rem;
-  color: #1f2937;
-  margin: 0;
-}
-.progress-page .skills-section .section-header h2 .section-icon {
-  color: #54cbe2;
-}
 .progress-page .skills-section .skills-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -291,7 +279,7 @@
   font-weight: normal;
 }
 .progress-page .skills-section .skill-card .improvement-tips {
-  background: #f4f8fc;
+  background: #f6faff;
   border-radius: 0.5rem;
   padding: 1rem;
 }
@@ -358,7 +346,7 @@
 }
 .progress-page .achievements-section .achievement-card.locked {
   opacity: 0.6;
-  background: #f4f8fc;
+  background: #f6faff;
 }
 .progress-page .achievements-section .achievement-card.locked .achievement-icon {
   background: #edeff1;
@@ -407,7 +395,7 @@
 }
 .progress-page .achievements-section .achievement-card .achievement-content .achievement-meta .category-badge.skill {
   background: #f3e8ff;
-  color: #c893fb;
+  color: #8d54e2;
 }
 .progress-page .achievements-section .achievement-card .achievement-content .achievement-meta .category-badge.streak {
   background: #fef3c7;

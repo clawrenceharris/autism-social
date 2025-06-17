@@ -1,47 +1,51 @@
 import { useMemo } from "react";
-import type { Scenario } from "../../types";
+import type { ScenarioWithDialogues } from "../../types";
 import { Link } from "react-router-dom";
 import { Award, Play } from "lucide-react";
 import { useDialogueStore } from "../../store/useDialogueStore";
+import { useProgressStore } from "../../store/useProgressStore";
 
 interface ScenarioCardProps {
-  scenario: Scenario;
+  scenario: ScenarioWithDialogues;
 }
 const ScenarioCard = ({ scenario }: ScenarioCardProps) => {
-  const { completedDialogueIds, dialoguesByScenario } = useDialogueStore();
+  const { dialoguesByScenario } = useDialogueStore();
+  const { progress } = useProgressStore();
   const isTrending = false;
-  const isCompleted = useMemo(
-    () =>
-      Object.keys(dialoguesByScenario).every((id) =>
-        completedDialogueIds.includes(id)
-      ),
-    [completedDialogueIds, dialoguesByScenario]
-  );
   const completedDialogues = useMemo(
     () =>
-      Object.keys(dialoguesByScenario).filter((id) =>
-        completedDialogueIds.includes(id)
+      scenario.dialogues.filter((d) =>
+        progress.map((p) => p.dialogue_id).includes(d.id)
       ),
-    [completedDialogueIds, dialoguesByScenario]
+    [progress, scenario.dialogues]
   );
+  const completionProgress = useMemo(() => {
+    return Math.round(
+      (completedDialogues.length /
+        (scenario.dialogues.length > 0 ? scenario.dialogues.length : 1)) *
+        100
+    );
+  }, [completedDialogues.length, scenario.dialogues.length]);
+
   const totalDialogues = useMemo(
     () => Object.keys(dialoguesByScenario).length,
     [dialoguesByScenario]
   );
+  const isComplete = completionProgress === 100;
   if (!scenario) {
     return null;
   }
   return (
     <div
       key={scenario.id}
-      className={`scenario-card ${isCompleted ? "completed" : ""} ${
+      className={`scenario-card ${isComplete ? "completed" : ""} ${
         isTrending ? "trending" : ""
       }`}
     >
       <div className="card-header">
         <h3 className="scenario-title">{scenario.title}</h3>
         <div className="badges">
-          {isCompleted && (
+          {isComplete && (
             <span className="badge completion-badge">Completed</span>
           )}
           {isTrending && <span className="badge trending-badge">Trending</span>}
@@ -56,9 +60,7 @@ const ScenarioCard = ({ scenario }: ScenarioCardProps) => {
           <span className="meta-label">Dialogues</span>
         </div>
         <div className="meta-item">
-          <span className="meta-value">
-            {(completedDialogues.length / totalDialogues) * 100}%
-          </span>
+          <span className="meta-value">{completionProgress}%</span>
           <span className="meta-label">Complete</span>
         </div>
         <div className="meta-item">
@@ -68,7 +70,7 @@ const ScenarioCard = ({ scenario }: ScenarioCardProps) => {
       </div>
 
       <div className="scenario-actions">
-        {isCompleted ? (
+        {isComplete ? (
           <>
             <Link to={`/scenario/${scenario.id}`} className="action-btn">
               <Award size={16} />

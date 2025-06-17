@@ -1,12 +1,13 @@
 import { create } from "zustand";
 import { getProgress } from "../services/progress";
-import type { ScoreSummary, UserProgress } from "../types";
+import type { ScoreCategory, ScoreSummary, UserProgress } from "../types";
 import { persist } from "zustand/middleware";
 
 interface ProgressStore {
   progress: UserProgress[];
   progressByDialogueId: Record<string, UserProgress[]>;
   categoryScores: ScoreSummary;
+  averageCategoryScores: ScoreSummary;
   averageScore: number;
   totalPoints: number;
   loading: boolean;
@@ -17,12 +18,15 @@ interface ProgressStore {
   calcTotalPoints: () => void;
   fetchProgress: (userId: string) => Promise<void>;
   calcAverageScore: () => void;
+  calcAverageCategoryScore: () => void;
+
   resetProgress: () => void;
 }
 export const useProgressStore = create<ProgressStore>()(
   persist(
     (set, get) => ({
       progress: [],
+      averageCategoryScores: {},
       progressByDialogueId: {},
       rankReceived: false,
       categoryScores: {},
@@ -30,6 +34,45 @@ export const useProgressStore = create<ProgressStore>()(
       averageScore: 0,
       loading: false,
       error: null,
+      calcAverageCategoryScore: () => {
+        const progress = get().progress;
+
+        const categories = [
+          "assertiveness",
+          "clarity",
+          "empathy",
+          "social_awareness",
+          "self_advocacy",
+        ] as const;
+
+        const totalEarned: ScoreSummary = {
+          clarity: 0,
+          empathy: 0,
+          assertiveness: 0,
+          self_advocacy: 0,
+          social_awareness: 0,
+        };
+
+        for (const entry of progress) {
+          for (const cat of categories) {
+            const value = entry[cat];
+            if (value) {
+              totalEarned[cat] = totalEarned[cat]
+                ? totalEarned[cat] + value
+                : value;
+            }
+          }
+        }
+
+        const averageCategoryScores = Object.fromEntries(
+          Object.keys(totalEarned).map((cat) => [
+            cat,
+
+            Math.round(((totalEarned[cat as ScoreCategory] || 0) / 5) * 100),
+          ])
+        );
+        set({ averageCategoryScores });
+      },
       calcTotalPoints: () => {
         const categories = [
           "assertiveness",
@@ -44,8 +87,11 @@ export const useProgressStore = create<ProgressStore>()(
 
         for (const entry of progress) {
           for (const category of categories) {
-            totalPoints += (entry[category] || 0) * 10;
+            totalPoints += entry[category] || 0;
           }
+        }
+        if (totalPoints != get().totalPoints) {
+          set({ rankReceived: false });
         }
 
         set({ totalPoints });
@@ -124,6 +170,7 @@ export const useProgressStore = create<ProgressStore>()(
           });
           get().calcAverageScore();
           get().calcTotalPoints();
+          get().calcAverageCategoryScore();
         } catch {
           set({ error: "Failed to load progress" });
         } finally {

@@ -1,11 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Dialogue } from "../types";
-import { getDialogues, getScenarioDialogues } from "../services/dialogues";
+import { getDialogues, getDialoguesByScenarioId } from "../services/dialogues";
 
 interface DialogueStore {
-  completedDialogues: Record<string, Dialogue>;
-  completedDialogueIds: string[];
   dialogues: Record<string, Dialogue>;
   dialoguesByScenario: Record<string, Dialogue[]>;
   dialogueIds: string[];
@@ -20,7 +18,6 @@ export const useDialogueStore = create<DialogueStore>()(
     (set) => ({
       dialogues: {},
       completedDialogues: {},
-      completedDialogueIds: [],
       selectedDialogue: null,
       dialoguesByScenario: {},
       dialogueIds: [],
@@ -50,7 +47,7 @@ export const useDialogueStore = create<DialogueStore>()(
         try {
           set({ loading: true, error: null });
 
-          const dialogues = (await getScenarioDialogues(scenarioId)) || [];
+          const dialogues = (await getDialoguesByScenarioId(scenarioId)) || [];
           set({
             dialoguesByScenario:
               dialogues.reduce<Record<string, Dialogue[]>>((acc, dialogue) => {

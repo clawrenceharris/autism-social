@@ -24,7 +24,7 @@ body {
 
 main {
   padding: $spacing-4 $spacing-8;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: auto;
 }
 
@@ -110,6 +110,14 @@ a {
   font-size: 1.1rem;
 }
 
+.section-icon {
+  color: $color-primary;
+  background: $color-primary-100;
+  padding: $spacing-2;
+  border-radius: $border-radius-md;
+  width: 40px;
+  height: 40px;
+}
 .form {
   label {
     font-family: $font-family-secondary;
@@ -305,7 +313,8 @@ button {
 
     &:hover {
       transform: translateY(-2px);
-      background-color: $color-secondary-hover;
+      background-color: $color-secondary-300;
+      color: $color-secondary;
       box-shadow: 0 4px 12px rgba($color-secondary, 0.3);
     }
 
@@ -384,7 +393,7 @@ button {
       @include transition(color);
 
       &:hover {
-        color: $color-primary-hover;
+        color: $color-primary-200;
       }
     }
   }

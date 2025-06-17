@@ -67,7 +67,7 @@ export async function getCompletedDialogues(userId: string) {
   if (error) throw error;
   return data;
 }
-export async function getScenarioDialogues(scenarioId: string) {
+export async function getDialoguesByScenarioId(scenarioId: string) {
   const result = await DatabaseService.get<Dialogue>("dialogues", {
     foreignKey: "scenario_id",
     foreignValue: scenarioId,

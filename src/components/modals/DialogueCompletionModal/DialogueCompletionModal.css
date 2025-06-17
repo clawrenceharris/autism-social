@@ -32,7 +32,7 @@
   font-weight: 800;
   color: #111827;
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #54cbe2, #c893fb);
+  background: linear-gradient(135deg, #54cbe2, #8d54e2);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -81,7 +81,7 @@
   right: -6px;
   bottom: -6px;
   border-radius: 50%;
-  background: linear-gradient(45deg, #54cbe2, #c893fb, #54cbe2);
+  background: linear-gradient(45deg, #54cbe2, #8d54e2, #54cbe2);
   z-index: -1;
   animation: rotate 3s linear infinite;
 }
@@ -112,7 +112,7 @@
 .completion-header .overall-score .score-breakdown .total-points .points-earned {
   font-size: 2rem;
   font-weight: 700;
-  color: #c893fb;
+  color: #8d54e2;
 }
 .completion-header .overall-score .score-breakdown .total-points .points-label {
   font-size: 0.9rem;
@@ -226,7 +226,7 @@
 .progress-section .progress-item .progress-header .score-display .points-earned {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #c893fb;
+  color: #8d54e2;
   background: #f3e8ff;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
@@ -292,7 +292,7 @@
 
 .analysis-section {
   width: 100%;
-  background: #f4f8fc;
+  background: #f6faff;
   border-radius: 1.5rem;
   padding: 1.5rem;
   border: 2px solid #edeff1;
@@ -333,7 +333,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  background: #f4f8fc;
+  background: #f6faff;
   border-bottom: 1px solid #edeff1;
 }
 .analysis-section .step-analysis .step-header .step-info {
@@ -362,7 +362,7 @@
   align-items: center;
   gap: 0.25rem;
   background: #f3e8ff;
-  color: #c893fb;
+  color: #8d54e2;
   padding: 0.25rem 0.5rem;
   border-radius: 9999px;
   font-size: 0.8rem;
@@ -443,10 +443,10 @@
 }
 .analysis-section .step-analysis .step-details .conversation-flow .message-analysis .analysis-btn.better-response {
   background: #f3e8ff;
-  color: #c893fb;
+  color: #8d54e2;
 }
 .analysis-section .step-analysis .step-details .conversation-flow .message-analysis .analysis-btn.better-response:hover {
-  background: #c893fb;
+  background: #8d54e2;
   color: #ffffff;
 }
 .analysis-section .step-analysis .step-details .conversation-flow .message-analysis .analysis-btn.feedback {
@@ -462,7 +462,7 @@
   cursor: not-allowed;
 }
 .analysis-section .step-analysis .step-details .points-breakdown {
-  background: #f4f8fc;
+  background: #f6faff;
   border-radius: 1rem;
   padding: 1rem;
   border: 1px solid #edeff1;
@@ -495,7 +495,7 @@
   background: #f3e8ff;
 }
 .analysis-section .step-analysis .step-details .points-breakdown .points-grid .point-item.earned .points {
-  color: #c893fb;
+  color: #8d54e2;
   font-weight: 700;
 }
 .analysis-section .step-analysis .step-details .points-breakdown .points-grid .point-item .category {

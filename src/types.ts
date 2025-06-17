@@ -94,6 +94,7 @@ export interface Scenario {
   id: string;
   title: string;
   description: string;
+  isCompleted: boolean;
   createdAt?: string;
 }
 
@@ -132,6 +133,16 @@ export type Difficulty = "easy" | "medium" | "hard" | "extra hard";
 export interface CreateScenarioData {
   title: string;
   description: string;
+}
+
+export interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  icon: React.ReactNode;
+  category: "milestone" | "skill" | "streak" | "mastery";
+  earned: boolean;
+  earnedDate?: string;
 }
 
 export interface ScoreSummary {

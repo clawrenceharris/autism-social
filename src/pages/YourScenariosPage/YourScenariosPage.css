@@ -5,11 +5,14 @@
   padding: 1rem;
 }
 .scenarios-page .page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
   text-align: center;
   margin-bottom: 2rem;
 }
 .scenarios-page .page-header .search-section {
-  max-width: 500px;
+  max-width: 700px;
   margin: 0 auto;
 }
 .scenarios-page .page-header .search-section .search-container {
@@ -46,7 +49,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
   flex-wrap: wrap;
 }
 .scenarios-page .page-header .search-section .filter-tabs .filter-tab {
@@ -55,7 +58,7 @@
   justify-content: center;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 1rem;
   border: 2px solid #edeff1;
   border-radius: 9999px;
   color: #4b5563;
@@ -86,11 +89,6 @@
   justify-content: flex-start;
   align-items: center;
   gap: 0.5rem;
-  margin: 0;
-  color: #1f2937;
-}
-.scenarios-page .scenarios-content .section-header h2 .section-icon {
-  color: #54cbe2;
 }
 .scenarios-page .scenarios-content .scenarios-grid {
   display: grid;
@@ -249,7 +247,7 @@
   color: #ffffff;
 }
 .scenarios-page .scenarios-content .scenario-card .scenario-actions .action-btn.primary:hover {
-  background: #5f88fa;
+  background: #9ce5ff;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(84, 203, 226, 0.4);
 }

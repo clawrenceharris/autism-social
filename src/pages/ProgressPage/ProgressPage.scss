@@ -197,16 +197,6 @@
       margin-bottom: $spacing-6;
       padding-bottom: $spacing-4;
       border-bottom: 2px solid $color-gray-100;
-
-      h2 {
-        @include flex(row, flex-start, center, $spacing-2);
-        color: $color-gray-800;
-        margin: 0;
-
-        .section-icon {
-          color: $color-primary;
-        }
-      }
     }
 
     .skills-grid {

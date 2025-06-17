@@ -7,11 +7,14 @@
   padding: $spacing-4;
 
   .page-header {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
     text-align: center;
     margin-bottom: $spacing-8;
 
     .search-section {
-      max-width: 500px;
+      max-width: 700px;
       margin: 0 auto;
 
       .search-container {
@@ -48,11 +51,11 @@
       }
 
       .filter-tabs {
-        @include flex(row, center, center, $spacing-2);
+        @include flex(row, center, center, $spacing-4);
         flex-wrap: wrap;
         .filter-tab {
           @include flex(row, center, center);
-          padding: $spacing-2 $spacing-4;
+          padding: $spacing-1 $spacing-4;
           border: 2px solid $color-gray-200;
           border-radius: $border-radius-full;
           color: $color-gray-600;
@@ -83,12 +86,6 @@
 
       h2 {
         @include flex(row, flex-start, center, $spacing-2);
-        margin: 0;
-        color: $color-gray-800;
-
-        .section-icon {
-          color: $color-primary;
-        }
       }
     }
 
@@ -240,7 +237,7 @@
             color: $color-white;
 
             &:hover {
-              background: $color-primary-hover;
+              background: $color-primary-300;
               transform: translateY(-2px);
               box-shadow: 0 6px 16px rgba($color-primary, 0.4);
             }
@@ -288,7 +285,7 @@
         transition: all 0.3s ease;
 
         &:hover {
-          background: $color-primary-hover;
+          background: #5f88fa;
           transform: translateY(-2px);
           box-shadow: 0 6px 16px rgba($color-primary, 0.3);
         }

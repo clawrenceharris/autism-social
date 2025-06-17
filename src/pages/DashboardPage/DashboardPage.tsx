@@ -27,12 +27,8 @@ const DashboardPage = () => {
     recommendedDialogues: recommendations = [],
     loading: recommendationsLoading,
   } = useRecommendationsStore();
-  const {
-    progress,
-
-    totalPoints,
-    averageScore,
-  } = useProgressStore();
+  const { progress, fetchProgress, totalPoints, averageScore } =
+    useProgressStore();
   const {
     loading: challengesLoading,
     fetchDailyChallenges,
@@ -44,20 +40,25 @@ const DashboardPage = () => {
     checkAndUpdateStreak,
     loading: streakLoading,
   } = useStreakStore();
-
   useEffect(() => {
-    fetchRecommendedDialogues(user.id);
     fetchDailyChallenges();
-    fetchStreak(user.id);
+  }, [fetchDailyChallenges]);
+  useEffect(() => {
+    if (user.id) {
+      fetchRecommendedDialogues(user.id);
+      fetchStreak(user.id);
+      fetchProgress(user.id);
 
-    // Check if streak needs to be updated (e.g., if user missed a day)
-    checkAndUpdateStreak(user.id);
+      // Check if streak needs to be updated
+      checkAndUpdateStreak(user.id);
+    }
   }, [
     fetchRecommendedDialogues,
     fetchDailyChallenges,
     fetchStreak,
     checkAndUpdateStreak,
     user.id,
+    fetchProgress,
   ]);
 
   // Get today's challenge
@@ -81,16 +82,17 @@ const DashboardPage = () => {
           </Link>
           <Link to="/progress" className="stat-item">
             <div className="stat-number">
-              {streakLoading ? "..." : streakData?.currentStreak || 0}
+              {streakLoading ? "..." : totalPoints}
             </div>
-            <div className="stat-label">Day Streak</div>
+            <div className="stat-label">Total Points</div>
           </Link>
           <Link to="/progress" className="stat-item">
             <div className="stat-number">
-              {streakLoading ? "..." : streakData?.longestStreak || 0}
+              {streakLoading ? "..." : streakData?.currentStreak || 0}
             </div>
-            <div className="stat-label">Best Streak</div>
+            <div className="stat-label">Daily Streak</div>
           </Link>
+
           <Link to="/progress" className="stat-item">
             <div className="stat-number">{averageScore}%</div>
             <div className="stat-label">Average Score</div>
@@ -242,11 +244,11 @@ const DashboardPage = () => {
             <div className="section-content">
               {progress.length > 0 ? (
                 <div className="activity-list">
-                  {progress.slice(0, 3).map((activity, index) => {
+                  {progress.slice(0, 3).map((progress, index) => {
                     const IconComponent =
                       index === 0 ? Award : index === 1 ? Play : Target;
                     return (
-                      <div key={activity.dialogue_id} className="activity-item">
+                      <div key={progress.dialogue_id} className="activity-item">
                         <div className="activity-icon">
                           <IconComponent size={16} />
                         </div>
@@ -254,7 +256,11 @@ const DashboardPage = () => {
                           <div className="activity-text">
                             Completed dialogue
                           </div>
-                          {/* <div className="activity-time">{new Date(activity.created_at || Date.now()).toLocaleDateString()}</div> */}
+                          <div className="activity-time">
+                            {new Date(
+                              progress.created_at || Date.now()
+                            ).toLocaleDateString()}
+                          </div>
                         </div>
                       </div>
                     );

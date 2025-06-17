@@ -47,12 +47,6 @@
   color: #1f2937;
   font-size: 1.5rem;
 }
-.settings-container .settings-section .section-header .section-icon {
-  color: #54cbe2;
-  background: #e3f3fe;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-}
 .settings-container .settings-section .section-content {
   display: flex;
   flex-direction: column;
@@ -121,7 +115,7 @@
 }
 .settings-container .settings-section .color-scheme-options .color-option:hover {
   border-color: #c1e6ff;
-  background-color: #f4f8fc;
+  background-color: #f6faff;
 }
 .settings-container .settings-section .color-scheme-options .color-option.selected {
   border-color: #54cbe2;
@@ -207,7 +201,7 @@
   align-items: start;
   gap: 1rem;
   padding: 2rem;
-  background: #f4f8fc;
+  background: #f6faff;
   border-radius: 1rem;
   margin-bottom: 1.5rem;
 }

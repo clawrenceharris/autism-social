@@ -3,20 +3,20 @@ import { Link } from "react-router-dom";
 import {
   Search,
   X,
-  Play,
   BookOpen,
   TrendingUp,
   CheckCircle,
   Star,
   Users,
   Award,
-  Zap,
 } from "lucide-react";
 import "./YourScenariosPage.scss";
 import { useScenarioStore } from "../../store/useScenarioStore";
 import { ProgressIndicator } from "../../components";
 import ScenarioCard from "../../components/ScenarioCard/ScenarioCard";
 import { useDialogueStore } from "../../store/useDialogueStore";
+import { useRecommendationsStore } from "../../store";
+import { useProgressStore } from "../../store/useProgressStore";
 
 type FilterType = "all" | "completed" | "trending" | "recommended";
 
@@ -34,15 +34,12 @@ const YourScenariosPage = () => {
     fetchScenarios();
     fetchDialogues();
   }, [fetchScenarios, fetchDialogues]);
-
-  // Combine scenarios with their dialogues and metadata
-
+  const { progress } = useProgressStore();
+  const { recommendedDialogues } = useRecommendationsStore();
   // Filter scenarios based on search and active filter
   const filteredScenarios = useMemo(() => {
     let filtered = Object.values(scenarios).filter(Boolean);
-    if (!searchQuery) {
-      return filtered;
-    }
+
     // Apply search filter
     if (searchQuery?.trim()) {
       const query = searchQuery?.toLowerCase();
@@ -54,9 +51,23 @@ const YourScenariosPage = () => {
     }
 
     // Apply category filter
-
+    if (activeFilter === "all") {
+      filtered = filtered.filter(() => true);
+    }
+    if (activeFilter === "completed") {
+      filtered = filtered.filter((scenario) =>
+        scenario.dialogues.every((d) =>
+          progress.map((p) => p.dialogue_id).includes(d.id)
+        )
+      );
+    }
+    if (activeFilter === "recommended") {
+      filtered = filtered.filter((scenario) =>
+        recommendedDialogues.map((d) => d.scenario_id).includes(scenario.id)
+      );
+    }
     return filtered;
-  }, [searchQuery, scenarios]);
+  }, [activeFilter, progress, recommendedDialogues, scenarios, searchQuery]);
 
   const handleClearSearch = () => {
     setSearchQuery("");
@@ -108,7 +119,7 @@ const YourScenariosPage = () => {
       case "trending":
         return <TrendingUp className="section-icon" size={24} />;
       case "recommended":
-        return <Zap className="section-icon" size={24} />;
+        return <Star className="section-icon" size={24} />;
       default:
         return <BookOpen className="section-icon" size={24} />;
     }
@@ -128,12 +139,7 @@ const YourScenariosPage = () => {
         title: "No Completed Scenarios",
         description:
           "You haven't completed any scenarios yet. Start practicing to see your progress here!",
-        action: (
-          <Link to="/explore" className="empty-action">
-            <Play size={20} />
-            Explore Scenarios
-          </Link>
-        ),
+        action: null,
       },
       trending: {
         icon: <TrendingUp className="empty-icon" />,

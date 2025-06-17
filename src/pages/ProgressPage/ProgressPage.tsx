@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useOutletContext } from "react-router-dom";
 import {
   Award,
@@ -8,13 +8,9 @@ import {
   CheckCircle,
   Clock,
   Frown,
-  Heart,
   HelpCircle,
   Lightbulb,
-  MessageSquare,
   Play,
-  Target,
-  Zap,
 } from "lucide-react";
 import "./ProgressPage.scss";
 import type { AuthContextType } from "../../types";
@@ -22,16 +18,7 @@ import { useProgressStore } from "../../store/useProgressStore";
 import { ProgressIndicator, RankDisplay } from "../../components";
 import { Link } from "react-router-dom";
 import { useScoreCategoryStore } from "../../store/useScoreCategoryStore";
-
-interface Achievement {
-  id: string;
-  name: string;
-  description: string;
-  icon: React.ReactNode;
-  category: "milestone" | "skill" | "streak" | "mastery";
-  earned: boolean;
-  earnedDate?: string;
-}
+import useAchievements from "../../hooks/useAchievements";
 
 const ProgressPage = () => {
   const { user } = useOutletContext<AuthContextType>();
@@ -47,13 +34,12 @@ const ProgressPage = () => {
     calcTotalPoints,
     categoryScores,
   } = useProgressStore();
-  const [achievements, setAchievements] = useState<Achievement[]>([]);
   const {
     categories,
     fetchCategories,
     loading: categoriesLoading,
   } = useScoreCategoryStore();
-
+  const { achievements } = useAchievements();
   useEffect(() => {
     fetchProgress(user.id);
     fetchCategories();
@@ -68,95 +54,6 @@ const ProgressPage = () => {
     calcAverageScore,
     calcCategoryScores,
   ]);
-
-  // Mock achievements data
-  useEffect(() => {
-    // In a real app, this would come from an API call
-    setAchievements([
-      {
-        id: "1",
-        name: "First Dialogue Completed",
-        description: "Successfully completed your first dialogue scenario",
-        icon: <MessageSquare />,
-        category: "milestone",
-        earned: true,
-        earnedDate: "May 15, 2025",
-      },
-      {
-        id: "2",
-        name: "Empathy Expert",
-        description: "Achieved a score of 80+ in Empathy",
-        icon: <Heart />,
-        category: "skill",
-        earned: (categoryScores.empathy || 0) >= 80,
-        earnedDate:
-          (categoryScores.empathy || 0) >= 80 ? "May 18, 2025" : undefined,
-      },
-      {
-        id: "3",
-        name: "3-Day Streak",
-        description: "Practiced for 3 consecutive days",
-        icon: <Calendar />,
-        category: "streak",
-        earned: true,
-        earnedDate: "May 20, 2025",
-      },
-      {
-        id: "4",
-        name: "Clarity Champion",
-        description: "Achieved a score of 80+ in Clarity",
-        icon: <Lightbulb />,
-        category: "skill",
-        earned: (categoryScores.clarity || 0) >= 80,
-        earnedDate:
-          (categoryScores.clarity || 0) >= 80 ? "May 22, 2025" : undefined,
-      },
-      {
-        id: "5",
-        name: "Social Butterfly",
-        description: "Completed 10 different dialogue scenarios",
-        icon: <Zap />,
-        category: "milestone",
-        earned: false,
-      },
-      {
-        id: "6",
-        name: "Assertiveness Ace",
-        description: "Achieved a score of 80+ in Assertiveness",
-        icon: <Target />,
-        category: "skill",
-        earned: (categoryScores.assertiveness || 0) >= 80,
-        earnedDate:
-          (categoryScores.assertiveness || 0) >= 80
-            ? "May 25, 2025"
-            : undefined,
-      },
-      {
-        id: "7",
-        name: "Social Awareness Master",
-        description: "Achieved a score of 90+ in Social Awareness",
-        icon: <Brain />,
-        category: "mastery",
-        earned: (categoryScores.social_awareness || 0) >= 90,
-        earnedDate:
-          (categoryScores.social_awareness || 0) >= 90
-            ? "May 28, 2025"
-            : undefined,
-      },
-      {
-        id: "8",
-        name: "Self-Advocacy Star",
-        description: "Achieved a score of 80+ in Self-Advocacy",
-        icon: <Award />,
-        category: "skill",
-        earned: (categoryScores.self_advocacy || 0) >= 80,
-        earnedDate:
-          (categoryScores.self_advocacy || 0) >= 80
-            ? "May 30, 2025"
-            : undefined,
-      },
-    ]);
-  }, [progress, categoryScores]);
 
   const getScoreLevel = (score: number): "poor" | "good" | "excellent" => {
     if (score >= 80) return "excellent";
@@ -225,7 +122,10 @@ const ProgressPage = () => {
     }
   };
 
-  const earnedAchievements = achievements.filter((a) => a.earned).length;
+  const earnedAchievements = useMemo(
+    () => achievements.filter((a) => a.earned).length,
+    [achievements]
+  );
   const completedScenarios = useMemo(
     () => progress?.filter((p) => p.user_id === user.id).length,
     [progress, user.id]
@@ -402,9 +302,7 @@ const ProgressPage = () => {
                 <div className="achievement-icon">{achievement.icon}</div>
                 <div className="achievement-content">
                   <h3 className="achievement-name">{achievement.name}</h3>
-                  <p className="achievement-description">
-                    {achievement.description}
-                  </p>
+                  <p className="description">{achievement.description}</p>
                   <div className="achievement-meta">
                     <span className={`category-badge ${achievement.category}`}>
                       {achievement.category.charAt(0).toUpperCase() +

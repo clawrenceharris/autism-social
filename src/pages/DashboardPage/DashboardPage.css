@@ -172,7 +172,7 @@
 }
 .dashboard-container .challenge-section .scenario-info .scenario-progress .progress-bar .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #c893fb, #9333ea);
+  background: linear-gradient(90deg, #8d54e2, #d0a1fc);
   transition: width 0.3s ease;
 }
 .dashboard-container .recent-activity .activity-list {
@@ -190,9 +190,9 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: linear-gradient(135deg, #f4f8fc, rgba(243, 232, 255, 0.5));
+  background: linear-gradient(135deg, #f6faff, rgba(243, 232, 255, 0.5));
   border-radius: 1rem;
-  border: 1px solid rgba(200, 147, 251, 0.1);
+  border: 1px solid rgba(141, 84, 226, 0.1);
   transition: all 0.2s ease;
 }
 .dashboard-container .recent-activity .activity-list .activity-item:hover {
@@ -209,9 +209,9 @@
   justify-content: center;
   align-items: center;
   gap: 0.75rem;
-  color: #c893fb;
+  color: #8d54e2;
   flex-shrink: 0;
-  border: 2px solid rgba(200, 147, 251, 0.2);
+  border: 2px solid rgba(141, 84, 226, 0.2);
 }
 .dashboard-container .recent-activity .activity-list .activity-item .activity-details {
   flex: 1;
@@ -237,7 +237,7 @@
   font-size: 4rem;
   margin-bottom: 1.5rem;
   opacity: 0.6;
-  color: #c893fb;
+  color: #8d54e2;
 }
 .dashboard-container .empty-state .empty-message {
   font-size: 1.25rem;
@@ -253,7 +253,7 @@
 .dashboard-container .loading-state .loading-text {
   margin-top: 1rem;
   font-size: 1.1rem;
-  color: #c893fb;
+  color: #8d54e2;
 }
 .dashboard-container .dialogue-list {
   display: flex;

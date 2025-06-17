@@ -1,10 +1,11 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { Scenario } from "../types";
+import type { ScenarioWithDialogues } from "../types";
 import { getScenarios } from "../services/scenarios";
+import { getDialoguesByScenarioId } from "../services/dialogues";
 
 interface ScenarioStore {
-  scenarios: Record<string, Scenario>;
+  scenarios: Record<string, ScenarioWithDialogues>;
   scenarioIds: string[];
   loading: boolean;
   error: string | null;
@@ -27,16 +28,19 @@ export const useScenarioStore = create<ScenarioStore>()(
         try {
           set({ loading: true, error: null });
           const scenarios = (await getScenarios()) || [];
-
           set({ scenarioIds: scenarios.map((scenario) => scenario.id) });
+
+          const scenariosWithDialogues: Record<string, ScenarioWithDialogues> =
+            {};
+          for (const scenario of scenarios) {
+            const dialogues = await getDialoguesByScenarioId(scenario.id);
+            scenariosWithDialogues[scenario.id] = {
+              ...scenario,
+              dialogues,
+            } as ScenarioWithDialogues;
+          }
           set({
-            scenarios: scenarios.reduce<Record<string, Scenario>>(
-              (acc, scenario) => {
-                acc[scenario.id] = scenario;
-                return acc;
-              },
-              {}
-            ),
+            scenarios: scenariosWithDialogues,
           });
         } catch {
           set({ error: "Failed to load scenarios" });

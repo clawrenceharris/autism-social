@@ -1,13 +1,18 @@
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "./ProgressSection.scss";
 import { useProgressStore } from "../../store/useProgressStore";
+import { useScoreCategoryStore } from "../../store/useScoreCategoryStore";
 
 const ProgressSection = ({ userId }: { userId: string }) => {
-  const { fetchProgress, loading, error } = useProgressStore();
-
-  const [progressCategories] = useState<{ name: string; score: number }[]>([]);
+  const {
+    fetchProgress,
+    loading,
+    averageCategoryScores: scores,
+    error,
+  } = useProgressStore();
+  const { categories } = useScoreCategoryStore();
 
   useEffect(() => {
     fetchProgress(userId);
@@ -34,16 +39,18 @@ const ProgressSection = ({ userId }: { userId: string }) => {
           <>Loading your progress...</>
         ) : (
           <div className="progress-categories">
-            {progressCategories.map((category) => (
-              <div key={category.name} className="category-item">
+            {categories.map((category) => (
+              <div key={category.id} className="category-item">
                 <div className="category-header">
                   <span className="category-name">{category.name}</span>
-                  <span className="category-score">{category.score}%</span>
+                  <span className="category-score">
+                    {scores[category.name]}%
+                  </span>
                 </div>
                 <div className="category-bar">
                   <div
                     className="category-fill"
-                    style={{ width: `${category.score}%` }}
+                    style={{ width: `${scores[category.name]}%` }}
                   />
                 </div>
               </div>
