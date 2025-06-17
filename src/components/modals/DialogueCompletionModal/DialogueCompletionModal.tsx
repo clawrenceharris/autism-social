@@ -15,20 +15,17 @@ import {
 import type {
   ScoreSummary,
   ScoreCategory,
-  DialogueStep,
   Message,
-  UserMessage,
+  DialogueContext,
 } from "../../../types";
 
 interface DialogueCompletionModalProps {
-  scores: ScoreSummary;
-  dialogueSteps: DialogueStep[];
-  userMessages: UserMessage[];
+  userMessages: Message[];
   actorMessages: Message[];
+  dialogueContext: DialogueContext;
 }
 
 interface StepAnalysis {
-  stepId: string;
   userResponse: string;
   npcMessage: string;
   pointsEarned: ScoreSummary;
@@ -37,17 +34,18 @@ interface StepAnalysis {
 }
 
 const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
-  scores,
-  dialogueSteps,
+  dialogueContext,
+
   userMessages,
   actorMessages,
 }) => {
   const [analysisMode, setAnalysisMode] = useState(false);
-  const [expandedStep, setExpandedStep] = useState<string | null>(null);
-  const [loadingBetterResponse, setLoadingBetterResponse] = useState<
-    string | null
-  >(null);
-  const [loadingFeedback, setLoadingFeedback] = useState<string | null>(null);
+  const [expandedStepIndex, setExpandedStepIndex] = useState<number | null>(
+    null
+  );
+  const [loadingBetterResponse, setLoadingBetterResponse] =
+    useState<boolean>(false);
+  const [loadingFeedback, setLoadingFeedback] = useState<boolean>(false);
 
   const categories: ScoreCategory[] = [
     "clarity",
@@ -58,19 +56,18 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
   ];
 
   // Mock step analysis data - in real app this would come from the dialogue completion
-  const stepAnalyses: StepAnalysis[] = dialogueSteps
+  const stepAnalyses: StepAnalysis[] = dialogueContext.path
     //ignore the last step
-    .filter((_, i) => i < dialogueSteps.length - 1)
-    .map((step, index) => ({
-      stepId: step.id,
+    .filter((_, i) => i < dialogueContext.path.length - 1)
+    .map((opt, index) => ({
       userResponse: userMessages[index]?.text || "",
       npcMessage: actorMessages[index]?.text || "",
       pointsEarned: {
-        clarity: userMessages[index].scoring.clarity || 0,
-        empathy: userMessages[index].scoring.empathy || undefined,
-        assertiveness: userMessages[index].scoring.assertiveness || undefined,
-        social_awareness: userMessages[index].scoring.social_awareness,
-        self_advocacy: userMessages[index].scoring.self_advocacy,
+        clarity: opt.scoring.clarity,
+        empathy: opt.scoring.empathy,
+        assertiveness: opt.scoring.assertiveness,
+        social_awareness: opt.scoring.social_awareness,
+        self_advocacy: opt.scoring.self_advocacy,
       },
     }));
 
@@ -98,31 +95,29 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
       .join(" ");
   };
 
-  const generateBetterResponse = async (stepId: string) => {
-    setLoadingBetterResponse(stepId);
+  const generateBetterResponse = async () => {
+    setLoadingBetterResponse(true);
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
-    setLoadingBetterResponse(null);
+    setLoadingBetterResponse(false);
 
-    // In real app, this would call an AI service
     return "Here's a more effective response that demonstrates better clarity and empathy...";
   };
 
-  const generateFeedback = async (stepId: string) => {
-    setLoadingFeedback(stepId);
+  const generateFeedback = async () => {
+    setLoadingFeedback(true);
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1200));
-    setLoadingFeedback(null);
+    setLoadingFeedback(false);
 
-    // In real app, this would call an AI service
     return "Your response showed good assertiveness but could benefit from more empathetic language...";
   };
 
-  const toggleStepExpansion = (stepId: string) => {
-    setExpandedStep(expandedStep === stepId ? null : stepId);
+  const toggleStepExpansion = (index: number) => {
+    setExpandedStepIndex(expandedStepIndex === index ? null : index);
   };
 
-  const totalPointsEarned = Object.values(scores).reduce(
+  const totalPointsEarned = Object.values(dialogueContext.scores).reduce(
     (sum, score) => sum + score,
     0
   );
@@ -171,7 +166,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
           <h3 className="section-title">Your Performance Breakdown</h3>
           <div className="progress-categories">
             {categories.map((category, index) => {
-              const pointsEarned = scores[category];
+              const pointsEarned = dialogueContext.scores[category];
               if (pointsEarned)
                 return (
                   <div key={index} className="progress-item">
@@ -209,7 +204,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
 
           <div className="steps-analysis">
             {stepAnalyses.map((analysis, index) => (
-              <div key={analysis.stepId} className="step-analysis">
+              <div key={index} className="step-analysis">
                 <div className="step-header">
                   <div className="step-info">
                     <span className="step-number">Step {index + 1}</span>
@@ -225,10 +220,10 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                     </div>
                   </div>
                   <button
-                    onClick={() => toggleStepExpansion(analysis.stepId)}
+                    onClick={() => toggleStepExpansion(index)}
                     className="expand-btn"
                   >
-                    {expandedStep === analysis.stepId ? (
+                    {expandedStepIndex === index ? (
                       <ChevronUp size={20} />
                     ) : (
                       <ChevronDown size={20} />
@@ -236,7 +231,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                   </button>
                 </div>
 
-                {expandedStep === analysis.stepId && (
+                {expandedStepIndex === index && (
                   <div className="step-details">
                     <div className="conversation-flow">
                       {/* NPC Message */}
@@ -247,14 +242,12 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                           </div>
                         </div>
                         <button
-                          onClick={() =>
-                            generateBetterResponse(analysis.stepId)
-                          }
+                          onClick={() => generateBetterResponse()}
                           className="analysis-btn better-response"
-                          disabled={loadingBetterResponse === analysis.stepId}
+                          disabled={loadingBetterResponse}
                         >
                           <Lightbulb size={16} />
-                          {loadingBetterResponse === analysis.stepId
+                          {loadingBetterResponse
                             ? "Generating..."
                             : "Better Response"}
                         </button>
@@ -268,14 +261,12 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                           </div>
                         </div>
                         <button
-                          onClick={() => generateFeedback(analysis.stepId)}
+                          onClick={() => generateFeedback()}
                           className="analysis-btn feedback"
-                          disabled={loadingFeedback === analysis.stepId}
+                          disabled={loadingFeedback}
                         >
                           <MessageSquare size={16} />
-                          {loadingFeedback === analysis.stepId
-                            ? "Analyzing..."
-                            : "Get Feedback"}
+                          {loadingFeedback ? "Analyzing..." : "Get Feedback"}
                         </button>
                       </div>
                     </div>

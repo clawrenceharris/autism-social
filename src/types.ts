@@ -85,6 +85,7 @@ export interface DailyChallenge {
 export interface Option {
   responseLabel: string;
   eventType: string;
+  isBest: boolean;
   nextStepId: string;
   scores: { [key: string]: number };
 }
@@ -140,7 +141,10 @@ export interface ScoreSummary {
   social_awareness?: number;
   self_advocacy?: number;
 }
-
+export interface DialogueContext {
+  scores: ScoreSummary;
+  path: DialogueOption[];
+}
 export interface CreateDialogueData {
   scenario_id: string;
   title: string;

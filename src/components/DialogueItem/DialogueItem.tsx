@@ -5,7 +5,7 @@ import type { ReactElement } from "react";
 import { BookmarkPlus, Play } from "lucide-react";
 import ProgressIndicator from "../ProgressIndicator";
 import { useNavigate } from "react-router-dom";
-import { useDialogueStore } from "../../store/useDialogueStore";
+import { usePlayScenarioStore } from "../../store/usePlayScenarioStore";
 
 interface RecommendedItemProps {
   dialogue: DialogueType;
@@ -22,7 +22,7 @@ const DialogueItem = ({
 }: RecommendedItemProps) => {
   const navigate = useNavigate();
   const { scenarios, loading } = useScenarioStore();
-  const { setDialogue } = useDialogueStore();
+  const { setDialogue } = usePlayScenarioStore();
   if (loading) {
     return (
       <>

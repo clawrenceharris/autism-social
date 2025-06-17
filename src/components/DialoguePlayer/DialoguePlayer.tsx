@@ -59,6 +59,7 @@ const DialoguePlayer = ({
   const [state, send] = useMachine(machine);
   const { userFields, setDialogue } = usePlayScenarioStore();
   const [messages, setMessages] = useState<Message[]>([]);
+
   const [customInput, setCustomInput] = useState("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [isVolumeOn, setIsVolumeOn] = useState<boolean>(false);
@@ -228,9 +229,10 @@ const DialoguePlayer = ({
   }, [audioCache]);
 
   const handleOptionClick = async (opt: DialogueOption) => {
+    if (!currentStep) return;
     // Add user message
     const userMessage: UserMessage = {
-      id: `user-${Date.now()}`,
+      id: currentStep.id,
       speaker: "user",
       text: renderMessage(opt.label),
       scoring: opt.scoring,
@@ -243,13 +245,13 @@ const DialoguePlayer = ({
 
     // Simulate AI thinking time
     await new Promise((resolve) =>
-      setTimeout(resolve, 1000 + Math.random() * 1000)
+      setTimeout(resolve, 500 + Math.random() * 1000)
     );
 
     // Send event to state machine
     send({ type: opt.event });
 
-    // Get next step and add NPC response
+    // Get next step and add actor response
     setTimeout(() => {
       const currentStep = dialogue?.steps.find((step) => step.id === opt.next);
 
@@ -301,10 +303,10 @@ const DialoguePlayer = ({
   useEffect(() => {
     if (state.status === "done" && !isComplete) {
       if (progress?.map((p) => p.dialogue_id).includes(dialogue.id)) {
-        updateDialogueProgress(user.user_id, dialogue.id, state.context);
+        updateDialogueProgress(user.user_id, dialogue.id, state.context.scores);
         setIsComplete(true);
       } else {
-        addDialogueProgress(user.user_id, dialogue.id, state.context);
+        addDialogueProgress(user.user_id, dialogue.id, state.context.scores);
         setIsComplete(true);
       }
     }
@@ -323,8 +325,7 @@ const DialoguePlayer = ({
   const handleResultsClick = () => {
     openModal(
       <DialogueCompletionModal
-        scores={state.context}
-        dialogueSteps={dialogue.steps}
+        dialogueContext={state.context}
         userMessages={messages.filter((m) => m.speaker === "user")}
         actorMessages={messages.filter((m) => m.speaker === "npc")}
       />,

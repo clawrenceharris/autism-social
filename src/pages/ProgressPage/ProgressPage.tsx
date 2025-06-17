@@ -52,11 +52,11 @@ const ProgressPage = () => {
     return (
       progress?.reduce<ScoreSummary>(
         (acc, p) => ({
-          assertiveness: p.assertiveness + acc.assertiveness,
-          clarity: p.clarity + acc.clarity,
-          empathy: p.empathy + acc.empathy,
-          social_awareness: p.social_awareness + acc.social_awareness,
-          self_advocacy: p.self_advocacy + acc.self_advocacy,
+          assertiveness: p.assertiveness + (acc.assertiveness || 0),
+          clarity: p.clarity + (acc.clarity || 0),
+          empathy: p.empathy + (acc.empathy || 0),
+          social_awareness: p.social_awareness + (acc.social_awareness || 0),
+          self_advocacy: p.self_advocacy + (acc.self_advocacy || 0),
         }),
         {
           assertiveness: 0,
@@ -109,8 +109,8 @@ const ProgressPage = () => {
         description: "Achieved a score of 80+ in Empathy",
         icon: <Heart />,
         category: "skill",
-        earned: scores.empathy >= 80,
-        earnedDate: scores.empathy >= 80 ? "May 18, 2025" : undefined,
+        earned: (scores.empathy || 0) >= 80,
+        earnedDate: (scores.empathy || 0) >= 80 ? "May 18, 2025" : undefined,
       },
       {
         id: "3",
@@ -127,8 +127,8 @@ const ProgressPage = () => {
         description: "Achieved a score of 80+ in Clarity",
         icon: <Lightbulb />,
         category: "skill",
-        earned: scores.clarity >= 80,
-        earnedDate: scores.clarity >= 80 ? "May 22, 2025" : undefined,
+        earned: (scores.clarity || 0) >= 80,
+        earnedDate: (scores.clarity || 0) >= 80 ? "May 22, 2025" : undefined,
       },
       {
         id: "5",
@@ -144,8 +144,9 @@ const ProgressPage = () => {
         description: "Achieved a score of 80+ in Assertiveness",
         icon: <Target />,
         category: "skill",
-        earned: scores.assertiveness >= 80,
-        earnedDate: scores.assertiveness >= 80 ? "May 25, 2025" : undefined,
+        earned: (scores.assertiveness || 0) >= 80,
+        earnedDate:
+          (scores.assertiveness || 0) >= 80 ? "May 25, 2025" : undefined,
       },
       {
         id: "7",
@@ -153,8 +154,9 @@ const ProgressPage = () => {
         description: "Achieved a score of 90+ in Social Awareness",
         icon: <Brain />,
         category: "mastery",
-        earned: scores.social_awareness >= 90,
-        earnedDate: scores.social_awareness >= 90 ? "May 28, 2025" : undefined,
+        earned: (scores.social_awareness || 0) >= 90,
+        earnedDate:
+          (scores.social_awareness || 0) >= 90 ? "May 28, 2025" : undefined,
       },
       {
         id: "8",
@@ -162,8 +164,9 @@ const ProgressPage = () => {
         description: "Achieved a score of 80+ in Self-Advocacy",
         icon: <Award />,
         category: "skill",
-        earned: scores.self_advocacy >= 80,
-        earnedDate: scores.self_advocacy >= 80 ? "May 30, 2025" : undefined,
+        earned: (scores.self_advocacy || 0) >= 80,
+        earnedDate:
+          (scores.self_advocacy || 0) >= 80 ? "May 30, 2025" : undefined,
       },
     ]);
   }, [progress, scores]);
@@ -238,11 +241,11 @@ const ProgressPage = () => {
 
   // Calculate stats
   const totalPoints =
-    scores.clarity +
-    scores.empathy +
-    scores.assertiveness +
-    scores.social_awareness +
-    scores.self_advocacy;
+    (scores.clarity || 0) +
+    (scores.empathy || 0) +
+    (scores.assertiveness || 0) +
+    (scores.social_awareness || 0) +
+    (scores.self_advocacy || 0);
   const earnedAchievements = achievements.filter((a) => a.earned).length;
   const completedScenarios = useMemo(
     () => progress?.filter((p) => p.user_id === user.id).length,
@@ -379,14 +382,20 @@ const ProgressPage = () => {
                   </div>
                   <h3 className="skill-name">Clarity</h3>
                 </div>
-                <div className={`skill-score ${getScoreLevel(scores.clarity)}`}>
+                <div
+                  className={`skill-score ${getScoreLevel(
+                    scores.clarity || 0
+                  )}`}
+                >
                   {scores.clarity}%
                 </div>
               </div>
 
               <div className="progress-bar-container">
                 <div
-                  className={`progress-bar ${getScoreLevel(scores.clarity)}`}
+                  className={`progress-bar ${getScoreLevel(
+                    scores.clarity || 0
+                  )}`}
                   style={{ width: `${scores.clarity}%` }}
                 ></div>
               </div>
@@ -402,7 +411,7 @@ const ProgressPage = () => {
                   Improvement Tips
                 </h4>
                 <p className="tips-content">
-                  {getImprovementTip("clarity", scores.clarity)}
+                  {getImprovementTip("clarity", scores.clarity || 0)}
                 </p>
               </div>
             </div>
@@ -416,14 +425,20 @@ const ProgressPage = () => {
                   </div>
                   <h3 className="skill-name">Empathy</h3>
                 </div>
-                <div className={`skill-score ${getScoreLevel(scores.empathy)}`}>
+                <div
+                  className={`skill-score ${getScoreLevel(
+                    scores.empathy || 0
+                  )}`}
+                >
                   {scores.empathy}%
                 </div>
               </div>
 
               <div className="progress-bar-container">
                 <div
-                  className={`progress-bar ${getScoreLevel(scores.empathy)}`}
+                  className={`progress-bar ${getScoreLevel(
+                    scores.empathy || 0
+                  )}`}
                   style={{ width: `${scores.empathy}%` }}
                 ></div>
               </div>
@@ -440,7 +455,7 @@ const ProgressPage = () => {
                   Improvement Tips
                 </h4>
                 <p className="tips-content">
-                  {getImprovementTip("empathy", scores.empathy)}
+                  {getImprovementTip("empathy", scores.empathy || 0)}
                 </p>
               </div>
             </div>
@@ -456,7 +471,7 @@ const ProgressPage = () => {
                 </div>
                 <div
                   className={`skill-score ${getScoreLevel(
-                    scores.assertiveness
+                    scores.assertiveness || 0
                   )}`}
                 >
                   {scores.assertiveness}%
@@ -466,7 +481,7 @@ const ProgressPage = () => {
               <div className="progress-bar-container">
                 <div
                   className={`progress-bar ${getScoreLevel(
-                    scores.assertiveness
+                    scores.assertiveness || 0
                   )}`}
                   style={{ width: `${scores.assertiveness}%` }}
                 ></div>
@@ -483,7 +498,10 @@ const ProgressPage = () => {
                   Improvement Tips
                 </h4>
                 <p className="tips-content">
-                  {getImprovementTip("assertiveness", scores.assertiveness)}
+                  {getImprovementTip(
+                    "assertiveness",
+                    scores.assertiveness || 0
+                  )}
                 </p>
               </div>
             </div>
@@ -499,7 +517,7 @@ const ProgressPage = () => {
                 </div>
                 <div
                   className={`skill-score ${getScoreLevel(
-                    scores.social_awareness
+                    scores.social_awareness || 0
                   )}`}
                 >
                   {scores.social_awareness}%
@@ -509,7 +527,7 @@ const ProgressPage = () => {
               <div className="progress-bar-container">
                 <div
                   className={`progress-bar ${getScoreLevel(
-                    scores.social_awareness
+                    scores.social_awareness || 0
                   )}`}
                   style={{ width: `${scores.social_awareness}%` }}
                 ></div>
@@ -529,7 +547,7 @@ const ProgressPage = () => {
                 <p className="tips-content">
                   {getImprovementTip(
                     "social_awareness",
-                    scores.social_awareness
+                    scores.social_awareness || 0
                   )}
                 </p>
               </div>
@@ -546,7 +564,7 @@ const ProgressPage = () => {
                 </div>
                 <div
                   className={`skill-score ${getScoreLevel(
-                    scores.self_advocacy
+                    scores.self_advocacy || 0
                   )}`}
                 >
                   {scores.self_advocacy}%
@@ -556,7 +574,7 @@ const ProgressPage = () => {
               <div className="progress-bar-container">
                 <div
                   className={`progress-bar ${getScoreLevel(
-                    scores.self_advocacy
+                    scores.self_advocacy || 0
                   )}`}
                   style={{ width: `${scores.self_advocacy}%` }}
                 ></div>
@@ -573,7 +591,10 @@ const ProgressPage = () => {
                   Improvement Tips
                 </h4>
                 <p className="tips-content">
-                  {getImprovementTip("self_advocacy", scores.self_advocacy)}
+                  {getImprovementTip(
+                    "self_advocacy",
+                    scores.self_advocacy || 0
+                  )}
                 </p>
               </div>
             </div>

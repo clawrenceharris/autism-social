@@ -9,6 +9,7 @@ interface ProgressStore {
   loading: boolean;
   error: string | null;
   setScores: () => void;
+  fetchProgress: (userId: string) => void;
   updateProgressValue: (category: keyof UserProgress, delta: number) => void;
   calcAverageScore: (progress: UserProgress[]) => number;
   resetProgress: () => void;

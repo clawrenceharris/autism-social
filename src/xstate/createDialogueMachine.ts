@@ -1,9 +1,9 @@
 import { assign, createMachine } from "xstate";
 import type {
+  DialogueContext,
   DialogueEvent,
   DialogueStep,
   ScoreCategory,
-  ScoreSummary,
 } from "../types";
 
 export function createDialogueMachine(
@@ -26,22 +26,19 @@ export function createDialogueMachine(
     for (const opt of step.options) {
       transitions[opt.event] = {
         target: opt.next,
-        actions: opt.scoring
-          ? assign(({ context }: { context: ScoreSummary }) => {
-              const updated = { ...context };
+        actions: assign(({ context }: { context: DialogueContext }) => {
+          const updated = { ...context };
+          updated.path.push(opt);
+          for (const cat of categories) {
+            if (opt.scoring[cat]) {
+              updated.scores[cat] = updated.scores[cat]
+                ? updated.scores[cat] + opt.scoring[cat]
+                : opt.scoring[cat];
+            }
+          }
 
-              for (const cat of categories) {
-                if (opt.scoring[cat]) {
-                  updated[cat] = updated[cat]
-                    ? updated[cat] + opt.scoring[cat]
-                    : opt.scoring[cat];
-                  console.log(updated);
-                }
-              }
-
-              return updated;
-            })
-          : undefined,
+          return updated;
+        }),
       };
     }
 
@@ -68,9 +65,9 @@ export function createDialogueMachine(
   return createMachine({
     types: {
       events: {} as DialogueEvent,
-      context: {} as ScoreSummary,
+      context: {} as DialogueContext,
     },
-    context: {},
+    context: { path: [], scores: {} },
     id,
     initial: steps[0].id,
 
