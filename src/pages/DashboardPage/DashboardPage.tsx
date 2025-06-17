@@ -27,7 +27,12 @@ const DashboardPage = () => {
     recommendedDialogues: recommendations = [],
     loading: recommendationsLoading,
   } = useRecommendationsStore();
-  const { progress, calcAverageScore, getTotalScore } = useProgressStore();
+  const {
+    progress,
+
+    totalPoints,
+    averageScore,
+  } = useProgressStore();
   const {
     loading: challengesLoading,
     fetchDailyChallenges,
@@ -57,7 +62,6 @@ const DashboardPage = () => {
 
   // Get today's challenge
   const todayChallenge = getDayChallenge(new Date().getDay());
-  const totalPoints = getTotalScore();
 
   return (
     <div className="dashboard-container">
@@ -88,7 +92,7 @@ const DashboardPage = () => {
             <div className="stat-label">Best Streak</div>
           </Link>
           <Link to="/progress" className="stat-item">
-            <div className="stat-number">{calcAverageScore()}%</div>
+            <div className="stat-number">{averageScore}%</div>
             <div className="stat-label">Average Score</div>
           </Link>
         </div>

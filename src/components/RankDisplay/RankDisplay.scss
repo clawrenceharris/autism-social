@@ -7,55 +7,55 @@
   align-items: center;
   gap: $spacing-4;
   width: 100%;
-  
+
   &.small {
     .rank-badge {
       width: 60px;
       height: 60px;
       font-size: 1.5rem;
     }
-    
+
     .rank-title {
       font-size: 1rem;
     }
-    
+
     .rank-level {
       font-size: 0.875rem;
     }
   }
-  
+
   &.medium {
     .rank-badge {
       width: 80px;
       height: 80px;
       font-size: 2rem;
     }
-    
+
     .rank-title {
       font-size: 1.25rem;
     }
-    
+
     .rank-level {
       font-size: 1rem;
     }
   }
-  
+
   &.large {
     .rank-badge {
       width: 120px;
       height: 120px;
       font-size: 3rem;
     }
-    
+
     .rank-title {
       font-size: 1.5rem;
     }
-    
+
     .rank-level {
       font-size: 1.25rem;
     }
   }
-  
+
   .rank-badge {
     display: flex;
     justify-content: center;
@@ -65,7 +65,7 @@
     box-shadow: 0 8px 30px rgba($color-primary, 0.3);
     position: relative;
     transition: all 0.3s ease;
-    
+
     &::before {
       content: "";
       position: absolute;
@@ -84,13 +84,13 @@
       animation: rotate 3s linear infinite;
       opacity: 0.7;
     }
-    
+
     .rank-icon {
       font-size: inherit;
       line-height: 1;
     }
   }
-  
+
   .rank-info {
     display: flex;
     flex-direction: column;
@@ -98,12 +98,12 @@
     gap: $spacing-1;
     text-align: center;
   }
-  
+
   .rank-title {
     font-weight: 700;
     color: var(--rank-color, $color-primary);
   }
-  
+
   .rank-level {
     color: $color-gray-600;
     font-weight: 500;
@@ -113,36 +113,42 @@
 .rank-progress {
   width: 100%;
   margin: $spacing-4 0;
-  
+
   .progress-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: white;
+    gap: 2rem;
+    padding: $spacing-2;
+    border-radius: $border-radius-full;
     margin-bottom: $spacing-2;
-    
+
     .current-points {
       font-weight: 700;
       color: $color-gray-800;
     }
-    
+
     .next-rank {
       color: $color-gray-600;
       font-size: 0.9rem;
-      
+
       .highlight {
         color: var(--rank-color, $color-primary);
         font-weight: 600;
       }
     }
   }
-  
+
   .progress-bar-container {
-    height: 12px;
-    background: $color-gray-200;
+    height: 20px;
+    background: $color-white;
     border-radius: $border-radius-full;
     overflow: hidden;
+    background-color: $color-gray-100;
+
     position: relative;
-    
+
     .progress-bar {
       height: 100%;
       width: 0%; // Will be set via JS
@@ -154,7 +160,7 @@
       );
       position: relative;
       transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-      
+
       &::after {
         content: "";
         position: absolute;
@@ -171,7 +177,7 @@
         animation: shimmer 2s infinite;
       }
     }
-    
+
     .progress-percentage {
       position: absolute;
       top: 50%;
@@ -183,17 +189,17 @@
       text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
     }
   }
-  
+
   .progress-details {
     display: flex;
     justify-content: space-between;
     margin-top: $spacing-2;
     font-size: 0.875rem;
-    
+
     .remaining-points {
       color: $color-gray-600;
     }
-    
+
     .total-required {
       color: $color-gray-600;
     }
@@ -212,7 +218,7 @@
   align-items: center;
   z-index: 1000;
   animation: fadeIn 0.5s ease-out;
-  
+
   .celebration-content {
     background: $color-white;
     border-radius: $border-radius-xl;
@@ -222,7 +228,7 @@
     text-align: center;
     position: relative;
     animation: scaleIn 0.5s ease-out;
-    
+
     .confetti {
       position: absolute;
       width: 100%;
@@ -231,7 +237,7 @@
       left: 0;
       pointer-events: none;
     }
-    
+
     .rank-badge {
       width: 120px;
       height: 120px;
@@ -245,7 +251,7 @@
       position: relative;
       font-size: 3rem;
       animation: pulse 2s infinite;
-      
+
       &::before {
         content: "";
         position: absolute;
@@ -264,7 +270,7 @@
         animation: rotate 3s linear infinite;
       }
     }
-    
+
     .celebration-title {
       font-size: 2rem;
       font-weight: 800;
@@ -278,32 +284,32 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    
+
     .celebration-message {
       font-size: 1.1rem;
       color: $color-gray-600;
       margin-bottom: $spacing-6;
     }
-    
+
     .rank-details {
       background: $color-gray-50;
       border-radius: $border-radius-lg;
       padding: $spacing-4;
       margin-bottom: $spacing-6;
-      
+
       .new-rank {
         font-size: 1.5rem;
         font-weight: 700;
         color: var(--rank-color, $color-primary);
         margin-bottom: $spacing-2;
       }
-      
+
       .rank-perks {
         font-size: 0.95rem;
         color: $color-gray-700;
       }
     }
-    
+
     .celebration-actions {
       display: flex;
       justify-content: center;
@@ -331,7 +337,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     box-shadow: 0 8px 30px rgba(var(--rank-color, $color-primary), 0.3);
   }
@@ -382,28 +389,28 @@
       }
     }
   }
-  
+
   .rank-up-celebration {
     .celebration-content {
       padding: $spacing-6;
-      
+
       .rank-badge {
         width: 100px;
         height: 100px;
         font-size: 2.5rem;
       }
-      
+
       .celebration-title {
         font-size: 1.75rem;
       }
-      
+
       .celebration-message {
         font-size: 1rem;
       }
-      
+
       .rank-details {
         padding: $spacing-3;
-        
+
         .new-rank {
           font-size: 1.25rem;
         }

@@ -15,7 +15,7 @@ body {
 
 body {
   line-height: 1.5;
-  background-color: #f9fafb;
+  background-color: #f4f8fc;
   font-family: "Lexend Deca", sans-serif;
 }
 
@@ -132,10 +132,8 @@ p {
 
 .description,
 small {
-  color: #4b5563;
-  margin-bottom: 2rem;
-  font-size: 1rem;
-  font-weight: 300;
+  color: #6b7280;
+  font-weight: 400;
 }
 
 a {
@@ -146,8 +144,7 @@ a {
 }
 
 .form label {
-  font-family: "Dongle", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Dongle", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 1.7rem;
   font-weight: 500;
   color: #374151;
@@ -165,6 +162,7 @@ a {
   flex: 1;
   padding: 0.75rem;
   font-size: 0.875rem;
+  line-height: 1.25rem;
   color: #111827;
   background-color: #f3f4f6;
   border: 2px solid #edeff1;
@@ -233,11 +231,9 @@ button {
   border: none;
   background: none;
   cursor: pointer;
-  font-family: "Dongle", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Dongle", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 1.5rem;
-  font-family: "Dongle", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Dongle", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 .squircle-btn {
@@ -250,8 +246,7 @@ button {
   width: 40px;
   height: 40px;
   border-radius: 0.5rem !important;
-  font-family: "Dongle", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Dongle", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   transition: 0.2s ease-out;
   cursor: pointer;
 }
@@ -264,15 +259,13 @@ button {
 .squircle-btn.primary {
   color: #54cbe2;
 }
-.squircle-btn.primary:hover,
-.squircle-btn.primary.selected {
+.squircle-btn.primary:hover, .squircle-btn.primary.selected {
   background-color: #e3f3fe;
 }
 .squircle-btn.secondary {
   color: #c893fb;
 }
-.squircle-btn.secondary:hover,
-.squircle-btn.secondary.selected {
+.squircle-btn.secondary:hover, .squircle-btn.secondary.selected {
   background-color: #f3e8ff;
 }
 .squircle-btn.danger {
@@ -291,8 +284,7 @@ button {
   padding: 0.2rem 1.5rem;
   font-size: 1.8rem;
   border-radius: 9999px;
-  font-family: "Dongle", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Dongle", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
@@ -423,4 +415,4 @@ button {
   align-items: stretch;
   gap: 1rem;
   width: 100%;
-} /*# sourceMappingURL=global.css.map */
+}/*# sourceMappingURL=global.css.map */

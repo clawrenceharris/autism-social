@@ -1,7 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import { FormLayout } from "../../components";
 import { useState } from "react";
-import { signIn, getUserRole } from "../../services/auth";
+import { signIn } from "../../services/auth";
 import "./LoginPage.scss";
 import { useErrorHandler } from "../../hooks/useErrorHandler";
 
@@ -14,7 +14,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { handleError } = useErrorHandler({ component: 'LoginPage' });
+  const { handleError } = useErrorHandler({ component: "LoginPage" });
 
   const handleSubmit = async (data: LoginFormValues) => {
     try {
@@ -26,17 +26,9 @@ const LoginPage = () => {
       if (!user) {
         throw new Error("No user data received");
       }
-
-      const { role, error: roleError } = await getUserRole(user.id);
-
-      if (roleError) {
-        console.error("Error fetching user role:", roleError);
-      }
-
-      const redirectPath = role === "admin" ? "/admin" : "/";
-      navigate(redirectPath, { replace: true });
+      navigate("/", { replace: true });
     } catch (err) {
-      const normalizedError = handleError(err, 'login');
+      const normalizedError = handleError(err, "login");
       setError(normalizedError.message);
     } finally {
       setIsLoading(false);

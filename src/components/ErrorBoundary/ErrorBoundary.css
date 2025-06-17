@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
 .error-boundary {
   min-height: 100vh;
-  background: #f9fafb;
+  background: #f4f8fc;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -62,7 +62,7 @@
 }
 .error-boundary__error-text {
   padding: 1rem;
-  background: #f9fafb;
+  background: #f4f8fc;
   border-radius: 0 0 0.5rem 0.5rem;
   font-family: "Courier New", monospace;
   font-size: 0.875rem;

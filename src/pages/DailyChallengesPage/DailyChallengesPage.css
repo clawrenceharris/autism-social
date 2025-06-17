@@ -1,6 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
 .daily-challenges-container {
   padding: 1rem;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 .daily-challenges-container .challenges-header {
   text-align: center;
@@ -16,6 +18,79 @@
   max-width: 600px;
   margin: 0 auto;
 }
+.daily-challenges-container .challenges-content {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+.daily-challenges-container .timeline-section {
+  width: 100%;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.daily-challenges-container .timeline-section.hidden {
+  transform: translateX(-100%);
+}
+.daily-challenges-container .challenge-detail-section {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10;
+}
+.daily-challenges-container .challenge-detail-section.visible {
+  transform: translateX(0);
+}
+.daily-challenges-container .challenge-detail-section .challenge-detail-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-bottom: 2px solid #f3f4f6;
+  background: #ffffff;
+  border-radius: 1rem 1rem 0 0;
+}
+.daily-challenges-container .challenge-detail-section .challenge-detail-header h2 {
+  margin: 0;
+  color: #1f2937;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5rem;
+}
+.daily-challenges-container .challenge-detail-section .challenge-detail-header .close-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 0.5rem;
+  background: #f3f4f6;
+  color: #4b5563;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.daily-challenges-container .challenge-detail-section .challenge-detail-header .close-button:hover {
+  background: #edeff1;
+  color: #1f2937;
+  transform: scale(1.05);
+}
+.daily-challenges-container .challenge-detail-section .challenge-detail-content {
+  padding: 1.5rem;
+  height: calc(100% - 80px);
+  overflow-y: auto;
+}
 .daily-challenges-container .week-progress {
   background-color: #ffffff;
   border-radius: 1rem;
@@ -23,8 +98,6 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
   text-align: center;
-  height: 100%;
-  flex: 1;
 }
 .daily-challenges-container .week-progress .week-info {
   margin-bottom: 1.5rem;
@@ -32,7 +105,7 @@
 .daily-challenges-container .week-progress .week-info .week-dates {
   font-size: 1.1rem;
   color: #374151;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 .daily-challenges-container .week-progress .week-info .completion-stats {
   display: flex;
@@ -49,7 +122,7 @@
   align-items: center;
   gap: 0.25rem;
   padding: 0.75rem;
-  background: #f9fafb;
+  background: #f4f8fc;
   border-radius: 0.5rem;
   min-width: 100px;
 }
@@ -93,15 +166,17 @@
   gap: 0.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  text-decoration: none;
-  color: inherit;
 }
-.daily-challenges-container .week-progress .challenge-timeline .challenge-node:hover {
+.daily-challenges-container .week-progress .challenge-timeline .challenge-node:hover:not(.locked) {
   transform: translateY(-4px);
 }
-.daily-challenges-container .week-progress .challenge-timeline .challenge-node:hover .node-circle {
+.daily-challenges-container .week-progress .challenge-timeline .challenge-node:hover:not(.locked) .node-circle {
   box-shadow: 0 8px 20px rgba(84, 203, 226, 0.3);
   transform: scale(1.1);
+}
+.daily-challenges-container .week-progress .challenge-timeline .challenge-node.locked {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 .daily-challenges-container .week-progress .challenge-timeline .challenge-node .node-circle {
   width: 60px;
@@ -132,7 +207,6 @@
   background: #f3f4f6;
   border-color: #edeff1;
   color: #9ca3af;
-  cursor: not-allowed;
 }
 .daily-challenges-container .week-progress .challenge-timeline .challenge-node .node-info {
   text-align: center;
@@ -164,39 +238,19 @@
   background: #fee2e2;
   color: #dc2626;
 }
-.daily-challenges-container .week-progress .challenge-timeline .challenge-node.locked {
-  pointer-events: none;
-}
-.daily-challenges-container .week-progress .challenge-timeline .challenge-node.locked .node-info {
-  opacity: 0.5;
-}
-.daily-challenges-container .challenge-details {
-  background-color: #ffffff;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  min-height: 60vh;
-  position: sticky;
-  flex: 1;
-  top: 100px;
-}
-.daily-challenges-container .challenge-details .no-challenge {
+.daily-challenges-container .no-challenge {
   text-align: center;
   padding: 2rem;
   color: #6b7280;
 }
-.daily-challenges-container .challenge-details .no-challenge .empty-icon {
+.daily-challenges-container .no-challenge .empty-icon {
   font-size: 3rem;
   margin-bottom: 1rem;
   opacity: 0.5;
 }
-.daily-challenges-container .challenge-details .no-challenge .empty-message {
+.daily-challenges-container .no-challenge .empty-message {
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
-}
-.daily-challenges-container .challenge-details .no-challenge .empty-description {
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
 }
 .daily-challenges-container .loading-state {
   text-align: center;
@@ -226,6 +280,7 @@
   .daily-challenges-container .week-progress .challenge-timeline {
     flex-direction: column;
     gap: 1rem;
+    padding: 1rem 0;
   }
   .daily-challenges-container .week-progress .challenge-timeline::before {
     width: 3px;
@@ -234,16 +289,53 @@
     top: 0;
     bottom: 0;
     transform: translateX(-50%);
+    background: linear-gradient(180deg, #edeff1 0%, #54cbe2 50%, #edeff1 100%);
   }
   .daily-challenges-container .week-progress .challenge-timeline .challenge-node {
-    margin: 1rem;
+    margin: 0.5rem 0;
   }
   .daily-challenges-container .week-progress .challenge-timeline .challenge-node .node-circle {
     width: 50px;
     height: 50px;
   }
-  .daily-challenges-container .week-progress .challenge-timeline .challenge-node .node-info .challenge-title {
-    white-space: normal;
-    max-width: 150px;
+  .daily-challenges-container .week-progress .challenge-timeline .challenge-node .node-info .day-name {
+    font-size: 0.8rem;
+  }
+  .daily-challenges-container .week-progress .challenge-timeline .challenge-node .node-info .difficulty-badge {
+    font-size: 0.6rem;
+  }
+  .daily-challenges-container .challenge-detail-section .challenge-detail-header {
+    padding: 1rem;
+  }
+  .daily-challenges-container .challenge-detail-section .challenge-detail-header h2 {
+    font-size: 1.25rem;
+  }
+  .daily-challenges-container .challenge-detail-section .challenge-detail-header .close-button {
+    width: 36px;
+    height: 36px;
+  }
+  .daily-challenges-container .challenge-detail-section .challenge-detail-content {
+    padding: 1rem;
+  }
+}
+@media (min-width: 768px) {
+  .daily-challenges-container .week-progress .challenge-timeline {
+    flex-direction: row;
+  }
+  .daily-challenges-container .week-progress .challenge-timeline::before {
+    width: 100%;
+    height: 3px;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(90deg, #edeff1 0%, #54cbe2 50%, #edeff1 100%);
+  }
+  .daily-challenges-container .week-progress .challenge-timeline .challenge-node {
+    margin: 0;
+  }
+  .daily-challenges-container .week-progress .challenge-timeline .challenge-node .node-circle {
+    width: 60px;
+    height: 60px;
   }
 }/*# sourceMappingURL=DailyChallengesPage.css.map */
