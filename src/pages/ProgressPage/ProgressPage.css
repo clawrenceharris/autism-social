@@ -325,7 +325,6 @@
 .progress-page .skills-section .skill-card .skill-description {
   color: #4b5563;
   font-size: 0.95rem;
-  line-height: 1.5;
   margin-bottom: 1rem;
 }
 .progress-page .skills-section .skill-card .improvement-tips {
@@ -351,7 +350,6 @@
 .progress-page .skills-section .skill-card .improvement-tips .tips-content {
   font-size: 0.9rem;
   color: #4b5563;
-  line-height: 1.5;
 }
 .progress-page .achievements-section {
   background-color: #ffffff;
@@ -480,7 +478,6 @@
   color: #4b5563;
   max-width: 600px;
   margin: 0 auto 1.5rem;
-  line-height: 1.6;
 }
 .progress-page .cta-section .cta-buttons {
   display: flex;

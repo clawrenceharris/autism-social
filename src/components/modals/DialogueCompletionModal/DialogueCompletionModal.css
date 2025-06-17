@@ -41,7 +41,6 @@
   font-size: 1.1rem;
   color: #4b5563;
   max-width: 500px;
-  line-height: 1.6;
 }
 .completion-header .overall-score {
   display: flex;
@@ -293,7 +292,6 @@
 .progress-section .progress-item .category-description {
   font-size: 0.9rem;
   color: #4b5563;
-  line-height: 1.5;
   font-style: italic;
 }
 
@@ -433,9 +431,6 @@
   padding: 1rem;
   border-radius: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-.analysis-section .step-analysis .step-details .conversation-flow .message-analysis .message-bubble .message-text {
-  line-height: 1.5;
 }
 .analysis-section .step-analysis .step-details .conversation-flow .message-analysis .analysis-btn {
   display: flex;

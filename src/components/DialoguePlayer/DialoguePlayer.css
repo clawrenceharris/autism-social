@@ -167,7 +167,6 @@
 .response-section {
   position: fixed;
   bottom: 0;
-  max-width: 1000px;
   width: 100%;
   padding: 1rem;
 }
@@ -187,7 +186,8 @@
   box-shadow: 0 3px 4px 1px rgba(0, 0, 0, 0.08);
   text-align: left;
   border-color: #54cbe2;
-  min-width: 350px;
+  max-width: 280px;
+  min-width: 250px;
   max-height: 100px;
   background: rgba(84, 203, 226, 0.2);
   padding: 0.75rem 1.5rem;
@@ -215,7 +215,14 @@
   color: #ffffff;
   transition: color 0.3s ease;
 }
+@media (min-width: 768px) {
+  .response-section .response-options {
+    justify-content: center;
+  }
+}
 .response-section .custom-response {
+  max-width: 1000px;
+  margin: auto;
   margin-top: 1rem;
   padding-top: 1rem;
 }

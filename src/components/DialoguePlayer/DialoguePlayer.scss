@@ -172,7 +172,6 @@
 .response-section {
   position: fixed;
   bottom: 0;
-  max-width: 1000px;
   width: 100%;
   padding: $spacing-4;
 
@@ -180,6 +179,7 @@
     @include flex(row, start, center, $spacing-3);
     overflow: scroll;
     padding: $spacing-2;
+
     .response-option {
       background: rgba(255, 255, 255, 0.9);
       border: 2px solid rgba(rgba(255, 255, 255, 0.9), 0.2);
@@ -187,7 +187,8 @@
       box-shadow: 0 3px 4px 1px rgba(#000, 0.08);
       text-align: left;
       border-color: $color-primary;
-      min-width: 350px;
+      max-width: 280px;
+      min-width: 250px;
       max-height: 100px;
       background: rgba($color-primary, 0.2);
       padding: $spacing-3 $spacing-6;
@@ -219,9 +220,14 @@
         transition: color 0.3s ease;
       }
     }
+    @include responsive(md) {
+      justify-content: center;
+    }
   }
 
   .custom-response {
+    max-width: 1000px;
+    margin: auto;
     margin-top: $spacing-4;
     padding-top: $spacing-4;
 

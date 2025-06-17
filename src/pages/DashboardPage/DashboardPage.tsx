@@ -17,6 +17,7 @@ import type { AuthContextType } from "../../types";
 import { useDailyChallengeStore } from "../../store/useDailyChallengeStore";
 import { useEffect } from "react";
 import { useRecommendationsStore } from "../../store";
+import { useProgressStore } from "../../store/useProgressStore";
 
 const DashboardPage = () => {
   const { user, profile } = useOutletContext<AuthContextType>();
@@ -25,7 +26,7 @@ const DashboardPage = () => {
     recommendedDialogues: recommendations = [],
     loading: recommendationsLoading,
   } = useRecommendationsStore();
-
+  const { progress } = useProgressStore();
   const {
     loading: challengesLoading,
     fetchDailyChallenges,
@@ -67,14 +68,6 @@ const DashboardPage = () => {
   ];
 
   // Get user's display name from profile or fallback to email
-  const getUserDisplayName = () => {
-    if (profile?.first_name) return profile.first_name;
-    if (user?.email) {
-      // Extract name from email (before @)
-      return user.email.split("@")[0];
-    }
-    return "User";
-  };
 
   // Get today's challenge
   const todayChallenge = getDayChallenge(new Date().getDay());
@@ -83,7 +76,7 @@ const DashboardPage = () => {
     <div className="dashboard-container">
       <div className="dashboard-header">
         <div className="welcome-section">
-          <h1 className="welcome-message">Hi, {getUserDisplayName()}! 👋</h1>
+          <h1 className="welcome-message">Hi, {profile.first_name}! 👋</h1>
           <p className="description">
             Ready to continue building your social confidence? Let's practice
             some conversations today.
@@ -92,7 +85,7 @@ const DashboardPage = () => {
 
         <div className="quick-stats">
           <div className="stat-item">
-            <div className="stat-number">{mockStats.scenariosCompleted}</div>
+            <div className="stat-number">{progress.length}</div>
             <div className="stat-label">Scenarios Completed</div>
           </div>
           <div className="stat-item">

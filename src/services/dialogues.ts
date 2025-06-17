@@ -95,13 +95,17 @@ export async function addDialogueProgress(
     {
       user_id: userId,
       dialogue_id: dialogueId,
+      assertiveness: 0,
+      clarity: 0,
+      self_advocacy: 0,
+      social_awareness: 0,
+      empathy: 0,
       ...scores,
     }
   );
   if (error) throw error;
   return data;
 }
-
 export async function updateDialogueProgress(
   userId: string,
   dialogueId: string,

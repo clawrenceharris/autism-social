@@ -8,11 +8,10 @@
   border-radius: $border-radius-md;
   @include transition(all);
   margin-bottom: 1rem;
-  max-width: 500px;
+  max-width: 390px;
   cursor: pointer;
   color: black;
-  min-width: 350px;
-  min-height: 130px;
+  min-width: 320px;
   &:hover {
     background: $color-primary-100;
     transform: translateY(-1px);

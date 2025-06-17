@@ -10,11 +10,10 @@
   border-radius: 0.5rem;
   transition: all 0.2s ease;
   margin-bottom: 1rem;
-  max-width: 500px;
+  max-width: 390px;
   cursor: pointer;
   color: black;
-  min-width: 350px;
-  min-height: 130px;
+  min-width: 320px;
 }
 .dialogue-item:hover {
   background: #e3f3fe;

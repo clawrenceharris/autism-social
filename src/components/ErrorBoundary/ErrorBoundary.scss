@@ -17,7 +17,7 @@
   &__icon {
     color: $color-red-600;
     margin-bottom: $spacing-6;
-    
+
     svg {
       filter: drop-shadow(0 4px 8px rgba($color-red-600, 0.2));
     }
@@ -37,7 +37,6 @@
   &__message {
     font-size: 1.1rem;
     color: $color-gray-600;
-    line-height: 1.6;
     margin-bottom: $spacing-6;
   }
 
@@ -46,14 +45,14 @@
     margin: $spacing-4 0;
     border: 1px solid $color-gray-200;
     border-radius: $border-radius-md;
-    
+
     summary {
       padding: $spacing-3;
       background: $color-gray-100;
       cursor: pointer;
       font-weight: 500;
       border-radius: $border-radius-md $border-radius-md 0 0;
-      
+
       &:hover {
         background: $color-gray-200;
       }
@@ -64,7 +63,7 @@
     padding: $spacing-4;
     background: $color-gray-50;
     border-radius: 0 0 $border-radius-md $border-radius-md;
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     font-size: 0.875rem;
     color: $color-red-700;
     overflow-x: auto;
@@ -81,7 +80,7 @@
   &__error-id {
     font-size: 0.875rem;
     color: $color-gray-500;
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     margin-top: $spacing-4;
     padding: $spacing-2;
     background: $color-gray-100;
@@ -107,7 +106,7 @@
 
     &__actions {
       flex-direction: column;
-      
+
       .btn {
         width: 100%;
       }

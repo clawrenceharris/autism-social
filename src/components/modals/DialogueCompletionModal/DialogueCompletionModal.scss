@@ -43,7 +43,6 @@
       font-size: 1.1rem;
       color: $color-gray-600;
       max-width: 500px;
-      line-height: 1.6;
     }
   }
 
@@ -293,7 +292,6 @@
     .category-description {
       font-size: 0.9rem;
       color: $color-gray-600;
-      line-height: 1.5;
       font-style: italic;
     }
   }
@@ -412,10 +410,6 @@
             padding: $spacing-4;
             border-radius: $border-radius-xl;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-            .message-text {
-              line-height: 1.5;
-            }
           }
 
           .analysis-btn {

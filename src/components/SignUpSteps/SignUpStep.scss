@@ -24,7 +24,6 @@
     .welcome-text {
       font-size: 1.1rem;
       color: $color-gray-600;
-      line-height: 1.6;
       max-width: 500px;
       margin: 0 auto;
     }
@@ -75,7 +74,6 @@
 
       p {
         color: $color-gray-600;
-        line-height: 1.6;
         margin-bottom: $spacing-4;
         text-align: center;
       }
@@ -134,7 +132,6 @@
           .checkbox-text {
             font-size: 0.9rem;
             color: $color-gray-700;
-            line-height: 1.5;
 
             .terms-link {
               color: $color-primary;
@@ -182,7 +179,6 @@
 
       p {
         color: $color-gray-700;
-        line-height: 1.6;
         font-size: 1rem;
       }
     }

@@ -36,7 +36,6 @@
 .signup-final-step .welcome-section .welcome-text {
   font-size: 1.1rem;
   color: #4b5563;
-  line-height: 1.6;
   max-width: 500px;
   margin: 0 auto;
 }
@@ -94,7 +93,6 @@
 }
 .signup-final-step .terms-section .terms-content p {
   color: #4b5563;
-  line-height: 1.6;
   margin-bottom: 1rem;
   text-align: center;
 }
@@ -156,7 +154,6 @@
 .signup-final-step .terms-section .terms-content .checkbox-wrapper .custom-checkbox .checkbox-text {
   font-size: 0.9rem;
   color: #374151;
-  line-height: 1.5;
 }
 .signup-final-step .terms-section .terms-content .checkbox-wrapper .custom-checkbox .checkbox-text .terms-link {
   color: #54cbe2;
@@ -189,7 +186,6 @@
 }
 .signup-final-step .motivation-section .motivation-card p {
   color: #374151;
-  line-height: 1.6;
   font-size: 1rem;
 }
 
