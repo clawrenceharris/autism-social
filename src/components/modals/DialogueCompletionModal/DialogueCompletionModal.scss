@@ -1,6 +1,7 @@
 @import "../../../styles/variables";
 @import "../../../styles/mixins";
 
+
 .completion-modal {
   @include flex(column, center, center, $spacing-6);
   padding: $spacing-8;
