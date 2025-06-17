@@ -77,7 +77,7 @@
       background: conic-gradient(
         from 0deg,
         var(--rank-color, $color-primary),
-        lighten(var(--rank-color, $color-primary), 20%),
+        var(--rank-color, $color-primary),
         var(--rank-color, $color-primary)
       );
       z-index: -1;
@@ -150,7 +150,7 @@
       background: linear-gradient(
         90deg,
         var(--rank-color, $color-primary),
-        lighten(var(--rank-color, $color-primary), 20%)
+        var(--rank-color, $color-primary)
       );
       position: relative;
       transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -257,7 +257,7 @@
         background: conic-gradient(
           from 0deg,
           var(--rank-color, $color-primary),
-          lighten(var(--rank-color, $color-primary), 20%),
+          var(--rank-color, $color-primary),
           var(--rank-color, $color-primary)
         );
         z-index: -1;
@@ -272,7 +272,7 @@
       background: linear-gradient(
         135deg,
         var(--rank-color, $color-primary),
-        lighten(var(--rank-color, $color-primary), 20%)
+        var(--rank-color, $color-primary)
       );
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
