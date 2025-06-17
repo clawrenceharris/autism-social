@@ -12,7 +12,7 @@ import {
   Star,
 } from "lucide-react";
 import "./DashboardPage.scss";
-import { ProgressSection, DialogueItem } from "../../components";
+import { ProgressSection, DialogueItem, RankDisplay } from "../../components";
 import type { AuthContextType } from "../../types";
 import { useDailyChallengeStore } from "../../store/useDailyChallengeStore";
 import { useEffect } from "react";
@@ -27,7 +27,7 @@ const DashboardPage = () => {
     recommendedDialogues: recommendations = [],
     loading: recommendationsLoading,
   } = useRecommendationsStore();
-  const { progress, calcAverageScore } = useProgressStore();
+  const { progress, calcAverageScore, getTotalScore } = useProgressStore();
   const {
     loading: challengesLoading,
     fetchDailyChallenges,
@@ -57,6 +57,7 @@ const DashboardPage = () => {
 
   // Get today's challenge
   const todayChallenge = getDayChallenge(new Date().getDay());
+  const totalPoints = getTotalScore();
 
   return (
     <div className="dashboard-container">
@@ -95,6 +96,22 @@ const DashboardPage = () => {
 
       <div className="dashboard-grid">
         <div className="main-content">
+          {/* User Rank Display */}
+          <div className="card-section rank-section">
+            <div className="section-header">
+              <h2>
+                <Award size={20} style={{ marginRight: "0.5rem" }} />
+                Your Rank
+              </h2>
+              <Link to="/progress" className="section-action">
+                View Details <ChevronRight size={16} />
+              </Link>
+            </div>
+            <div className="section-content rank-display-container">
+              <RankDisplay totalPoints={totalPoints} size="medium" />
+            </div>
+          </div>
+
           {/* Daily Challenge*/}
           <div className="card-section challenge-section">
             <div className="section-header">

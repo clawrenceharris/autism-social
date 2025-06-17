@@ -20,7 +20,7 @@ import "./ProgressPage.scss";
 import type { AuthContextType } from "../../types";
 import { useProgressStore } from "../../store/useProgressStore";
 import { useScenarioStore } from "../../store/useScenarioStore";
-import { ProgressIndicator } from "../../components";
+import { ProgressIndicator, RankDisplay } from "../../components";
 import { Link } from "react-router-dom";
 
 interface Achievement {
@@ -39,7 +39,6 @@ const ProgressPage = () => {
     progress,
     loading: progressLoading,
     error: progressError,
-
     fetchProgress,
     calcAverageScore,
     getTotalScore,
@@ -47,6 +46,7 @@ const ProgressPage = () => {
   } = useProgressStore();
   const { fetchScenarios, loading: scenariosLoading } = useScenarioStore();
   const [socialScore, setSocialScore] = useState(0);
+  const [previousScore, setPreviousScore] = useState(0);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
 
   useEffect(() => {
@@ -56,9 +56,11 @@ const ProgressPage = () => {
 
   useEffect(() => {
     if (progress) {
+      // Store previous score for rank-up detection
+      setPreviousScore(socialScore);
       setSocialScore(getTotalScore());
     }
-  }, [getTotalScore, progress]);
+  }, [getTotalScore, progress, socialScore]);
 
   // Mock achievements data
   useEffect(() => {
@@ -254,11 +256,11 @@ const ProgressPage = () => {
       <section className="hero-section">
         <div className="hero-content">
           <div className="social-score">
-            <div className="score-circle">
-              <div className="score-value">{socialScore}</div>
-              <div className="score-label">Social Score</div>
-            </div>
-            <h2 className="score-title">Social Confidence Score</h2>
+            <RankDisplay 
+              totalPoints={socialScore} 
+              previousPoints={previousScore}
+              size="large"
+            />
             <p className="score-description">
               Your overall social interaction proficiency based on all skill
               categories

@@ -115,6 +115,16 @@
     }
   }
 
+  .rank-section {
+    margin-bottom: $spacing-8;
+    
+    .rank-display-container {
+      display: flex;
+      justify-content: center;
+      padding: $spacing-4 0;
+    }
+  }
+
   .challenge-section {
     margin-bottom: $spacing-8;
     display: flex;
