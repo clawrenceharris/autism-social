@@ -10,6 +10,7 @@ interface ProgressStore {
   error: string | null;
   setScores: () => void;
   fetchProgress: (userId: string) => Promise<void>;
+
   updateProgressValue: (category: keyof UserProgress, delta: number) => void;
   calcAverageScore: (progress: UserProgress[]) => number;
   resetProgress: () => void;
@@ -30,26 +31,8 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
   setScores: () => {
     const progress = get().progress;
     if (!progress) return;
-    set({
-      scores: progress.reduce<ScoreSummary>(
-        (acc, p) =>
-          ({
-            assertiveness: p.assertiveness + acc.assertiveness,
-            clarity: p.clarity + acc.clarity,
-            empathy: p.empathy + acc.empathy,
-            social_awareness: p.social_awareness + acc.social_awareness,
-            self_advocacy: p.self_advocacy + acc.self_advocacy,
-          } as ScoreSummary),
-        {
-          assertiveness: 0,
-          clarity: 0,
-          empathy: 0,
-          social_awareness: 0,
-          self_advocacy: 0,
-        } as ScoreSummary
-      ),
-    });
   },
+
   calcAverageScore: (): number => {
     const progress = get().progress;
     if (!progress) {

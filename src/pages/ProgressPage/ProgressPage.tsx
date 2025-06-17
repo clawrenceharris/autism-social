@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import {
   Award,
@@ -17,7 +17,7 @@ import {
   Zap,
 } from "lucide-react";
 import "./ProgressPage.scss";
-import type { AuthContextType } from "../../types";
+import type { AuthContextType, ScoreSummary } from "../../types";
 import { useProgressStore } from "../../store/useProgressStore";
 import { useScenarioStore } from "../../store/useScenarioStore";
 import { ProgressIndicator } from "../../components";
@@ -38,9 +38,9 @@ const ProgressPage = () => {
   const { user } = useOutletContext<AuthContextType>();
   const {
     progress,
-    scores,
     loading: progressLoading,
     error: progressError,
+
     setScores,
     fetchProgress,
     calcAverageScore,
@@ -48,7 +48,32 @@ const ProgressPage = () => {
   const { fetchScenarios, scenariosLoading } = useScenarioStore();
   const [socialScore, setSocialScore] = useState(0);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
-
+  const scores = useMemo(() => {
+    return (
+      progress?.reduce<ScoreSummary>(
+        (acc, p) => ({
+          assertiveness: p.assertiveness + acc.assertiveness,
+          clarity: p.clarity + acc.clarity,
+          empathy: p.empathy + acc.empathy,
+          social_awareness: p.social_awareness + acc.social_awareness,
+          self_advocacy: p.self_advocacy + acc.self_advocacy,
+        }),
+        {
+          assertiveness: 0,
+          clarity: 0,
+          empathy: 0,
+          social_awareness: 0,
+          self_advocacy: 0,
+        }
+      ) || {
+        assertiveness: 0,
+        clarity: 0,
+        empathy: 0,
+        social_awareness: 0,
+        self_advocacy: 0,
+      }
+    );
+  }, [progress]);
   useEffect(() => {
     fetchProgress(user.id);
     fetchScenarios();
@@ -211,6 +236,19 @@ const ProgressPage = () => {
   //     .join(" ");
   // };
 
+  // Calculate stats
+  const totalPoints =
+    scores.clarity +
+    scores.empathy +
+    scores.assertiveness +
+    scores.social_awareness +
+    scores.self_advocacy;
+  const earnedAchievements = achievements.filter((a) => a.earned).length;
+  const completedScenarios = useMemo(
+    () => progress?.filter((p) => p.user_id === user.id).length,
+    [progress, user.id]
+  );
+
   if (progressLoading || scenariosLoading) {
     return (
       <div className="progress-page">
@@ -261,16 +299,6 @@ const ProgressPage = () => {
       </div>
     );
   }
-
-  // Calculate stats
-  const completedScenarios = 8; // This would come from actual data in a real app
-  const totalPoints =
-    scores.clarity +
-    scores.empathy +
-    scores.assertiveness +
-    scores.social_awareness +
-    scores.self_advocacy;
-  const earnedAchievements = achievements.filter((a) => a.earned).length;
 
   return (
     <div className="progress-page">

@@ -35,6 +35,7 @@ import { useActorStore } from "../../store/useActorStore";
 import { useDialogueCompletion } from "../../hooks";
 import { useProgressStore } from "../../store/useProgressStore";
 import { Link } from "react-router-dom";
+import { useScenarioStore } from "../../store/useScenarioStore";
 
 interface DialoguePlayerProps {
   scenario: Scenario;
@@ -59,6 +60,7 @@ const DialoguePlayer = ({
   );
   const { progress, fetchProgress } = useProgressStore();
   const [state, send] = useMachine(machine);
+  const { setDialogue } = useScenarioStore();
   const [messages, setMessages] = useState<Message[]>([]);
   const [customInput, setCustomInput] = useState("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
@@ -369,7 +371,10 @@ const DialoguePlayer = ({
                   <button onClick={onReplay} className="control-btn">
                     <RotateCcw size={20} />
                   </button>
-                  <button onClick={onExit} className="control-btn danger">
+                  <button
+                    onClick={() => setDialogue(null)}
+                    className="control-btn danger"
+                  >
                     <X size={20} />
                   </button>
                 </div>
@@ -410,58 +415,54 @@ const DialoguePlayer = ({
 
               <div ref={messageWindowRef} />
             </div>
-
-            {state.status !== "done" ? (
-              <div className="response-section">
-                {currentStep?.options && currentStep.options.length > 0 && (
-                  <>
-                    <div className="response-prompt"></div>
-
-                    <div className="response-options">
-                      {currentStep.options.map((option, index) => (
-                        <button
-                          key={index}
-                          onClick={() => handleOptionClick(option)}
-                          disabled={isTyping}
-                          className={`response-option ${
-                            isTyping ? "disabled" : ""
-                          }`}
-                        >
-                          <p className="option-text">
-                            {renderMessage(option.label)}
-                          </p>
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-
-                <div className="custom-response">
-                  <form
-                    onSubmit={handleCustomSubmit}
-                    className="input-container"
-                  >
-                    <input
-                      type="text"
-                      value={customInput}
-                      onChange={(e) => setCustomInput(e.target.value)}
-                      placeholder="Or type your own response..."
-                      disabled={isTyping}
-                      className="form-input"
-                    />
-                    <button
-                      type="submit"
-                      disabled={!customInput.trim() || isTyping}
-                      className="send-btn"
-                    >
-                      <Send size={20} />
-                    </button>
-                  </form>
-                </div>
-              </div>
-            ) : null}
           </div>
         </div>
+        {state.status !== "done" ? (
+          <div className="response-section">
+            {currentStep?.options && currentStep.options.length > 0 && (
+              <>
+                <div className="response-prompt"></div>
+
+                <div className="response-options">
+                  {currentStep.options.map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleOptionClick(option)}
+                      disabled={isTyping}
+                      className={`response-option ${
+                        isTyping ? "disabled" : ""
+                      }`}
+                    >
+                      <p className="option-text">
+                        {renderMessage(option.label)}
+                      </p>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            <div className="custom-response">
+              <form onSubmit={handleCustomSubmit} className="input-container">
+                <input
+                  type="text"
+                  value={customInput}
+                  onChange={(e) => setCustomInput(e.target.value)}
+                  placeholder="Or type your own response..."
+                  disabled={isTyping}
+                  className="form-input"
+                />
+                <button
+                  type="submit"
+                  disabled={!customInput.trim() || isTyping}
+                  className="send-btn"
+                >
+                  <Send size={20} />
+                </button>
+              </form>
+            </div>
+          </div>
+        ) : null}
         {isCompleting && (
           <div className="completion-modal">
             <div className="loading-state">
@@ -486,18 +487,22 @@ const DialoguePlayer = ({
           </div>
         )}
         {showCompletionModal && (
-          <div className="flex-content">
+          <div className="dialogue-actions">
             <button onClick={handleResultsClick} className="btn btn-primary">
               <Eye /> View Results
             </button>
             <Link to={"/"} className="btn btn-secondary">
               <Home /> Dashboard
             </Link>
+            <button
+              onClick={() => setDialogue(null)}
+              className="btn btn-tertiary"
+            >
+              Go Back
+            </button>
           </div>
         )}
       </div>
-
-      {/* Completion Modal */}
     </>
   );
 };

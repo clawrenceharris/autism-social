@@ -293,6 +293,9 @@ button {
   max-width: 290px;
   transform: scale(1);
 }
+.btn-tertiary {
+  background-color: #ffffff;
+}
 .btn-primary {
   min-width: 150px;
   background-color: #54cbe2;

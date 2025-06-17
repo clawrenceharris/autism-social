@@ -20,8 +20,8 @@ interface ScenarioStore {
   dialogueIds: string[];
   scenariosLoading: boolean;
   dialoguesLoading: boolean;
-  setDialogue: (dialogue: Dialogue) => void;
-  setScenario: (scenario: Scenario) => void;
+  setDialogue: (dialogue: Dialogue | null) => void;
+  setScenario: (scenario: Scenario | null) => void;
   error: string | null;
   fetchDialogues: () => void;
   fetchDialoguesByScenario: (scenarioId: string) => void;
@@ -141,10 +141,10 @@ export const useScenarioStore = create<ScenarioStore>()(
           });
         }
       },
-      setDialogue: (dialogue: Dialogue) => {
+      setDialogue: (dialogue: Dialogue | null) => {
         set({ selectedDialogue: dialogue });
       },
-      setScenario: (scenario: Scenario) => {
+      setScenario: (scenario: Scenario | null) => {
         set({ selectedScenario: scenario });
       },
       clearDialogues: () => set({ dialogues: {} }),
