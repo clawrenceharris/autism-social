@@ -17,7 +17,8 @@ export type Table =
   | "actors"
   | "daily_challenges"
   | "scoring_categories"
-  | "dialogue_scoring_events";
+  | "dialogue_scoring_events"
+  | "user_streaks";
 
 export interface DatabaseResult<T> {
   data: T | null;

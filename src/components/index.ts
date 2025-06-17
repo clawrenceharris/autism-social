@@ -17,3 +17,4 @@ export { default as UserHeader } from "./UserHeader";
 export { default as ProgressSection } from "./ProgressSection";
 export { default as ToastContainer } from "./ToastContainer";
 export { default as EditProfile } from "./EditProfile";
+export { default as StreakDisplay } from "./StreakDisplay";

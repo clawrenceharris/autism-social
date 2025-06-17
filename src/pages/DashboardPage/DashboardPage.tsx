@@ -18,6 +18,7 @@ import { useDailyChallengeStore } from "../../store/useDailyChallengeStore";
 import { useEffect } from "react";
 import { useRecommendationsStore } from "../../store";
 import { useProgressStore } from "../../store/useProgressStore";
+import { useStreakStore } from "../../store/useStreakStore";
 
 const DashboardPage = () => {
   const { user, profile } = useOutletContext<AuthContextType>();
@@ -32,42 +33,27 @@ const DashboardPage = () => {
     fetchDailyChallenges,
     getDayChallenge,
   } = useDailyChallengeStore();
+  const { 
+    streakData, 
+    fetchStreak, 
+    checkAndUpdateStreak, 
+    loading: streakLoading 
+  } = useStreakStore();
 
   useEffect(() => {
     fetchRecommendedDialogues(user.id);
     fetchDailyChallenges();
-  }, [fetchRecommendedDialogues, fetchDailyChallenges, user.id]);
-
-  // Mock data - replace with real data from your services
-  const mockStats = {
-    scenariosCompleted: 12,
-    currentStreak: 5,
-    totalScore: 847,
-    averageScore: 78,
-  };
-
-  const mockRecentActivity = [
-    {
-      id: "1",
-      text: "Completed 'Job Interview Practice'",
-      time: "2 hours ago",
-      icon: Award,
-    },
-    {
-      id: "2",
-      text: "Started 'Meeting a New Colleague'",
-      time: "1 day ago",
-      icon: Play,
-    },
-    {
-      id: "3",
-      text: "Achieved 5-day practice streak!",
-      time: "2 days ago",
-      icon: Target,
-    },
-  ];
-
-  // Get user's display name from profile or fallback to email
+    fetchStreak(user.id);
+    
+    // Check if streak needs to be updated (e.g., if user missed a day)
+    checkAndUpdateStreak(user.id);
+  }, [
+    fetchRecommendedDialogues, 
+    fetchDailyChallenges, 
+    fetchStreak, 
+    checkAndUpdateStreak, 
+    user.id
+  ]);
 
   // Get today's challenge
   const todayChallenge = getDayChallenge(new Date().getDay());
@@ -89,15 +75,15 @@ const DashboardPage = () => {
             <div className="stat-label">Scenarios Completed</div>
           </div>
           <div className="stat-item">
-            <div className="stat-number">{mockStats.currentStreak}</div>
+            <div className="stat-number">{streakLoading ? '...' : streakData?.currentStreak || 0}</div>
             <div className="stat-label">Day Streak</div>
           </div>
           <div className="stat-item">
-            <div className="stat-number">{mockStats.totalScore}</div>
-            <div className="stat-label">Total Points</div>
+            <div className="stat-number">{streakLoading ? '...' : streakData?.longestStreak || 0}</div>
+            <div className="stat-label">Best Streak</div>
           </div>
           <div className="stat-item">
-            <div className="stat-number">{mockStats.averageScore}%</div>
+            <div className="stat-number">{progress.length > 0 ? Math.round((progress.reduce((acc, p) => acc + p.clarity + p.empathy + p.assertiveness + p.social_awareness + p.self_advocacy, 0) / (progress.length * 5))) : 0}%</div>
             <div className="stat-label">Average Score</div>
           </div>
         </div>
@@ -130,7 +116,7 @@ const DashboardPage = () => {
                           size={16}
                           style={{ marginRight: "0.5rem", color: "#f59e0b" }}
                         />
-                        Keep your streak alive! • Day {mockStats.currentStreak}
+                        Keep your streak alive! • Day {streakLoading ? '...' : streakData?.currentStreak || 0}
                       </p>
                     </div>
                   </div>
@@ -228,18 +214,18 @@ const DashboardPage = () => {
               </Link>
             </div>
             <div className="section-content">
-              {mockRecentActivity.length > 0 ? (
+              {progress.length > 0 ? (
                 <div className="activity-list">
-                  {mockRecentActivity.map((activity) => {
-                    const IconComponent = activity.icon;
+                  {progress.slice(0, 3).map((activity, index) => {
+                    const IconComponent = index === 0 ? Award : (index === 1 ? Play : Target);
                     return (
-                      <div key={activity.id} className="activity-item">
+                      <div key={activity.dialogue_id} className="activity-item">
                         <div className="activity-icon">
                           <IconComponent size={16} />
                         </div>
                         <div className="activity-details">
-                          <div className="activity-text">{activity.text}</div>
-                          <div className="activity-time">{activity.time}</div>
+                          <div className="activity-text">Completed dialogue</div>
+                          <div className="activity-time">{new Date(activity.created_at || Date.now()).toLocaleDateString()}</div>
                         </div>
                       </div>
                     );

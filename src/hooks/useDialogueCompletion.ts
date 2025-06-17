@@ -1,9 +1,11 @@
 import { useState, useCallback } from "react";
 import { useToast } from "../context";
-import type { ScoreSummary, UserProgress } from "../types";
+import type { ScoreSummary, UserProgress, StreakUpdateResult } from "../types";
 import * as dialogueService from "../services/dialogues";
+import { useStreakStore } from "../store/useStreakStore";
+
 interface UseDialogueCompletionOptions {
-  onSuccess?: (result: UserProgress) => void;
+  onSuccess?: (result: UserProgress, streakResult?: StreakUpdateResult) => void;
   onError?: (error: string) => void;
 }
 
@@ -13,6 +15,7 @@ export const useDialogueCompletion = (
   const [isCompleting, setIsCompleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { showToast } = useToast();
+  const { incrementStreak } = useStreakStore();
 
   const addDialogueProgress = useCallback(
     async (userId: string, dialogueId: string, scores: ScoreSummary) => {
@@ -26,8 +29,18 @@ export const useDialogueCompletion = (
           scores
         );
 
+        // Update streak when dialogue is completed
+        const streakResult = await incrementStreak(userId);
+        
+        // Show streak notification if streak was incremented
+        if (streakResult.streakIncremented) {
+          showToast(`🔥 Streak increased to ${streakResult.streakData.currentStreak} days!`, { 
+            type: "success" 
+          });
+        }
+
         if (options.onSuccess && result) {
-          options.onSuccess(result);
+          options.onSuccess(result, streakResult);
         }
 
         showToast("Dialogue completed successfully! 🎉", { type: "success" });
@@ -47,8 +60,9 @@ export const useDialogueCompletion = (
         setIsCompleting(false);
       }
     },
-    [options, showToast]
+    [options, showToast, incrementStreak]
   );
+  
   const updateDialogueProgress = useCallback(
     async (userId: string, dialogueId: string, scores: ScoreSummary) => {
       setIsCompleting(true);
@@ -61,8 +75,18 @@ export const useDialogueCompletion = (
           scores
         );
 
+        // Update streak when dialogue is completed
+        const streakResult = await incrementStreak(userId);
+        
+        // Show streak notification if streak was incremented
+        if (streakResult.streakIncremented) {
+          showToast(`🔥 Streak increased to ${streakResult.streakData.currentStreak} days!`, { 
+            type: "success" 
+          });
+        }
+
         if (options.onSuccess && result) {
-          options.onSuccess(result);
+          options.onSuccess(result, streakResult);
         }
 
         showToast("Dialogue completed successfully! 🎉", { type: "success" });
@@ -82,7 +106,7 @@ export const useDialogueCompletion = (
         setIsCompleting(false);
       }
     },
-    [options, showToast]
+    [options, showToast, incrementStreak]
   );
 
   const reset = useCallback(() => {
