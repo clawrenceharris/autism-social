@@ -8,7 +8,7 @@ src/constants/
 # CSS and CSS map files
 **/*.css
 **/*.css.map
-
+src/services/
 src/components/SignUpSteps/
 src/pages/
 # Environment files
