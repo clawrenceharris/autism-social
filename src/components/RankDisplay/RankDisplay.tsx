@@ -133,7 +133,7 @@ const RankDisplay: React.FC<RankDisplayProps> = ({
       setAnimateProgress(true);
       prevPointsRef.current = totalPoints;
     }
-  }, [totalPoints, previousPoints]);
+  }, [totalPoints, previousPoints, rankReceived]);
 
   // Apply progress bar width after component mounts or when progress changes
   useEffect(() => {
