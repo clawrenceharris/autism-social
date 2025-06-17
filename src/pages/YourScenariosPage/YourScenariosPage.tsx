@@ -16,6 +16,7 @@ import "./YourScenariosPage.scss";
 import { useScenarioStore } from "../../store/useScenarioStore";
 import { ProgressIndicator } from "../../components";
 import ScenarioCard from "../../components/ScenarioCard/ScenarioCard";
+import { useDialogueStore } from "../../store/useDialogueStore";
 
 type FilterType = "all" | "completed" | "trending" | "recommended";
 
@@ -23,12 +24,10 @@ const YourScenariosPage = () => {
   const {
     scenarios,
 
-    dialoguesLoading,
-    fetchDialogues,
-    scenariosLoading: scenariosLoading,
+    loading: scenariosLoading,
     fetchScenarios,
   } = useScenarioStore();
-
+  const { fetchDialogues, loading: dialoguesLoading } = useDialogueStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   useEffect(() => {

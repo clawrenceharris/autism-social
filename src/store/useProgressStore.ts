@@ -3,7 +3,7 @@ import { getProgress } from "../services/progress";
 import type { ScoreSummary, UserProgress } from "../types";
 
 interface ProgressStore {
-  progress: UserProgress[] | null;
+  progress: UserProgress[];
   progressByDialogueId: Record<string, UserProgress[]>;
   scores: ScoreSummary;
   loading: boolean;
@@ -16,7 +16,7 @@ interface ProgressStore {
   resetProgress: () => void;
 }
 export const useProgressStore = create<ProgressStore>((set, get) => ({
-  progress: null,
+  progress: [],
   progressByDialogueId: {},
   scores: {
     assertiveness: 0,

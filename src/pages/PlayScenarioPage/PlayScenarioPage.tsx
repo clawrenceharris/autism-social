@@ -1,10 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import {
-  Link,
-  useNavigate,
-  useOutletContext,
-  useParams,
-} from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { useModal } from "../../context";
 import { X, Home } from "lucide-react";
 import "./PlayScenarioPage.scss";
@@ -17,39 +12,37 @@ import {
 } from "../../components";
 import { useScenarioStore } from "../../store/useScenarioStore";
 import type { AuthContextType } from "../../types";
+import { useDialogueStore } from "../../store/useDialogueStore";
+import { usePlayScenarioStore } from "../../store/usePlayScenarioStore";
 
 const PlayScenarioPage = () => {
   const navigate = useNavigate();
   const {
-    scenariosLoading,
-    scenarioIds,
-    dialoguesByScenario,
-    error,
-    dialoguesLoading,
-    fetchDialoguesByScenario,
-    fetchDialogues,
+    loading: scenariosLoading,
+
+    error: scenarioError,
+
     fetchScenarios,
-    selectedScenario: scenario,
-    selectedDialogue: dialogue,
+
     scenarios,
-    setScenario,
   } = useScenarioStore();
-  const { scenarioId } = useParams<{ scenarioId: string }>();
-  const [userFields, setUserFields] = useState<{
-    [key: string]: string;
-  } | null>(null);
+  const { setUserFields, userFields, scenario, dialogue } =
+    usePlayScenarioStore();
+
+  const {
+    loading: dialoguesLoading,
+    dialoguesByScenario,
+    fetchDialogues,
+    error: dialogueError,
+  } = useDialogueStore();
+
   const [key, setKey] = useState<number>(0);
   const { openModal, closeModal } = useModal();
   const { profile: user } = useOutletContext<AuthContextType>();
   const handleReplay = () => {
     setKey((prev) => prev + 1);
   };
-  useEffect(() => {
-    if (scenarioId) {
-      fetchDialoguesByScenario(scenarioId);
-      setScenario(scenarios[scenarioId]);
-    }
-  }, [fetchDialoguesByScenario, setScenario, scenarioId, scenarios]);
+
   useEffect(() => {
     fetchDialogues();
     fetchScenarios();
@@ -59,10 +52,8 @@ const PlayScenarioPage = () => {
       setUserFields({ ...data, user_name: user.first_name });
       closeModal();
     },
-    [closeModal, user.first_name]
+    [closeModal, setUserFields, user.first_name]
   );
-
-  console.log({ scenarioIds });
 
   useEffect(() => {
     // If we selected a dialogue and there are placeholders but no user fields defined
@@ -99,7 +90,15 @@ const PlayScenarioPage = () => {
       // If no placeholders are needed, set empty user fields
       setUserFields({});
     }
-  }, [dialogue, userFields, openModal, closeModal, navigate, handleSubmit]);
+  }, [
+    closeModal,
+    dialogue,
+    handleSubmit,
+    navigate,
+    openModal,
+    setUserFields,
+    userFields,
+  ]);
 
   if (scenariosLoading || dialoguesLoading) {
     return (
@@ -111,13 +110,13 @@ const PlayScenarioPage = () => {
     );
   }
 
-  if (error) {
+  if (scenarioError || dialogueError) {
     return (
       <div className="play-scenario-container">
         <div className="game-content">
           <div className="error-state">
             <h1>Oops! Something went wrong</h1>
-            <p>{error}</p>
+            <p>{scenarioError || dialogueError}</p>
             <Link to={"/"} className="btn btn-primary">
               <Home size={20} />
               Return to Dashboard
@@ -196,7 +195,6 @@ const PlayScenarioPage = () => {
       <div key={key} className="play-scenario-container">
         <DialoguePlayer
           user={user}
-          userFields={userFields}
           scenario={scenario}
           onReplay={handleReplay}
           dialogue={dialogue}

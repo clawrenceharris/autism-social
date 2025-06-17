@@ -134,11 +134,11 @@ export interface CreateScenarioData {
 }
 
 export interface ScoreSummary {
-  clarity: number;
-  empathy: number;
-  assertiveness: number;
-  social_awareness: number;
-  self_advocacy: number;
+  clarity?: number;
+  empathy?: number;
+  assertiveness?: number;
+  social_awareness?: number;
+  self_advocacy?: number;
 }
 
 export interface CreateDialogueData {
@@ -176,9 +176,12 @@ export interface Actor {
   voice_id: string;
   bio: string;
 }
-
 export interface Message {
   id: string;
   speaker: "npc" | "user";
   text: string;
+}
+
+export interface UserMessage extends Message {
+  scoring: Record<ScoreCategory, number>;
 }
