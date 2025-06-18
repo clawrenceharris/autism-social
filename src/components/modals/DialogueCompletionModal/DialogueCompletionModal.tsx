@@ -100,7 +100,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setLoadingBetterResponse(false);
-
+    //TODO: Tell the AI model to write a better response to the selected actor message with a focus on the categories that were score (e.g clarity, empathy)
     return "Here's a more effective response that demonstrates better clarity and empathy...";
   };
 
@@ -108,6 +108,8 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
     setLoadingFeedback(true);
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1200));
+    //TODO: Tell the AI model to provide feedback to the selected user message with a focus on improving categories that were score (e.g clarity, empathy)
+
     setLoadingFeedback(false);
 
     return "Your response showed good assertiveness but could benefit from more empathetic language...";
@@ -141,7 +143,9 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
           <div className="score-breakdown">
             <div className="total-points">
               <span className="points-earned">{`${
-                totalPointsEarned ? `+${totalPointsEarned}` : "N/A"
+                totalPointsEarned !== undefined
+                  ? `+${totalPointsEarned}`
+                  : "N/A"
               }`}</span>
               <span className="points-label">Total Points Earned</span>
             </div>
@@ -289,7 +293,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                               </span>
 
                               <span className="points">{`${
-                                points ? `+${points}` : "N/A"
+                                points !== undefined ? `+${points}` : "N/A"
                               }`}</span>
                             </div>
                           )

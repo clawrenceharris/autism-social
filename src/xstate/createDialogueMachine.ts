@@ -30,7 +30,7 @@ export function createDialogueMachine(
           const updated = { ...context };
           updated.path.push(opt);
           for (const cat of categories) {
-            if (opt.scoring[cat]) {
+            if (opt.scoring[cat] !== undefined) {
               updated.scores[cat] = updated.scores[cat]
                 ? updated.scores[cat] + opt.scoring[cat]
                 : opt.scoring[cat];
@@ -67,7 +67,10 @@ export function createDialogueMachine(
       events: {} as DialogueEvent,
       context: {} as DialogueContext,
     },
-    context: { path: [], scores: {} },
+    context: {
+      path: [],
+      scores: {},
+    },
     id,
     initial: steps[0].id,
 

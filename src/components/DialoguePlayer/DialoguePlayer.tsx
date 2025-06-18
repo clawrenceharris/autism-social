@@ -66,8 +66,7 @@ const DialoguePlayer = ({
   const { updateDialogueProgress, addDialogueProgress, error, isCompleting } =
     useDialogueCompletion();
   const [isComplete, setIsComplete] = useState(false);
-  const [showCompletionModal, setShowCompletionModal] =
-    useState<boolean>(false);
+
   const { fetchVoices, getAudioUrl } = useVoiceStore();
   const {
     selectedActor: actor,
@@ -93,13 +92,6 @@ const DialoguePlayer = ({
   useEffect(() => {
     setActor(dialogue.actor_id);
   }, [dialogue.actor_id, setActor, actors]);
-
-  // Check if dialogue is completed
-  useEffect(() => {
-    if (state.status === "done" && !showCompletionModal) {
-      setShowCompletionModal(true);
-    }
-  }, [state.status, showCompletionModal]);
 
   // Auto-scroll to bottom of messages
   const scrollToBottom = () => {
@@ -302,11 +294,10 @@ const DialoguePlayer = ({
     if (state.status === "done" && !isComplete) {
       if (progress?.map((p) => p.dialogue_id).includes(dialogue.id)) {
         updateDialogueProgress(user.user_id, dialogue.id, state.context.scores);
-        setIsComplete(true);
       } else {
         addDialogueProgress(user.user_id, dialogue.id, state.context.scores);
-        setIsComplete(true);
       }
+      setIsComplete(true);
     }
   }, [
     addDialogueProgress,
@@ -326,8 +317,7 @@ const DialoguePlayer = ({
         dialogueContext={state.context}
         userMessages={messages.filter((m) => m.speaker === "user")}
         actorMessages={messages.filter((m) => m.speaker === "npc")}
-      />,
-      ""
+      />
     );
   };
 
@@ -483,7 +473,7 @@ const DialoguePlayer = ({
             </div>
           </div>
         )}
-        {showCompletionModal && (
+        {isComplete && (
           <div className="dialogue-actions">
             <button onClick={handleResultsClick} className="btn btn-primary">
               <Eye /> View Results

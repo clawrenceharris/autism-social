@@ -1,15 +1,15 @@
 import { useFormContext } from "react-hook-form";
 import type { Dialogue } from "../../../types";
 
-interface DialogueOnboardingModalProps {
+interface StartDialogueModalProps {
   dialogue: Dialogue;
   placeholders: string[];
 }
 
-const DialogueOnboardingModal = ({
+const StartDialogueModal = ({
   placeholders,
   dialogue,
-}: DialogueOnboardingModalProps) => {
+}: StartDialogueModalProps) => {
   const {
     register,
     formState: { errors },
@@ -54,4 +54,4 @@ const DialogueOnboardingModal = ({
   );
 };
 
-export default DialogueOnboardingModal;
+export default StartDialogueModal;

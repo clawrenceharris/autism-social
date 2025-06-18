@@ -4,9 +4,12 @@
 .form {
   @include stack-layout($spacing-6);
   width: 100%;
+  padding: 1rem;
   .form-content {
-    padding-bottom: 7rem;
-    min-height: 300px;
+    padding-bottom: 4rem;
+  }
+  .description {
+    margin-bottom: 2rem;
   }
   .form-group {
     @include stack-layout($spacing-2);

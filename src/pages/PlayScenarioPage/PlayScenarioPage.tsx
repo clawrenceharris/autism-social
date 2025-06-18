@@ -5,7 +5,7 @@ import { X, Home } from "lucide-react";
 import "./PlayScenarioPage.scss";
 import {
   DialogueItem,
-  DialogueOnboardingModal,
+  StartDialogueModal,
   DialoguePlayer,
   FormLayout,
   ProgressIndicator,
@@ -75,7 +75,7 @@ const PlayScenarioPage = () => {
             navigate("/");
           }}
         >
-          <DialogueOnboardingModal
+          <StartDialogueModal
             dialogue={dialogue}
             placeholders={dialogue.placeholders}
           />

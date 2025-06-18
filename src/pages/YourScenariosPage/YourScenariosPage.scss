@@ -111,7 +111,7 @@
       flex-direction: column;
       &:hover {
         transform: translateY(-4px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+
         border-color: $color-primary-200;
       }
 
@@ -228,7 +228,6 @@
           &:hover {
             background: $color-primary;
             color: $color-white;
-            transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba($color-primary, 0.3);
           }
 
@@ -238,7 +237,7 @@
 
             &:hover {
               background: $color-primary-300;
-              transform: translateY(-2px);
+              border-color: $color-primary-300;
               box-shadow: 0 6px 16px rgba($color-primary, 0.4);
             }
           }

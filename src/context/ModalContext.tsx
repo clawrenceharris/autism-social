@@ -14,7 +14,7 @@ interface ModalContextType {
   modalTitle: string | React.ReactNode;
   openModal: (
     content: ReactElement,
-    title: string | React.ReactElement
+    title?: string | React.ReactElement
   ) => void;
   closeModal: () => void;
 }
@@ -27,9 +27,9 @@ export function ModalProvider({ children }: { children: ReactNode }) {
   const [modalTitle, setModalTitle] = useState<string | ReactElement>("");
 
   const openModal = useCallback(
-    (content: ReactNode, title: string | ReactElement) => {
+    (content: ReactNode, title?: string | ReactElement) => {
       setModalContent(content);
-      setModalTitle(title);
+      setModalTitle(title || <></>);
       setIsOpen(true);
     },
     []

@@ -102,7 +102,7 @@ export const useAchievements = () => {
             : undefined,
       },
     ]);
-  }, [categoryScores, progress.length]);
+  }, [categoryScores, progress.length, streakData?.longestStreak]);
   return {
     achievements,
   };

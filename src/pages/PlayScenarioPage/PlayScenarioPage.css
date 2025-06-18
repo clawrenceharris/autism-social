@@ -23,7 +23,6 @@
   -webkit-backdrop-filter: blur(10px);
           backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 1rem 1.5rem;
 }
 .play-scenario-container .game-header .header-content {
   display: flex;
@@ -33,6 +32,7 @@
   gap: 0.75rem;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 1rem 0.5rem;
 }
 .play-scenario-container .game-header .header-content .scenario-info {
   display: block;
@@ -44,12 +44,14 @@
   margin: 0;
 }
 .play-scenario-container .game-header .header-content .scenario-info .scenario-badge {
-  background: rgba(0, 0, 0, 0.062745098);
-  color: white;
+  background: #fff;
+  color: #9ca3af;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-size: 0.875rem;
+  margin-top: 0.75rem;
   font-weight: 600;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3137254902);
   border: solid white 0.5px;
 }
 .play-scenario-container .game-header .header-content .game-controls {

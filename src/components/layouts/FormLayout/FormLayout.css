@@ -7,10 +7,13 @@
   gap: 1.5rem;
   width: 100%;
   width: 100%;
+  padding: 1rem;
 }
 .form .form-content {
-  padding-bottom: 7rem;
-  min-height: 300px;
+  padding-bottom: 4rem;
+}
+.form .description {
+  margin-bottom: 2rem;
 }
 .form .form-group {
   display: flex;

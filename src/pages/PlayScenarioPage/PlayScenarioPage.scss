@@ -41,12 +41,12 @@
 
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    padding: $spacing-4 $spacing-6;
 
     .header-content {
       @include flex(row, space-between, center);
       max-width: 1200px;
       margin: 0 auto;
+      padding: $spacing-4 $spacing-2;
 
       .scenario-info {
         display: block;
@@ -59,12 +59,14 @@
         }
 
         .scenario-badge {
-          background: #00000010;
-          color: white;
+          background: #fff;
+          color: $color-gray-400;
           padding: 0.25rem 0.75rem;
           border-radius: $border-radius-full;
           font-size: 0.875rem;
+          margin-top: $spacing-3;
           font-weight: 600;
+          box-shadow: 0 0 10px #00000050;
           border: solid white 0.5px;
         }
       }
