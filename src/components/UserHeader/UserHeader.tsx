@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Home, BookOpen, TrendingUp, Settings } from "lucide-react";
+import { Home, BookOpen, TrendingUp, Settings, Sparkles } from "lucide-react";
 import "../../styles/shared/_header.scss";
 import { assets } from "../../constants/assets";
 
@@ -25,6 +25,10 @@ const UserHeader = () => {
           <Link to="/progress" className="taskbar-link">
             <TrendingUp />
             <span>Progress</span>
+          </Link>
+          <Link to="/gemini-demo" className="taskbar-link">
+            <Sparkles />
+            <span>AI Demo</span>
           </Link>
           <Link to="/settings" className="taskbar-link">
             <Settings />
