@@ -1,0 +1,62 @@
+@import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
+.progress-section .progress-categories {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 1rem;
+  width: 100%;
+}
+.progress-section .progress-categories .category-item {
+  padding: 1rem;
+  background: linear-gradient(135deg, #fbfdff, rgba(243, 232, 255, 0.5));
+  border-radius: 1rem;
+  border: 1px solid rgba(141, 84, 226, 0.1);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+.progress-section .progress-categories .category-item:hover {
+  background: linear-gradient(135deg, #f3e8ff, rgba(233, 213, 255, 0.7));
+  transform: translateX(4px);
+}
+.progress-section .progress-categories .category-item .category-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+  border-radius: 9999px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  color: #8d54e2;
+  flex-shrink: 0;
+  border: 2px solid rgba(141, 84, 226, 0.2);
+}
+.progress-section .progress-categories .category-item .category-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.progress-section .progress-categories .category-item .category-header .category-name {
+  font-weight: 500;
+  color: #374151;
+}
+.progress-section .progress-categories .category-item .category-details {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+}
+.progress-section .progress-categories .category-item .category-details .category-text {
+  font-weight: 600;
+  color: #54cbe2;
+}/*# sourceMappingURL=ProgressDisplay.css.map */

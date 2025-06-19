@@ -1,4 +1,5 @@
 import type { User } from "@supabase/supabase-js";
+import type { ReactElement } from "react";
 import type { FieldValues } from "react-hook-form";
 
 export interface UserPreferences {
@@ -30,6 +31,7 @@ export interface SignUpFormValues extends FieldValues {
   goals: string[];
   interests: string[];
   agreement: boolean;
+  age: number | null;
 }
 
 export interface AuthContextType {
@@ -53,11 +55,8 @@ export interface ScenarioWithDialogues extends Scenario {
 export interface UserProgress {
   user_id: string;
   dialogue_id: string;
-  clarity: number | null;
-  empathy: number | null;
-  assertiveness: number | null;
-  social_awareness: number | null;
-  self_advocacy: number | null;
+  scoring: ScoreSummary;
+  max_scoring: ScoreSummary;
 }
 
 export interface Goal {
@@ -87,20 +86,19 @@ export interface Option {
   eventType: string;
   isBest: boolean;
   nextStepId: string;
-  scores: { [key: string]: number };
+  scoring: { [key: string]: number };
 }
 
 export interface Scenario {
   id: string;
   title: string;
   description: string;
-  isCompleted: boolean;
   createdAt?: string;
 }
 
 export interface Dialogue {
   id: string;
-
+  max_scoring: ScoreSummary;
   actor_id: string;
   scenario_id: string;
   title: string;
@@ -110,7 +108,6 @@ export interface Dialogue {
   steps: DialogueStep[];
   difficulty: Difficulty;
   scoring_categories: string[];
-  total_possible_scores: Record<ScoreCategory, number>;
   created_at?: string;
   lastPlayed?: string;
 }
@@ -153,7 +150,7 @@ export interface ScoreSummary {
   self_advocacy?: number;
 }
 export interface DialogueContext {
-  scores: ScoreSummary;
+  scoring: ScoreSummary;
   path: DialogueOption[];
 }
 export interface CreateDialogueData {
@@ -165,7 +162,6 @@ export interface CreateDialogueData {
   steps: DialogueStep[];
   difficulty: Difficulty;
   scoring_categories: string[];
-  total_possible_scores: Record<ScoreCategory, number>;
 }
 
 export type DialogueEvent = { type: string };
@@ -190,6 +186,7 @@ export interface Actor {
   last_name: string;
   voice_id: string;
   bio: string;
+  role: string;
 }
 export interface Message {
   id: string;
@@ -234,7 +231,7 @@ export interface UserRank {
   title: string;
   minPoints: number;
   maxPoints: number;
-  icon: string;
+  icon: ReactElement;
   color: string;
 }
 

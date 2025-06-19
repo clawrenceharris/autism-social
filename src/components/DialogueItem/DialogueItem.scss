@@ -7,11 +7,9 @@
   background: $color-gray-50;
   border-radius: $border-radius-md;
   @include transition(all);
-  margin-bottom: 1rem;
-  max-width: 390px;
+  min-width: 450px;
   cursor: pointer;
   color: black;
-  min-width: 320px;
   &:hover {
     background: $color-primary-100;
     transform: translateY(-1px);

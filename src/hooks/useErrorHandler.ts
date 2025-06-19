@@ -1,12 +1,12 @@
-import { useCallback } from 'react';
-import { useToast } from '../context';
+import { useCallback } from "react";
+import { useToast } from "../context";
 import {
   handleError,
   getUserFriendlyMessage,
   getErrorSeverity,
   type ErrorContext,
   type AppError,
-} from '../utils/errorUtils';
+} from "../utils/errorUtils";
 
 interface UseErrorHandlerOptions {
   component?: string;
@@ -15,23 +15,55 @@ interface UseErrorHandlerOptions {
 }
 
 interface ErrorHandlerResult {
-  handleError: (error: unknown, action?: string, additionalContext?: Record<string, unknown>) => AppError;
-  handleAsyncError: (
-    asyncFn: () => Promise<void>,
-    action?: string,
-    additionalContext?: Record<string, unknown>
-  ) => Promise<void>;
+  handleError: ({
+    error,
+    action,
+    additionalContext,
+    showsToast,
+  }: {
+    error: unknown;
+    action?: string;
+    additionalContext?: Record<string, unknown>;
+    showsToast?: boolean;
+  }) => AppError;
+  handleAsyncError: ({
+    asyncFn,
+    action,
+    additionalContext,
+    showsToast,
+  }: {
+    asyncFn: () => Promise<void>;
+    action?: string;
+    additionalContext?: Record<string, unknown>;
+    showsToast?: boolean;
+  }) => Promise<void>;
 }
 
 /**
  * Custom hook for consistent error handling across components
  */
-export function useErrorHandler(options: UseErrorHandlerOptions = {}): ErrorHandlerResult {
+export function useErrorHandler(
+  options: UseErrorHandlerOptions = {}
+): ErrorHandlerResult {
   const { showToast } = useToast();
-  const { component, showToast: shouldShowToast = true, logError: shouldLogError = true } = options;
+  const {
+    component,
+    showToast: shouldShowToast = true,
+    logError: shouldLogError = true,
+  } = options;
 
   const handleErrorCallback = useCallback(
-    (error: unknown, action?: string, additionalContext?: Record<string, unknown>): AppError => {
+    ({
+      error,
+      action,
+      additionalContext,
+      showsToast = true,
+    }: {
+      error: unknown;
+      action?: string;
+      additionalContext?: Record<string, unknown>;
+      showsToast?: boolean;
+    }): AppError => {
       const context: ErrorContext = {
         component,
         action,
@@ -46,11 +78,11 @@ export function useErrorHandler(options: UseErrorHandlerOptions = {}): ErrorHand
       if (shouldShowToast) {
         const userMessage = getUserFriendlyMessage(normalizedError, context);
         const severity = getErrorSeverity(normalizedError, context);
-        
+
         // Map severity to toast type
-        const toastType = severity === 'critical' || severity === 'high' ? 'error' : 'warning';
-        
-        showToast(userMessage, { type: toastType });
+        const toastType =
+          severity === "critical" || severity === "high" ? "error" : "warning";
+        if (showsToast) showToast(userMessage, { type: toastType });
       }
 
       return normalizedError;
@@ -59,15 +91,21 @@ export function useErrorHandler(options: UseErrorHandlerOptions = {}): ErrorHand
   );
 
   const handleAsyncError = useCallback(
-    async (
-      asyncFn: () => Promise<void>,
-      action?: string,
-      additionalContext?: Record<string, unknown>
-    ): Promise<void> => {
+    async ({
+      asyncFn,
+      action,
+      additionalContext,
+      showsToast = true,
+    }: {
+      asyncFn: () => Promise<void>;
+      action?: string;
+      additionalContext?: Record<string, unknown>;
+      showsToast?: boolean;
+    }): Promise<void> => {
       try {
         await asyncFn();
       } catch (error) {
-        handleErrorCallback(error, action, additionalContext);
+        handleErrorCallback({ error, action, additionalContext, showsToast });
       }
     },
     [handleErrorCallback]

@@ -6,14 +6,12 @@
   align-items: start;
   gap: 0.75rem;
   padding: 1rem;
-  background: #f6faff;
+  background: #fbfdff;
   border-radius: 0.5rem;
   transition: all 0.2s ease;
-  margin-bottom: 1rem;
-  max-width: 390px;
+  min-width: 450px;
   cursor: pointer;
   color: black;
-  min-width: 320px;
 }
 .dialogue-item:hover {
   background: #e3f3fe;

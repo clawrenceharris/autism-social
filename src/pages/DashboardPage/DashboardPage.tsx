@@ -1,18 +1,16 @@
 import { Link, useOutletContext } from "react-router-dom";
 import {
   BookOpen,
-  Clock,
   Award,
   Play,
   ChevronRight,
-  Target,
   Zap,
   Calendar,
   Flame,
   Star,
 } from "lucide-react";
 import "./DashboardPage.scss";
-import { ProgressSection, DialogueItem, RankDisplay } from "../../components";
+import { ProgressDisplay, DialogueItem, RankDisplay } from "../../components";
 import type { AuthContextType } from "../../types";
 import { useDailyChallengeStore } from "../../store/useDailyChallengeStore";
 import { useEffect } from "react";
@@ -230,52 +228,7 @@ const DashboardPage = () => {
         <div className="sidebar-content">
           {/* Progress Overview */}
           <div className="card-section progress-overview">
-            <ProgressSection userId={user.id} />
-          </div>
-
-          {/* Recent Activity */}
-          <div className="card-section recent-activity">
-            <div className="section-header">
-              <h2>Recent Activity</h2>
-              <Link to="/your-scenarios" className="section-action">
-                View All <ChevronRight size={16} />
-              </Link>
-            </div>
-            <div className="section-content">
-              {progress.length > 0 ? (
-                <div className="activity-list">
-                  {progress.slice(0, 3).map((progress, index) => {
-                    const IconComponent =
-                      index === 0 ? Award : index === 1 ? Play : Target;
-                    return (
-                      <div key={progress.dialogue_id} className="activity-item">
-                        <div className="activity-icon">
-                          <IconComponent size={16} />
-                        </div>
-                        <div className="activity-details">
-                          <div className="activity-text">
-                            Completed dialogue
-                          </div>
-                          <div className="activity-time">
-                            {new Date(
-                              progress.created_at || Date.now()
-                            ).toLocaleDateString()}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="empty-state">
-                  <Clock className="empty-icon" />
-                  <div className="empty-message">No recent activity</div>
-                  <div className="empty-description">
-                    Start a scenario to see your activity here
-                  </div>
-                </div>
-              )}
-            </div>
+            <ProgressDisplay userId={user.id} />
           </div>
         </div>
       </div>

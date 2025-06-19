@@ -9,7 +9,6 @@ import {
   SettingsPage,
   PlayScenarioPage,
   DailyChallengesPage,
-  GeminiDemoPage,
 } from "./pages";
 
 function App() {
@@ -27,7 +26,6 @@ function App() {
             <Route path="/progress" element={<ProgressPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/daily-challenges" element={<DailyChallengesPage />} />
-            <Route path="/gemini-demo" element={<GeminiDemoPage />} />
           </Route>
         </Route>
 

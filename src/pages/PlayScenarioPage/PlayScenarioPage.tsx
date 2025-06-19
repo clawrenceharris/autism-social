@@ -26,7 +26,7 @@ const PlayScenarioPage = () => {
 
     scenarios,
   } = useScenarioStore();
-  const { setUserFields, userFields, scenario, dialogue } =
+  const { setDialogue, setUserFields, userFields, scenario, dialogue } =
     usePlayScenarioStore();
 
   const {
@@ -39,9 +39,6 @@ const PlayScenarioPage = () => {
   const [key, setKey] = useState<number>(0);
   const { openModal, closeModal } = useModal();
   const { profile: user } = useOutletContext<AuthContextType>();
-  const handleReplay = () => {
-    setKey((prev) => prev + 1);
-  };
 
   useEffect(() => {
     fetchDialogues();
@@ -100,12 +97,18 @@ const PlayScenarioPage = () => {
     userFields,
   ]);
 
+  const handleReplay = () => {
+    setKey((prev) => prev + 1);
+  };
+
+  const handleExit = () => {
+    if (scenario) navigate(`/scenario/${scenario.id}`);
+    setDialogue(null);
+  };
   if (scenariosLoading || dialoguesLoading) {
     return (
-      <div className="play-scenario-container ">
-        <div className="center-absolute  ">
-          <ProgressIndicator />
-        </div>
+      <div className="play-scenario-container loading-state">
+        <ProgressIndicator />
       </div>
     );
   }
@@ -113,15 +116,13 @@ const PlayScenarioPage = () => {
   if (scenarioError || dialogueError) {
     return (
       <div className="play-scenario-container">
-        <div className="game-content">
-          <div className="error-state">
-            <h1>Oops! Something went wrong</h1>
-            <p>{scenarioError || dialogueError}</p>
-            <Link to={"/"} className="btn btn-primary">
-              <Home size={20} />
-              Return to Dashboard
-            </Link>
-          </div>
+        <div className="error-state">
+          <h1>Oops! Something went wrong</h1>
+          <p>{scenarioError || dialogueError}</p>
+          <Link to={"/"} className="btn btn-primary">
+            <Home size={20} />
+            Return to Dashboard
+          </Link>
         </div>
       </div>
     );
@@ -130,18 +131,16 @@ const PlayScenarioPage = () => {
   if (!scenario) {
     return (
       <div className="play-scenario-container">
-        <div className="game-content">
-          <div className="error-state">
-            <div>
-              <h1>Scenario Not Found</h1>
-              <p>The requested scenario could not be found.</p>
-            </div>
-
-            <Link to={"/"} className="btn btn-primary">
-              <Home size={20} />
-              Return to Dashboard
-            </Link>
+        <div className="error-state">
+          <div>
+            <h1>Scenario Not Found</h1>
+            <p>The requested scenario could not be found.</p>
           </div>
+
+          <Link to={"/"} className="btn btn-primary">
+            <Home size={20} />
+            Return to Dashboard
+          </Link>
         </div>
       </div>
     );
@@ -152,7 +151,7 @@ const PlayScenarioPage = () => {
       <div className="play-scenario-container">
         <div className="game-header">
           <div className="header-content">
-            <div className="scenario-info">
+            <div className="scenario-info ">
               <h1
                 style={{ color: "white", fontSize: "1.7rem" }}
                 className="scenario-title"
@@ -161,14 +160,14 @@ const PlayScenarioPage = () => {
               </h1>
             </div>
             <div className="game-controls">
-              <Link to={"/"} className="control-btn danger">
+              <Link to={"/"} className="control-btn btn-danger">
                 <X size={20} />
               </Link>
             </div>
           </div>
         </div>
 
-        <div style={{ display: "block", margin: 20 }} className="game-content">
+        <div className="container">
           <div className="dialogue-selection">
             <div className="selection-header">
               <h2>Choose Your Dialogue</h2>
@@ -194,6 +193,7 @@ const PlayScenarioPage = () => {
     return (
       <div key={key} className="play-scenario-container">
         <DialoguePlayer
+          onDialogueExit={handleExit}
           user={user}
           scenario={scenario}
           onReplay={handleReplay}
@@ -205,10 +205,8 @@ const PlayScenarioPage = () => {
 
   // Show loading while waiting for user input
   return (
-    <div className="play-scenario-container ">
-      <div className="center-absolute  ">
-        <ProgressIndicator />
-      </div>
+    <div className="play-scenario-container loading-state">
+      <ProgressIndicator />
     </div>
   );
 };

@@ -8,7 +8,7 @@ interface SignUpStep5Props {
   errors: FieldErrors<SignUpFormValues>;
 }
 
-const SignUpStep5 = ({ register, errors }: SignUpStep5Props) => {
+const SignUpStep6 = ({ register, errors }: SignUpStep5Props) => {
   return (
     <div className="signup-final-step">
       <div className="welcome-section">
@@ -17,8 +17,8 @@ const SignUpStep5 = ({ register, errors }: SignUpStep5Props) => {
         </div>
         <h2>You're Almost Ready!</h2>
         <p className="welcome-text">
-          Complete this last step and unlock a world of immersive social
-          learning. Your journey awaits!
+          Complete this last step and dive into a world of immersive social
+          learning.
         </p>
       </div>
 
@@ -58,7 +58,8 @@ const SignUpStep5 = ({ register, errors }: SignUpStep5Props) => {
               <span className="checkmark"></span>
               <p className="checkbox-text">
                 I agree to use this app responsibly and understand that my data
-                will be kept secure and private
+                will be kept secure and private and may be used to improve user
+                experience.
               </p>
             </label>
             {errors.agreement && (
@@ -71,4 +72,4 @@ const SignUpStep5 = ({ register, errors }: SignUpStep5Props) => {
   );
 };
 
-export default SignUpStep5;
+export default SignUpStep6;

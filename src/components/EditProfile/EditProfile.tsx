@@ -10,6 +10,7 @@ interface EditProfileProps {
   onSubmit: () => void;
   user: User;
 }
+const NUM_STEPS = 3;
 const EditProfile = ({ onSubmit, user }: EditProfileProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,13 +20,13 @@ const EditProfile = ({ onSubmit, user }: EditProfileProps) => {
     handleSubmit: (data: Partial<SignUpFormValues>) => handleSubmit(data),
     error,
     stepStart: 2,
-    stepEnd: 3,
+    stepEnd: NUM_STEPS,
     isLoading,
   });
 
   const handleSubmit = async (data: Partial<SignUpFormValues>) => {
     try {
-      if (step < 3) {
+      if (step < NUM_STEPS) {
         return;
       }
       if (!user) {
@@ -37,7 +38,7 @@ const EditProfile = ({ onSubmit, user }: EditProfileProps) => {
 
       await updateUserGoals(user.id, data.goals || []);
 
-      showToast("Updated profile successfully!", { type: "success" });
+      showToast("Profile updated successfully!", { type: "success" });
       onSubmit();
     } catch {
       setError("Something went wrong. Please try again later.");

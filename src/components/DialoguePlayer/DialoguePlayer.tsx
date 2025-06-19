@@ -41,12 +41,14 @@ interface DialoguePlayerProps {
   dialogue: Dialogue;
   onReplay: () => void;
   user: UserProfile;
+  onDialogueExit: () => void;
 }
 
 const DialoguePlayer = ({
   scenario,
   user,
   dialogue,
+  onDialogueExit,
   onReplay,
 }: DialoguePlayerProps) => {
   const machine = useMemo(
@@ -55,7 +57,7 @@ const DialoguePlayer = ({
   );
   const { progress, fetchProgress } = useProgressStore();
   const [state, send] = useMachine(machine);
-  const { userFields, setDialogue } = usePlayScenarioStore();
+  const { userFields, setUserFields } = usePlayScenarioStore();
   const [messages, setMessages] = useState<Message[]>([]);
 
   const [customInput, setCustomInput] = useState("");
@@ -87,7 +89,14 @@ const DialoguePlayer = ({
     fetchVoices();
     fetchActors();
     fetchProgress(user.user_id);
-  }, [fetchActors, fetchProgress, fetchVoices, setActor, user.user_id]);
+  }, [
+    fetchActors,
+    fetchProgress,
+    fetchVoices,
+    setActor,
+    setUserFields,
+    user.user_id,
+  ]);
 
   useEffect(() => {
     setActor(dialogue.actor_id);
@@ -293,15 +302,26 @@ const DialoguePlayer = ({
   useEffect(() => {
     if (state.status === "done" && !isComplete) {
       if (progress?.map((p) => p.dialogue_id).includes(dialogue.id)) {
-        updateDialogueProgress(user.user_id, dialogue.id, state.context.scores);
+        updateDialogueProgress(
+          user.user_id,
+          dialogue.id,
+          state.context.scoring,
+          dialogue.max_scoring
+        );
       } else {
-        addDialogueProgress(user.user_id, dialogue.id, state.context.scores);
+        addDialogueProgress(
+          user.user_id,
+          dialogue.id,
+          state.context.scoring,
+          dialogue.max_scoring
+        );
       }
       setIsComplete(true);
     }
   }, [
     addDialogueProgress,
     dialogue.id,
+    dialogue.max_scoring,
     error,
     isComplete,
     isCompleting,
@@ -314,6 +334,9 @@ const DialoguePlayer = ({
   const handleResultsClick = () => {
     openModal(
       <DialogueCompletionModal
+        actor={actor}
+        userFields={userFields}
+        dialogue={dialogue}
         dialogueContext={state.context}
         userMessages={messages.filter((m) => m.speaker === "user")}
         actorMessages={messages.filter((m) => m.speaker === "npc")}
@@ -323,7 +346,7 @@ const DialoguePlayer = ({
 
   if (loading) {
     return (
-      <div>
+      <div className="loading-state">
         <ProgressIndicator />
       </div>
     );
@@ -359,8 +382,8 @@ const DialoguePlayer = ({
                     <RotateCcw size={20} />
                   </button>
                   <button
-                    onClick={() => setDialogue(null)}
-                    className="control-btn danger"
+                    onClick={onDialogueExit}
+                    className="control-btn btn-danger"
                   >
                     <X size={20} />
                   </button>
@@ -451,26 +474,22 @@ const DialoguePlayer = ({
           </div>
         ) : null}
         {isCompleting && (
-          <div className="completion-modal">
-            <div className="loading-state">
-              <ProgressIndicator size={60} />
-              <p className="loading-text">Saving...</p>
-            </div>
+          <div className="loading-state">
+            <ProgressIndicator />
+            <p className="loading-text">Saving...</p>
           </div>
         )}
         {error && (
-          <div className="completion-modal">
-            <div className="error-state">
-              <AlertCircle className="error-icon" />
-              <h3 className="error-title">Completion Failed</h3>
-              <p className="error-message">{error}</p>
-              <button
-                onClick={() => setIsComplete(false)}
-                className="btn danger"
-              >
-                Try Again
-              </button>
-            </div>
+          <div className="error-state">
+            <AlertCircle className="error-icon" />
+            <h3 className="error-title">Completion Failed</h3>
+            <p className="error-message">{error}</p>
+            <button
+              onClick={() => setIsComplete(false)}
+              className="btn btn-danger"
+            >
+              Try Again
+            </button>
           </div>
         )}
         {isComplete && (
@@ -479,10 +498,7 @@ const DialoguePlayer = ({
               <Eye /> View Results
             </button>
 
-            <button
-              onClick={() => setDialogue(null)}
-              className="btn btn-tertiary"
-            >
+            <button onClick={onDialogueExit} className="btn btn-tertiary">
               Go Back
             </button>
           </div>

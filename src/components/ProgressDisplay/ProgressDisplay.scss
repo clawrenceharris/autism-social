@@ -1,0 +1,62 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+.progress-section {
+  .progress-categories {
+    @include stack-layout($spacing-4);
+
+    .category-item {
+      padding: $spacing-4;
+      background: linear-gradient(
+        135deg,
+        $color-gray-50,
+        rgba($color-secondary-100, 0.5)
+      );
+      border-radius: $border-radius-xl;
+      border: 1px solid rgba($color-secondary, 0.1);
+      transition: all 0.2s ease;
+      @include flex(row, space-between, center);
+
+      &:hover {
+        background: linear-gradient(
+          135deg,
+          $color-secondary-100,
+          rgba($color-secondary-200, 0.7)
+        );
+        transform: translateX(4px);
+      }
+
+      .category-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(
+          135deg,
+          $color-secondary-100,
+          $color-secondary-200
+        );
+        border-radius: $border-radius-full;
+        @include flex(row, center, center);
+        color: $color-secondary;
+        flex-shrink: 0;
+        border: 2px solid rgba($color-secondary, 0.2);
+      }
+
+      .category-header {
+        @include flex(row, space-between, center, $spacing-4);
+        margin-bottom: $spacing-2;
+
+        .category-name {
+          font-weight: 500;
+          color: $color-gray-700;
+        }
+      }
+      .category-details {
+        @include flex(row, center, center);
+        .category-text {
+          font-weight: 600;
+          color: $color-primary;
+        }
+      }
+    }
+  }
+}

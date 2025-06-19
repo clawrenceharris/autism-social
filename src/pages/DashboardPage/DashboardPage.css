@@ -1,10 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
-.dashboard-container {
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 1.5rem 1rem;
-  min-height: 100vh;
-}
 .dashboard-container .dashboard-header {
   margin-bottom: 3rem;
   text-align: center;
@@ -97,13 +91,15 @@
 }
 .dashboard-container .dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
 }
 @media (min-width: 1024px) {
   .dashboard-container .dashboard-grid {
-    grid-template-columns: 2fr 1fr;
-    gap: 3rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    gap: 1.5rem;
   }
 }
 .dashboard-container .main-content {
@@ -127,7 +123,7 @@
 @media (min-width: 1024px) {
   .dashboard-container .sidebar-content {
     position: sticky;
-    top: 2rem;
+    top: 6rem;
     height: -moz-fit-content;
     height: fit-content;
   }
@@ -175,104 +171,22 @@
   background: linear-gradient(90deg, #8d54e2, #d0a1fc);
   transition: width 0.3s ease;
 }
-.dashboard-container .recent-activity .activity-list {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch;
-  gap: 1rem;
-  width: 100%;
-}
-.dashboard-container .recent-activity .activity-list .activity-item {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: linear-gradient(135deg, #f6faff, rgba(243, 232, 255, 0.5));
-  border-radius: 1rem;
-  border: 1px solid rgba(141, 84, 226, 0.1);
-  transition: all 0.2s ease;
-}
-.dashboard-container .recent-activity .activity-list .activity-item:hover {
-  background: linear-gradient(135deg, #f3e8ff, rgba(233, 213, 255, 0.7));
-  transform: translateX(4px);
-}
-.dashboard-container .recent-activity .activity-list .activity-item .activity-icon {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
-  border-radius: 9999px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-  color: #8d54e2;
-  flex-shrink: 0;
-  border: 2px solid rgba(141, 84, 226, 0.2);
-}
-.dashboard-container .recent-activity .activity-list .activity-item .activity-details {
-  flex: 1;
-  min-width: 0;
-}
-.dashboard-container .recent-activity .activity-list .activity-item .activity-details .activity-text {
-  font-size: 0.95rem;
-  color: #1f2937;
-  margin-bottom: 0.25rem;
-  font-weight: 500;
-  word-wrap: break-word;
-}
-.dashboard-container .recent-activity .activity-list .activity-item .activity-details .activity-time {
-  font-size: 0.85rem;
-  color: #6b7280;
-}
 .dashboard-container .empty-state {
   text-align: center;
   padding: 3rem 1rem;
   color: #6b7280;
 }
-.dashboard-container .empty-state .empty-icon {
-  font-size: 4rem;
-  margin-bottom: 1.5rem;
-  opacity: 0.6;
-  color: #8d54e2;
-}
-.dashboard-container .empty-state .empty-message {
-  font-size: 1.25rem;
-  margin-bottom: 0.75rem;
-  color: #374151;
-  font-weight: 600;
-}
-.dashboard-container .loading-state {
-  text-align: center;
-  padding: 3rem;
-  color: #4b5563;
-}
-.dashboard-container .loading-state .loading-text {
+.dashboard-container .empty-state .loading-text {
   margin-top: 1rem;
   font-size: 1.1rem;
   color: #8d54e2;
 }
 .dashboard-container .dialogue-list {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 1fr);
   gap: 1rem;
-  flex-direction: column;
-  overflow: visible;
-  padding: 1.5rem 0 1rem;
-}
-@media (min-width: 768px) {
-  .dashboard-container .dialogue-list {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-}
-@media (min-width: 1024px) {
-  .dashboard-container .dialogue-list {
-    flex-direction: column;
-    flex-wrap: nowrap;
-  }
+  grid-template-columns: repeat(auto-fit, minmax(400px, 0fr));
+  justify-content: center;
 }
 
 @media (min-width: 640px) {

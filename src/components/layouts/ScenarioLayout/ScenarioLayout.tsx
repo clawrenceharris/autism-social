@@ -47,10 +47,10 @@ const ScenarioLayout = () => {
     fetchScenarios();
   }, [fetchDialogues, fetchScenarios]);
   return (
-    <div>
-      <div style={{ minHeight: "100vh" }}>
+    <div className="layout-container">
+      <main>
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 };

@@ -3,18 +3,13 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { useModal } from "../../context";
 import { signOut } from "../../services/auth";
 import { ConfirmationModal, EditProfile } from "../../components/";
-import {
-  User,
-  Palette,
-  Trash2,
-  LogOut,
-  RotateCcw,
-  History,
-  Edit3,
-} from "lucide-react";
+import { User, Palette, LogOut, History, Trash, Hammer } from "lucide-react";
 import "./SettingsPage.scss";
 import { useToast } from "../../context";
 import type { AuthContextType } from "../../types";
+import { useErrorHandler } from "../../hooks";
+import { deleteUser } from "../../services/user";
+import EditAccount from "../../components/EditAccount";
 
 type ColorScheme = "light" | "dark" | "auto";
 
@@ -23,27 +18,17 @@ const SettingsPage = () => {
   const { showToast } = useToast();
   const { openModal, closeModal } = useModal();
   const navigate = useNavigate();
-
+  const { handleAsyncError } = useErrorHandler({ component: "SettingsPage" });
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
 
   const handleLogout = async () => {
-    openModal(
-      <ConfirmationModal
-        message="Are you sure you want to log out? Any unsaved changes will be lost."
-        confirmText="Log Out"
-        onConfirm={async () => {
-          try {
-            await signOut();
-            showToast("Logged out successfully", { type: "success" });
-            navigate("/login", { replace: true });
-            closeModal();
-          } catch {
-            showToast("Failed to log out", { type: "error" });
-          }
-        }}
-      />,
-      "Confirm Logout"
-    );
+    try {
+      await signOut();
+      navigate("/login", { replace: true });
+      closeModal();
+    } catch {
+      showToast("Failed to log out", { type: "error" });
+    }
   };
 
   const handleDeleteAccount = () => {
@@ -52,9 +37,11 @@ const SettingsPage = () => {
         message="Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently lost."
         confirmText="Delete Account"
         onConfirm={() => {
-          // TODO: Implement account deletion
-          showToast("Account deletion is not yet implemented", {
-            type: "info",
+          handleAsyncError({
+            action: "delete account",
+            asyncFn: async () => {
+              await deleteUser(user.id);
+            },
           });
         }}
       />,
@@ -87,14 +74,14 @@ const SettingsPage = () => {
       "Edit Profile"
     );
   };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
+  const handleEditAccount = () => {
+    openModal(
+      <EditAccount user={user} onSubmit={closeModal} />,
+      "Edit Account"
+    );
+  };
+  const getInitials = (firstName: string, lastName: string) => {
+    return firstName.charAt(0) + lastName.charAt(0);
   };
 
   return (
@@ -108,15 +95,17 @@ const SettingsPage = () => {
 
       <div className="settings-sections">
         {/* Profile Section */}
-        <div className="settings-section">
+        <div className="card-section">
           <div className="section-header">
-            <h2>Profile</h2>
-            <User className="section-icon" size={24} />
+            <h2>
+              <User className="section-icon" size={24} />
+              Your Account
+            </h2>
           </div>
           <div className="section-content">
             <div className="profile-info">
               <div className="profile-avatar">
-                {user?.email ? getInitials(user.email) : "U"}
+                {getInitials(profile.first_name, profile.last_name)}
               </div>
               <div className="profile-details">
                 <div className="profile-name">
@@ -127,140 +116,163 @@ const SettingsPage = () => {
             </div>
             <div className="setting-item">
               <div className="setting-info">
-                <div className="setting-label">Edit Profile</div>
+                <h3 className="setting-label">Edit Account</h3>
                 <p className="description">
-                  Update your name, goals, interests, and profile photo
+                  Update your goals, interests, and profile photo
                 </p>
               </div>
-              <div className="setting-control">
-                <button onClick={handleEditProfile} className="btn btn-primary">
-                  <Edit3 size={16} />
-                  Edit Profile
+              <div onClick={handleEditAccount} className="setting-control">
+                <button
+                  onClick={handleEditAccount}
+                  className="btn btn-tertiary"
+                >
+                  Edit Account
                 </button>
               </div>
+            </div>
+            <div className="setting-item">
+              <div className="setting-info">
+                <h3 className="setting-label">Edit Profile</h3>
+                <p className="description">
+                  Update your goals, interests, and profile photo
+                </p>
+              </div>
+              <button onClick={handleEditProfile} className="btn btn-primary">
+                Edit Profile
+              </button>
             </div>
           </div>
         </div>
 
         {/* Appearance Section */}
-        <div className="settings-section">
+        <div className="card-section">
           <div className="section-header">
-            <h2>Appearance</h2>
-            <Palette className="section-icon" size={24} />
+            <h2>
+              <Palette className="section-icon" size={24} />
+              Appearance
+            </h2>
           </div>
           <div className="section-content">
             <div className="setting-item">
               <div className="setting-info">
-                <div className="setting-label">Color Scheme</div>
+                <h3 className="setting-label">Color Scheme</h3>
                 <p className="description">
                   Choose your preferred color scheme for the app
                 </p>
               </div>
-            </div>
-            <div className="color-scheme-options">
-              <div
-                className={`color-option ${
-                  colorScheme === "light" ? "selected" : ""
-                }`}
-                onClick={() => setColorScheme("light")}
-              >
-                <div className="color-preview light"></div>
-                <span className="color-label">Light</span>
-              </div>
-              <div
-                className={`color-option ${
-                  colorScheme === "dark" ? "selected" : ""
-                }`}
-                onClick={() => setColorScheme("dark")}
-              >
-                <div className="color-preview dark"></div>
-                <span className="color-label">Dark</span>
-              </div>
-              <div
-                className={`color-option ${
-                  colorScheme === "auto" ? "selected" : ""
-                }`}
-                onClick={() => setColorScheme("auto")}
-              >
-                <div className="color-preview auto"></div>
-                <span className="color-label">Auto</span>
+
+              <div className="color-scheme-options">
+                <div
+                  className={`color-option ${
+                    colorScheme === "light" ? "selected" : ""
+                  }`}
+                  onClick={() => setColorScheme("light")}
+                >
+                  <div className="color-preview light"></div>
+                  <span className="color-label">Light</span>
+                </div>
+                <div
+                  className={`color-option ${
+                    colorScheme === "dark" ? "selected" : ""
+                  }`}
+                  onClick={() => setColorScheme("dark")}
+                >
+                  <div className="color-preview dark"></div>
+                  <span className="color-label">Dark</span>
+                </div>
+                <div
+                  className={`color-option ${
+                    colorScheme === "auto" ? "selected" : ""
+                  }`}
+                  onClick={() => setColorScheme("auto")}
+                >
+                  <div className="color-preview auto"></div>
+                  <span className="color-label">Auto</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Data Management Section */}
-        <div className="settings-section">
+        <div className="card-section">
           <div className="section-header">
-            <h2>Data Management</h2>
-            <History className="section-icon" size={24} />
+            <h2>
+              <History className="section-icon" size={24} />
+              Data Management
+            </h2>
           </div>
           <div className="section-content">
             <div className="setting-item">
               <div className="setting-info">
-                <div className="setting-label">Manage History</div>
+                <h3 className="setting-label">Manage History</h3>
                 <p className="description">
                   View and manage your scenario completion history
                 </p>
               </div>
-              <div className="setting-control">
-                <button onClick={handleManageHistory} className="btn">
-                  <History size={16} />
-                  View History
-                </button>
-              </div>
+              <button
+                onClick={handleManageHistory}
+                className="btn btn-tertiary"
+              >
+                View History
+              </button>
             </div>
             <div className="setting-item">
               <div className="setting-info">
-                <div className="setting-label">Reset Progress</div>
+                <h3 className="setting-label">Reset Progress</h3>
                 <p className="description">
                   Clear all your progress and start fresh
                 </p>
               </div>
-              <div className="setting-control">
-                <button onClick={handleResetProgress} className="btn warning">
-                  <RotateCcw size={16} />
-                  Reset Progress
-                </button>
-              </div>
+              <button onClick={handleResetProgress} className="btn btn-warning">
+                Reset
+              </button>
             </div>
           </div>
         </div>
 
         {/* Account Section */}
-        <div className="settings-section">
+        <div className="card-section">
           <div className="section-header">
-            <h2>Account</h2>
-            <User className="section-icon" size={24} />
+            <h2>
+              <Hammer className="section-icon" size={24} />
+              Account Actions
+            </h2>
           </div>
           <div className="section-content">
             <div className="setting-item">
               <div className="setting-info">
-                <div className="setting-label">Log Out</div>
+                <h3 className="setting-label">Log Out</h3>
                 <p className="description">
                   Sign out of your account on this device
                 </p>
               </div>
               <div className="setting-control">
-                <button onClick={handleLogout} className="btn">
+                <button className="btn btn-tertiary" onClick={handleLogout}>
                   <LogOut size={16} />
                   Log Out
                 </button>
               </div>
             </div>
 
-            <div className="danger-zone">
-              <div className="danger-header">
-                <h3>Danger Zone</h3>
-                <p>
-                  These actions cannot be undone. Please proceed with caution.
-                </p>
-              </div>
-              <div className="danger-actions">
-                <button onClick={handleDeleteAccount} className="btn danger">
-                  <Trash2 size={16} />
-                  Delete Account
-                </button>
+            <div className="section-content">
+              <div className="setting-item">
+                <div className="setting-info">
+                  <h3 className="setting-label danger">Delete Account</h3>
+                  <p className="description">
+                    Delete your account and all its data. This action is
+                    irreversible
+                  </p>
+                </div>
+                <div className="setting-control">
+                  <button
+                    onClick={handleDeleteAccount}
+                    className="btn btn-danger"
+                  >
+                    <Trash size={16} />
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           </div>

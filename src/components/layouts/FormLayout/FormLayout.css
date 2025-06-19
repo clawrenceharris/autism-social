@@ -57,9 +57,7 @@
   font-size: 0.875rem;
   margin-top: 0.25rem;
 }
-.form .form-description {
-  color: #4b5563;
-  font-size: 0.875rem;
+.form .description {
   margin-bottom: 1rem;
 }
 .form .form-error-message {

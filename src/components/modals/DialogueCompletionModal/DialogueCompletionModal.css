@@ -179,7 +179,7 @@
   padding: 1.5rem;
   box-shadow: 0 5px 8px rgba(0, 0, 0, 0.04);
   transition: all 0.3s ease;
-  border: 1px solid #f3f4f6;
+  border: 1px solid #f6f7f8;
 }
 .progress-section .progress-item:hover {
   border-color: #c1e6ff;
@@ -292,7 +292,7 @@
 
 .analysis-section {
   width: 100%;
-  background: #f6faff;
+  background: #fbfdff;
   border-radius: 1.5rem;
   padding: 1.5rem;
   border: 2px solid #edeff1;
@@ -333,7 +333,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  background: #f6faff;
+  background: #fbfdff;
   border-bottom: 1px solid #edeff1;
 }
 .analysis-section .step-analysis .step-header .step-info {
@@ -416,7 +416,7 @@
   border-bottom-right-radius: 0.5rem;
 }
 .analysis-section .step-analysis .step-details .conversation-flow .message-analysis.npc .message-bubble {
-  background: #f3f4f6;
+  background: #f6f7f8;
   color: #1f2937;
   border-bottom-left-radius: 0.5rem;
 }
@@ -425,6 +425,15 @@
   padding: 1rem;
   border-radius: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.analysis-section .step-analysis .step-details .conversation-flow .message-analysis .message-bubble .feedback {
+  display: block;
+  border-radius: 1rem;
+  margin-top: 0.5rem;
+  color: #c1e6ff;
+}
+.analysis-section .step-analysis .step-details .conversation-flow .message-analysis .message-bubble .better-response {
+  color: #9ca3af;
 }
 .analysis-section .step-analysis .step-details .conversation-flow .message-analysis .analysis-btn {
   display: flex;
@@ -462,7 +471,7 @@
   cursor: not-allowed;
 }
 .analysis-section .step-analysis .step-details .points-breakdown {
-  background: #f6faff;
+  background: #fbfdff;
   border-radius: 1rem;
   padding: 1rem;
   border: 1px solid #edeff1;
@@ -489,6 +498,7 @@
   border-radius: 0.5rem;
   border: 1px solid #edeff1;
   transition: all 0.2s ease;
+  max-width: 250px;
 }
 .analysis-section .step-analysis .step-details .points-breakdown .points-grid .point-item.earned {
   border-color: #e9d5ff;

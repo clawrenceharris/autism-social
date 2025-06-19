@@ -1,0 +1,95 @@
+@import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
+header {
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  transition: all 0.3s ease;
+}
+header .nav {
+  max-width: 80rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+header .nav img {
+  width: 4rem;
+  height: 4rem;
+}
+header .nav-links {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2rem;
+}
+header .nav-link {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4b5563;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.5rem;
+  height: 50px;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+header .nav-link span {
+  display: none;
+}
+@media (min-width: 768px) {
+  header .nav-link span {
+    display: inline;
+  }
+}
+header .nav-link:hover, header .nav-link.active {
+  color: #54cbe2;
+  background-color: #f6f7f8;
+}
+header .nav-link:hover svg, header .nav-link.active svg {
+  transform: scale(1.1);
+}
+header .nav-link svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform 0.2s ease;
+}
+header .nav-brand {
+  font-weight: 600;
+  color: #111827;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5rem;
+}
+header .nav-brand span {
+  display: none;
+}
+@media (min-width: 768px) {
+  header .nav-brand span {
+    display: inline;
+  }
+}
+
+@media (min-width: 640px) {
+  header nav {
+    padding: 0.75rem 1rem;
+  }
+  header nav-nav {
+    gap: 1rem;
+  }
+  header nav-brand {
+    font-size: 1.1rem;
+  }
+}/*# sourceMappingURL=RootHeader.css.map */

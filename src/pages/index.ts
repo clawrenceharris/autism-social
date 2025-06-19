@@ -6,4 +6,3 @@ export { default as SignUpPage } from "./SignUpPage";
 export { default as SettingsPage } from "./SettingsPage";
 export { default as PlayScenarioPage } from "./PlayScenarioPage";
 export { default as DailyChallengesPage } from "./DailyChallengesPage";
-export { default as GeminiDemoPage } from "./GeminiDemoPage";
