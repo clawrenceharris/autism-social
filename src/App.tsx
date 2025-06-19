@@ -9,19 +9,22 @@ import {
   SettingsPage,
   PlayScenarioPage,
   DailyChallengesPage,
+  LandingPage
 } from "./pages";
 
 function App() {
   return (
     <Router>
       <Routes>
+                <Route path="/" element={<LandingPage />} />
+
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
 
         {/* User Routes */}
         <Route element={<UserLayout />}>
           <Route element={<UserRoute />}>
-            <Route path="/" element={<DashboardPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/your-scenarios" element={<YourScenariosPage />} />
             <Route path="/progress" element={<ProgressPage />} />
             <Route path="/settings" element={<SettingsPage />} />
