@@ -1,40 +1,45 @@
-import { ProgressIndicator } from "../../components";
+import { ProgressIndicator } from "../";
+import "./SignUpStep.scss";
 import { usePreferencesStore } from "../../store/usePreferencesStore";
 import type { SignUpFormValues } from "../../types";
-import "./SignUpStep.scss";
 
-interface SignUpStep3Props {
+interface SignUpStep2Props {
   toggleSelection: (type: "goals" | "interests", value: string) => void;
-  formData: Pick<SignUpFormValues, "interests">;
+  formData: Pick<SignUpFormValues, "goals">;
 }
 
-const SignUpStep3 = ({ formData, toggleSelection }: SignUpStep3Props) => {
-  const { interests, error, loading } = usePreferencesStore();
+export const SignUpStep3 = ({
+  formData,
+  toggleSelection,
+}: SignUpStep2Props) => {
+  const { goals, error, loading } = usePreferencesStore();
 
   if (loading)
     return (
-      <div className="center-absolute">
+      <>
         <ProgressIndicator />
-      </div>
+      </>
     );
   if (error) return <div className="error">{error}</div>;
 
   return (
     <div>
-      <label>What are your interests?</label>
+      <label>What are your goals for using Chatterbrain?</label>
       <p className="form-helper">
         <small>Select all that apply</small>
       </p>
-      <div className="interests-grid">
-        {interests.map((interest) => (
+      <div className="goals-grid">
+        {goals.map((goal) => (
           <div
-            key={interest.id}
+            key={goal.id}
             className={`checkbox-item ${
-              formData.interests.includes(interest.id) ? "selected" : ""
+              formData.goals.includes(goal.id) ? "selected" : ""
             }`}
-            onClick={() => toggleSelection("interests", interest.id)}
+            onClick={() => {
+              toggleSelection("goals", goal.id);
+            }}
           >
-            <span>{interest.name}</span>
+            <span>{goal.goal}</span>
           </div>
         ))}
       </div>

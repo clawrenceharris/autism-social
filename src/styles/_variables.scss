@@ -7,6 +7,7 @@ $font-family-secondary: "Dongle", system-ui, -apple-system, BlinkMacSystemFont,
 
 // Colors
 $color-primary: #54cbe2;
+
 $color-primary-100: #e3f3fe;
 $color-primary-200: #c1e6ff;
 $color-primary-300: #9ce5ff;
@@ -17,8 +18,8 @@ $color-secondary-200: #e9d5ff;
 $color-secondary-300: #d0a1fc;
 
 // Gray Scale
-$color-gray-50: #f6faff;
-$color-gray-100: #f3f4f6;
+$color-gray-50: #fbfdff;
+$color-gray-100: #f6f7f8;
 $color-gray-200: #edeff1;
 $color-gray-300: #d1d5db;
 $color-gray-400: #9ca3af;
@@ -32,6 +33,10 @@ $color-gray-900: #111827;
 $color-red-100: #fee2e2;
 $color-red-200: #fdb0b0;
 $color-red-300: #f78585;
+$color-red: #ef4848;
+
+$color-orange-50: #ffd3a1;
+$color-orange: #f49b00;
 
 $color-red-600: #dc2626;
 $color-red-700: #b91c1c;
@@ -59,6 +64,8 @@ $spacing-6: 1.5rem;
 $spacing-8: 2rem;
 $spacing-12: 3rem;
 $spacing-16: 4rem;
+$spacing-18: 5rem;
+$spacing-20: 6rem;
 
 // Border Radius
 $border-radius-sm: 0.375rem;

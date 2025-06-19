@@ -1,49 +1,67 @@
-import { ProgressIndicator } from "../";
-import "./SignUpStep.scss";
-import { usePreferencesStore } from "../../store/usePreferencesStore";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import type { SignUpFormValues } from "../../types";
+import "./SignUpStep.scss";
 
-interface SignUpStep2Props {
-  toggleSelection: (type: "goals" | "interests", value: string) => void;
-  formData: Pick<SignUpFormValues, "goals">;
+interface SignUpStep1Props {
+  register: UseFormRegister<SignUpFormValues>;
+  errors: FieldErrors<SignUpFormValues>;
 }
 
-export const SignUpStep2 = ({
-  formData,
-  toggleSelection,
-}: SignUpStep2Props) => {
-  const { goals, error, loading } = usePreferencesStore();
-
-  if (loading)
-    return (
-      <>
-        <ProgressIndicator />
-      </>
-    );
-  if (error) return <div className="error">{error}</div>;
-
+const SignUpStep2 = ({ register, errors }: SignUpStep1Props) => {
   return (
-    <div>
-      <label>What are your goals for using Autism Social?</label>
-      <p className="form-helper">
-        <small>Select all that apply</small>
-      </p>
-      <div className="goals-grid">
-        {goals.map((goal) => (
-          <div
-            key={goal.id}
-            className={`checkbox-item ${
-              formData.goals.includes(goal.id) ? "selected" : ""
-            }`}
-            onClick={() => {
-              toggleSelection("goals", goal.id);
-            }}
-          >
-            <span>{goal.goal}</span>
-          </div>
-        ))}
+    <>
+      <div className="form-group">
+        <label>First name</label>
+        <input
+          type="text"
+          className={`form-input ${errors.name ? "error" : ""}`}
+          {...register("first_name", {
+            required: "First name is required",
+            maxLength: {
+              value: 25,
+              message: "First name should not be greater than 25 characters",
+            },
+          })}
+        />
+        {errors.first_name && (
+          <p className="form-error">{errors.first_name.message}</p>
+        )}
       </div>
-    </div>
+      <div className="form-group">
+        <label>Last name</label>
+        <input
+          type="text"
+          className={`form-input ${errors.name ? "error" : ""}`}
+          {...register("last_name", {
+            required: "Last name is required",
+            maxLength: {
+              value: 25,
+              message: "Last name should not be greater than 25 characters",
+            },
+          })}
+        />
+        {errors.first_name && (
+          <p className="form-error">{errors.first_name.message}</p>
+        )}
+      </div>
+      <div className="form-group">
+        <label>Age</label>
+        <input
+          type="number"
+          className={`form-input ${errors.email ? "error" : ""}`}
+          {...register("age", {
+            required: "Age is required",
+            validate: (age) => {
+              if (age && age < 16) {
+                return "You must be at least 16 years old to sign up";
+              }
+              return true;
+            },
+          })}
+        />
+        {errors.age && <p className="form-error">{errors.age.message}</p>}
+      </div>
+    </>
   );
 };
 

@@ -1,5 +1,5 @@
 import { Component, type ReactNode, type ErrorInfo } from "react";
-import { AlertTriangle, RefreshCw, Home } from "lucide-react";
+import { AlertTriangle, RefreshCw } from "lucide-react";
 import {
   normalizeError,
   logError,
@@ -113,18 +113,15 @@ class ErrorBoundary extends Component<Props, State> {
                   <RefreshCw size={20} />
                   Try Again
                 </button>
-
                 <button
-                  onClick={this.handleGoHome}
-                  className="btn btn-secondary"
+                  onClick={this.handleReload}
+                  className="btn btn-tertiary"
                 >
-                  <Home size={20} />
-                  Go Home
-                </button>
-
-                <button onClick={this.handleReload} className="btn">
                   <RefreshCw size={20} />
                   Reload Page
+                </button>
+                <button onClick={this.handleGoHome} className="btn link">
+                  Return to Dashboard
                 </button>
               </div>
 

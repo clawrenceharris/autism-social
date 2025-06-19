@@ -3,8 +3,8 @@ import { persist } from "zustand/middleware";
 import type { Dialogue, Scenario } from "../types";
 
 interface PlayScenarioStore {
-  setUserFields: (fields: Record<string, string>) => void;
-  userFields: Record<string, string> | null;
+  setUserFields: (fields: { [key: string]: string } | null) => void;
+  userFields: { [key: string]: string } | null;
   dialogue: Dialogue | null;
   scenario: Scenario | null;
   setDialogue: (dialogue: Dialogue | null) => void;
@@ -18,7 +18,7 @@ export const usePlayScenarioStore = create<PlayScenarioStore>()(
       scenario: null,
       userFields: null,
 
-      setUserFields: async (userFields: Record<string, string>) => {
+      setUserFields: async (userFields: { [key: string]: string } | null) => {
         set({ userFields });
       },
       setDialogue: (dialogue: Dialogue | null) => {
@@ -30,7 +30,7 @@ export const usePlayScenarioStore = create<PlayScenarioStore>()(
     }),
 
     {
-      name: "scenarios-storage",
+      name: "play-storage",
       partialize: (state) => ({
         dialogue: state.dialogue,
         scenario: state.scenario,

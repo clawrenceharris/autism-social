@@ -27,9 +27,9 @@ const LoginPage = () => {
         throw new Error("No user data received");
       }
       navigate("/", { replace: true });
-    } catch (err) {
-      const normalizedError = handleError(err, "login");
-      setError(normalizedError.message);
+    } catch (error) {
+      const err = handleError({ error, action: "login", showsToast: false });
+      setError(err.message);
     } finally {
       setIsLoading(false);
     }

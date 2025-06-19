@@ -85,32 +85,40 @@ export async function getDialogueById(id: string) {
   return data;
 }
 
-export async function addDialogueProgress(
-  userId: string,
-  dialogueId: string,
-  scores: ScoreSummary
-) {
+export async function addDialogueProgress({
+  userId,
+  dialogueId,
+  scoring,
+  maxScoring,
+}: {
+  userId: string;
+  dialogueId: string;
+  scoring: ScoreSummary;
+  maxScoring: ScoreSummary;
+}) {
   const { data, error } = await DatabaseService.create<UserProgress>(
     "user_progress",
     {
       user_id: userId,
       dialogue_id: dialogueId,
-      assertiveness: null,
-      clarity: null,
-      self_advocacy: null,
-      social_awareness: null,
-      empathy: null,
-      ...scores,
+      scoring,
+      max_scoring: maxScoring,
     }
   );
   if (error) throw error;
   return data;
 }
-export async function updateDialogueProgress(
-  userId: string,
-  dialogueId: string,
-  scores: ScoreSummary
-) {
+export async function updateDialogueProgress({
+  userId,
+  dialogueId,
+  scoring,
+  maxScoring,
+}: {
+  userId: string;
+  dialogueId: string;
+  scoring: ScoreSummary;
+  maxScoring: ScoreSummary;
+}) {
   const { data, error } = await DatabaseService.updateBy<UserProgress>(
     "user_progress",
     "dialogue_id",
@@ -118,7 +126,8 @@ export async function updateDialogueProgress(
     {
       user_id: userId,
       dialogue_id: dialogueId,
-      ...scores,
+      scoring,
+      max_scoring: maxScoring,
     }
   );
   if (error) throw error;

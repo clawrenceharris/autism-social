@@ -1,0 +1,89 @@
+@import "../../styles/mixins";
+@import "../../styles/variables";
+
+header {
+  background-color: $color-white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  transition: all 0.3s ease;
+
+  .nav {
+    max-width: 80rem;
+    margin: 0 auto;
+    @include flex(row, space-between, center);
+
+    img {
+      width: 4rem;
+      height: 4rem;
+    }
+    &-links {
+      @include flex(row, flex-start, center, $spacing-8);
+    }
+    &-link {
+      @include flex(row, flex-start, center, $spacing-2);
+      color: $color-gray-600;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: $spacing-2;
+      height: 50px;
+      border-radius: $border-radius-md;
+      transition: all 0.2s ease;
+
+      span {
+        display: none;
+
+        @include responsive(md) {
+          display: inline;
+        }
+      }
+
+      &:hover,
+      &.active {
+        color: $color-primary;
+        background-color: $color-gray-100;
+
+        svg {
+          transform: scale(1.1);
+        }
+      }
+
+      svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        transition: transform 0.2s ease;
+      }
+    }
+
+    &-brand {
+      font-weight: 600;
+      color: $color-gray-900;
+      @include flex(row, flex-start, center, $spacing-2);
+
+      span {
+        display: none;
+
+        @include responsive(md) {
+          display: inline;
+        }
+      }
+    }
+  }
+}
+@include responsive(sm) {
+  header nav {
+    padding: $spacing-3 $spacing-4;
+
+    &-nav {
+      gap: $spacing-4;
+    }
+
+    &-brand {
+      font-size: 1.1rem;
+    }
+  }
+}

@@ -31,8 +31,8 @@ export function createDialogueMachine(
           updated.path.push(opt);
           for (const cat of categories) {
             if (opt.scoring[cat] !== undefined) {
-              updated.scores[cat] = updated.scores[cat]
-                ? updated.scores[cat] + opt.scoring[cat]
+              updated.scoring[cat] = updated.scoring[cat]
+                ? updated.scoring[cat] + opt.scoring[cat]
                 : opt.scoring[cat];
             }
           }
@@ -69,7 +69,7 @@ export function createDialogueMachine(
     },
     context: {
       path: [],
-      scores: {},
+      scoring: {},
     },
     id,
     initial: steps[0].id,

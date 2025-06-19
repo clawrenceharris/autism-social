@@ -45,21 +45,29 @@ export const useProgressStore = create<ProgressStore>()(
           "self_advocacy",
         ] as const;
 
-        const totalEarned: ScoreSummary = {
+        const totalEarned: Record<ScoreCategory, number> = {
           clarity: 0,
           empathy: 0,
           assertiveness: 0,
           self_advocacy: 0,
           social_awareness: 0,
         };
-
+        const totalPossible: Record<ScoreCategory, number> = {
+          clarity: 0,
+          empathy: 0,
+          assertiveness: 0,
+          self_advocacy: 0,
+          social_awareness: 0,
+        };
         for (const entry of progress) {
           for (const cat of categories) {
-            const value = entry[cat];
-            if (value) {
-              totalEarned[cat] = totalEarned[cat]
-                ? totalEarned[cat] + value
-                : value;
+            const earned = entry.scoring[cat];
+            const possible = entry.max_scoring[cat];
+
+            if (earned && possible) {
+              totalPossible[cat] += possible;
+
+              totalEarned[cat] += earned;
             }
           }
         }
@@ -68,7 +76,11 @@ export const useProgressStore = create<ProgressStore>()(
           Object.keys(totalEarned).map((cat) => [
             cat,
 
-            Math.round(((totalEarned[cat as ScoreCategory] || 0) / 5) * 100),
+            Math.round(
+              ((totalEarned[cat as ScoreCategory] || 0) /
+                (totalPossible[cat as ScoreCategory] || 1)) *
+                100
+            ),
           ])
         );
         set({ averageCategoryScores });
@@ -87,7 +99,7 @@ export const useProgressStore = create<ProgressStore>()(
 
         for (const entry of progress) {
           for (const category of categories) {
-            totalPoints += entry[category] || 0;
+            totalPoints += entry.scoring[category] || 0;
           }
         }
         if (totalPoints != get().totalPoints) {
@@ -110,7 +122,7 @@ export const useProgressStore = create<ProgressStore>()(
         const categoryScores = categories.reduce<ScoreSummary>(
           (acc, category) => {
             acc[category] = progress.reduce(
-              (sum, p) => sum + (p[category] || 0),
+              (sum, p) => sum + (p.scoring[category] || 0),
               0
             );
             return acc;
@@ -138,17 +150,24 @@ export const useProgressStore = create<ProgressStore>()(
 
         for (const entry of progress) {
           for (const cat of categories) {
-            const value = entry[cat];
-            if (value !== null && value !== undefined) {
-              totalEarned += value;
-              totalPossible += 5; // or use a dynamic max if stored
+            const earned = entry.scoring[cat];
+            const possible = entry.max_scoring[cat]; //total possible score that can be given for this category
+
+            if (earned && possible) {
+              totalEarned += earned;
+              totalPossible += possible;
+              console.log({ earned, possible });
             }
           }
         }
+        const averageScore =
+          totalPossible !== 0
+            ? Math.round((totalEarned / totalPossible) * 100)
+            : 0;
 
-        if (totalPossible === 0) set({ averageScore: 0 });
-
-        set({ averageScore: Math.round((totalEarned / totalPossible) * 100) });
+        set({
+          averageScore,
+        });
       },
       fetchProgress: async (userId: string) => {
         try {
@@ -158,6 +177,7 @@ export const useProgressStore = create<ProgressStore>()(
 
           set({
             progress,
+            loading: false,
             progressByDialogueId: progress.reduce<
               Record<string, UserProgress[]>
             >((acc, progress) => {
@@ -172,9 +192,7 @@ export const useProgressStore = create<ProgressStore>()(
           get().calcTotalPoints();
           get().calcAverageCategoryScore();
         } catch {
-          set({ error: "Failed to load progress" });
-        } finally {
-          set({ loading: false });
+          set({ error: "Failed to load progress", loading: false });
         }
       },
       setRankReceived: (rankReceived: boolean) => {
@@ -197,7 +215,7 @@ export const useProgressStore = create<ProgressStore>()(
       },
     }),
     {
-      name: "scenarios-storage",
+      name: "progress-storage",
       partialize: (state) => ({
         rankReceived: state.rankReceived,
         progress: state.progress,

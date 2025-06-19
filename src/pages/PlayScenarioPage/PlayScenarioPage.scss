@@ -3,10 +3,10 @@
 
 .play-scenario-container {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  position: relative;
   overflow: hidden;
   min-height: 100vh;
   padding: $spacing-3;
+  color: $color-white;
 
   // Animated background particles
   &::before {
@@ -41,12 +41,12 @@
 
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: $spacing-4 $spacing-2;
 
     .header-content {
       @include flex(row, space-between, center);
-      max-width: 1200px;
       margin: 0 auto;
-      padding: $spacing-4 $spacing-2;
+      max-width: 1200px;
 
       .scenario-info {
         display: block;
@@ -97,13 +97,8 @@
     }
   }
 
-  .error-state {
-    color: $color-white;
-    @include flex(column, center, center, $spacing-8);
-  }
   .dialogue-selection {
-    color: $color-white;
-    margin-top: 100px;
+    margin-top: 50px;
     .dialogue-options {
       padding: $spacing-8 0;
       overflow-y: scroll;

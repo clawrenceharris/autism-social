@@ -48,7 +48,7 @@ export const useStreakStore = create<StreakStore>()(
 
           // Initialize streak data for new user
           const initialData: StreakData = {
-            currentStreak: 0,
+            currentStreak: -1,
             longestStreak: 0,
             lastCompletionDate: null,
             lastCompletionTimezone:

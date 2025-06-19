@@ -1,7 +1,7 @@
 export { default as Select } from "./Select";
 export { default as ScenarioLayout } from "./layouts/ScenarioLayout";
 export { default as Skeleton } from "./Skeleton";
-export { default as UserLayout } from "./layouts/UserLayout/UserLayout";
+export { default as UserLayout } from "./layouts/RootLayout/RootLayout";
 export { default as FormLayout } from "./layouts/FormLayout";
 
 export { default as UserRoute } from "./routes/UserRoute";
@@ -13,8 +13,8 @@ export { default as StartDialogueModal } from "./modals/StartDialogueModal";
 export { default as DialogueCompletionModal } from "./modals/DialogueCompletionModal";
 
 export { default as DialogueItem } from "./DialogueItem";
-export { default as UserHeader } from "./UserHeader";
-export { default as ProgressSection } from "./ProgressSection";
+export { default as RootHeader } from "./RootHeader";
+export { default as ProgressDisplay } from "./ProgressDisplay";
 export { default as ToastContainer } from "./ToastContainer";
 export { default as EditProfile } from "./EditProfile";
 export { default as StreakDisplay } from "./StreakDisplay";

@@ -2,11 +2,6 @@
 @import "../../styles/mixins";
 
 .dashboard-container {
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: $spacing-6 $spacing-4;
-  min-height: 100vh;
-
   .dashboard-header {
     margin-bottom: $spacing-12;
     text-align: center;
@@ -89,13 +84,10 @@
   }
 
   .dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: $spacing-8;
-
+    @include grid-layout(1);
     @include responsive(lg) {
-      grid-template-columns: 2fr 1fr;
-      gap: $spacing-12;
+      @include grid-layout(2);
+      gap: $spacing-6;
     }
   }
 
@@ -110,7 +102,7 @@
 
     @include responsive(lg) {
       position: sticky;
-      top: $spacing-8;
+      top: $spacing-20;
       height: fit-content;
     }
   }
@@ -160,91 +152,10 @@
     }
   }
 
-  .recent-activity {
-    .activity-list {
-      @include stack-layout($spacing-4);
-
-      .activity-item {
-        @include flex(row, flex-start, center, $spacing-4);
-        padding: $spacing-4;
-        background: linear-gradient(
-          135deg,
-          $color-gray-50,
-          rgba($color-secondary-100, 0.5)
-        );
-        border-radius: $border-radius-xl;
-        border: 1px solid rgba($color-secondary, 0.1);
-        transition: all 0.2s ease;
-
-        &:hover {
-          background: linear-gradient(
-            135deg,
-            $color-secondary-100,
-            rgba($color-secondary-200, 0.7)
-          );
-          transform: translateX(4px);
-        }
-
-        .activity-icon {
-          width: 40px;
-          height: 40px;
-          background: linear-gradient(
-            135deg,
-            $color-secondary-100,
-            $color-secondary-200
-          );
-          border-radius: $border-radius-full;
-          @include flex(row, center, center);
-          color: $color-secondary;
-          flex-shrink: 0;
-          border: 2px solid rgba($color-secondary, 0.2);
-        }
-
-        .activity-details {
-          flex: 1;
-          min-width: 0; // Prevent overflow
-
-          .activity-text {
-            font-size: 0.95rem;
-            color: $color-gray-800;
-            margin-bottom: $spacing-1;
-            font-weight: 500;
-            word-wrap: break-word;
-          }
-
-          .activity-time {
-            font-size: 0.85rem;
-            color: $color-gray-500;
-          }
-        }
-      }
-    }
-  }
-
   .empty-state {
     text-align: center;
     padding: $spacing-12 $spacing-4;
     color: $color-gray-500;
-
-    .empty-icon {
-      font-size: 4rem;
-      margin-bottom: $spacing-6;
-      opacity: 0.6;
-      color: $color-secondary;
-    }
-
-    .empty-message {
-      font-size: 1.25rem;
-      margin-bottom: $spacing-3;
-      color: $color-gray-700;
-      font-weight: 600;
-    }
-  }
-
-  .loading-state {
-    text-align: center;
-    padding: $spacing-12;
-    color: $color-gray-600;
 
     .loading-text {
       margin-top: $spacing-4;
@@ -254,21 +165,9 @@
   }
 
   .dialogue-list {
-    display: flex;
-    gap: $spacing-4;
-    flex-direction: column;
-    overflow: visible; // Changed from scroll to visible
-    padding: $spacing-6 0 $spacing-4;
+    @include grid-layout-auto($min: 400px);
 
-    @include responsive(md) {
-      flex-direction: row;
-      flex-wrap: wrap; // Allow wrapping on larger screens
-    }
-
-    @include responsive(lg) {
-      flex-direction: column; // Stack vertically in sidebar
-      flex-wrap: nowrap;
-    }
+    justify-content: center;
   }
 }
 

@@ -9,14 +9,14 @@ import { useToast } from "../../context/ToastContext";
 import { createUser } from "../../services/user";
 import { useErrorHandler } from "../../hooks/useErrorHandler";
 
-const NUM_STEPS = 4;
+const NUM_STEPS = 5;
 
 const SignUpPage = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { handleError } = useErrorHandler({ component: 'SignUpPage' });
+  const { handleError } = useErrorHandler({ component: "SignUpPage" });
 
   const { renderStep, step } = useSignUp({
     handleSubmit: (data) => handleSubmit(data),
@@ -56,9 +56,9 @@ const SignUpPage = () => {
 
       showToast("Sign up was successful!", { type: "success" });
       navigate("/", { replace: true });
-    } catch (err) {
-      const normalizedError = handleError(err, 'signup');
-      setError(normalizedError.message);
+    } catch (error) {
+      const err = handleError({ error, action: "signup", showsToast: false });
+      setError(err.message);
     } finally {
       setIsLoading(false);
     }

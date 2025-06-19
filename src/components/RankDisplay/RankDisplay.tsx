@@ -166,11 +166,11 @@ const RankDisplay: React.FC<RankDisplayProps> = ({
             } as React.CSSProperties
           }
         >
-          <span className="rank-icon">{progress.currentRank.icon}</span>
+          <div className="rank-icon">{progress.currentRank.icon}</div>
         </div>
 
         <div className="rank-info">
-          <p className="description">Rank {progress.currentRank.level}</p>
+          <p className="description">Level {progress.currentRank.level}</p>
 
           <div
             className="rank-title"

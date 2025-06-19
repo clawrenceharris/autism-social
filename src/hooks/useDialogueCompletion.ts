@@ -18,16 +18,22 @@ export const useDialogueCompletion = (
   const { incrementStreak } = useStreakStore();
 
   const addDialogueProgress = useCallback(
-    async (userId: string, dialogueId: string, scores: ScoreSummary) => {
+    async (
+      userId: string,
+      dialogueId: string,
+      scoring: ScoreSummary,
+      maxScoring: ScoreSummary
+    ) => {
       setIsCompleting(true);
       setError(null);
 
       try {
-        const result = await dialogueService.addDialogueProgress(
+        const result = await dialogueService.addDialogueProgress({
           userId,
           dialogueId,
-          scores
-        );
+          scoring,
+          maxScoring,
+        });
 
         // Update streak when dialogue is completed
         const streakResult = await incrementStreak(userId);
@@ -46,7 +52,6 @@ export const useDialogueCompletion = (
           options.onSuccess(result, streakResult);
         }
 
-        showToast("Dialogue completed successfully! 🎉", { type: "success" });
         return result;
       } catch (err) {
         const errorMessage =
@@ -67,16 +72,22 @@ export const useDialogueCompletion = (
   );
 
   const updateDialogueProgress = useCallback(
-    async (userId: string, dialogueId: string, scores: ScoreSummary) => {
+    async (
+      userId: string,
+      dialogueId: string,
+      scoring: ScoreSummary,
+      maxScoring: ScoreSummary
+    ) => {
       setIsCompleting(true);
       setError(null);
 
       try {
-        const result = await dialogueService.updateDialogueProgress(
+        const result = await dialogueService.updateDialogueProgress({
           userId,
           dialogueId,
-          scores
-        );
+          maxScoring,
+          scoring,
+        });
 
         // Update streak when dialogue is completed
         const streakResult = await incrementStreak(userId);

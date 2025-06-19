@@ -27,7 +27,7 @@ const ConfirmationModal = ({
         <button onClick={closeModal} className="btn">
           {cancelText}
         </button>
-        <button onClick={handleConfirm} className="btn btn-primary danger">
+        <button onClick={handleConfirm} className="btn btn-danger">
           {confirmText}
         </button>
       </div>

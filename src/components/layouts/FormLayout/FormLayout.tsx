@@ -85,11 +85,16 @@ function FormLayout<T extends FieldValues>({
       <form
         onSubmit={methods.handleSubmit(handleSubmit)}
         style={style}
+        aria-describedby="form-description"
         className="form"
         noValidate
       >
         {description && (
-          <p className="form-description\" style={descriptionStyle}>
+          <p
+            id="form-description"
+            className="description"
+            style={descriptionStyle}
+          >
             {description}
           </p>
         )}
@@ -103,7 +108,7 @@ function FormLayout<T extends FieldValues>({
             <button
               type="button"
               onClick={onCancel}
-              className="btn"
+              className="btn btn-text"
               disabled={isLoading}
             >
               {cancelText}

@@ -1,12 +1,6 @@
 @import "../../../styles/variables";
 @import "../../../styles/mixins";
 
-// @include flex(column, center, center, $spacing-6);
-// padding: $spacing-8;
-// text-align: center;
-// max-width: 900px;
-// overflow-y: scroll;
-
 .completion-header {
   width: 100%;
   text-align: center;
@@ -403,6 +397,15 @@
             padding: $spacing-4;
             border-radius: $border-radius-xl;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            .feedback {
+              display: block;
+              border-radius: $border-radius-xl;
+              margin-top: $spacing-2;
+              color: $color-primary-200;
+            }
+            .better-response {
+              color: $color-gray-400;
+            }
           }
 
           .analysis-btn {
@@ -469,6 +472,7 @@
             border-radius: $border-radius-md;
             border: 1px solid $color-gray-200;
             transition: all 0.2s ease;
+            max-width: 250px;
 
             &.earned {
               border-color: $color-secondary-200;

@@ -1,6 +1,6 @@
 import "./ProgressIndicator.scss";
 
-const ProgressIndicator = ({ size = 40 }: { size?: number }) => {
+const ProgressIndicator = ({ size = 50 }: { size?: number }) => {
   return (
     <div
       style={{

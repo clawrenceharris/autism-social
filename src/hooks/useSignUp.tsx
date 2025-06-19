@@ -5,10 +5,12 @@ import {
   SignUpStep1,
   SignUpStep2,
   SignUpStep3,
+  SignUpStep4,
   SignUpStep5,
 } from "../components/SignUpSteps";
 import type { FormLayoutProps } from "../components/layouts/FormLayout/FormLayout";
 import { usePreferencesStore } from "../store/usePreferencesStore";
+import { useUserStore } from "../store/useUserStore";
 
 interface UseSignUpProps {
   userId?: string;
@@ -28,23 +30,25 @@ const useSignUp = ({
   userId,
   isLoading,
   stepStart,
-  stepEnd = 4,
+  stepEnd = 5,
   error,
   ...props
 }: UseSignUpProps) => {
   const [step, setStep] = useState(stepStart || 1);
   const { userGoalIds, userInterestIds } = usePreferencesStore();
+  const { user, profile } = useUserStore();
   const { fetchUserPreferences, fetchGoals, fetchInterests } =
     usePreferencesStore();
 
   const [formData, setFormData] = useState<SignUpFormValues>({
     agreement: false,
     password: "",
-    email: "",
-    first_name: "",
-    last_name: "",
-    goals: [],
-    interests: [],
+    email: user?.email || "",
+    first_name: profile?.first_name || "",
+    last_name: profile?.last_name || "",
+    goals: userGoalIds || [],
+    age: null,
+    interests: userInterestIds || [],
   });
   useEffect(() => {
     setFormData((prev) => ({
@@ -100,8 +104,9 @@ const useSignUp = ({
         return (
           <FormLayout<SignUpFormValues>
             onSubmit={handleSubmit}
-            submitText="Next"
+            submitText={step === stepEnd ? "Complete" : "Next"}
             isLoading={isLoading}
+            defaultValues={formData}
             error={error}
             {...props}
           >
@@ -114,10 +119,8 @@ const useSignUp = ({
       case 2:
         return (
           <FormLayout<SignUpFormValues>
-            onSubmit={() => {
-              handleSubmit(formData);
-            }}
-            submitText="Next"
+            onSubmit={handleSubmit}
+            submitText={step === stepEnd ? "Complete" : "Next"}
             showsCancelButton={step != stepStart}
             isLoading={isLoading}
             cancelText="Back"
@@ -125,10 +128,9 @@ const useSignUp = ({
             error={error}
             {...props}
           >
-            <SignUpStep2
-              formData={{ goals: formData.goals || [] }}
-              toggleSelection={toggleSelection}
-            />
+            {({ register, formState: { errors } }) => (
+              <SignUpStep2 register={register} errors={errors} />
+            )}
           </FormLayout>
         );
 
@@ -138,7 +140,7 @@ const useSignUp = ({
             onSubmit={() => {
               handleSubmit(formData);
             }}
-            submitText="Next"
+            submitText={step === stepEnd ? "Complete" : "Next"}
             showsCancelButton={step != stepStart}
             onCancel={prevStep}
             isLoading={isLoading}
@@ -147,7 +149,7 @@ const useSignUp = ({
             {...props}
           >
             <SignUpStep3
-              formData={{ interests: formData.interests || [] }}
+              formData={{ goals: formData.goals || [] }}
               toggleSelection={toggleSelection}
             />
           </FormLayout>
@@ -157,7 +159,25 @@ const useSignUp = ({
         return (
           <FormLayout<SignUpFormValues>
             onSubmit={handleSubmit}
-            submitText="Complete"
+            submitText={step === stepEnd ? "Complete" : "Next"}
+            cancelText="Back"
+            showsCancelButton={step != stepStart}
+            onCancel={prevStep}
+            isLoading={isLoading}
+            error={error}
+            {...props}
+          >
+            <SignUpStep4
+              formData={{ interests: formData.interests || [] }}
+              toggleSelection={toggleSelection}
+            />
+          </FormLayout>
+        );
+      case 5:
+        return (
+          <FormLayout<SignUpFormValues>
+            onSubmit={handleSubmit}
+            submitText={step === stepEnd ? "Complete" : "Next"}
             cancelText="Back"
             showsCancelButton={step != stepStart}
             onCancel={prevStep}

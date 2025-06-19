@@ -1,17 +1,13 @@
 @import "../../styles/variables";
 @import "../../styles/mixins";
 
-.scenarios-page {
+.scenarios-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: $spacing-4;
 
   .page-header {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    text-align: center;
-    margin-bottom: $spacing-8;
+    gap: $spacing-12;
 
     .search-section {
       max-width: 700px;
@@ -174,12 +170,11 @@
 
       .scenario-description {
         flex: 1;
-
-        color: $color-gray-600;
-        margin-bottom: $spacing-4;
+        color: $color-gray-500;
         display: -webkit-box;
-        -webkit-line-clamp: 3;
-        line-clamp: 3;
+        margin-bottom: $spacing-4;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
@@ -188,6 +183,7 @@
         @include flex(row, space-between, center);
         margin-bottom: $spacing-4;
         padding-top: $spacing-3;
+
         border-top: 1px solid $color-gray-200;
 
         .meta-item {
@@ -294,7 +290,7 @@
 }
 
 @include responsive(sm) {
-  .scenarios-page {
+  .scenarios-container {
     padding: $spacing-2;
 
     .page-header {

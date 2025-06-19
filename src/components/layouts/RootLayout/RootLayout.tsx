@@ -1,13 +1,13 @@
 import { Outlet, useOutletContext } from "react-router-dom";
-import { UserHeader } from "../../";
+import { RootHeader } from "../..";
 import type { AuthContextType } from "../../../types";
 
 const UserLayout = () => {
   const context = useOutletContext<AuthContextType>();
   return (
-    <div>
-      <UserHeader />
-      <main>
+    <div className="layout-container">
+      <RootHeader />
+      <main style={{ marginTop: "120px" }} className="container">
         <Outlet context={context} />
       </main>
     </div>

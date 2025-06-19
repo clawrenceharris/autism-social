@@ -1,10 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Dongle&family=Lexend+Deca:wght@100..900&display=swap");
 .play-scenario-container {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  position: relative;
   overflow: hidden;
   min-height: 100vh;
   padding: 0.75rem;
+  color: #ffffff;
 }
 .play-scenario-container::before {
   content: "";
@@ -23,6 +23,7 @@
   -webkit-backdrop-filter: blur(10px);
           backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1rem 0.5rem;
 }
 .play-scenario-container .game-header .header-content {
   display: flex;
@@ -30,9 +31,8 @@
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
-  max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem 0.5rem;
+  max-width: 1200px;
 }
 .play-scenario-container .game-header .header-content .scenario-info {
   display: block;
@@ -83,17 +83,8 @@
   background: #54cbe2;
   color: white;
 }
-.play-scenario-container .error-state {
-  color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem;
-}
 .play-scenario-container .dialogue-selection {
-  color: #ffffff;
-  margin-top: 100px;
+  margin-top: 50px;
 }
 .play-scenario-container .dialogue-selection .dialogue-options {
   padding: 2rem 0;

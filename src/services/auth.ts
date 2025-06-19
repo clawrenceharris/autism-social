@@ -33,3 +33,13 @@ export async function signOut(): Promise<void> {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
 }
+
+export const updateUser = async (
+  attributes: Parameters<typeof supabase.auth.updateUser>[0]
+): Promise<void> => {
+  const { error } = await supabase.auth.updateUser(attributes);
+
+  if (error) {
+    throw error;
+  }
+};

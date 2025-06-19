@@ -176,25 +176,22 @@ const YourScenariosPage = () => {
 
   if (scenariosLoading || dialoguesLoading) {
     return (
-      <div className="scenarios-page">
-        <div className="scenarios-content">
-          <div className="loading-state">
-            <ProgressIndicator />
-            <p className="loading-text">Loading scenarios...</p>
-          </div>
-        </div>
+      <div className="loading-state">
+        <ProgressIndicator />
       </div>
     );
   }
 
   return (
-    <div className="scenarios-page">
+    <div className="scenarios-container">
       <div className="page-header">
-        <h1>Your Scenarios</h1>
-        <p className="description">
-          Explore, practice, and track your progress through interactive social
-          scenarios
-        </p>
+        <div>
+          <h1>Your Scenarios</h1>
+          <p className="description">
+            Explore, practice, and track your progress through interactive
+            social scenarios
+          </p>{" "}
+        </div>
 
         <div className="search-section">
           <div className="search-container">

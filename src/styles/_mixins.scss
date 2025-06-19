@@ -82,7 +82,10 @@
   flex-wrap: wrap;
   gap: $spacing-4;
 }
-
+@mixin grid-layout-auto($min) {
+  @include grid-layout(auto-fit);
+  grid-template-columns: repeat(auto-fit, minmax($min, 0fr));
+}
 @mixin grid-layout($columns: 1, $gap: $spacing-4) {
   display: grid;
   grid-template-columns: repeat($columns, 1fr);

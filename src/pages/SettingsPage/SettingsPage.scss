@@ -2,10 +2,6 @@
 @import "../../styles/mixins";
 
 .settings-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: $spacing-4;
-
   .settings-header {
     margin-bottom: $spacing-8;
     text-align: center;
@@ -24,59 +20,38 @@
     @include stack-layout($spacing-8);
   }
 
-  .settings-section {
-    @include card;
-    padding: $spacing-6;
-    display: flex;
-    flex-direction: column;
-
-    .section-header {
-      @include flex(row, space-between, center);
-      margin-bottom: $spacing-6;
-      padding-bottom: $spacing-4;
-      border-bottom: 2px solid $color-gray-100;
-
-      h2 {
-        margin: 0;
-        color: $color-gray-800;
-        font-size: 1.5rem;
-      }
-    }
-
-    .section-content {
-      @include stack-layout($spacing-6);
-    }
-
+  .card-section {
     .setting-item {
-      @include flex(row, space-between, flex-start);
+      @include flex(column, space-between, start);
       padding: $spacing-4 0;
-      gap: $spacing-6;
+      gap: $spacing-8;
+      border: 1px solid $color-white;
+      padding: $spacing-4;
+      transition: all 0.2s ease;
 
+      border-radius: $border-radius-xl;
       @include responsive(sm) {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: $spacing-4;
+        @include flex(row, space-between, center);
+
+        gap: $spacing-18;
+      }
+
+      &:hover {
+        background-color: $color-gray-50;
+        border: 1px solid $color-primary-300;
       }
 
       .setting-info {
         flex: 1;
-        min-width: 0; // Prevent flex item from overflowing
+
+        width: 100%;
+        min-width: 390px;
 
         .setting-label {
           font-weight: 500;
           color: $color-gray-800;
           margin-bottom: $spacing-2;
           font-size: 1.1rem;
-        }
-      }
-
-      .setting-control {
-        flex-shrink: 0;
-        min-width: 120px;
-
-        @include responsive(sm) {
-          width: 100%;
-          min-width: unset;
         }
       }
     }
@@ -194,9 +169,10 @@
   }
 
   .profile-info {
-    @include flex(row, flex-start, start, $spacing-4);
+    @include flex(row, center, center, $spacing-4);
     padding: $spacing-8;
-    background: $color-gray-50;
+    text-align: center;
+    background: $color-gray-100;
     border-radius: $border-radius-xl;
     margin-bottom: $spacing-6;
 
@@ -251,20 +227,5 @@
 @include responsive(sm) {
   .settings-container {
     padding: $spacing-2;
-
-    .settings-section {
-      padding: $spacing-4;
-
-      .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: $spacing-2;
-        text-align: left;
-
-        h2 {
-          font-size: 1.25rem;
-        }
-      }
-    }
   }
 }

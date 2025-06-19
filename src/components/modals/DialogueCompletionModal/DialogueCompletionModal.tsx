@@ -1,15 +1,11 @@
 import React, { useState } from "react";
 import "./DialogueCompletionModal.scss";
 import {
-  Eye,
   Lightbulb,
   MessageSquare,
-  TrendingUp,
-  Award,
   ChevronDown,
   ChevronUp,
   Sparkles,
-  Target,
 } from "lucide-react";
 
 import type {
@@ -17,36 +13,52 @@ import type {
   ScoreCategory,
   Message,
   DialogueContext,
+  Dialogue,
+  Actor,
 } from "../../../types";
+import { useGemini } from "../../../hooks";
+import {
+  formatCategoryName,
+  getCategoryIcon,
+} from "../../../utils/categoryUtils";
 
 interface DialogueCompletionModalProps {
   userMessages: Message[];
   actorMessages: Message[];
   dialogueContext: DialogueContext;
+  dialogue: Dialogue;
+  actor: Actor | null;
+  userFields: { [key: string]: string } | null;
 }
 
 interface StepAnalysis {
   userResponse: string;
-  npcMessage: string;
+  actorMessage: string;
   pointsEarned: ScoreSummary;
   betterResponse?: string;
   feedback?: string;
+  scoring: ScoreCategory[];
 }
 
 const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
   dialogueContext,
-
+  actor,
   userMessages,
+  userFields,
   actorMessages,
+  dialogue,
 }) => {
   const [analysisMode, setAnalysisMode] = useState(false);
   const [expandedStepIndex, setExpandedStepIndex] = useState<number | null>(
     null
   );
+  const [feedback, setFeedback] = useState<string>();
+  const [betterResponse, setBetterResponse] = useState<string>();
+
   const [loadingBetterResponse, setLoadingBetterResponse] =
     useState<boolean>(false);
   const [loadingFeedback, setLoadingFeedback] = useState<boolean>(false);
-
+  const { generateText } = useGemini();
   const categories: ScoreCategory[] = [
     "clarity",
     "empathy",
@@ -61,7 +73,8 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
 
     .map((opt, index) => ({
       userResponse: userMessages[index]?.text || "",
-      npcMessage: actorMessages[index]?.text || "",
+      actorMessage: actorMessages[index]?.text || "",
+      scoring: Object.keys(opt.scoring) as ScoreCategory[],
       pointsEarned: {
         clarity: opt.scoring.clarity,
         empathy: opt.scoring.empathy,
@@ -71,55 +84,82 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
       },
     }));
 
-  const getCategoryIcon = (category: ScoreCategory) => {
-    switch (category) {
-      case "clarity":
-        return <MessageSquare size={16} />;
-      case "empathy":
-        return <Award size={16} />;
-      case "assertiveness":
-        return <Target size={16} />;
-      case "social_awareness":
-        return <Eye size={16} />;
-      case "self_advocacy":
-        return <TrendingUp size={16} />;
-      default:
-        return <Award size={16} />;
-    }
-  };
-
-  const formatCategoryName = (category: ScoreCategory): string => {
-    return category
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-
-  const generateBetterResponse = async () => {
+  const generateBetterResponse = async (
+    actorMessage: string,
+    userMessage: string,
+    scoring: ScoreCategory[]
+  ) => {
     setLoadingBetterResponse(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    const response =
+      await generateText(`You are an AI coach helping a user improve their communication skills in real-life social situations.
+                        Here is the dialogue context:
+                        ${
+                          actor
+                            ? `- Speaker the user is responding to:  ${actor.role}`
+                            : ""
+                        }
+                        - Scenario: ${dialogue.title}
+                        - Prompt: "${actorMessage}"
+                        - User Response: "${userMessage}"
+                        ${
+                          userFields
+                            ? `- Additional User Information: ${Object.entries(
+                                userFields
+                              )
+                                .map(
+                                  ([key, value]) =>
+                                    `${key.replace("_", " ")}: ${value}`
+                                )
+                                .join(", ")}
+                        The user’s response is scored on the following categories: ${scoring
+                          .join(", ")
+                          .replace("_", " ")}`
+                            : ""
+                        }.
+                        Task:
+                        Write a better example of what the user could say in this situation. Make sure the new response would likely score well in the listed categories.
+
+                        Keep the tone appropriate for the social situation.
+
+                        Only output the improved response — no extra explanation.`);
     setLoadingBetterResponse(false);
-    //TODO: Tell the AI model to write a better response to the selected actor message with a focus on the categories that were score (e.g clarity, empathy)
-    return "Here's a more effective response that demonstrates better clarity and empathy...";
+    setBetterResponse(response);
   };
 
-  const generateFeedback = async () => {
+  const generateFeedback = async (
+    actorMessage: string,
+    userMessage: string,
+    scoring: ScoreCategory[]
+  ) => {
     setLoadingFeedback(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-    //TODO: Tell the AI model to provide feedback to the selected user message with a focus on improving categories that were score (e.g clarity, empathy)
 
+    const response =
+      await generateText(`You are an AI coach helping a user improve their communication skills in real-life social situations.
+                          Here is the dialogue context:
+                          ${
+                            actor
+                              ? `- Speaker the user is responding to:  ${actor.role}`
+                              : ""
+                          }
+                          - Scenario: ${dialogue.title}
+                          - Prompt: "${actorMessage}"
+                          - User Response: "${userMessage}"
+                          The user’s response is scored on the following categories: ${scoring
+                            .join(", ")
+                            .replace("_", " ")}.
+                          Task:
+                          Give a short (2-3 sentence) helpful comment about how the user did on this response. Focus on the categories. If possible, suggest one small improvement.
+                          Be friendly, supportive, and brief.`);
     setLoadingFeedback(false);
-
-    return "Your response showed good assertiveness but could benefit from more empathetic language...";
+    setFeedback(response);
   };
 
   const toggleStepExpansion = (index: number) => {
     setExpandedStepIndex(expandedStepIndex === index ? null : index);
   };
 
-  const totalPointsEarned = Object.values(dialogueContext.scores).reduce(
+  const totalPointsEarned = Object.values(dialogueContext.scoring).reduce(
     (sum, score) => sum + score,
     0
   );
@@ -170,7 +210,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
           <h3 className="section-title">Your Performance Breakdown</h3>
           <div className="progress-categories">
             {categories.map((category, index) => {
-              const pointsEarned = dialogueContext.scores[category];
+              const pointsEarned = dialogueContext.scoring[category];
               if (pointsEarned)
                 return (
                   <div key={index} className="progress-item">
@@ -241,12 +281,23 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                       {/* NPC Message */}
                       <div className="message-analysis npc">
                         <div className="message-bubble">
-                          <div className="message-text">
-                            {analysis.npcMessage}
-                          </div>
+                          <p className="message-text">
+                            {analysis.actorMessage}
+                            {betterResponse && (
+                              <span className="description better-response">
+                                {betterResponse}
+                              </span>
+                            )}
+                          </p>
                         </div>
                         <button
-                          onClick={() => generateBetterResponse()}
+                          onClick={() =>
+                            generateBetterResponse(
+                              analysis.actorMessage,
+                              analysis.userResponse,
+                              analysis.scoring
+                            )
+                          }
                           className="analysis-btn better-response"
                           disabled={loadingBetterResponse}
                         >
@@ -260,12 +311,23 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                       {/* User Message */}
                       <div className="message-analysis user">
                         <div className="message-bubble">
-                          <div className="message-text">
+                          <p className="message-text">
                             {analysis.userResponse}
-                          </div>
+                            {feedback && (
+                              <span className="description feedback">
+                                {feedback}
+                              </span>
+                            )}
+                          </p>
                         </div>
                         <button
-                          onClick={() => generateFeedback()}
+                          onClick={() =>
+                            generateFeedback(
+                              analysis.actorMessage,
+                              analysis.userResponse,
+                              analysis.scoring
+                            )
+                          }
                           className="analysis-btn feedback"
                           disabled={loadingFeedback}
                         >
@@ -280,23 +342,24 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                       <h4>Points Earned This Step:</h4>
                       <div className="points-grid">
                         {Object.entries(analysis.pointsEarned).map(
-                          ([category, points]) => (
-                            <div
-                              key={category}
-                              className={`point-item ${
-                                points > 0 ? "earned" : ""
-                              }`}
-                            >
-                              {getCategoryIcon(category as ScoreCategory)}
-                              <span className="category">
-                                {formatCategoryName(category as ScoreCategory)}
-                              </span>
+                          ([category, points]) =>
+                            points !== undefined ? (
+                              <div
+                                key={category}
+                                className={`point-item ${
+                                  points > 0 ? "earned" : ""
+                                }`}
+                              >
+                                {getCategoryIcon(category as ScoreCategory)}
+                                <span className="category">
+                                  {formatCategoryName(
+                                    category as ScoreCategory
+                                  )}
+                                </span>
 
-                              <span className="points">{`${
-                                points !== undefined ? `+${points}` : "N/A"
-                              }`}</span>
-                            </div>
-                          )
+                                <span className="points">+{points}</span>
+                              </div>
+                            ) : null
                         )}
                       </div>
                     </div>

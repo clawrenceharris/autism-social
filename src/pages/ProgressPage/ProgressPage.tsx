@@ -9,7 +9,6 @@ import {
   Clock,
   Frown,
   HelpCircle,
-  Lightbulb,
   Play,
 } from "lucide-react";
 import "./ProgressPage.scss";
@@ -19,6 +18,7 @@ import { ProgressIndicator, RankDisplay } from "../../components";
 import { Link } from "react-router-dom";
 import { useScoreCategoryStore } from "../../store/useScoreCategoryStore";
 import useAchievements from "../../hooks/useAchievements";
+import { formatCategoryName, getCategoryIcon } from "../../utils/categoryUtils";
 
 const ProgressPage = () => {
   const { user } = useOutletContext<AuthContextType>();
@@ -61,29 +61,6 @@ const ProgressPage = () => {
     return "poor";
   };
 
-  // const getCategoryIcon = (category: string) => {
-  //   switch (category) {
-  //     case "clarity":
-  //       return <Lightbulb />;
-  //     case "empathy":
-  //       return <Heart />;
-  //     case "assertiveness":
-  //       return <Target />;
-  //     case "social_awareness":
-  //       return <Brain />;
-  //     case "self_advocacy":
-  //       return <MessageSquare />;
-  //     default:
-  //       return <HelpCircle />;
-  //   }
-  // };
-
-  const formatCategoryName = (category: string): string => {
-    return category
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
   const getImprovementTip = (category: string, score: number): string => {
     if (score >= 80) {
       return "You're doing great! Keep practicing to maintain your skills.";
@@ -131,13 +108,10 @@ const ProgressPage = () => {
     [progress, user.id]
   );
 
-  if (progressLoading) {
+  if (progressLoading || categoriesLoading) {
     return (
-      <div className="progress-page">
-        <div className="loading-state">
-          <ProgressIndicator size={60} />
-          <p className="loading-text">Loading your progress data...</p>
-        </div>
+      <div className="loading-state">
+        <ProgressIndicator />
       </div>
     );
   }
@@ -152,6 +126,7 @@ const ProgressPage = () => {
             We encountered an error while loading your progress data. Please try
             again later.
           </p>
+
           <button
             onClick={() => fetchProgress(user.id)}
             className="btn btn-primary"
@@ -190,7 +165,6 @@ const ProgressPage = () => {
           Track your social skills development and achievements
         </p>
       </div>
-
       <section className="hero-section">
         <div className="hero-content">
           <div className="social-score">
@@ -248,34 +222,36 @@ const ProgressPage = () => {
           </div>
 
           <div className="skills-grid">
-            {categoriesLoading && <ProgressIndicator />}
-            {categories.map((cat) => (
+            {categories.map((category) => (
               <div className="skill-card">
                 <div className="skill-header">
                   <div className="skill-info">
                     <div className="skill-icon">
-                      <Lightbulb size={20} />
+                      {getCategoryIcon(category.name)}
                     </div>
                     <h3 className="skill-name">
-                      {formatCategoryName(cat.name)}
+                      {formatCategoryName(category.name)}
                     </h3>
                   </div>
                   <div
                     className={`skill-score ${getScoreLevel(
-                      categoryScores[cat.name] || 0
+                      categoryScores[category.name] || 0
                     )}`}
                   >
-                    {categoryScores[cat.name] || 0}
+                    {categoryScores[category.name] || 0}
                     <span>pts</span>
                   </div>
                 </div>
 
-                <p className="description">{cat.description}</p>
+                <p className="description">{category.description}</p>
 
                 <div className="improvement-tips">
                   <h4 className="tips-title">Improvement Tips</h4>
                   <p className="tips-content">
-                    {getImprovementTip(cat.name, categoryScores[cat.name] || 0)}
+                    {getImprovementTip(
+                      category.name,
+                      categoryScores[category.name] || 0
+                    )}
                   </p>
                 </div>
               </div>
