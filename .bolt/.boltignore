@@ -3,7 +3,7 @@ public/
 
 # Constants folder
 src/constants/
-
+src/pages/
 # CSS and CSS map files
 **/*.css
 **/*.css.map
