@@ -306,7 +306,7 @@
     padding: 1rem;
   }
 }
-@media (min-width: 768px) {
+@media (min-width: 860px) {
   .daily-challenges-container .week-progress .challenge-timeline {
     flex-direction: row;
   }

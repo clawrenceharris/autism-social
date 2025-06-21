@@ -1,12 +1,6 @@
 @import "../../styles/variables";
 @import "../../styles/mixins";
-
-.landing-container {
-  min-height: 100vh;
-  background-color: $color-gray-50;
-  display: flex;
-  flex-direction: column;
-  
+main {
   .landing-header {
     padding: $spacing-4 $spacing-6;
     display: flex;
@@ -17,275 +11,261 @@
     position: sticky;
     top: 0;
     z-index: 10;
-    
+
     .brand {
       display: flex;
       align-items: center;
       gap: $spacing-2;
-      
+
       .logo {
-        width: 40px;
-        height: 40px;
+        width: 140px;
+        height: auto;
       }
-      
+
       h1 {
-        font-size: 1.5rem;
         font-weight: 700;
         color: $color-gray-900;
         margin: 0;
       }
     }
-    
+
     .header-actions {
       .btn-text {
         color: $color-primary;
         font-weight: 500;
-        font-size: 0.9rem;
-        
+
         &:hover {
           text-decoration: underline;
         }
       }
     }
   }
-  
-  .landing-content {
-    flex: 1;
-    padding: $spacing-6 $spacing-4;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-    
-    .hero-section {
-      display: flex;
-      flex-direction: column;
-      gap: $spacing-8;
-      margin-bottom: $spacing-12;
-      
-      @include responsive(md) {
-        flex-direction: row;
-        align-items: center;
-      }
-      
-      .hero-text {
-        flex: 1;
-        
-        h2 {
-          font-size: 2.5rem;
-          font-weight: 800;
-          color: $color-gray-900;
-          margin-bottom: $spacing-4;
-          line-height: 1.2;
-          
-          @include responsive(sm) {
-            font-size: 2rem;
-          }
-        }
-        
-        .hero-description {
-          font-size: 1.2rem;
-          color: $color-gray-600;
-          margin-bottom: $spacing-6;
-          max-width: 600px;
-          
-          @include responsive(sm) {
-            font-size: 1.1rem;
-          }
-        }
-        
-        .feature-list {
-          @include stack-layout($spacing-3);
-          
-          .feature-item {
-            @include flex(row, flex-start, center, $spacing-3);
-            
-            .feature-icon {
-              color: $color-primary;
-              flex-shrink: 0;
-            }
-            
-            span {
-              font-size: 1.1rem;
-              color: $color-gray-700;
-            }
-          }
-        }
-      }
-      
-      .auth-card {
-        background-color: $color-white;
-        border-radius: $border-radius-xl;
-        padding: $spacing-6;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        width: 100%;
-        max-width: 400px;
-        border: 1px solid $color-gray-100;
-        
-        h3 {
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: $color-gray-900;
-          margin-bottom: $spacing-4;
-          text-align: center;
-        }
-        
-        form {
-          @include stack-layout($spacing-4);
-          
-          .form-group {
-            margin-bottom: 0;
-          }
-          
-          .btn {
-            margin-top: $spacing-2;
-            width: 100%;
-          }
-        }
-      }
-    }
-    
-    .benefits-section {
-      padding: $spacing-8 0;
-      margin-bottom: $spacing-12;
-      
-      h2 {
-        font-size: 2rem;
-        font-weight: 700;
-        color: $color-gray-900;
-        margin-bottom: $spacing-8;
-        text-align: center;
-      }
-      
-      .benefits-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: $spacing-6;
-        
+
+  .landing-container {
+    .landing-content {
+      flex: 1;
+      padding: $spacing-6 $spacing-4;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+
+      .hero-section {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-8;
+        margin-bottom: $spacing-12;
+
         @include responsive(md) {
-          grid-template-columns: repeat(3, 1fr);
+          flex-direction: row;
+          align-items: center;
         }
-        
-        .benefit-card {
+
+        .hero-text {
+          flex: 1;
+
+          h2 {
+            font-weight: 800;
+            color: $color-gray-900;
+            margin-bottom: $spacing-4;
+            line-height: 1.2;
+          }
+
+          .hero-description {
+            color: $color-gray-600;
+            margin-bottom: $spacing-6;
+            max-width: 600px;
+          }
+
+          .feature-list {
+            @include stack-layout($spacing-3);
+
+            .feature-item {
+              @include flex(row, flex-start, center, $spacing-3);
+
+              .feature-icon {
+                color: $color-primary;
+                flex-shrink: 0;
+              }
+
+              span {
+                color: $color-gray-700;
+              }
+            }
+          }
+        }
+
+        .auth-card {
           background-color: $color-white;
           border-radius: $border-radius-xl;
           padding: $spacing-6;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-          text-align: center;
-          transition: all 0.3s ease;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+          width: 100%;
+          max-width: 400px;
           border: 1px solid $color-gray-100;
-          
-          &:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba($color-primary, 0.15);
-            border-color: $color-primary-200;
-          }
-          
-          .benefit-icon {
-            width: 64px;
-            height: 64px;
-            border-radius: $border-radius-md;
-            background: linear-gradient(135deg, $color-primary-100, $color-primary-200);
-            @include flex(row, center, center);
-            color: $color-primary;
-            margin: 0 auto $spacing-4;
-          }
-          
+
           h3 {
-            font-size: 1.25rem;
             font-weight: 600;
-            color: $color-gray-800;
-            margin-bottom: $spacing-3;
+            color: $color-gray-900;
+            margin-bottom: $spacing-4;
+            text-align: center;
           }
-          
-          p {
-            font-size: 1rem;
-            color: $color-gray-600;
-            line-height: 1.6;
+
+          form {
+            @include stack-layout($spacing-4);
+
+            .form-group {
+              margin-bottom: 0;
+            }
+
+            .btn {
+              margin-top: $spacing-2;
+              width: 100%;
+            }
           }
         }
       }
-    }
-    
-    .cta-section {
-      background: linear-gradient(135deg, $color-primary-100, $color-primary-200);
-      border-radius: $border-radius-2xl;
-      padding: $spacing-8;
-      text-align: center;
-      margin-bottom: $spacing-8;
-      
-      h2 {
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: $color-gray-900;
-        margin-bottom: $spacing-3;
+
+      .benefits-section {
+        padding: $spacing-8 0;
+        margin-bottom: $spacing-12;
+
+        h2 {
+          font-weight: 700;
+          color: $color-gray-900;
+          margin-bottom: $spacing-8;
+          text-align: center;
+        }
+
+        .benefits-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: $spacing-6;
+
+          @include responsive(md) {
+            grid-template-columns: repeat(3, 1fr);
+          }
+
+          .benefit-card {
+            background-color: $color-white;
+            border-radius: $border-radius-xl;
+            padding: $spacing-6;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid $color-gray-100;
+
+            &:hover {
+              transform: translateY(-4px);
+              box-shadow: 0 8px 24px rgba($color-primary, 0.15);
+              border-color: $color-primary-200;
+            }
+
+            .benefit-icon {
+              width: 64px;
+              height: 64px;
+              border-radius: $border-radius-md;
+              background: linear-gradient(
+                135deg,
+                $color-primary-100,
+                $color-primary-200
+              );
+              @include flex(row, center, center);
+              color: $color-primary;
+              margin: 0 auto $spacing-4;
+            }
+
+            h3 {
+              font-weight: 600;
+              color: $color-gray-800;
+              margin-bottom: $spacing-3;
+            }
+
+            p {
+              color: $color-gray-600;
+            }
+          }
+        }
       }
-      
-      p {
-        font-size: 1.1rem;
-        color: $color-gray-700;
-        max-width: 600px;
-        margin: 0 auto $spacing-6;
-      }
-      
-      .cta-button {
-        padding: $spacing-3 $spacing-8;
-        font-size: 1.1rem;
-        min-width: 200px;
+
+      .cta-section {
+        background: linear-gradient(
+          135deg,
+          $color-primary-100,
+          $color-primary-200
+        );
+        border-radius: $border-radius-2xl;
+        padding: $spacing-8;
+        text-align: center;
+        margin-bottom: $spacing-8;
+
+        h2 {
+          color: $color-gray-900;
+          margin-bottom: $spacing-3;
+        }
+
+        p {
+          color: $color-gray-700;
+          max-width: 600px;
+          margin: 0 auto $spacing-6;
+        }
+
+        .cta-button {
+          padding: $spacing-3 $spacing-8;
+        }
       }
     }
   }
-  
+
   .landing-footer {
     background-color: $color-gray-800;
     color: $color-white;
     padding: $spacing-8 $spacing-4;
-    
+
     .footer-content {
       max-width: 1200px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
       gap: $spacing-6;
-      
+
       @include responsive(md) {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
       }
-      
+
       .footer-brand {
         display: flex;
         align-items: center;
         gap: $spacing-2;
-        
+
         .footer-logo {
           width: 32px;
           height: 32px;
         }
-        
+
         span {
           font-weight: 600;
-          font-size: 1.1rem;
         }
       }
-      
+
       .footer-links {
         display: flex;
         gap: $spacing-4;
         flex-wrap: wrap;
-        
+
         a {
           color: $color-gray-200;
           text-decoration: none;
           font-size: 0.9rem;
           transition: color 0.2s ease;
-          
+
           &:hover {
             color: $color-primary-200;
           }
         }
       }
-      
+
       .footer-copyright {
         font-size: 0.85rem;
         color: $color-gray-400;
@@ -299,33 +279,32 @@
   .landing-container {
     .landing-content {
       padding: $spacing-4 $spacing-2;
-      
+
       .hero-section {
         gap: $spacing-6;
-        
+
         .hero-text {
           h2 {
             font-size: 1.75rem;
           }
         }
       }
-      
+
       .benefits-section {
         padding: $spacing-6 0;
-        
+
         h2 {
-          font-size: 1.5rem;
           margin-bottom: $spacing-6;
         }
       }
-      
+
       .cta-section {
         padding: $spacing-6 $spacing-4;
-        
+
         h2 {
           font-size: 1.5rem;
         }
-        
+
         p {
           font-size: 1rem;
         }

@@ -1,4 +1,4 @@
-import { Award, Heart, PersonStanding, Sun, Target } from "lucide-react";
+import { Award, Heart, Sun, Target, Users } from "lucide-react";
 import type { ScoreCategory } from "../types";
 
 export const formatCategoryName = (category: ScoreCategory): string => {
@@ -17,7 +17,7 @@ export const getCategoryIcon = (category: ScoreCategory) => {
     case "assertiveness":
       return <Target size={16} />;
     case "social_awareness":
-      return <PersonStanding size={16} />;
+      return <Users size={16} />;
     case "self_advocacy":
       return <Award size={16} />;
     default:

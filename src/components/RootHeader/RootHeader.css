@@ -47,7 +47,7 @@ header .nav-link {
 header .nav-link span {
   display: none;
 }
-@media (min-width: 768px) {
+@media (min-width: 860px) {
   header .nav-link span {
     display: inline;
   }
@@ -76,7 +76,7 @@ header .nav-brand {
 header .nav-brand span {
   display: none;
 }
-@media (min-width: 768px) {
+@media (min-width: 860px) {
   header .nav-brand span {
     display: inline;
   }

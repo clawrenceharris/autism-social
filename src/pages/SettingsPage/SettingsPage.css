@@ -132,7 +132,7 @@
   align-items: stretch;
   gap: 1rem;
 }
-@media (min-width: 768px) {
+@media (min-width: 860px) {
   .settings-container .card-section .danger-zone .danger-actions {
     flex-direction: row;
     gap: 1rem;

@@ -215,7 +215,7 @@
   color: #ffffff;
   transition: color 0.3s ease;
 }
-@media (min-width: 768px) {
+@media (min-width: 860px) {
   .response-section .response-options {
     justify-content: center;
   }
