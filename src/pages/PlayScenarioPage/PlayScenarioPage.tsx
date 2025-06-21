@@ -21,15 +21,14 @@ import { usePlayScenarioStore } from "../../store/usePlayScenarioStore";
 import { useActorStore } from "../../store/useActorStore";
 
 const PlayScenarioPage = () => {
-  const { dialogueId } = useParams<{ dialogueId: string }>();
+  const { dialogueId, scenarioId } = useParams<{
+    dialogueId: string;
+    scenarioId: string;
+  }>();
   const navigate = useNavigate();
   const {
     loading: scenariosLoading,
-
     error: scenarioError,
-
-    fetchScenarios,
-
     scenarios,
   } = useScenarioStore();
   const { setDialogue, scenario, dialogue } = usePlayScenarioStore();
@@ -37,8 +36,7 @@ const PlayScenarioPage = () => {
   const {
     loading: dialoguesLoading,
     dialoguesByScenario,
-    fetchDialogues,
-    dialogues,
+    fetchDialoguesByScenario,
     error: dialogueError,
   } = useDialogueStore();
   const {
@@ -53,14 +51,12 @@ const PlayScenarioPage = () => {
   const { profile: user } = useOutletContext<AuthContextType>();
 
   useEffect(() => {
-    fetchDialogues();
-    fetchScenarios();
-    fetchActors();
-  }, [fetchDialogues, fetchScenarios, fetchActors]);
-  useEffect(() => {
-    if (dialogueId) setDialogue(dialogues[dialogueId]);
-    else setDialogue(null);
-  }, [dialogueId, dialogues, setDialogue]);
+    if (scenarioId) {
+      fetchDialoguesByScenario(scenarioId);
+      fetchActors();
+    }
+  }, [fetchActors, fetchDialoguesByScenario, scenarioId]);
+  useEffect(() => {});
   useEffect(() => {
     if (dialogueId && !selectedActor) {
       openModal(
@@ -139,7 +135,7 @@ const PlayScenarioPage = () => {
     );
   }
 
-  if (!dialogueId || !dialogue) {
+  if (!dialogue) {
     return (
       <div className="play-scenario-container">
         <div className="game-header">
@@ -182,7 +178,7 @@ const PlayScenarioPage = () => {
   }
 
   // Only render DialoguePlayer when we have user fields (or confirmed no placeholders needed)
-  if (selectedActor && dialogue) {
+  if (selectedActor) {
     return (
       <div key={key} className="play-scenario-container">
         <DialoguePlayer

@@ -27,9 +27,13 @@ const ScenarioLayout = () => {
     if (scenarioId && !scenariosLoading) {
       setScenario(scenarios[scenarioId]);
       // fetchDialoguesByScenario(scenarioId);
+    } else {
+      setScenario(null);
     }
     if (dialogueId && !dialoguesLoading) {
       setDialogue(dialogues[dialogueId]);
+    } else {
+      setDialogue(null);
     }
   }, [
     dialogueId,
