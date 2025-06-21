@@ -12,7 +12,7 @@ interface UseDialogueCompletionOptions {
 export const useDialogueCompletion = (
   options: UseDialogueCompletionOptions = {}
 ) => {
-  const [isCompleting, setIsCompleting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { showToast } = useToast();
   const { incrementStreak } = useStreakStore();
@@ -24,7 +24,7 @@ export const useDialogueCompletion = (
       scoring: ScoreSummary,
       maxScoring: ScoreSummary
     ) => {
-      setIsCompleting(true);
+      setIsLoading(true);
       setError(null);
 
       try {
@@ -65,7 +65,7 @@ export const useDialogueCompletion = (
         showToast(errorMessage, { type: "error" });
         throw err;
       } finally {
-        setIsCompleting(false);
+        setIsLoading(false);
       }
     },
     [options, showToast, incrementStreak]
@@ -78,7 +78,7 @@ export const useDialogueCompletion = (
       scoring: ScoreSummary,
       maxScoring: ScoreSummary
     ) => {
-      setIsCompleting(true);
+      setIsLoading(true);
       setError(null);
 
       try {
@@ -120,7 +120,7 @@ export const useDialogueCompletion = (
         showToast(errorMessage, { type: "error" });
         throw err;
       } finally {
-        setIsCompleting(false);
+        setIsLoading(false);
       }
     },
     [options, showToast, incrementStreak]
@@ -128,14 +128,14 @@ export const useDialogueCompletion = (
 
   const reset = useCallback(() => {
     setError(null);
-    setIsCompleting(false);
+    setIsLoading(false);
   }, []);
 
   return {
     addDialogueProgress,
     updateDialogueProgress,
     reset,
-    isCompleting,
+    isLoading,
     error,
   };
 };

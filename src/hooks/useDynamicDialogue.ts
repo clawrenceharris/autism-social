@@ -2,30 +2,34 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useMachine } from "@xstate/react";
 import {
   createDialogueMachine,
+  type DialogueContext,
   type HybridDialogueServices,
 } from "../xstate/createDialogueMachine";
-import { DynamicDialogueService } from "../services/dynamicDialogue";
+import {
+  DynamicDialogueService,
+  type ActorResponse,
+  type ConversationMessage,
+  type DialoguePhase,
+  type UserResponseAnalysis,
+} from "../services/dynamicDialogue";
 import { usePicaContext } from "./usePicaContext";
 import { useGemini } from "./useGemini";
-import type { Actor } from "../types";
+import type { Actor, ScoreSummary, UserProfile } from "../types";
+import type { PicaContextResponse } from "../services/pica";
 
-interface UseHybridDialogueOptions {
+interface UseDialogueOptions {
   scenarioTitle: string;
   dialogueTitle: string;
   actor: Actor;
-  userProfile?: {
-    name: string;
-    interests: string[];
-    goals: string[];
-  };
-  onDialogueComplete?: (finalScores: any) => void;
+  user: UserProfile;
+  onDialogueComplete?: (finalScores: object) => void;
   onError?: (error: string) => void;
 }
 
-interface UseHybridDialogueReturn {
-  // Machine state
-  state: any;
-  context: any;
+interface UseDialogueReturn {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  state: any; // Machine state
+  context: DialogueContext;
 
   // Actions
   startDialogue: () => void;
@@ -39,27 +43,27 @@ interface UseHybridDialogueReturn {
   isWaitingForUser: boolean;
   isCompleted: boolean;
   hasError: boolean;
-  currentActorResponse: any;
-  currentUserAnalysis: any;
-  conversationHistory: any[];
-  currentPhase: string;
-  totalScores: any;
+  currentActorResponse?: ActorResponse;
+  currentUserAnalysis?: UserResponseAnalysis;
+  conversationHistory: ConversationMessage[];
+  currentPhase: DialoguePhase;
+  totalScores: ScoreSummary;
 
   // Context management
-  updateContext: (newContext: any) => void;
+  updateContext: (newContext: PicaContextResponse) => void;
 }
 
 /**
  * Hook for managing hybrid dialogue interactions
  */
-export const useHybridDialogue = (
-  options: UseHybridDialogueOptions
-): UseHybridDialogueReturn => {
+export const useDynamicDialogue = (
+  options: UseDialogueOptions
+): UseDialogueReturn => {
   const {
     scenarioTitle,
     dialogueTitle,
     actor,
-    userProfile,
+    user,
     onDialogueComplete,
     onError,
   } = options;
@@ -67,7 +71,7 @@ export const useHybridDialogue = (
   // Initialize AI services
   const gemini = useGemini({
     temperature: 0.7,
-    maxOutputTokens: 2048,
+    maxOutputTokens: 1048,
   });
 
   const picaContext = usePicaContext({
@@ -115,30 +119,36 @@ export const useHybridDialogue = (
       dialogueTitle,
       actor,
       services,
-      userProfile
+      user
     );
-  }, [scenarioTitle, dialogueTitle, actor, services, userProfile]);
+  }, [scenarioTitle, dialogueTitle, actor, services, user]);
 
   // Use the machine
   const [state, send] = useMachine(machine);
 
   // Handle dialogue completion
   useEffect(() => {
-    if (state.matches("completed") && onDialogueComplete) {
+    if (state.status === "done" && onDialogueComplete) {
       onDialogueComplete({
         totalScores: state.context.totalScores,
         maxPossibleScores: state.context.maxPossibleScores,
         conversationHistory: state.context.conversationHistory,
       });
     }
-  }, [state, onDialogueComplete]);
+  }, [
+    state.status,
+    onDialogueComplete,
+    state.context.totalScores,
+    state.context.maxPossibleScores,
+    state.context.conversationHistory,
+  ]);
 
   // Handle errors
   useEffect(() => {
-    if (state.matches("error") && state.context.error && onError) {
+    if (state.status === "error" && state.context.error && onError) {
       onError(state.context.error);
     }
-  }, [state, onError]);
+  }, [state.status, onError, state.context.error]);
 
   // Action creators
   const startDialogue = useCallback(() => {
@@ -168,7 +178,7 @@ export const useHybridDialogue = (
   }, [send]);
 
   const updateContext = useCallback(
-    (newContext: any) => {
+    (newContext: PicaContextResponse) => {
       send({ type: "CONTEXT_UPDATED", context: newContext });
     },
     [send]
@@ -213,4 +223,4 @@ export const useHybridDialogue = (
   };
 };
 
-export default useHybridDialogue;
+export default useDynamicDialogue;

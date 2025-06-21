@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { useModal } from "../../context";
 import { X, Home } from "lucide-react";
 import "./PlayScenarioPage.scss";
 import {
   DialogueItem,
-  StartDialogueModal,
   DialoguePlayer,
   FormLayout,
   ProgressIndicator,
@@ -14,6 +13,7 @@ import { useScenarioStore } from "../../store/useScenarioStore";
 import type { AuthContextType } from "../../types";
 import { useDialogueStore } from "../../store/useDialogueStore";
 import { usePlayScenarioStore } from "../../store/usePlayScenarioStore";
+import { useActorStore } from "../../store/useActorStore";
 
 const PlayScenarioPage = () => {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ const PlayScenarioPage = () => {
 
     scenarios,
   } = useScenarioStore();
-  const { setDialogue, setUserFields, userFields, scenario, dialogue } =
+  const { setDialogue, userFields, scenario, dialogue } =
     usePlayScenarioStore();
 
   const {
@@ -35,7 +35,13 @@ const PlayScenarioPage = () => {
     fetchDialogues,
     error: dialogueError,
   } = useDialogueStore();
-
+  const {
+    error: actorError,
+    selectedActor,
+    actors,
+    fetchActors,
+    setActor,
+  } = useActorStore();
   const [key, setKey] = useState<number>(0);
   const { openModal, closeModal } = useModal();
   const { profile: user } = useOutletContext<AuthContextType>();
@@ -43,59 +49,38 @@ const PlayScenarioPage = () => {
   useEffect(() => {
     fetchDialogues();
     fetchScenarios();
-  }, [fetchDialogues, fetchScenarios]);
-  const handleSubmit = useCallback(
-    (data: { [key: string]: string }) => {
-      setUserFields({ ...data, user_name: user.first_name });
-      closeModal();
-    },
-    [closeModal, setUserFields, user.first_name]
-  );
+    fetchActors();
+  }, [fetchDialogues, fetchScenarios, fetchActors]);
 
   useEffect(() => {
-    // If we selected a dialogue and there are placeholders but no user fields defined
-    if (
-      dialogue &&
-      dialogue.placeholders &&
-      dialogue.placeholders.length > 0 &&
-      !userFields
-    ) {
-      // Open modal so we can enter the user fields
+    if (!selectedActor) {
       openModal(
-        <FormLayout<{ [key: string]: string }>
-          onSubmit={handleSubmit}
-          submitText="Start Dialogue"
-          showsCancelButton={true}
-          cancelText="Cancel"
-          onCancel={() => {
+        <FormLayout<{ actorId: string }>
+          onSubmit={({ actorId }: { actorId: string }) => {
+            setActor(actors[actorId]);
             closeModal();
-            navigate("/");
           }}
         >
-          <StartDialogueModal
-            dialogue={dialogue}
-            placeholders={dialogue.placeholders}
-          />
-        </FormLayout>,
-        "Start Dialogue"
+          {({ register, formState: { errors } }) => (
+            <div className="form-group">
+              <label>Enter Your Actor</label>
+              <select
+                className="form-input"
+                {...register("actorId", {
+                  required: "Actor is required.",
+                })}
+              >
+                {Object.values(actors).map((actor) => (
+                  <option value={actor.id}>{actor.first_name}</option>
+                ))}
+              </select>
+              {errors.actorId && <p>{errors.actorId.message}</p>}
+            </div>
+          )}
+        </FormLayout>
       );
-    } else if (
-      dialogue &&
-      (!dialogue.placeholders || dialogue.placeholders.length === 0) &&
-      !userFields
-    ) {
-      // If no placeholders are needed, set empty user fields
-      setUserFields({});
     }
-  }, [
-    closeModal,
-    dialogue,
-    handleSubmit,
-    navigate,
-    openModal,
-    setUserFields,
-    userFields,
-  ]);
+  }, [actors, closeModal, openModal, selectedActor, setActor]);
 
   const handleReplay = () => {
     setKey((prev) => prev + 1);
@@ -113,12 +98,12 @@ const PlayScenarioPage = () => {
     );
   }
 
-  if (scenarioError || dialogueError) {
+  if (scenarioError || dialogueError || actorError) {
     return (
       <div className="play-scenario-container">
         <div className="error-state">
           <h1>Oops! Something went wrong</h1>
-          <p>{scenarioError || dialogueError}</p>
+          <p>{scenarioError || dialogueError || actorError}</p>
           <Link to={"/"} className="btn btn-primary">
             <Home size={20} />
             Return to Dashboard
@@ -189,10 +174,11 @@ const PlayScenarioPage = () => {
   }
 
   // Only render DialoguePlayer when we have user fields (or confirmed no placeholders needed)
-  if (userFields !== null) {
+  if (userFields && selectedActor) {
     return (
       <div key={key} className="play-scenario-container">
         <DialoguePlayer
+          actor={selectedActor}
           onDialogueExit={handleExit}
           user={user}
           scenario={scenario}

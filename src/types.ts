@@ -69,6 +69,7 @@ export interface UserProfile {
   first_name: string;
   last_name: string;
   created_at: string;
+  bio: string;
 }
 
 export interface DailyChallenge {
@@ -149,10 +150,7 @@ export interface ScoreSummary {
   social_awareness?: number;
   self_advocacy?: number;
 }
-export interface DialogueContext {
-  scoring: ScoreSummary;
-  path: DialogueOption[];
-}
+
 export interface CreateDialogueData {
   scenario_id: string;
   title: string;

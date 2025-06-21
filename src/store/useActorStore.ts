@@ -8,10 +8,10 @@ interface ActorStore {
   loading: boolean;
   error: string | null;
   selectedActor: Actor | null;
-  setActor: (id: string) => void;
+  setActor: (actor: Actor | null) => void;
   fetchActors: () => void;
 }
-export const useActorStore = create<ActorStore>((set, get) => ({
+export const useActorStore = create<ActorStore>((set) => ({
   actors: {},
   loading: false,
   selectedActor: null,
@@ -39,7 +39,7 @@ export const useActorStore = create<ActorStore>((set, get) => ({
       set({ loading: false });
     }
   },
-  setActor: (id: string) => {
-    set({ selectedActor: get().actors[id] });
+  setActor: (actor: Actor | null) => {
+    set({ selectedActor: actor });
   },
 }));

@@ -1,27 +1,22 @@
 import { assign, createMachine, type ActorRefFrom, fromPromise } from "xstate";
 import type {
-  DynamicDialogueContext,
   ConversationMessage,
   DialoguePhase,
   ActorResponse,
   UserResponseAnalysis,
 } from "../services/dynamicDialogue";
-import type { Actor, ScoreSummary } from "../types";
+import type { Actor, ScoreSummary, UserProfile } from "../types";
 import type { PicaContextResponse } from "../services/pica";
 
 // Machine context
-export interface HybridDialogueContext {
+export interface DialogueContext {
   // Core dialogue info
   scenarioTitle: string;
   dialogueTitle: string;
   actor: Actor;
 
   // User info
-  userProfile?: {
-    name: string;
-    interests: string[];
-    goals: string[];
-  };
+  user?: UserProfile;
 
   // Conversation state
   conversationHistory: ConversationMessage[];
@@ -42,7 +37,7 @@ export interface HybridDialogueContext {
 }
 
 // Machine events
-export type HybridDialogueEvent =
+export type DialogueEvent =
   | { type: "START_DIALOGUE" }
   | { type: "SUBMIT_USER_INPUT"; input: string }
   | { type: "SELECT_SUGGESTED_RESPONSE"; responseId: string }
@@ -56,18 +51,16 @@ export type HybridDialogueEvent =
 
 // Services interface for dependency injection
 export interface HybridDialogueServices {
-  generateActorResponse: (
-    context: DynamicDialogueContext
-  ) => Promise<ActorResponse>;
+  generateActorResponse: (context: DialogueContext) => Promise<ActorResponse>;
   analyzeUserResponse: (
     input: string,
-    context: DynamicDialogueContext
+    context: DialogueContext
   ) => Promise<UserResponseAnalysis>;
   fetchPicaContext: (
     scenarioTitle: string,
     dialogueTitle: string
   ) => Promise<PicaContextResponse>;
-  shouldTransitionPhase: (context: DynamicDialogueContext) => Promise<{
+  shouldTransitionPhase: (context: DialogueContext) => Promise<{
     shouldTransition: boolean;
     nextPhase?: DialoguePhase;
     reason?: string;
@@ -77,22 +70,18 @@ export interface HybridDialogueServices {
 /**
  * Create a hybrid dialogue machine that combines XState flow control with AI-generated responses
  */
-export function createHybridDialogueMachine(
+export function createDialogueMachine(
   scenarioTitle: string,
   dialogueTitle: string,
   actor: Actor,
   services: HybridDialogueServices,
-  userProfile?: {
-    name: string;
-    interests: string[];
-    goals: string[];
-  }
+  user: UserProfile
 ) {
   return createMachine(
     {
       types: {
-        context: {} as HybridDialogueContext,
-        events: {} as HybridDialogueEvent,
+        context: {} as DialogueContext,
+        events: {} as DialogueEvent,
       },
 
       id: "hybridDialogue",
@@ -103,7 +92,7 @@ export function createHybridDialogueMachine(
         scenarioTitle,
         dialogueTitle,
         actor,
-        userProfile,
+        user,
         conversationHistory: [],
         currentPhase: "introduction",
         totalScores: {
@@ -158,14 +147,16 @@ export function createHybridDialogueMachine(
           invoke: {
             id: "generateActorResponse",
             src: "generateActorResponse",
-            input: ({ context }): DynamicDialogueContext => ({
+            input: ({ context }): DialogueContext => ({
               scenarioTitle: context.scenarioTitle,
               dialogueTitle: context.dialogueTitle,
               actor: context.actor,
               conversationHistory: context.conversationHistory,
               currentPhase: context.currentPhase,
-              userProfile: context.userProfile,
+              user: context.user,
               picaContext: context.picaContext,
+              totalScores: context.totalScores,
+              maxPossibleScores: context.maxPossibleScores,
             }),
             onDone: {
               target: "waitingForUserInput",
@@ -245,9 +236,9 @@ export function createHybridDialogueMachine(
                 actor: context.actor,
                 conversationHistory: context.conversationHistory,
                 currentPhase: context.currentPhase,
-                userProfile: context.userProfile,
+                user: context.user,
                 picaContext: context.picaContext,
-              } as DynamicDialogueContext,
+              } as DialogueContext,
             }),
             onDone: {
               target: "checkingPhaseTransition",
@@ -397,14 +388,17 @@ export function createHybridDialogueMachine(
           invoke: {
             id: "checkPhaseTransition",
             src: "shouldTransitionPhase",
-            input: ({ context }): DynamicDialogueContext => ({
+            input: ({ context }): DialogueContext => ({
               scenarioTitle: context.scenarioTitle,
               dialogueTitle: context.dialogueTitle,
               actor: context.actor,
+
               conversationHistory: context.conversationHistory,
               currentPhase: context.currentPhase,
-              userProfile: context.userProfile,
+              user: context.user,
               picaContext: context.picaContext,
+              totalScores: context.totalScores,
+              maxPossibleScores: context.maxPossibleScores,
             }),
             onDone: [
               {
@@ -472,7 +466,7 @@ export function createHybridDialogueMachine(
           }
         ),
         generateActorResponse: fromPromise(
-          async ({ input }: { input: DynamicDialogueContext }) => {
+          async ({ input }: { input: DialogueContext }) => {
             return services.generateActorResponse(input);
           }
         ),
@@ -480,7 +474,7 @@ export function createHybridDialogueMachine(
           async ({
             input,
           }: {
-            input: { input: string; dialogueContext: DynamicDialogueContext };
+            input: { input: string; dialogueContext: DialogueContext };
           }) => {
             return services.analyzeUserResponse(
               input.input,
@@ -489,7 +483,7 @@ export function createHybridDialogueMachine(
           }
         ),
         shouldTransitionPhase: fromPromise(
-          async ({ input }: { input: DynamicDialogueContext }) => {
+          async ({ input }: { input: DialogueContext }) => {
             return services.shouldTransitionPhase(input);
           }
         ),
@@ -498,7 +492,5 @@ export function createHybridDialogueMachine(
   );
 }
 
-export type HybridDialogueMachine = ReturnType<
-  typeof createHybridDialogueMachine
->;
-export type HybridDialogueActor = ActorRefFrom<HybridDialogueMachine>;
+export type DialogueMachine = ReturnType<typeof createDialogueMachine>;
+export type DialogueActor = ActorRefFrom<DialogueMachine>;

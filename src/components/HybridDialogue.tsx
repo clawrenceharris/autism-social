@@ -1,17 +1,13 @@
 import React, { useState } from "react";
 import { Send, Loader2, AlertCircle, RotateCcw } from "lucide-react";
-import type { Actor, ScoreSummary } from "../types";
-import useHybridDialogue from "../hooks/useHybridDialogue";
+import type { Actor, ScoreCategory, ScoreSummary, UserProfile } from "../types";
+import useDynamicDialogue from "../hooks/useDynamicDialogue";
 
 interface HybridDialogueProps {
   scenarioTitle: string;
   dialogueTitle: string;
   actor: Actor;
-  userProfile?: {
-    name: string;
-    interests: string[];
-    goals: string[];
-  };
+  user: UserProfile;
   onDialogueComplete?: (finalScores: ScoreSummary) => void;
   onError?: (error: string) => void;
 }
@@ -20,7 +16,7 @@ export const HybridDialogue: React.FC<HybridDialogueProps> = ({
   scenarioTitle,
   dialogueTitle,
   actor,
-  userProfile,
+  user,
   onDialogueComplete,
   onError,
 }) => {
@@ -41,11 +37,11 @@ export const HybridDialogue: React.FC<HybridDialogueProps> = ({
     conversationHistory,
     currentPhase,
     context,
-  } = useHybridDialogue({
+  } = useDynamicDialogue({
     scenarioTitle,
     dialogueTitle,
     actor,
-    userProfile,
+    user,
     onDialogueComplete,
     onError,
   });
@@ -274,7 +270,8 @@ export const HybridDialogue: React.FC<HybridDialogueProps> = ({
                         {category.replace("_", " ")}
                       </span>
                       <span className="score">
-                        {score}/{context.maxPossibleScores[category]}
+                        {score}/
+                        {context.maxPossibleScores[category as ScoreCategory]}
                       </span>
                     </div>
                   )

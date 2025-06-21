@@ -1,24 +1,8 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { useMachine } from "@xstate/react";
-import type {
-  Dialogue,
-  DialogueOption,
-  DialogueStep,
-  Message,
-  Scenario,
-  UserMessage,
-  UserProfile,
-} from "../../types";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import type { Actor, Dialogue, Scenario, UserProfile } from "../../types";
 
 import "./DialoguePlayer.scss";
 import { DialogueCompletionModal, ProgressIndicator } from "../";
-import { createDialogueMachine } from "../../xstate/createDialogueMachine";
 import {
   AlertCircle,
   Eye,
@@ -31,10 +15,13 @@ import {
 } from "lucide-react";
 import { useModal, useToast } from "../../context";
 import { useVoiceStore } from "../../store/useVoiceStore";
-import { useActorStore } from "../../store/useActorStore";
-import { useDialogueCompletion } from "../../hooks";
+import {
+  useDialogueCompletion,
+  useDynamicDialogue,
+  useErrorHandler,
+} from "../../hooks";
 import { useProgressStore } from "../../store/useProgressStore";
-import { usePlayScenarioStore } from "../../store/usePlayScenarioStore";
+import type { SuggestedResponse } from "../../services/dynamicDialogue";
 
 interface DialoguePlayerProps {
   scenario: Scenario;
@@ -42,6 +29,7 @@ interface DialoguePlayerProps {
   onReplay: () => void;
   user: UserProfile;
   onDialogueExit: () => void;
+  actor: Actor;
 }
 
 const DialoguePlayer = ({
@@ -50,57 +38,57 @@ const DialoguePlayer = ({
   dialogue,
   onDialogueExit,
   onReplay,
+  actor,
 }: DialoguePlayerProps) => {
-  const machine = useMemo(
-    () => createDialogueMachine(dialogue.id, dialogue.steps),
-    [dialogue]
-  );
-  const { progress, fetchProgress } = useProgressStore();
-  const [state, send] = useMachine(machine);
-  const { userFields, setUserFields } = usePlayScenarioStore();
-  const [messages, setMessages] = useState<Message[]>([]);
+  const { fetchProgress, progress } = useProgressStore();
 
   const [customInput, setCustomInput] = useState("");
-  const [isTyping, setIsTyping] = useState<boolean>(false);
   const [isVolumeOn, setIsVolumeOn] = useState<boolean>(false);
   const [audioCache, setAudioCache] = useState<Map<string, string>>(new Map());
   const [isGeneratingAudio, setIsGeneratingAudio] = useState<boolean>(false);
-  const { updateDialogueProgress, addDialogueProgress, error, isCompleting } =
-    useDialogueCompletion();
-  const [isComplete, setIsComplete] = useState(false);
+  const {
+    updateDialogueProgress,
+    addDialogueProgress,
+    error,
+    isLoading: isSaving,
+  } = useDialogueCompletion();
 
   const { fetchVoices, getAudioUrl } = useVoiceStore();
-  const {
-    selectedActor: actor,
-    setActor,
-    fetchActors,
-    actors,
-    loading,
-  } = useActorStore();
   const messageWindowRef = useRef<HTMLDivElement>(null);
   const { showToast } = useToast();
+  const { handleError } = useErrorHandler();
   const { openModal } = useModal();
-  const getCurrentStep = (): DialogueStep | undefined => {
-    return dialogue.steps.find((step) => step.id === state.value);
-  };
-  const currentStep = getCurrentStep();
+
+  const {
+    submitUserInput,
+    selectSuggestedResponse,
+    retry,
+    isLoading,
+    isCompleted,
+    currentActorResponse,
+    conversationHistory,
+    context,
+  } = useDynamicDialogue({
+    scenarioTitle: scenario.title,
+    dialogueTitle: dialogue.title,
+    actor: {
+      id: "",
+      voice_id: "",
+      role: "",
+      first_name: "John",
+      last_name: "Smith",
+      bio: "A movie geek who loves to watch netflix and go out to drive in movies.",
+    },
+    user,
+    onError: (error) => handleError({ error }),
+    onDialogueComplete: () => handleDialogueComplete(),
+    // onError: (error) => handleError({ error, action: "running dialogue" }),
+  });
 
   useEffect(() => {
     fetchVoices();
-    fetchActors();
     fetchProgress(user.user_id);
-  }, [
-    fetchActors,
-    fetchProgress,
-    fetchVoices,
-    setActor,
-    setUserFields,
-    user.user_id,
-  ]);
-
-  useEffect(() => {
-    setActor(dialogue.actor_id);
-  }, [dialogue.actor_id, setActor, actors]);
+  }, [fetchProgress, fetchVoices, user.user_id]);
 
   // Auto-scroll to bottom of messages
   const scrollToBottom = () => {
@@ -109,19 +97,9 @@ const DialoguePlayer = ({
     });
   };
 
-  const renderMessage = useCallback(
-    (template: string): string => {
-      if (!userFields) return "";
-      return template.replace(/{{\s*(\w+)\s*}}/g, (_, key) => {
-        return userFields[key]?.toString() ?? "";
-      });
-    },
-    [userFields]
-  );
-
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [conversationHistory.length]);
 
   const getVoiceSettings = useCallback(() => {
     const personaTags = dialogue.persona_tags || [];
@@ -152,13 +130,13 @@ const DialoguePlayer = ({
   }, [dialogue.persona_tags]);
 
   const playAudio = useCallback(
-    async (text: string, stepId: string) => {
+    async (text: string) => {
       if (!isVolumeOn || isGeneratingAudio) return;
 
       try {
         // Check cache first
-        if (audioCache.has(stepId)) {
-          const audioUrl = audioCache.get(stepId)!;
+        if (audioCache.has(text)) {
+          const audioUrl = audioCache.get(text)!;
           const audio = new Audio(audioUrl);
           await audio.play();
           return;
@@ -173,7 +151,7 @@ const DialoguePlayer = ({
         });
 
         // Cache the audio URL
-        setAudioCache((prev) => new Map(prev).set(stepId, audioUrl));
+        setAudioCache((prev) => new Map(prev).set(text, audioUrl));
 
         const audio = new Audio(audioUrl);
         await audio.play();
@@ -198,25 +176,10 @@ const DialoguePlayer = ({
   );
 
   useEffect(() => {
-    if (currentStep?.npc && isVolumeOn) {
-      const message = renderMessage(currentStep.npc);
-      playAudio(message, currentStep.id);
+    if (currentActorResponse?.content && isVolumeOn) {
+      playAudio(currentActorResponse.content);
     }
-  }, [currentStep?.npc, currentStep?.id, playAudio, renderMessage, isVolumeOn]);
-
-  // Initialize first message when dialogue is selected
-  useEffect(() => {
-    const firstStep = dialogue.steps[0];
-    if (firstStep) {
-      setMessages([
-        {
-          id: "initial",
-          speaker: "npc",
-          text: renderMessage(firstStep.npc),
-        },
-      ]);
-    }
-  }, [dialogue, renderMessage]);
+  }, [currentActorResponse, isVolumeOn, playAudio]);
 
   // Cleanup audio URLs on unmount
   useEffect(() => {
@@ -227,107 +190,39 @@ const DialoguePlayer = ({
     };
   }, [audioCache]);
 
-  const handleOptionClick = async (opt: DialogueOption) => {
-    if (!currentStep) return;
-    // Add user message
-    const userMessage: UserMessage = {
-      id: currentStep.id,
-      speaker: "user",
-      text: renderMessage(opt.label),
-      scoring: opt.scoring,
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-
-    // Show typing indicator
-    setIsTyping(true);
-
-    // Simulate AI thinking time
-    await new Promise((resolve) =>
-      setTimeout(resolve, 500 + Math.random() * 1000)
-    );
-
-    // Send event to state machine
-    send({ type: opt.event });
-
-    // Get next step and add actor response
-    setTimeout(() => {
-      const currentStep = dialogue?.steps.find((step) => step.id === opt.next);
-
-      if (currentStep?.npc) {
-        const npcMessage: Message = {
-          id: `npc-${Date.now()}`,
-          speaker: "npc",
-          text: renderMessage(currentStep.npc),
-        };
-
-        setMessages((prev) => [...prev, npcMessage]);
-      }
-
-      setIsTyping(false);
-    }, 500);
+  const handleOptionClick = async (res: SuggestedResponse) => {
+    selectSuggestedResponse(res.id);
   };
 
   const handleCustomSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!customInput.trim()) return;
 
-    const userMessage: Message = {
-      id: `custom-${Date.now()}`,
-      speaker: "user",
-      text: customInput,
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setCustomInput("");
-
-    // Show typing indicator
-    setIsTyping(true);
-
-    // Simulate AI response (in a real app, this would call your AI service)
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    const aiResponse: Message = {
-      id: `ai-${Date.now()}`,
-      speaker: "npc",
-      text: renderMessage(
-        "That's an interesting response! Let me think about how to continue our conversation..."
-      ),
-    };
-
-    setMessages((prev) => [...prev, aiResponse]);
-    setIsTyping(false);
+    submitUserInput(customInput);
   };
 
-  useEffect(() => {
-    if (state.status === "done" && !isComplete) {
-      if (progress?.map((p) => p.dialogue_id).includes(dialogue.id)) {
-        updateDialogueProgress(
-          user.user_id,
-          dialogue.id,
-          state.context.scoring,
-          dialogue.max_scoring
-        );
-      } else {
-        addDialogueProgress(
-          user.user_id,
-          dialogue.id,
-          state.context.scoring,
-          dialogue.max_scoring
-        );
-      }
-      setIsComplete(true);
+  const handleDialogueComplete = useCallback(() => {
+    if (progress?.map((p) => p.dialogue_id).includes(dialogue.id)) {
+      updateDialogueProgress(
+        user.user_id,
+        dialogue.id,
+        context.totalScores,
+        dialogue.max_scoring
+      );
+    } else {
+      addDialogueProgress(
+        user.user_id,
+        dialogue.id,
+        context.totalScores,
+        dialogue.max_scoring
+      );
     }
   }, [
     addDialogueProgress,
+    context.totalScores,
     dialogue.id,
     dialogue.max_scoring,
-    error,
-    isComplete,
-    isCompleting,
     progress,
-    state.context,
-    state.status,
     updateDialogueProgress,
     user.user_id,
   ]);
@@ -335,22 +230,17 @@ const DialoguePlayer = ({
     openModal(
       <DialogueCompletionModal
         actor={actor}
-        userFields={userFields}
         dialogue={dialogue}
-        dialogueContext={state.context}
-        userMessages={messages.filter((m) => m.speaker === "user")}
-        actorMessages={messages.filter((m) => m.speaker === "npc")}
+        dialogueContext={context}
+        userMessages={conversationHistory.filter(
+          (item) => item.speaker === "user"
+        )}
+        actorMessages={conversationHistory.filter(
+          (item) => item.speaker === "actor"
+        )}
       />
     );
   };
-
-  if (loading) {
-    return (
-      <div className="loading-state">
-        <ProgressIndicator />
-      </div>
-    );
-  }
 
   return (
     <>
@@ -392,25 +282,25 @@ const DialoguePlayer = ({
             </div>
 
             <div ref={messageWindowRef} className="chat-messages">
-              {messages.map((message) => (
+              {conversationHistory?.map((message) => (
                 <div key={message.id} className={`message ${message.speaker}`}>
                   <p className="avatar">
-                    {message.speaker === "npc"
+                    {message.speaker === "actor"
                       ? actor?.first_name.charAt(0) || ""
                       : user.first_name.charAt(0) || ""}
                   </p>
                   <div className="message-content">
                     <div className="speaker-name">
-                      {message.speaker === "npc"
+                      {message.speaker === "actor"
                         ? actor?.first_name || "Unknown"
                         : "You"}
                     </div>
-                    <div className="message-bubble">{message.text}</div>
+                    <div className="message-bubble">{message.content}</div>
                   </div>
                 </div>
               ))}
 
-              {isTyping && (
+              {isLoading && (
                 <div className="typing-indicator">
                   <div className="avatar">
                     {actor?.first_name.charAt(0) || ""}
@@ -427,30 +317,22 @@ const DialoguePlayer = ({
             </div>
           </div>
         </div>
-        {state.status !== "done" ? (
+        {!isCompleted ? (
           <div className="response-section">
-            {currentStep?.options && currentStep.options.length > 0 && (
-              <>
-                <div className="response-prompt"></div>
-
-                <div className="response-options">
-                  {currentStep.options.map((option, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleOptionClick(option)}
-                      disabled={isTyping}
-                      className={`response-option ${
-                        isTyping ? "disabled" : ""
-                      }`}
-                    >
-                      <p className="option-text">
-                        {renderMessage(option.label)}
-                      </p>
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
+            <div className="response-options">
+              {currentActorResponse?.suggestedUserResponses.map(
+                (res, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleOptionClick(res)}
+                    disabled={isLoading}
+                    className={`response-option ${isLoading ? "disabled" : ""}`}
+                  >
+                    <p className="option-text">{res.content}</p>
+                  </button>
+                )
+              )}
+            </div>
 
             <div className="custom-response">
               <form onSubmit={handleCustomSubmit} className="input-container">
@@ -459,12 +341,12 @@ const DialoguePlayer = ({
                   value={customInput}
                   onChange={(e) => setCustomInput(e.target.value)}
                   placeholder="Or type your own response..."
-                  disabled={isTyping}
+                  disabled={isLoading}
                   className="form-input"
                 />
                 <button
                   type="submit"
-                  disabled={!customInput.trim() || isTyping}
+                  disabled={!customInput.trim() || isLoading}
                   className="send-btn"
                 >
                   <Send size={20} />
@@ -473,7 +355,7 @@ const DialoguePlayer = ({
             </div>
           </div>
         ) : null}
-        {isCompleting && (
+        {isSaving && (
           <div className="loading-state">
             <ProgressIndicator />
             <p className="loading-text">Saving...</p>
@@ -484,15 +366,12 @@ const DialoguePlayer = ({
             <AlertCircle className="error-icon" />
             <h3 className="error-title">Completion Failed</h3>
             <p className="error-message">{error}</p>
-            <button
-              onClick={() => setIsComplete(false)}
-              className="btn btn-danger"
-            >
+            <button onClick={retry} className="btn btn-danger">
               Try Again
             </button>
           </div>
         )}
-        {isComplete && (
+        {isCompleted && (
           <div className="dialogue-actions">
             <button onClick={handleResultsClick} className="btn btn-primary">
               <Eye /> View Results

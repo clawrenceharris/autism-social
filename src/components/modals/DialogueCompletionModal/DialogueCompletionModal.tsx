@@ -11,8 +11,6 @@ import {
 import type {
   ScoreSummary,
   ScoreCategory,
-  Message,
-  DialogueContext,
   Dialogue,
   Actor,
 } from "../../../types";
@@ -21,14 +19,15 @@ import {
   formatCategoryName,
   getCategoryIcon,
 } from "../../../utils/categoryUtils";
+import type { ConversationMessage } from "../../../services/dynamicDialogue";
+import type { DialogueContext } from "../../../xstate/createDialogueMachine";
 
 interface DialogueCompletionModalProps {
-  userMessages: Message[];
-  actorMessages: Message[];
+  userMessages: ConversationMessage[];
+  actorMessages: ConversationMessage[];
   dialogueContext: DialogueContext;
   dialogue: Dialogue;
   actor: Actor | null;
-  userFields: { [key: string]: string } | null;
 }
 
 interface StepAnalysis {
@@ -44,7 +43,6 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
   dialogueContext,
   actor,
   userMessages,
-  userFields,
   actorMessages,
   dialogue,
 }) => {
@@ -68,19 +66,19 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
   ];
 
   // Mock step analysis data - in real app this would come from the dialogue completion
-  const stepAnalyses: StepAnalysis[] = dialogueContext.path
+  const stepAnalyses: StepAnalysis[] = dialogueContext.conversationHistory
     //ignore the last step
 
     .map((opt, index) => ({
-      userResponse: userMessages[index]?.text || "",
-      actorMessage: actorMessages[index]?.text || "",
-      scoring: Object.keys(opt.scoring) as ScoreCategory[],
+      userResponse: userMessages[index]?.content || "",
+      actorMessage: actorMessages[index]?.content || "",
+      scoring: Object.keys(opt.scores || {}) as ScoreCategory[],
       pointsEarned: {
-        clarity: opt.scoring.clarity,
-        empathy: opt.scoring.empathy,
-        assertiveness: opt.scoring.assertiveness,
-        social_awareness: opt.scoring.social_awareness,
-        self_advocacy: opt.scoring.self_advocacy,
+        clarity: opt.scores?.clarity,
+        empathy: opt.scores?.empathy,
+        assertiveness: opt.scores?.assertiveness,
+        social_awareness: opt.scores?.social_awareness,
+        self_advocacy: opt.scores?.self_advocacy,
       },
     }));
 
@@ -102,21 +100,10 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                         - Scenario: ${dialogue.title}
                         - Prompt: "${actorMessage}"
                         - User Response: "${userMessage}"
-                        ${
-                          userFields
-                            ? `- Additional User Information: ${Object.entries(
-                                userFields
-                              )
-                                .map(
-                                  ([key, value]) =>
-                                    `${key.replace("_", " ")}: ${value}`
-                                )
-                                .join(", ")}
-                        The user’s response is scored on the following categories: ${scoring
-                          .join(", ")
-                          .replace("_", " ")}`
-                            : ""
-                        }.
+                        
+                      The user’s response is scored on the following categories: ${scoring
+                        .join(", ")
+                        .replace("_", " ")}
                         Task:
                         Write a better example of what the user could say in this situation. Make sure the new response would likely score well in the listed categories.
 
@@ -159,7 +146,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
     setExpandedStepIndex(expandedStepIndex === index ? null : index);
   };
 
-  const totalPointsEarned = Object.values(dialogueContext.scoring).reduce(
+  const totalPointsEarned = Object.values(dialogueContext.totalScores).reduce(
     (sum, score) => sum + score,
     0
   );
@@ -210,7 +197,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
           <h3 className="section-title">Your Performance Breakdown</h3>
           <div className="progress-categories">
             {categories.map((category, index) => {
-              const pointsEarned = dialogueContext.scoring[category];
+              const pointsEarned = dialogueContext.totalScores[category];
               if (pointsEarned)
                 return (
                   <div key={index} className="progress-item">

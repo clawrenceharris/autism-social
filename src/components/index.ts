@@ -1,7 +1,7 @@
 export { default as Select } from "./Select";
 export { default as ScenarioLayout } from "./layouts/ScenarioLayout";
 export { default as Skeleton } from "./Skeleton";
-export { default as RootLayout } from "./layouts/RootLayout/RootLayout";
+export { default as RootLayout } from "./layouts/RootLayout";
 export { default as FormLayout } from "./layouts/FormLayout";
 
 export { default as UserRoute } from "./routes/UserRoute";
@@ -19,4 +19,3 @@ export { default as ToastContainer } from "./ToastContainer";
 export { default as EditProfile } from "./EditProfile";
 export { default as StreakDisplay } from "./StreakDisplay";
 export { default as RankDisplay } from "./RankDisplay";
-export { default as GeminiExample } from "./GeminiExample";

@@ -1,20 +1,6 @@
-import type { ScoreSummary, Actor } from "../types";
-import type { PicaContextResponse } from "./pica";
+import type { ScoreSummary } from "../types";
 import { useGemini } from "../hooks/useGemini";
-
-export interface DynamicDialogueContext {
-  scenarioTitle: string;
-  dialogueTitle: string;
-  actor: Actor;
-  conversationHistory: ConversationMessage[];
-  currentPhase: DialoguePhase;
-  userProfile?: {
-    name: string;
-    interests: string[];
-    goals: string[];
-  };
-  picaContext?: PicaContextResponse;
-}
+import type { DialogueContext } from "../xstate/createDialogueMachine";
 
 export interface ConversationMessage {
   id: string;
@@ -66,7 +52,7 @@ export class DynamicDialogueService {
    * Generate actor response based on context and conversation history
    */
   async generateActorResponse(
-    context: DynamicDialogueContext
+    context: DialogueContext
   ): Promise<ActorResponse> {
     const prompt = this.buildActorPrompt(context);
 
@@ -84,7 +70,7 @@ export class DynamicDialogueService {
    */
   async analyzeUserResponse(
     userInput: string,
-    context: DynamicDialogueContext
+    context: DialogueContext
   ): Promise<UserResponseAnalysis> {
     const prompt = this.buildAnalysisPrompt(userInput, context);
 
@@ -100,7 +86,7 @@ export class DynamicDialogueService {
   /**
    * Determine if conversation should transition to next phase
    */
-  async shouldTransitionPhase(context: DynamicDialogueContext): Promise<{
+  async shouldTransitionPhase(context: DialogueContext): Promise<{
     shouldTransition: boolean;
     nextPhase?: DialoguePhase;
     reason?: string;
@@ -119,29 +105,25 @@ export class DynamicDialogueService {
   /**
    * Build prompt for actor response generation
    */
-  private buildActorPrompt(context: DynamicDialogueContext): string {
-    const {
-      actor,
-      conversationHistory,
-      currentPhase,
-      picaContext,
-      userProfile,
-    } = context;
+  private buildActorPrompt(context: DialogueContext): string {
+    const { actor, conversationHistory, currentPhase, picaContext, user } =
+      context;
 
     let prompt = `You are ${actor.first_name} ${actor.last_name}, ${actor.bio}
 
 SCENARIO: ${context.scenarioTitle}
 DIALOGUE: ${context.dialogueTitle}
 CURRENT PHASE: ${currentPhase}
+CONTEXT: ${context.picaContext}
 
 `;
 
     // Add user profile context
-    if (userProfile) {
+    if (user) {
       prompt += `USER PROFILE:
-- Name: ${userProfile.name}
-- Interests: ${userProfile.interests.join(", ")}
-- Goals: ${userProfile.goals.join(", ")}
+      -First Name: ${user.first_name}
+      -Last Name: ${user.first_name}
+      -Bio: ${user.bio}
 
 `;
     }
@@ -214,7 +196,7 @@ RESPONSE FORMAT (JSON):
    */
   private buildAnalysisPrompt(
     userInput: string,
-    context: DynamicDialogueContext
+    context: DialogueContext
   ): string {
     return `Analyze this user response in a social dialogue context:
 
@@ -250,7 +232,7 @@ RESPONSE FORMAT (JSON):
   /**
    * Build prompt for phase transition determination
    */
-  private buildPhaseTransitionPrompt(context: DynamicDialogueContext): string {
+  private buildPhaseTransitionPrompt(context: DialogueContext): string {
     const recentMessages = context.conversationHistory.slice(-4);
 
     return `Determine if this conversation should transition to the next phase:
@@ -282,7 +264,7 @@ RESPONSE FORMAT (JSON):
    */
   private parseActorResponse(
     response: string,
-    context: DynamicDialogueContext
+    context: DialogueContext
   ): ActorResponse {
     try {
       const parsed = JSON.parse(response);
@@ -340,9 +322,7 @@ RESPONSE FORMAT (JSON):
   /**
    * Fallback actor response when AI fails
    */
-  private getFallbackActorResponse(
-    context: DynamicDialogueContext
-  ): ActorResponse {
+  private getFallbackActorResponse(context: DialogueContext): ActorResponse {
     const fallbackResponses = {
       introduction: "Hello! I'm glad we have a chance to talk today.",
       main_topic: "That's interesting. Can you tell me more about that?",
