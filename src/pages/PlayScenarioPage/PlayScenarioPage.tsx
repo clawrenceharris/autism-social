@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from "react-router-dom";
 import { useModal } from "../../context";
 import { X, Home } from "lucide-react";
 import "./PlayScenarioPage.scss";
@@ -16,6 +21,7 @@ import { usePlayScenarioStore } from "../../store/usePlayScenarioStore";
 import { useActorStore } from "../../store/useActorStore";
 
 const PlayScenarioPage = () => {
+  const { dialogueId } = useParams<{ dialogueId: string }>();
   const navigate = useNavigate();
   const {
     loading: scenariosLoading,
@@ -26,13 +32,13 @@ const PlayScenarioPage = () => {
 
     scenarios,
   } = useScenarioStore();
-  const { setDialogue, userFields, scenario, dialogue } =
-    usePlayScenarioStore();
+  const { setDialogue, scenario, dialogue } = usePlayScenarioStore();
 
   const {
     loading: dialoguesLoading,
     dialoguesByScenario,
     fetchDialogues,
+    dialogues,
     error: dialogueError,
   } = useDialogueStore();
   const {
@@ -51,9 +57,12 @@ const PlayScenarioPage = () => {
     fetchScenarios();
     fetchActors();
   }, [fetchDialogues, fetchScenarios, fetchActors]);
-
   useEffect(() => {
-    if (!selectedActor) {
+    if (dialogueId) setDialogue(dialogues[dialogueId]);
+    else setDialogue(null);
+  }, [dialogueId, dialogues, setDialogue]);
+  useEffect(() => {
+    if (dialogueId && !selectedActor) {
       openModal(
         <FormLayout<{ actorId: string }>
           onSubmit={({ actorId }: { actorId: string }) => {
@@ -80,8 +89,7 @@ const PlayScenarioPage = () => {
         </FormLayout>
       );
     }
-  }, [actors, closeModal, openModal, selectedActor, setActor]);
-
+  }, [actors, closeModal, dialogueId, openModal, selectedActor, setActor]);
   const handleReplay = () => {
     setKey((prev) => prev + 1);
   };
@@ -131,7 +139,7 @@ const PlayScenarioPage = () => {
     );
   }
 
-  if (!dialogue) {
+  if (!dialogueId || !dialogue) {
     return (
       <div className="play-scenario-container">
         <div className="game-header">
@@ -174,7 +182,7 @@ const PlayScenarioPage = () => {
   }
 
   // Only render DialoguePlayer when we have user fields (or confirmed no placeholders needed)
-  if (userFields && selectedActor) {
+  if (selectedActor && dialogue) {
     return (
       <div key={key} className="play-scenario-container">
         <DialoguePlayer
