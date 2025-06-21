@@ -1,5 +1,5 @@
 {
-  "name": "autism-social",
+  "name": "chatterbrain",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,6 +12,7 @@
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.2.0",
     "@google/generative-ai": "^0.2.1",
+    "@picahq/ai": "^2.7.0",
     "@react-hook/media-query": "^1.1.1",
     "@reduxjs/toolkit": "^2.0.1",
     "@supabase/supabase-js": "^2.39.8",

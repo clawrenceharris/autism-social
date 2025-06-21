@@ -25,7 +25,7 @@ const RootHeader = () => {
             )}
           </NavLink>
 
-          <NavLink to="/your-scenarios">
+          <NavLink to="/scenarios">
             {({ isActive }) => (
               <div className={`nav-link ${isActive ? "active" : ""}`}>
                 <BookOpen />

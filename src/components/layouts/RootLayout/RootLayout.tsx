@@ -2,7 +2,7 @@ import { Outlet, useOutletContext } from "react-router-dom";
 import { RootHeader } from "../..";
 import type { AuthContextType } from "../../../types";
 
-const UserLayout = () => {
+const RootLayout = () => {
   const context = useOutletContext<AuthContextType>();
   return (
     <div className="layout-container">
@@ -14,4 +14,4 @@ const UserLayout = () => {
   );
 };
 
-export default UserLayout;
+export default RootLayout;
