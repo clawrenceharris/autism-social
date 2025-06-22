@@ -28,7 +28,6 @@ export interface PicaContextResponse {
 }
 
 class PicaService {
-  private baseUrl = "https://api.picaos.com/v1/passthrough";
   private apiKey: string;
 
   constructor() {
@@ -51,30 +50,9 @@ class PicaService {
     }
 
     try {
-      const response = await fetch(`${this.baseUrl}/search`, {
-        method: "POST",
-        headers: {
-          "x-pica-secret": import.meta.env.VITE_PICA_API_KEY,
-          "x-pica-connection-key": import.meta.env.VITE_SERPAI_CONNECTION_KEY,
-          "Content-Type": "application/json",
-        },
-        //
-        // body: '{\n    "messages": [{"role": "user", "content": "What connections do I have access to?"}]\n}',
-        body: JSON.stringify({
-          query: request.query,
-          messages: request.query,
-          tools: { ...pica.oneTool },
-          timeframe: request.timeframe || "recent",
-          max_results: request.maxResults || 5,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Pica API error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return this.transformPicaResponse(data);
+      // Use the pica SDK instead of manual fetch
+      const response = await pica.query(request.query);
+      return this.transformPicaResponse(response, request.query);
     } catch (error) {
       console.error("Error fetching Pica context:", error);
       // Fallback to mock data on error
@@ -133,7 +111,7 @@ class PicaService {
    * Transform Pica API response to our format
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private transformPicaResponse(data: any): PicaContextResponse {
+  private transformPicaResponse(data: any, query: string): PicaContextResponse {
     return {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       items: (data.results || []).map((item: any) => ({
@@ -144,7 +122,7 @@ class PicaService {
         relevanceScore: item.relevance_score || 0.5,
         category: item.category || "general",
       })),
-      query: data.query || "",
+      query: query,
       totalResults: data.total_results || 0,
     };
   }
