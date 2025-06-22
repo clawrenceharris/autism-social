@@ -48,7 +48,7 @@ class PicaService {
 
     try {
       const response = await fetch(
-        "https://api.picaos.com/v1/passthrough/v1/search",
+        `https:${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pica-search`,
         {
           method: "POST",
           headers: {
