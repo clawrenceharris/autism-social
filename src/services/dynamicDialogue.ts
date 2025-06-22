@@ -111,19 +111,19 @@ export class DynamicDialogueService {
 
     let prompt = `You are ${actor.first_name} ${actor.last_name}, ${actor.bio}
 
-SCENARIO: ${context.scenarioTitle}
-DIALOGUE: ${context.dialogueTitle}
+SCENARIO: ${context.scenario}
+DIALOGUE: ${context.dialogue}
 CURRENT PHASE: ${currentPhase}
-CONTEXT: ${context.picaContext}
 
 `;
 
     // Add user profile context
     if (user) {
       prompt += `USER PROFILE:
-      -First Name: ${user.first_name}
-      -Last Name: ${user.first_name}
-      -Bio: ${user.bio}
+    - First Name: ${user.first_name}
+    - Last Name: ${user.last_name}
+    - Bio: ${user.bio}
+    - Goals: ${user.goals?.join(", ") || "none"}
 
 `;
     }
@@ -152,39 +152,29 @@ ${conversationHistory
     }
 
     prompt += `INSTRUCTIONS:
-1. Respond as ${actor.first_name} in character, maintaining their personality and role
-2. Keep responses natural and conversational (2-3 sentences max)
-3. If current context is available, reference it naturally when relevant
-4. Guide the conversation based on the current phase:
-   - introduction: Welcome and set the scene
-   - main_topic: Engage with the core dialogue topic
-   - wrap_up: Begin concluding the conversation
-5. Provide 3 suggested user responses with different communication styles
+1. Respond as ${actor.first_name} in character.
+2. Keep responses natural and conversational (1-2 sentences max).
+3. Reference CURRENT CONTEXT if relevant.
+4. Guide the conversation for this phase:
+   - introduction: Welcome, build comfort
+   - main_topic: Engage on topic
+   - wrap_up: Conclude positively
+5. Provide 3 suggestedUserResponses, clearly scored.
 
 RESPONSE FORMAT (JSON):
 {
-  "content": "Actor's response text",
-  "suggestedResponses": [
+  "content": "Actor's response",
+  "suggestedUserResponses": [
     {
       "id": "response_1",
-      "content": "Direct/assertive response option",
+      "content": "response text",
       "scores": {"clarity": 8, "empathy": 5, "assertiveness": 9, "social_awareness": 6, "self_advocacy": 7},
-      "reasoning": "This response is direct and clear"
+      "reasoning": "explanation of score"
     },
-    {
-      "id": "response_2", 
-      "content": "Empathetic/supportive response option",
-      "scores": {"clarity": 6, "empathy": 9, "assertiveness": 4, "social_awareness": 8, "self_advocacy": 5},
-      "reasoning": "This response shows understanding and empathy"
-    },
-    {
-      "id": "response_3",
-      "content": "Balanced/diplomatic response option", 
-      "scores": {"clarity": 7, "empathy": 7, "assertiveness": 6, "social_awareness": 8, "self_advocacy": 6},
-      "reasoning": "This response balances multiple communication aspects"
-    }
+    { ... },
+    { ... }
   ],
-  "contextUsed": ["List of context items referenced"],
+  "contextUsed": ["list of context items used"],
   "nextPhase": "same_phase_or_next_phase"
 }`;
 
@@ -203,7 +193,8 @@ RESPONSE FORMAT (JSON):
 USER RESPONSE: "${userInput}"
 
 CONTEXT:
-- Scenario: ${context.scenarioTitle}
+- Scenario: ${context.scenario.title}
+- Dialogue: ${context.dialogue.title}
 - Current Phase: ${context.currentPhase}
 - Actor: ${context.actor.first_name} ${context.actor.last_name}
 

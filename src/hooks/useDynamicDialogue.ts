@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useMachine } from "@xstate/react";
 import {
   createDialogueMachine,
@@ -14,13 +14,20 @@ import {
 } from "../services/dynamicDialogue";
 import { usePicaContext } from "./usePicaContext";
 import { useGemini } from "./useGemini";
-import type { Actor, ScoreSummary, UserProfile } from "../types";
+import type {
+  Actor,
+  Dialogue,
+  Scenario,
+  ScoreSummary,
+  UserProfile,
+} from "../types";
 import type { PicaContextResponse } from "../services/pica";
 
 interface UseDialogueOptions {
-  scenarioTitle: string;
-  dialogueTitle: string;
+  scenario: Scenario;
+  dialogue: Dialogue;
   actor: Actor;
+  userFields: { [key: string]: string };
   user: UserProfile;
   onDialogueComplete?: (finalScores: object) => void;
   onError?: (error: string) => void;
@@ -60,10 +67,11 @@ export const useDynamicDialogue = (
   options: UseDialogueOptions
 ): UseDialogueReturn => {
   const {
-    scenarioTitle,
-    dialogueTitle,
+    scenario,
+    dialogue,
     actor,
     user,
+    userFields,
     onDialogueComplete,
     onError,
   } = options;
@@ -87,14 +95,8 @@ export const useDynamicDialogue = (
   // Define services for the XState machine
   const services: HybridDialogueServices = useMemo(
     () => ({
-      fetchPicaContext: async (
-        scenarioTitle: string,
-        dialogueTitle: string
-      ) => {
-        return await picaContext.getDialogueContext(
-          scenarioTitle,
-          dialogueTitle
-        );
+      fetchPicaContext: async (scenario: Scenario, dialogue: Dialogue) => {
+        return await picaContext.getDialogueContext(scenario, dialogue);
       },
 
       generateActorResponse: async (context) => {
@@ -113,18 +115,12 @@ export const useDynamicDialogue = (
   );
 
   // Create the machine
-  const machine = useMemo(() => {
-    return createDialogueMachine(
-      scenarioTitle,
-      dialogueTitle,
-      actor,
-      services,
-      user
-    );
-  }, [scenarioTitle, dialogueTitle, actor, services, user]);
+  const machineRef = useRef(
+    createDialogueMachine(scenario, dialogue, actor, userFields, services, user)
+  );
 
   // Use the machine
-  const [state, send] = useMachine(machine);
+  const [state, send] = useMachine(machineRef.current);
 
   // Handle dialogue completion
   useEffect(() => {
@@ -183,7 +179,19 @@ export const useDynamicDialogue = (
     },
     [send]
   );
-
+  useEffect(() => {
+    if (state.context.currentPhase && picaContext.getDialogueContext) {
+      picaContext
+        .getDialogueContext(scenario, dialogue, state.context.currentPhase)
+        .then(updateContext);
+    }
+  }, [
+    dialogue,
+    picaContext,
+    scenario,
+    state.context.currentPhase,
+    updateContext,
+  ]);
   // Computed state
   const isLoading =
     state.matches("generatingActorResponse") ||

@@ -13,6 +13,7 @@ import {
   DialoguePlayer,
   FormLayout,
   ProgressIndicator,
+  StartDialogueModal,
 } from "../../components";
 import { useScenarioStore } from "../../store/useScenarioStore";
 import type { AuthContextType } from "../../types";
@@ -25,6 +26,7 @@ const PlayScenarioPage = () => {
     dialogueId: string;
     scenarioId: string;
   }>();
+  const [userFields, setUserFields] = useState<{ [key: string]: string }>();
   const navigate = useNavigate();
   const {
     loading: scenariosLoading,
@@ -58,6 +60,27 @@ const PlayScenarioPage = () => {
   }, [fetchActors, fetchDialoguesByScenario, scenarioId]);
   useEffect(() => {});
   useEffect(() => {
+    if (dialogue && dialogue.placeholders.length > 0) {
+      // Open modal so we can enter the user fields
+      openModal(
+        <FormLayout<{ [key: string]: string }>
+          onSubmit={(data) => setUserFields(data)}
+          submitText="Start Dialogue"
+          showsCancelButton={true}
+          cancelText="Cancel"
+          onCancel={() => {
+            closeModal();
+            navigate("/");
+          }}
+        >
+          <StartDialogueModal
+            dialogue={dialogue}
+            placeholders={dialogue.placeholders}
+          />
+        </FormLayout>,
+        "Start Dialogue"
+      );
+    }
     if (dialogueId && !selectedActor) {
       openModal(
         <FormLayout<{ actorId: string }>
@@ -85,7 +108,16 @@ const PlayScenarioPage = () => {
         </FormLayout>
       );
     }
-  }, [actors, closeModal, dialogueId, openModal, selectedActor, setActor]);
+  }, [
+    actors,
+    closeModal,
+    dialogue,
+    dialogueId,
+    navigate,
+    openModal,
+    selectedActor,
+    setActor,
+  ]);
   const handleReplay = () => {
     setKey((prev) => prev + 1);
   };
@@ -178,10 +210,11 @@ const PlayScenarioPage = () => {
   }
 
   // Only render DialoguePlayer when we have user fields (or confirmed no placeholders needed)
-  if (selectedActor) {
+  if (selectedActor && userFields) {
     return (
       <div key={key} className="play-scenario-container">
         <DialoguePlayer
+          userFields={userFields}
           actor={selectedActor}
           onDialogueExit={handleExit}
           user={user}

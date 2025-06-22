@@ -30,11 +30,13 @@ interface DialoguePlayerProps {
   user: UserProfile;
   onDialogueExit: () => void;
   actor: Actor;
+  userFields: { [key: string]: string };
 }
 
 const DialoguePlayer = ({
   scenario,
   user,
+  userFields,
   dialogue,
   onDialogueExit,
   onReplay,
@@ -69,20 +71,13 @@ const DialoguePlayer = ({
     conversationHistory,
     context,
   } = useDynamicDialogue({
-    scenarioTitle: scenario.title,
-    dialogueTitle: dialogue.title,
-    actor: {
-      id: "",
-      voice_id: "",
-      role: "",
-      first_name: "John",
-      last_name: "Smith",
-      bio: "A movie geek who loves to watch netflix and go out to drive in movies.",
-    },
+    scenario,
+    dialogue,
+    actor,
+    userFields,
     user,
     onError: (error) => handleError({ error }),
     onDialogueComplete: () => handleDialogueComplete(),
-    // onError: (error) => handleError({ error, action: "running dialogue" }),
   });
 
   useEffect(() => {

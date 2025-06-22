@@ -2,6 +2,8 @@
  * Pica API service for fetching live context and current information
  */
 
+import type { Dialogue, Scenario } from "../types";
+
 export interface PicaContextRequest {
   query: string;
   categories?: string[];
@@ -25,7 +27,7 @@ export interface PicaContextResponse {
 }
 
 class PicaService {
-  private baseUrl = "https://api.pica.ai/v1";
+  private baseUrl = "https://api.picaos.com/v1/passthrough";
   private apiKey: string;
 
   constructor() {
@@ -49,12 +51,16 @@ class PicaService {
     }
 
     try {
-      const response = await fetch(`${this.baseUrl}/context`, {
+      const response = await fetch(`${this.baseUrl}/search`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${this.apiKey}`,
+          "x-pica-secret": import.meta.env.VITE_PICA_API_KEY,
+          "x-pica-connection-key": import.meta.env.VITE_SERPAI_CONNECTION_KEY,
           "Content-Type": "application/json",
+          Authorization: `Bearer ${this.apiKey}`,
         },
+        //
+        // body: '{\n    "messages": [{"role": "user", "content": "What connections do I have access to?"}]\n}',
         body: JSON.stringify({
           query: request.query,
           categories: request.categories || ["news", "culture", "technology"],
@@ -80,20 +86,33 @@ class PicaService {
    * Get context relevant to a dialogue topic
    */
   async getDialogueContext(
-    scenarioTitle: string,
-    dialogueTitle: string,
+    scenario: Scenario,
+    dialogue: Dialogue,
+    currentPhase?: string,
     currentTopic?: string
   ): Promise<PicaContextResponse> {
-    const query = currentTopic || `${scenarioTitle} ${dialogueTitle}`;
+    const queryParts = [
+      currentTopic,
+      `Scenario: ${scenario.title}`,
+      `Dialogue: ${dialogue.title}`,
+      currentPhase ? `Phase: ${currentPhase}` : "",
+
+      dialogue.scoring_categories.length
+        ? `Social Categories being evaluated: ${dialogue.scoring_categories.join(
+            ", "
+          )}`
+        : "",
+    ];
+
+    const query = queryParts.filter(Boolean).join(" | ");
 
     return this.fetchContext({
       query,
-      categories: ["news", "culture", "social", "lifestyle"],
+      categories: ["news", "culture", "social", "psychology", "trends"],
       timeframe: "recent",
-      maxResults: 3,
+      maxResults: 5,
     });
   }
-
   /**
    * Get context based on user input
    */

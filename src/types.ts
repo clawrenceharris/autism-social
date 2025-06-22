@@ -69,6 +69,8 @@ export interface UserProfile {
   first_name: string;
   last_name: string;
   created_at: string;
+  goals?: string[];
+  interests?: string[];
   bio: string;
 }
 

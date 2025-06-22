@@ -4,6 +4,7 @@ import {
   type PicaContextRequest,
   type PicaContextResponse,
 } from "../services/pica";
+import type { Dialogue, Scenario } from "../types";
 
 interface UsePicaContextOptions {
   autoFetch?: boolean;
@@ -17,8 +18,8 @@ interface UsePicaContextReturn {
   error: Error | null;
   fetchContext: (request: PicaContextRequest) => Promise<PicaContextResponse>;
   getDialogueContext: (
-    scenarioTitle: string,
-    dialogueTitle: string,
+    scenario: Scenario,
+    dialogue: Dialogue,
     currentTopic?: string
   ) => Promise<PicaContextResponse>;
   getUserInputContext: (userInput: string) => Promise<PicaContextResponse>;
@@ -130,8 +131,8 @@ export const usePicaContext = (
 
   const getDialogueContext = useCallback(
     async (
-      scenarioTitle: string,
-      dialogueTitle: string,
+      scenario: Scenario,
+      dialogue: Dialogue,
       currentTopic?: string
     ): Promise<PicaContextResponse> => {
       try {
@@ -139,8 +140,8 @@ export const usePicaContext = (
         setError(null);
 
         const result = await picaService.getDialogueContext(
-          scenarioTitle,
-          dialogueTitle,
+          scenario,
+          dialogue,
           currentTopic
         );
         setContext(result);

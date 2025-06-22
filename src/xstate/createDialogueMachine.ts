@@ -5,16 +5,22 @@ import type {
   ActorResponse,
   UserResponseAnalysis,
 } from "../services/dynamicDialogue";
-import type { Actor, ScoreSummary, UserProfile } from "../types";
+import type {
+  Actor,
+  Dialogue,
+  Scenario,
+  ScoreSummary,
+  UserProfile,
+} from "../types";
 import type { PicaContextResponse } from "../services/pica";
 
 // Machine context
 export interface DialogueContext {
   // Core dialogue info
-  scenarioTitle: string;
-  dialogueTitle: string;
+  scenario: Scenario;
+  dialogue: Dialogue;
   actor: Actor;
-
+  userFields: { [key: string]: string };
   // User info
   user?: UserProfile;
 
@@ -57,8 +63,8 @@ export interface HybridDialogueServices {
     context: DialogueContext
   ) => Promise<UserResponseAnalysis>;
   fetchPicaContext: (
-    scenarioTitle: string,
-    dialogueTitle: string
+    scenario: Scenario,
+    dialogue: Dialogue
   ) => Promise<PicaContextResponse>;
   shouldTransitionPhase: (context: DialogueContext) => Promise<{
     shouldTransition: boolean;
@@ -71,9 +77,10 @@ export interface HybridDialogueServices {
  * Create a hybrid dialogue machine that combines XState flow control with AI-generated responses
  */
 export function createDialogueMachine(
-  scenarioTitle: string,
-  dialogueTitle: string,
+  scenario: Scenario,
+  dialogue: Dialogue,
   actor: Actor,
+  userFields: { [key: string]: string },
   services: HybridDialogueServices,
   user: UserProfile
 ) {
@@ -89,8 +96,9 @@ export function createDialogueMachine(
       initial: "initializing",
 
       context: {
-        scenarioTitle,
-        dialogueTitle,
+        userFields,
+        scenario,
+        dialogue,
         actor,
         user,
         conversationHistory: [],
@@ -117,8 +125,10 @@ export function createDialogueMachine(
             id: "fetchInitialContext",
             src: "fetchPicaContext",
             input: ({ context }) => ({
-              scenarioTitle: context.scenarioTitle,
-              dialogueTitle: context.dialogueTitle,
+              scenario: context.scenario,
+              dialogue: context.dialogue,
+              user: context.user,
+              actor: context.actor,
             }),
             onDone: {
               target: "waitingForStart",
@@ -148,12 +158,13 @@ export function createDialogueMachine(
             id: "generateActorResponse",
             src: "generateActorResponse",
             input: ({ context }): DialogueContext => ({
-              scenarioTitle: context.scenarioTitle,
-              dialogueTitle: context.dialogueTitle,
+              scenario: context.scenario,
+              dialogue: context.dialogue,
               actor: context.actor,
               conversationHistory: context.conversationHistory,
               currentPhase: context.currentPhase,
               user: context.user,
+              userFields: context.userFields,
               picaContext: context.picaContext,
               totalScores: context.totalScores,
               maxPossibleScores: context.maxPossibleScores,
@@ -231,8 +242,8 @@ export function createDialogueMachine(
             input: ({ context }) => ({
               input: context.currentUserInput!,
               dialogueContext: {
-                scenarioTitle: context.scenarioTitle,
-                dialogueTitle: context.dialogueTitle,
+                scenario: context.scenario,
+                dialogue: context.dialogue,
                 actor: context.actor,
                 conversationHistory: context.conversationHistory,
                 currentPhase: context.currentPhase,
@@ -389,10 +400,10 @@ export function createDialogueMachine(
             id: "checkPhaseTransition",
             src: "shouldTransitionPhase",
             input: ({ context }): DialogueContext => ({
-              scenarioTitle: context.scenarioTitle,
-              dialogueTitle: context.dialogueTitle,
+              scenario: context.scenario,
+              dialogue: context.dialogue,
               actor: context.actor,
-
+              userFields: context.userFields,
               conversationHistory: context.conversationHistory,
               currentPhase: context.currentPhase,
               user: context.user,
@@ -457,12 +468,9 @@ export function createDialogueMachine(
           async ({
             input,
           }: {
-            input: { scenarioTitle: string; dialogueTitle: string };
+            input: { scenario: Scenario; dialogue: Dialogue };
           }) => {
-            return services.fetchPicaContext(
-              input.scenarioTitle,
-              input.dialogueTitle
-            );
+            return services.fetchPicaContext(input.scenario, input.dialogue);
           }
         ),
         generateActorResponse: fromPromise(
