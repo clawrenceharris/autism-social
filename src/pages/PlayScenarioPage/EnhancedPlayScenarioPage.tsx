@@ -10,11 +10,11 @@ import { X, Home } from "lucide-react";
 import "../PlayScenarioPage/PlayScenarioPage.scss";
 import {
   DialogueItem,
+  EnhancedDialoguePlayer,
   FormLayout,
   ProgressIndicator,
   StartDialogueModal,
 } from "../../components";
-import EnhancedDialoguePlayer from "../../components/EnhancedDialoguePlayer/EnhancedDialoguePlayer";
 import { useScenarioStore } from "../../store/useScenarioStore";
 import type { AuthContextType } from "../../types";
 import { useDialogueStore } from "../../store/useDialogueStore";
@@ -26,7 +26,7 @@ const EnhancedPlayScenarioPage = () => {
     dialogueId: string;
     scenarioId: string;
   }>();
-  const [userFields, setUserFields] = useState<{ [key: string]: string }>();
+  const [userFields, setUserFields] = useState<{ [key: string]: string }>({});
   const navigate = useNavigate();
   const {
     loading: scenariosLoading,
@@ -60,7 +60,7 @@ const EnhancedPlayScenarioPage = () => {
   }, [fetchActors, fetchDialoguesByScenario, scenarioId]);
 
   useEffect(() => {
-    if (dialogue && dialogue.placeholders.length > 0) {
+    if (dialogue && dialogue.placeholders && dialogue.placeholders.length > 0) {
       // Open modal so we can enter the user fields
       openModal(
         <FormLayout<{ [key: string]: string }>
@@ -212,11 +212,11 @@ const EnhancedPlayScenarioPage = () => {
   }
 
   // Only render EnhancedDialoguePlayer when we have user fields (or confirmed no placeholders needed)
-  if (selectedActor && (userFields || dialogue.placeholders.length === 0)) {
+  if (selectedActor && (Object.keys(userFields).length > 0 || !dialogue.placeholders || dialogue.placeholders.length === 0)) {
     return (
       <div key={key} className="play-scenario-container">
         <EnhancedDialoguePlayer
-          userFields={userFields || {}}
+          userFields={userFields}
           actor={selectedActor}
           onDialogueExit={handleExit}
           user={user}

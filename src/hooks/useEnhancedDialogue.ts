@@ -3,6 +3,15 @@ import { useContextDialogue } from "./useContextDialogue";
 import type { Actor, Dialogue, Scenario, UserProfile } from "../types";
 import type { DialogueResponse, SuggestedResponse } from "../services/contextDialogue";
 
+interface ConversationMessage {
+  id: string;
+  speaker: "user" | "actor";
+  content: string;
+  timestamp: Date;
+}
+
+type DialoguePhase = "introduction" | "main_topic" | "wrap_up" | "completed";
+
 interface UseEnhancedDialogueOptions {
   scenario: Scenario;
   dialogue: Dialogue;
@@ -16,13 +25,8 @@ interface UseEnhancedDialogueReturn {
   isLoading: boolean;
   error: Error | null;
   currentResponse: DialogueResponse | null;
-  conversationHistory: Array<{
-    id: string;
-    speaker: "user" | "actor";
-    content: string;
-    timestamp: Date;
-  }>;
-  currentPhase: string;
+  conversationHistory: ConversationMessage[];
+  currentPhase: DialoguePhase;
   
   // Actions
   startDialogue: () => Promise<void>;
@@ -42,13 +46,8 @@ export const useEnhancedDialogue = ({
   user,
   onError,
 }: UseEnhancedDialogueOptions): UseEnhancedDialogueReturn => {
-  const [currentPhase, setCurrentPhase] = useState<string>("introduction");
-  const [conversationHistory, setConversationHistory] = useState<Array<{
-    id: string;
-    speaker: "user" | "actor";
-    content: string;
-    timestamp: Date;
-  }>>([]);
+  const [currentPhase, setCurrentPhase] = useState<DialoguePhase>("introduction");
+  const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([]);
   
   const {
     contextData,
@@ -92,11 +91,11 @@ export const useEnhancedDialogue = ({
         },
         dialogue: {
           title: dialogue.title,
-          phase: currentPhase as any,
+          phase: currentPhase,
           scoringCategories: dialogue.scoring_categories,
         },
         conversationHistory: [],
-      }, contextData || undefined);
+      }, contextData);
       
       // Add actor's initial message to conversation history
       setConversationHistory([{
@@ -149,15 +148,15 @@ export const useEnhancedDialogue = ({
         },
         dialogue: {
           title: dialogue.title,
-          phase: currentPhase as any,
+          phase: currentPhase,
           scoringCategories: dialogue.scoring_categories,
         },
         conversationHistory: formattedHistory,
-      }, contextData || undefined);
+      }, contextData);
       
       // Check if we should transition to next phase
       if (response.nextPhase && response.nextPhase !== currentPhase) {
-        setCurrentPhase(response.nextPhase);
+        setCurrentPhase(response.nextPhase as DialoguePhase);
         
         // Fetch new context for the new phase
         fetchDialogueContext(scenario, dialogue, response.nextPhase).catch((err) => {

@@ -20,7 +20,7 @@ interface UseContextDialogueReturn {
   loading: boolean;
   error: Error | null;
   fetchDialogueContext: (scenario: Scenario, dialogue: Dialogue, phase?: string) => Promise<ContextResponse>;
-  generateResponse: (request: Omit<DialogueRequest, "context">, contextData?: ContextResponse) => Promise<DialogueResponse>;
+  generateResponse: (request: Omit<DialogueRequest, "context">, contextData?: ContextResponse | null) => Promise<DialogueResponse>;
   clearContext: () => void;
   clearError: () => void;
 }
@@ -45,7 +45,7 @@ export const useContextDialogue = (
   const [dialogueResponse, setDialogueResponse] = useState<DialogueResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [cache] = useState<Map<string, CacheEntry<any>>>(new Map());
+  const [cache] = useState<Map<string, CacheEntry<ContextResponse | DialogueResponse>>>(new Map());
 
   const opts = { ...DEFAULT_OPTIONS, ...options };
 
@@ -54,7 +54,7 @@ export const useContextDialogue = (
   }, []);
 
   const getFromCache = useCallback(
-    <T>(key: string): T | null => {
+    <T extends ContextResponse | DialogueResponse>(key: string): T | null => {
       if (!opts.cacheResults) return null;
 
       const cacheKey = getCacheKey(key);
@@ -73,7 +73,7 @@ export const useContextDialogue = (
   );
 
   const setToCache = useCallback(
-    <T>(key: string, data: T): void => {
+    <T extends ContextResponse | DialogueResponse>(key: string, data: T): void => {
       if (!opts.cacheResults) return;
 
       const cacheKey = getCacheKey(key);
@@ -147,16 +147,15 @@ export const useContextDialogue = (
   const generateResponse = useCallback(
     async (
       request: Omit<DialogueRequest, "context">,
-      contextData?: ContextResponse
+      contextData?: ContextResponse | null
     ): Promise<DialogueResponse> => {
       try {
         setLoading(true);
         setError(null);
 
         // Use provided context or current context
-        const context = contextData 
-          ? formatContextForPrompt(contextData.items)
-          : formatContextForPrompt((contextData || {}).items || []);
+        const contextItems = contextData?.items || [];
+        const context = formatContextForPrompt(contextItems);
 
         // Generate response
         const result = await generateDialogueResponse({
@@ -173,42 +172,6 @@ export const useContextDialogue = (
       } finally {
         setLoading(false);
       }
-    },
-    []
-  );
-
-  /**
-   * Helper function to prepare dialogue request from app objects
-   */
-  const prepareDialogueRequest = useCallback(
-    (
-      actor: Actor,
-      scenario: Scenario,
-      dialogue: Dialogue,
-      userInput: string,
-      phase: string,
-      conversationHistory: Array<{ speaker: "user" | "actor"; content: string }>,
-      user?: UserProfile
-    ): Omit<DialogueRequest, "context"> => {
-      return {
-        userInput,
-        actor: {
-          firstName: actor.first_name,
-          lastName: actor.last_name,
-          role: actor.role,
-          bio: actor.bio,
-        },
-        scenario: {
-          title: scenario.title,
-          description: scenario.description,
-        },
-        dialogue: {
-          title: dialogue.title,
-          phase: phase as "introduction" | "main_topic" | "wrap_up" | "completed",
-          scoringCategories: dialogue.scoring_categories,
-        },
-        conversationHistory,
-      };
     },
     []
   );
