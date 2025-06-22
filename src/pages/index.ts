@@ -5,5 +5,6 @@ export { default as ProgressPage } from "./ProgressPage";
 export { default as SignUpPage } from "./SignUpPage";
 export { default as SettingsPage } from "./SettingsPage";
 export { default as PlayScenarioPage } from "./PlayScenarioPage";
+export { default as EnhancedPlayScenarioPage } from "./PlayScenarioPage/EnhancedPlayScenarioPage";
 export { default as DailyChallengesPage } from "./DailyChallengesPage";
 export { default as LandingPage } from "./LandingPage";

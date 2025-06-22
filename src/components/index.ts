@@ -7,6 +7,7 @@ export { default as FormLayout } from "./layouts/FormLayout";
 export { default as UserRoute } from "./routes/UserRoute";
 export { default as ProgressIndicator } from "./ProgressIndicator";
 export { default as DialoguePlayer } from "./DialoguePlayer";
+export { default as EnhancedDialoguePlayer } from "./EnhancedDialoguePlayer/EnhancedDialoguePlayer";
 export { default as Modal } from "./modals/Modal";
 export { default as ConfirmationModal } from "./modals/ConfirmationModal";
 export { default as StartDialogueModal } from "./modals/StartDialogueModal";
