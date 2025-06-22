@@ -29,12 +29,20 @@ export interface PicaContextResponse {
 class PicaService {
   // private baseUrl = "https://api.picaos.com/v1/passthrough";
   private apiKey: string;
+  private supabaseUrl: string;
 
   constructor() {
     this.apiKey = import.meta.env.VITE_PICA_API_KEY || "";
+    this.supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
+
     if (!this.apiKey) {
       console.warn(
         "Pica API key not found. Live context features will be disabled."
+      );
+    }
+    if (!this.supabaseUrl) {
+      console.warn(
+        "Supabase url not found. Live context features will be disabled."
       );
     }
   }
@@ -48,17 +56,10 @@ class PicaService {
 
     try {
       const response = await fetch(
-        `https://${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pica-search`,
+        `${this.supabaseUrl}/functions/v1/pica-search`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-pica-secret": import.meta.env.PICA_SECRET_KEY!,
-            "x-pica-connection-key": import.meta.env
-              .PICA_FIRECRAWL_CONNECTION_KEY!,
-            "x-pica-action-id":
-              "conn_mod_def::GClH-wc_XMo::Lm5ew3DCSp2L1yETSndVHA",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             query: request.query,
           }),
