@@ -1,8 +1,11 @@
+@use "variables";
+
+@use "sass:list";
 @mixin flex(
   $direction: row,
   $justify: center,
   $align: center,
-  $gap: $spacing-3
+  $gap: variables.$spacing-3
 ) {
   display: flex;
   flex-direction: $direction;
@@ -15,38 +18,38 @@
   border: none;
   background: none;
   cursor: pointer;
-  font-family: $font-family-secondary;
+  font-family: variables.$font-family-secondary;
   font-size: 1.5rem;
 }
 
 @mixin transition($properties...) {
   $transitions: ();
   @each $property in $properties {
-    $transitions: append($transitions, $property 0.2s ease, comma);
+    $transitions: list.append($transitions, $property 0.2s ease, comma);
   }
   transition: $transitions;
 }
 
 @mixin responsive($breakpoint) {
   @if $breakpoint == sm {
-    @media (min-width: $breakpoint-sm) {
+    @media (min-width: variables.$breakpoint-sm) {
       @content;
     }
   } @else if $breakpoint == md {
-    @media (min-width: $breakpoint-md) {
+    @media (min-width: variables.$breakpoint-md) {
       @content;
     }
   } @else if $breakpoint == lg {
-    @media (min-width: $breakpoint-lg) {
+    @media (min-width: variables.$breakpoint-lg) {
       @content;
     }
   }
 }
 
 @mixin card {
-  background-color: $color-white;
-  border-radius: $border-radius-xl;
-  padding: $spacing-6;
+  background-color: variables.$color-white;
+  border-radius: variables.$border-radius-xl;
+  padding: variables.$spacing-6;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -80,13 +83,13 @@
 @mixin flex-wrap {
   display: flex;
   flex-wrap: wrap;
-  gap: $spacing-4;
+  gap: variables.$spacing-4;
 }
 @mixin grid-layout-auto($min) {
   @include grid-layout(auto-fit);
   grid-template-columns: repeat(auto-fit, minmax($min, 0fr));
 }
-@mixin grid-layout($columns: 1, $gap: $spacing-4) {
+@mixin grid-layout($columns: 1, $gap: variables.$spacing-4) {
   display: grid;
   grid-template-columns: repeat($columns, 1fr);
   gap: $gap;
@@ -101,17 +104,17 @@
   width: 100%;
   max-width: $max-width;
   margin: 0 auto;
-  padding: 0 $spacing-4;
+  padding: 0 variables.$spacing-4;
 }
 
-@mixin stack-layout($gap: $spacing-4) {
+@mixin stack-layout($gap: variables.$spacing-4) {
   @include flex(column, flex-start, stretch, $gap);
   width: 100%;
 }
 
 @mixin masonry-grid {
   column-count: 1;
-  column-gap: $spacing-4;
+  column-gap: variables.$spacing-4;
 
   @include responsive(md) {
     column-count: 2;
@@ -123,6 +126,6 @@
 
   > * {
     break-inside: avoid;
-    margin-bottom: $spacing-4;
+    margin-bottom: variables.$spacing-4;
   }
 }

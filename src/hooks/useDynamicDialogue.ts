@@ -72,14 +72,14 @@ export const useDynamicDialogue = (
     actor,
     user,
     userFields,
-    onDialogueComplete,
+    // onDialogueComplete,
     onError,
   } = options;
 
   // Initialize AI services
   const gemini = useGemini({
     temperature: 0.7,
-    maxOutputTokens: 1048,
+    maxOutputTokens: 500,
   });
 
   const picaContext = usePicaContext({
@@ -96,7 +96,11 @@ export const useDynamicDialogue = (
   const services: HybridDialogueServices = useMemo(
     () => ({
       fetchPicaContext: async (scenario: Scenario, dialogue: Dialogue) => {
-        return await picaContext.getDialogueContext(scenario, dialogue);
+        return await picaContext.getDialogueContext(
+          scenario,
+          dialogue,
+          "Computer Science"
+        );
       },
 
       generateActorResponse: async (context) => {
@@ -111,7 +115,7 @@ export const useDynamicDialogue = (
         return await dynamicDialogueService.shouldTransitionPhase(context);
       },
     }),
-    [dynamicDialogueService, picaContext]
+    []
   );
 
   // Create the machine
@@ -123,21 +127,21 @@ export const useDynamicDialogue = (
   const [state, send] = useMachine(machineRef.current);
 
   // Handle dialogue completion
-  useEffect(() => {
-    if (state.status === "done" && onDialogueComplete) {
-      onDialogueComplete({
-        totalScores: state.context.totalScores,
-        maxPossibleScores: state.context.maxPossibleScores,
-        conversationHistory: state.context.conversationHistory,
-      });
-    }
-  }, [
-    state.status,
-    onDialogueComplete,
-    state.context.totalScores,
-    state.context.maxPossibleScores,
-    state.context.conversationHistory,
-  ]);
+  // useEffect(() => {
+  //   if (state.status === "done" && onDialogueComplete) {
+  //     onDialogueComplete({
+  //       totalScores: state.context.totalScores,
+  //       maxPossibleScores: state.context.maxPossibleScores,
+  //       conversationHistory: state.context.conversationHistory,
+  //     });
+  //   }
+  // }, [
+  //   state.status,
+  //   onDialogueComplete,
+  //   state.context.totalScores,
+  //   state.context.maxPossibleScores,
+  //   state.context.conversationHistory,
+  // ]);
 
   // Handle errors
   useEffect(() => {
@@ -180,18 +184,16 @@ export const useDynamicDialogue = (
     [send]
   );
   useEffect(() => {
-    if (state.context.currentPhase && picaContext.getDialogueContext) {
-      picaContext
-        .getDialogueContext(scenario, dialogue, state.context.currentPhase)
-        .then(updateContext);
-    }
-  }, [
-    dialogue,
-    picaContext,
-    scenario,
-    state.context.currentPhase,
-    updateContext,
-  ]);
+    // if (state.context.currentPhase && picaContext.getDialogueContext) {
+    //   picaContext
+    //     .getDialogueContext(scenario, dialogue, state.context.currentPhase)
+    //     .then(updateContext);
+    // }
+    console.log("Hello");
+    console.log(
+      picaContext.getDialogueContext(scenario, dialogue, "Computer Science")
+    );
+  }, []);
   // Computed state
   const isLoading =
     state.matches("generatingActorResponse") ||

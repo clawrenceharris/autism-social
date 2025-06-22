@@ -138,6 +138,7 @@ export const usePicaContext = (
       try {
         setLoading(true);
         setError(null);
+        console.log("Get Dialogue Context Hook");
 
         const result = await picaService.getDialogueContext(
           scenario,

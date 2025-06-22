@@ -2,7 +2,6 @@
  * Pica API service for fetching live context and current information
  */
 
-import { pica } from "../lib/pica";
 import type { Dialogue, Scenario } from "../types";
 
 export interface PicaContextRequest {
@@ -28,6 +27,7 @@ export interface PicaContextResponse {
 }
 
 class PicaService {
+  // private baseUrl = "https://api.picaos.com/v1/passthrough";
   private apiKey: string;
 
   constructor() {
@@ -44,15 +44,33 @@ class PicaService {
   async fetchContext(
     request: PicaContextRequest
   ): Promise<PicaContextResponse> {
-    if (!this.apiKey) {
-      // Return mock data when API key is not available
-      return this.getMockContext(request.query);
-    }
+    // Return mock data when API key is not available
 
     try {
-      // Use the pica SDK instead of manual fetch
-      const response = await pica.query(request.query);
-      return this.transformPicaResponse(response, request.query);
+      const response = await fetch(
+        "https://api.picaos.com/v1/passthrough/v1/search",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-pica-secret": import.meta.env.PICA_SECRET_KEY!,
+            "x-pica-connection-key": import.meta.env
+              .PICA_FIRECRAWL_CONNECTION_KEY!,
+            "x-pica-action-id":
+              "conn_mod_def::GClH-wc_XMo::Lm5ew3DCSp2L1yETSndVHA",
+          },
+          body: JSON.stringify({
+            query: request.query,
+          }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`Pica API error: ${response.status}`);
+      }
+      const data = await response.json();
+      // return this.transformPicaResponse(data);
+      console.log(data);
+      return data;
     } catch (error) {
       console.error("Error fetching Pica context:", error);
       // Fallback to mock data on error
@@ -71,15 +89,7 @@ class PicaService {
   ): Promise<PicaContextResponse> {
     const queryParts = [
       currentTopic,
-      `Scenario: ${scenario.title}`,
-      `Dialogue: ${dialogue.title}`,
-      currentPhase ? `Phase: ${currentPhase}` : "",
-
-      dialogue.scoring_categories.length
-        ? `Social Categories being evaluated: ${dialogue.scoring_categories.join(
-            ", "
-          )}`
-        : "",
+      `Scenario: ${scenario.title}: ${dialogue.title}`,
     ];
 
     const query = queryParts.filter(Boolean).join(" | ");
@@ -111,21 +121,21 @@ class PicaService {
    * Transform Pica API response to our format
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private transformPicaResponse(data: any, query: string): PicaContextResponse {
-    return {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      items: (data.results || []).map((item: any) => ({
-        title: item.title || "",
-        content: item.content || item.summary || "",
-        source: item.source || "Unknown",
-        timestamp: item.timestamp || new Date().toISOString(),
-        relevanceScore: item.relevance_score || 0.5,
-        category: item.category || "general",
-      })),
-      query: query,
-      totalResults: data.total_results || 0,
-    };
-  }
+  // private transformPicaResponse(data: any): PicaContextResponse {
+  //   return {
+  //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //     items: (data.results || []).map((item: any) => ({
+  //       title: item.title || "",
+  //       content: item.content || item.summary || "",
+  //       source: item.source || "Unknown",
+  //       timestamp: item.timestamp || new Date().toISOString(),
+  //       relevanceScore: item.relevance_score || 0.5,
+  //       category: item.category || "general",
+  //     })),
+  //     query: data.query || "",
+  //     totalResults: data.total_results || 0,
+  //   };
+  // }
 
   /**
    * Extract keywords from text for context queries

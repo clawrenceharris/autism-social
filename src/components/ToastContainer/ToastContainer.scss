@@ -1,7 +1,11 @@
-@import "../../styles/mixins";
-@import "../../styles/variables";
+@use "../../styles/mixins";
+@use "../../styles/variables";
 
 .toast {
+  @include card;
+  @include flex(row, space-between, flex-start, $spacing-3);
+  pointer-events: auto;
+  animation: toast-slide-in 0.2s ease-out;
   &-container {
     position: fixed;
     bottom: $spacing-4;
@@ -12,12 +16,6 @@
     width: 400px;
     pointer-events: none;
   }
-
-  @include card;
-  @include flex(row, space-between, flex-start, $spacing-3);
-  pointer-events: auto;
-  animation: toast-slide-in 0.2s ease-out;
-
   &.success {
     background: $color-green-100;
     border: 1px solid $color-green-600;

@@ -1,5 +1,5 @@
-@import "../../../styles/variables";
-@import "../../../styles/mixins";
+@use "../../../styles/variables";
+@use "../../../styles/mixins";
 
 .form {
   @include stack-layout($spacing-6);
