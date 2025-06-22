@@ -2,6 +2,7 @@
  * Pica API service for fetching live context and current information
  */
 
+import { pica } from "../lib/pica";
 import type { Dialogue, Scenario } from "../types";
 
 export interface PicaContextRequest {
@@ -38,7 +39,6 @@ class PicaService {
       );
     }
   }
-
   /**
    * Fetch live context based on a query
    */
@@ -57,13 +57,13 @@ class PicaService {
           "x-pica-secret": import.meta.env.VITE_PICA_API_KEY,
           "x-pica-connection-key": import.meta.env.VITE_SERPAI_CONNECTION_KEY,
           "Content-Type": "application/json",
-          Authorization: `Bearer ${this.apiKey}`,
         },
         //
         // body: '{\n    "messages": [{"role": "user", "content": "What connections do I have access to?"}]\n}',
         body: JSON.stringify({
           query: request.query,
-          categories: request.categories || ["news", "culture", "technology"],
+          messages: request.query,
+          tools: { ...pica.oneTool },
           timeframe: request.timeframe || "recent",
           max_results: request.maxResults || 5,
         }),

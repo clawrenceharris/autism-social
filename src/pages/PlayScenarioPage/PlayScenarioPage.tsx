@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { useModal } from "../../context";
 import { X, Home } from "lucide-react";
-import "./PlayScenarioPage.scss";
+import "../PlayScenarioPage/PlayScenarioPage.scss";
 import {
   DialogueItem,
   DialoguePlayer,
@@ -21,18 +21,15 @@ import { useDialogueStore } from "../../store/useDialogueStore";
 import { usePlayScenarioStore } from "../../store/usePlayScenarioStore";
 import { useActorStore } from "../../store/useActorStore";
 
-const PlayScenarioPage = () => {
+const EnhancedPlayScenarioPage = () => {
   const { dialogueId, scenarioId } = useParams<{
     dialogueId: string;
     scenarioId: string;
   }>();
   const [userFields, setUserFields] = useState<{ [key: string]: string }>();
   const navigate = useNavigate();
-  const {
-    loading: scenariosLoading,
-    error: scenarioError,
-    scenarios,
-  } = useScenarioStore();
+  const { loading: scenariosLoading, error: scenarioError } =
+    useScenarioStore();
   const { setDialogue, scenario, dialogue } = usePlayScenarioStore();
 
   const {
@@ -58,7 +55,7 @@ const PlayScenarioPage = () => {
       fetchActors();
     }
   }, [fetchActors, fetchDialoguesByScenario, scenarioId]);
-  useEffect(() => {});
+
   useEffect(() => {
     if (dialogue && dialogue.placeholders.length > 0) {
       // Open modal so we can enter the user fields
@@ -91,7 +88,7 @@ const PlayScenarioPage = () => {
         >
           {({ register, formState: { errors } }) => (
             <div className="form-group">
-              <label>Enter Your Actor</label>
+              <label>Select Your Actor</label>
               <select
                 className="form-input"
                 {...register("actorId", {
@@ -99,13 +96,16 @@ const PlayScenarioPage = () => {
                 })}
               >
                 {Object.values(actors).map((actor) => (
-                  <option value={actor.id}>{actor.first_name}</option>
+                  <option key={actor.id} value={actor.id}>
+                    {actor.first_name} {actor.last_name} - {actor.role}
+                  </option>
                 ))}
               </select>
               {errors.actorId && <p>{errors.actorId.message}</p>}
             </div>
           )}
-        </FormLayout>
+        </FormLayout>,
+        "Select Actor"
       );
     }
   }, [
@@ -118,6 +118,7 @@ const PlayScenarioPage = () => {
     selectedActor,
     setActor,
   ]);
+
   const handleReplay = () => {
     setKey((prev) => prev + 1);
   };
@@ -126,6 +127,7 @@ const PlayScenarioPage = () => {
     if (scenario) navigate(`/scenario/${scenario.id}`);
     setDialogue(null);
   };
+
   if (scenariosLoading || dialoguesLoading) {
     return (
       <div className="play-scenario-container loading-state">
@@ -196,12 +198,9 @@ const PlayScenarioPage = () => {
             </div>
 
             <div className="dialogue-options">
-              {Object.keys(scenarios).map((id) => {
-                if (dialoguesByScenario[id])
-                  return dialoguesByScenario[id]?.map((dialogue) => (
-                    <DialogueItem key={dialogue.id} dialogue={dialogue} />
-                  ));
-              })}
+              {dialoguesByScenario[scenario.id]?.map((dialogue) => (
+                <DialogueItem key={dialogue.id} dialogue={dialogue} />
+              ))}
             </div>
           </div>
         </div>
@@ -209,12 +208,12 @@ const PlayScenarioPage = () => {
     );
   }
 
-  // Only render DialoguePlayer when we have user fields (or confirmed no placeholders needed)
-  if (selectedActor && userFields) {
+  // Only render EnhancedDialoguePlayer when we have user fields (or confirmed no placeholders needed)
+  if (selectedActor && (userFields || dialogue.placeholders.length === 0)) {
     return (
       <div key={key} className="play-scenario-container">
         <DialoguePlayer
-          userFields={userFields}
+          userFields={userFields || {}}
           actor={selectedActor}
           onDialogueExit={handleExit}
           user={user}
@@ -234,4 +233,4 @@ const PlayScenarioPage = () => {
   );
 };
 
-export default PlayScenarioPage;
+export default EnhancedPlayScenarioPage;
