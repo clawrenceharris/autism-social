@@ -84,7 +84,7 @@ class PicaService {
   async getDialogueContext(
     scenario: Scenario,
     dialogue: Dialogue,
-    currentPhase?: string,
+    // currentPhase?: string,
     currentTopic?: string
   ): Promise<PicaContextResponse> {
     const queryParts = [
@@ -120,7 +120,6 @@ class PicaService {
   /**
    * Transform Pica API response to our format
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   // private transformPicaResponse(data: any): PicaContextResponse {
   //   return {
   //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
