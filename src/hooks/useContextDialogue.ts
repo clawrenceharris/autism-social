@@ -1,13 +1,13 @@
 import { useState, useCallback } from "react";
-import { 
-  fetchContext, 
-  generateDialogueResponse, 
+import {
+  fetchContext,
+  generateDialogueResponse,
   formatContextForPrompt,
   type ContextResponse,
   type DialogueResponse,
-  type DialogueRequest
+  type DialogueRequest,
 } from "../services/contextDialogue";
-import type { Actor, Dialogue, Scenario, UserProfile } from "../types";
+import type { Dialogue, Scenario } from "../types";
 
 interface UseContextDialogueOptions {
   cacheResults?: boolean;
@@ -19,8 +19,15 @@ interface UseContextDialogueReturn {
   dialogueResponse: DialogueResponse | null;
   loading: boolean;
   error: Error | null;
-  fetchDialogueContext: (scenario: Scenario, dialogue: Dialogue, phase?: string) => Promise<ContextResponse>;
-  generateResponse: (request: Omit<DialogueRequest, "context">, contextData?: ContextResponse | null) => Promise<DialogueResponse>;
+  fetchDialogueContext: (
+    scenario: Scenario,
+    dialogue: Dialogue,
+    phase?: string
+  ) => Promise<ContextResponse>;
+  generateResponse: (
+    request: Omit<DialogueRequest, "context">,
+    contextData?: ContextResponse | null
+  ) => Promise<DialogueResponse>;
   clearContext: () => void;
   clearError: () => void;
 }
@@ -42,10 +49,13 @@ export const useContextDialogue = (
   options?: UseContextDialogueOptions
 ): UseContextDialogueReturn => {
   const [contextData, setContextData] = useState<ContextResponse | null>(null);
-  const [dialogueResponse, setDialogueResponse] = useState<DialogueResponse | null>(null);
+  const [dialogueResponse, setDialogueResponse] =
+    useState<DialogueResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [cache] = useState<Map<string, CacheEntry<ContextResponse | DialogueResponse>>>(new Map());
+  const [cache] = useState<
+    Map<string, CacheEntry<ContextResponse | DialogueResponse>>
+  >(new Map());
 
   const opts = { ...DEFAULT_OPTIONS, ...options };
 
@@ -62,7 +72,10 @@ export const useContextDialogue = (
       if (!entry) return null;
 
       const now = Date.now();
-      if (now - entry.timestamp > (opts.cacheTTL || DEFAULT_OPTIONS.cacheTTL!)) {
+      if (
+        now - entry.timestamp >
+        (opts.cacheTTL || DEFAULT_OPTIONS.cacheTTL!)
+      ) {
         cache.delete(cacheKey);
         return null;
       }
@@ -73,7 +86,10 @@ export const useContextDialogue = (
   );
 
   const setToCache = useCallback(
-    <T extends ContextResponse | DialogueResponse>(key: string, data: T): void => {
+    <T extends ContextResponse | DialogueResponse>(
+      key: string,
+      data: T
+    ): void => {
       if (!opts.cacheResults) return;
 
       const cacheKey = getCacheKey(key);
@@ -99,8 +115,10 @@ export const useContextDialogue = (
         setError(null);
 
         // Create cache key
-        const cacheKey = `dialogue_context_${scenario.id}_${dialogue.id}_${phase || ""}`;
-        
+        const cacheKey = `dialogue_context_${scenario.id}_${dialogue.id}_${
+          phase || ""
+        }`;
+
         // Check cache first
         const cachedResult = getFromCache<ContextResponse>(cacheKey);
         if (cachedResult) {
@@ -114,12 +132,14 @@ export const useContextDialogue = (
           `Dialogue: ${dialogue.title}`,
           phase ? `Phase: ${phase}` : "",
           dialogue.scoring_categories.length
-            ? `Social Categories being evaluated: ${dialogue.scoring_categories.join(", ")}`
+            ? `Social Categories being evaluated: ${dialogue.scoring_categories.join(
+                ", "
+              )}`
             : "",
         ];
 
         const query = queryParts.filter(Boolean).join(" | ");
-        
+
         const result = await fetchContext(query, {
           categories: ["news", "culture", "social", "psychology", "trends"],
           timeframe: "recent",
@@ -128,10 +148,11 @@ export const useContextDialogue = (
         // Cache the result
         setToCache(cacheKey, result);
         setContextData(result);
-        
+
         return result;
       } catch (err) {
-        const error = err instanceof Error ? err : new Error("Failed to fetch context");
+        const error =
+          err instanceof Error ? err : new Error("Failed to fetch context");
         setError(error);
         throw error;
       } finally {
@@ -166,7 +187,10 @@ export const useContextDialogue = (
         setDialogueResponse(result);
         return result;
       } catch (err) {
-        const error = err instanceof Error ? err : new Error("Failed to generate dialogue response");
+        const error =
+          err instanceof Error
+            ? err
+            : new Error("Failed to generate dialogue response");
         setError(error);
         throw error;
       } finally {

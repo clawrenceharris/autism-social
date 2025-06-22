@@ -8,7 +8,6 @@ import {
   SignUpPage,
   SettingsPage,
   PlayScenarioPage,
-  EnhancedPlayScenarioPage,
   DailyChallengesPage,
   LandingPage,
 } from "./pages";
@@ -43,13 +42,10 @@ function App() {
               path="/scenario/:scenarioId"
               element={<PlayScenarioPage />}
             />
-            <Route
-              path="/enhanced/:scenarioId/dialogue/:dialogueId"
-              element={<EnhancedPlayScenarioPage />}
-            />
+
             <Route
               path="/enhanced/:scenarioId"
-              element={<EnhancedPlayScenarioPage />}
+              element={<PlayScenarioPage />}
             />
           </Route>
         </Route>
