@@ -43,14 +43,12 @@ const LoginPage = () => {
       <div className="login-card">
         <div className="login-header">
           <h1>Log in</h1>
-          <p>
-            Welcome to the Dialogue App! Log in to access interactive scenarios.
-          </p>
         </div>
 
         <FormLayout<LoginFormValues>
           onSubmit={handleSubmit}
           submitText="Log in"
+          description="Welcome back! Log in to continue chatting."
           isLoading={isLoading}
           error={error}
         >

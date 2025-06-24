@@ -39,15 +39,9 @@ const LandingPage = () => {
             className="logo"
           />
         </Link>
-        <div className="nav-links">
-          <Link className="btn link" to="/">
-            Privacy
-          </Link>
-          <Link className="btn link" to="/">
-            Terms
-          </Link>
-          <Link className="btn link" to="/">
-            Support
+        <div className="">
+          <Link to="/signup" className="btn btn-special">
+            Get Started
           </Link>
         </div>
       </header>

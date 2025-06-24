@@ -22,31 +22,31 @@
       position: absolute;
       border-radius: 50%;
       animation: float 10s infinite ease-in-out;
-      filter: blur(120px);
+      filter: blur(100px);
 
       &.blob-1 {
-        width: 500px;
-        height: 500px;
+        width: 550px;
+        height: 550px;
         background: $color-primary;
         top: 0;
         left: 0;
         animation-delay: 0s;
       }
       &.blob-2 {
-        width: 400px;
+        width: 40px;
         height: 400px;
         background: $color-primary;
-        top: -100px;
-        left: -100px;
+        top: 100px;
+        left: 100px;
         animation-delay: 0s;
       }
       &.blob-3 {
-        width: 700px;
-        height: 700px;
+        width: 600px;
+        height: 600px;
         background: #30ffbd;
         bottom: 100px;
-        right: -100px;
-        animation-delay: -5s;
+        right: -200px;
+        animation-delay: -9s;
       }
 
       &.blob-4 {
@@ -61,7 +61,7 @@
 
       &.blob-5 {
         width: 400px;
-        height: 700px;
+        height: 500px;
         background: $color-secondary;
         top: 0;
         z-index: 99;
@@ -204,21 +204,32 @@
         gap: $spacing-3;
 
         .response-option {
-          background: rgba($color-primary, 0.1);
-          border: 2px solid rgba($color-primary, 0.2);
+          background: rgba(255, 255, 255, 0.9);
+          border: 2px solid rgba(rgba(255, 255, 255, 0.9), 0.2);
           border-radius: 1.2rem;
-          padding: $spacing-3 $spacing-4;
+          box-shadow: 0 3px 4px 1px rgba(#000, 0.08);
+          text-align: left;
+          border-color: $color-primary;
+          min-width: 250px;
+          display: flex;
+          align-items: center;
+          min-height: 80px;
+          background: rgba($color-primary, 0.2);
+          padding: $spacing-3 $spacing-6;
           cursor: pointer;
           transition: all 0.3s ease;
           position: relative;
           overflow: hidden;
+          flex: 1;
 
-          &:hover {
+          &:hover:not(.disabled) {
             transform: translateY(-3px);
-            box-shadow: 0 3px 4px 1px rgba($color-primary, 0.25);
-            background: rgba($color-primary, 0.2);
-          }
 
+            box-shadow: 0 3px 4px 1px rgba($color-primary, 0.25);
+            &::before {
+              left: 100%;
+            }
+          }
           .option-text {
             color: $color-gray-800;
             font-family: $font-family-primary;
@@ -321,31 +332,9 @@
           opacity: 0.4;
         }
 
-        h2 {
-          font-size: 2.5rem;
-          color: $color-gray-900;
-          margin-bottom: $spacing-4;
-          line-height: 1.2;
-
-          @include responsive(sm) {
-            font-size: 2rem;
-          }
-        }
-
-        .hero-description {
-          font-size: 1.2rem;
-          color: $color-gray-600;
-          margin-bottom: $spacing-6;
-          max-width: 600px;
-
-          @include responsive(sm) {
-            font-size: 1.1rem;
-          }
-        }
-
         .feature-list {
           @include stack-layout($spacing-3);
-          margin-bottom: $spacing-6;
+          margin: $spacing-8;
 
           .feature-item {
             @include flex(row, flex-start, center, $spacing-3);
@@ -445,10 +434,10 @@
     transform: translate(-20%, 50%) rotate(60deg);
   }
   50% {
-    transform: translate(-50%, 50%) rotate(30deg);
+    transform: translate(-50%, 50%) rotate(00deg);
   }
   75% {
-    transform: translate(-40%, 5%) rotate(-10deg);
+    transform: translate(-40%, 50%) rotate(-90deg);
   }
 }
 
