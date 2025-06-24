@@ -8,7 +8,7 @@ import "./SettingsPage.scss";
 import { useToast } from "../../context";
 import type { AuthContextType } from "../../types";
 import { useErrorHandler } from "../../hooks";
-import { deleteUser } from "../../services/user";
+import { deleteUserProfile } from "../../services/user";
 import EditAccount from "../../components/EditAccount";
 
 type ColorScheme = "light" | "dark" | "auto";
@@ -40,7 +40,7 @@ const SettingsPage = () => {
           handleAsyncError({
             action: "delete account",
             asyncFn: async () => {
-              await deleteUser(user.id);
+              await deleteUserProfile(user.id);
             },
           });
         }}

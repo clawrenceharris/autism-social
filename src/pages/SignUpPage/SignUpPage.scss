@@ -31,11 +31,14 @@
         }
       }
     }
-  }
+    a {
+      color: $color-primary;
+      text-decoration: none;
+      font-weight: 500;
 
-  .form-helper {
-    color: $color-gray-700;
-    font-size: 0.875rem;
-    margin-top: $spacing-1;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 }

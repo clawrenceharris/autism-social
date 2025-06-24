@@ -4,9 +4,11 @@
 .landing-page {
   position: relative;
   overflow-x: hidden;
-  min-height: 100vh;
-  background-color: $color-gray-50;
-  
+  background: linear-gradient(
+    135deg,
+    rgba($color-primary, 0.5),
+    rgba($color-secondary, 0.3)
+  );
   .animated-background {
     position: absolute;
     top: 0;
@@ -15,48 +17,66 @@
     bottom: 0;
     overflow: hidden;
     z-index: 0;
-    
+
     .gradient-blob {
       position: absolute;
       border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.4;
-      animation: float 20s infinite ease-in-out;
-      
+      animation: float 10s infinite ease-in-out;
+      filter: blur(120px);
+
       &.blob-1 {
         width: 500px;
         height: 500px;
-        background: $color-primary-200;
+        background: $color-primary;
+        top: 0;
+        left: 0;
+        animation-delay: 0s;
+      }
+      &.blob-2 {
+        width: 400px;
+        height: 400px;
+        background: $color-primary;
         top: -100px;
         left: -100px;
         animation-delay: 0s;
       }
-      
-      &.blob-2 {
-        width: 600px;
-        height: 600px;
-        background: $color-secondary-200;
-        bottom: -200px;
+      &.blob-3 {
+        width: 700px;
+        height: 700px;
+        background: #30ffbd;
+        bottom: 100px;
         right: -100px;
         animation-delay: -5s;
       }
-      
-      &.blob-3 {
+
+      &.blob-4 {
         width: 400px;
         height: 400px;
-        background: $color-primary-100;
+        background: rgba($color-secondary, 0.5);
         top: 40%;
+        z-index: 99;
         right: 10%;
         animation-delay: -10s;
       }
-      
-      &.blob-4 {
-        width: 300px;
-        height: 300px;
-        background: $color-secondary-100;
-        bottom: 30%;
-        left: 10%;
+
+      &.blob-5 {
+        width: 400px;
+        height: 700px;
+        background: $color-secondary;
+        top: 0;
+        z-index: 99;
+        right: 0;
         animation-delay: -15s;
+      }
+      &.blob-6 {
+        width: 1000px;
+        height: 1000px;
+        background: rgba($color-primary, 0.65);
+        bottom: 0;
+        z-index: 1;
+        filter: blur(100px);
+        left: 0;
+        animation-delay: -20s;
       }
     }
   }
@@ -64,38 +84,29 @@
   .landing-header {
     padding: $spacing-4 $spacing-6;
     display: flex;
+    border-radius: $border-radius-xl;
+    max-width: 90%;
+
     justify-content: space-between;
     align-items: center;
-    background-color: rgba($color-white, 0.8);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    background-color: rgba($color-white, 0.5);
+    backdrop-filter: blur(25px);
+    box-shadow: 0 0px 12px rgba(0, 0, 0, 0.1);
     position: sticky;
+    margin: 20px auto 0;
     top: 0;
+
     z-index: 10;
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: $spacing-2;
-
-      .logo {
-        width: 40px;
-        height: 40px;
-      }
-
-      h1 {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: $color-gray-900;
-        margin: 0;
-      }
+    .logo {
+      width: 40px;
+      height: auto;
     }
 
     .header-actions {
       .btn-text {
         color: $color-primary;
         font-weight: 500;
-        font-size: 0.9rem;
 
         &:hover {
           text-decoration: underline;
@@ -107,203 +118,110 @@
   .hero-container {
     position: relative;
     padding: $spacing-8 $spacing-4;
-    background: linear-gradient(
-      to bottom,
-      rgba($color-white, 0.9),
-      rgba($color-white, 0.7)
-    );
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba($color-white, 0.2);
-    z-index: 1;
-    
-    .hero-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: $spacing-8;
-      
-      @include responsive(md) {
-        flex-direction: row;
-        align-items: center;
+    border-radius: $border-radius-2xl;
+    z-index: 5;
+    position: sticky;
+    top: 0;
+    border-radius: $border-radius-2xl;
+    .hero-text {
+      font-size: 1.6rem;
+      text-transform: lowercase;
+      span {
+        display: block;
       }
-      
-      .hero-text {
-        flex: 1;
-        
-        h2 {
-          font-size: 2.5rem;
-          font-weight: 800;
-          color: $color-gray-900;
-          margin-bottom: $spacing-4;
-          line-height: 1.2;
-          
-          @include responsive(sm) {
-            font-size: 2rem;
-          }
-        }
-        
-        .hero-description {
-          font-size: 1.2rem;
-          color: $color-gray-600;
-          margin-bottom: $spacing-6;
-          max-width: 600px;
-          
-          @include responsive(sm) {
-            font-size: 1.1rem;
-          }
-        }
-        
-        .feature-list {
-          @include stack-layout($spacing-3);
-          margin-bottom: $spacing-6;
-          
-          .feature-item {
-            @include flex(row, flex-start, center, $spacing-3);
-            
-            .feature-icon {
-              color: $color-primary;
-              flex-shrink: 0;
-            }
-            
-            span {
-              font-size: 1.1rem;
-              color: $color-gray-700;
-            }
-          }
-        }
-        
-        .hero-cta {
-          display: inline-flex;
-          align-items: center;
-          gap: $spacing-2;
-          padding: $spacing-3 $spacing-6;
-          font-size: 1.1rem;
-          
-          @include responsive(sm) {
-            width: 100%;
-          }
-        }
-      }
-      
-      .auth-card {
-        background-color: rgba($color-white, 0.9);
-        backdrop-filter: blur(10px);
-        border-radius: $border-radius-xl;
-        padding: $spacing-6;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        width: 100%;
-        max-width: 400px;
-        border: 1px solid rgba($color-white, 0.5);
-        
-        h3 {
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: $color-gray-900;
-          margin-bottom: $spacing-4;
-          text-align: center;
-        }
-        
-        form {
-          @include stack-layout($spacing-4);
-          
-          .form-group {
-            margin-bottom: 0;
-          }
-          
-          .btn {
-            margin-top: $spacing-2;
-            width: 100%;
-          }
-        }
-      }
+    }
+    .logo {
+      max-width: 300px;
+      height: auto;
     }
   }
 
-  .dialogue-bubbles-container {
-    position: relative;
-    padding: $spacing-8 $spacing-4;
-    z-index: 1;
-    
-    .dialogue-bubbles {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: $spacing-8;
-      
-      @include responsive(md) {
-        grid-template-columns: repeat(2, 1fr);
-        gap: $spacing-6;
+  .hero-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-8;
+    .hero-image {
+      width: 80%;
+      max-width: 390px;
+      height: auto;
+      animation: bobble 3s ease-in-out infinite;
+    }
+    @include responsive(md) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: $spacing-6;
+    }
+
+    .dialogue-sample {
+      opacity: 0;
+      animation: fadeIn 0.5s ease-out forwards;
+
+      &.left {
+        transform: translateX(-20px);
+        animation: fadeInLeft 0.5s ease-out forwards;
       }
-      
-      .dialogue-sample {
-        opacity: 0;
-        animation: fadeIn 0.5s ease-out forwards;
-        
-        &.left {
-          transform: translateX(-20px);
-          animation: fadeInLeft 0.5s ease-out forwards;
-        }
-        
-        &.right {
-          transform: translateX(20px);
-          animation: fadeInRight 0.5s ease-out forwards;
-        }
-        
-        .message {
-          display: flex;
-          flex-direction: row;
-          justify-content: flex-start;
-          align-items: flex-end;
-          gap: $spacing-3;
-          margin-bottom: $spacing-4;
-          
-          &.npc {
-            .message-content {
-              max-width: 90%;
-              
-              .message-bubble {
-                background: linear-gradient(135deg, $color-gray-100, $color-gray-50);
-                color: $color-gray-800;
-                border-radius: 1.2rem;
-                border-bottom-left-radius: 0.5rem;
-                padding: $spacing-4 $spacing-6;
-                font-size: 1.1rem;
-                position: relative;
-                box-shadow: 0 3px 4px 1px rgba(#000, 0.08);
-                font-family: $font-family-primary;
-              }
+
+      &.right {
+        transform: translateX(20px);
+        animation: fadeInRight 0.5s ease-out forwards;
+      }
+
+      .message {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-end;
+        gap: $spacing-3;
+        margin-bottom: $spacing-4;
+
+        &.npc {
+          .message-content {
+            max-width: 90%;
+
+            .message-bubble {
+              background: linear-gradient(
+                135deg,
+                $color-gray-100,
+                $color-gray-50
+              );
+              color: $color-gray-800;
+              border-radius: 1.2rem;
+              border-bottom-left-radius: 0.5rem;
+              padding: $spacing-4 $spacing-6;
+
+              position: relative;
+              box-shadow: 0 3px 4px 1px rgba(#000, 0.08);
+              font-family: $font-family-primary;
             }
           }
         }
-        
-        .response-options {
-          display: flex;
-          flex-direction: column;
-          gap: $spacing-3;
-          
-          .response-option {
-            background: rgba($color-primary, 0.1);
-            border: 2px solid rgba($color-primary, 0.2);
-            border-radius: 1.2rem;
-            padding: $spacing-3 $spacing-4;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            
-            &:hover {
-              transform: translateY(-3px);
-              box-shadow: 0 3px 4px 1px rgba($color-primary, 0.25);
-              background: rgba($color-primary, 0.2);
-            }
-            
-            .option-text {
-              font-size: 1rem;
-              color: $color-gray-800;
-              font-family: $font-family-primary;
-            }
+      }
+
+      .response-options {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-3;
+
+        .response-option {
+          background: rgba($color-primary, 0.1);
+          border: 2px solid rgba($color-primary, 0.2);
+          border-radius: 1.2rem;
+          padding: $spacing-3 $spacing-4;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+
+          &:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 3px 4px 1px rgba($color-primary, 0.25);
+            background: rgba($color-primary, 0.2);
+          }
+
+          .option-text {
+            color: $color-gray-800;
+            font-family: $font-family-primary;
           }
         }
       }
@@ -313,7 +231,7 @@
   .landing-container {
     position: relative;
     z-index: 1;
-    
+
     .landing-content {
       padding: $spacing-6 $spacing-4;
       max-width: 1200px;
@@ -326,7 +244,6 @@
         position: relative;
 
         h2 {
-          font-size: 2rem;
           font-weight: 700;
           color: $color-gray-900;
           margin-bottom: $spacing-8;
@@ -373,14 +290,12 @@
             }
 
             h3 {
-              font-size: 1.25rem;
               font-weight: 600;
               color: $color-gray-800;
               margin-bottom: $spacing-3;
             }
 
             p {
-              font-size: 1rem;
               color: $color-gray-600;
               line-height: 1.6;
             }
@@ -389,50 +304,67 @@
       }
 
       .cta-section {
-        background: linear-gradient(
-          135deg,
-          $color-primary-100,
-          $color-secondary-100
-        );
+        background-color: #ffffff40;
         border-radius: $border-radius-2xl;
         padding: $spacing-8;
+
         text-align: center;
         margin-bottom: $spacing-8;
         position: relative;
         overflow: hidden;
-        
-        &::before {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: linear-gradient(
-            45deg,
-            rgba($color-primary, 0.1),
-            rgba($color-secondary, 0.1)
-          );
-          z-index: -1;
-        }
 
-        h2 {
-          font-size: 1.75rem;
-          font-weight: 700;
-          color: $color-gray-900;
-          margin-bottom: $spacing-3;
+        .btn {
+          margin: auto;
         }
 
         p {
-          font-size: 1.1rem;
-          color: $color-gray-700;
+          opacity: 0.4;
+        }
+
+        h2 {
+          font-size: 2.5rem;
+          color: $color-gray-900;
+          margin-bottom: $spacing-4;
+          line-height: 1.2;
+
+          @include responsive(sm) {
+            font-size: 2rem;
+          }
+        }
+
+        .hero-description {
+          font-size: 1.2rem;
+          color: $color-gray-600;
+          margin-bottom: $spacing-6;
           max-width: 600px;
-          margin: 0 auto $spacing-6;
+
+          @include responsive(sm) {
+            font-size: 1.1rem;
+          }
+        }
+
+        .feature-list {
+          @include stack-layout($spacing-3);
+          margin-bottom: $spacing-6;
+
+          .feature-item {
+            @include flex(row, flex-start, center, $spacing-3);
+
+            .feature-icon {
+              color: $color-primary;
+              flex-shrink: 0;
+            }
+
+            span {
+              font-size: 1.1rem;
+              color: $color-gray-700;
+            }
+          }
         }
 
         .cta-button {
           padding: $spacing-3 $spacing-8;
-          font-size: 1.1rem;
+
           min-width: 200px;
         }
       }
@@ -440,10 +372,15 @@
   }
 
   .landing-footer {
-    background-color: $color-gray-800;
+    background-color: #00000020;
     color: $color-white;
+    border-radius: $border-radius-2xl;
     padding: $spacing-8 $spacing-4;
     position: relative;
+    box-shadow: 0 0px 12px rgba(0, 0, 0, 0.1);
+    max-width: 90%;
+    margin: 20px auto;
+    backdrop-filter: blur(500px);
     z-index: 1;
 
     .footer-content {
@@ -466,12 +403,11 @@
 
         .footer-logo {
           width: 32px;
-          height: 32px;
+          height: auto;
         }
 
         span {
           font-weight: 600;
-          font-size: 1.1rem;
         }
       }
 
@@ -483,7 +419,7 @@
         a {
           color: $color-gray-200;
           text-decoration: none;
-          font-size: 0.9rem;
+
           transition: color 0.2s ease;
 
           &:hover {
@@ -493,8 +429,7 @@
       }
 
       .footer-copyright {
-        font-size: 0.85rem;
-        color: $color-gray-400;
+        opacity: 0.6;
       }
     }
   }
@@ -502,17 +437,18 @@
 
 // Animations
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0) rotate(0deg);
   }
   25% {
-    transform: translate(5%, 5%) rotate(5deg);
+    transform: translate(-20%, 50%) rotate(60deg);
   }
   50% {
-    transform: translate(0, 10%) rotate(0deg);
+    transform: translate(-50%, 50%) rotate(30deg);
   }
   75% {
-    transform: translate(-5%, 5%) rotate(-5deg);
+    transform: translate(-40%, 5%) rotate(-10deg);
   }
 }
 
@@ -547,64 +483,53 @@
   }
 }
 
+@keyframes bobble {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
 // Responsive adjustments
 @include responsive(sm) {
   .landing-page {
     .landing-header {
       padding: $spacing-3 $spacing-4;
-      
-      .brand {
-        h1 {
-          font-size: 1.25rem;
-        }
-      }
     }
-    
+
     .hero-container {
-      padding: $spacing-6 $spacing-2;
-      
+      padding: $spacing-12 $spacing-18;
+
       .hero-content {
         gap: $spacing-6;
-        
+
         .hero-text {
-          h2 {
-            font-size: 1.75rem;
-          }
-          
-          .hero-description {
-            font-size: 1rem;
-          }
+          font-size: 1.8rem;
         }
       }
     }
-    
+
     .dialogue-bubbles-container {
       padding: $spacing-6 $spacing-2;
     }
-    
+
     .landing-container {
       .landing-content {
         padding: $spacing-4 $spacing-2;
-        
+
         .benefits-section {
           padding: $spacing-6 0;
-          
+
           h2 {
-            font-size: 1.5rem;
             margin-bottom: $spacing-6;
           }
         }
-        
+
         .cta-section {
           padding: $spacing-6 $spacing-4;
-          
-          h2 {
-            font-size: 1.5rem;
-          }
-          
-          p {
-            font-size: 1rem;
-          }
         }
       }
     }

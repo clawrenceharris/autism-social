@@ -19,23 +19,19 @@ interface ErrorHandlerResult {
     error,
     action,
     additionalContext,
-    showsToast,
   }: {
     error: unknown;
     action?: string;
     additionalContext?: Record<string, unknown>;
-    showsToast?: boolean;
   }) => AppError;
   handleAsyncError: ({
     asyncFn,
     action,
     additionalContext,
-    showsToast,
   }: {
     asyncFn: () => Promise<void>;
     action?: string;
     additionalContext?: Record<string, unknown>;
-    showsToast?: boolean;
   }) => Promise<void>;
 }
 
@@ -57,12 +53,10 @@ export function useErrorHandler(
       error,
       action,
       additionalContext,
-      showsToast = true,
     }: {
       error: unknown;
       action?: string;
       additionalContext?: Record<string, unknown>;
-      showsToast?: boolean;
     }): AppError => {
       const context: ErrorContext = {
         component,
@@ -82,7 +76,7 @@ export function useErrorHandler(
         // Map severity to toast type
         const toastType =
           severity === "critical" || severity === "high" ? "error" : "warning";
-        if (showsToast) showToast(userMessage, { type: toastType });
+        showToast(userMessage, { type: toastType });
       }
 
       return normalizedError;
@@ -95,17 +89,15 @@ export function useErrorHandler(
       asyncFn,
       action,
       additionalContext,
-      showsToast = true,
     }: {
       asyncFn: () => Promise<void>;
       action?: string;
       additionalContext?: Record<string, unknown>;
-      showsToast?: boolean;
     }): Promise<void> => {
       try {
         await asyncFn();
       } catch (error) {
-        handleErrorCallback({ error, action, additionalContext, showsToast });
+        handleErrorCallback({ error, action, additionalContext });
       }
     },
     [handleErrorCallback]

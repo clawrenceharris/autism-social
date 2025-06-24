@@ -14,7 +14,10 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { handleError } = useErrorHandler({ component: "LoginPage" });
+  const { handleError } = useErrorHandler({
+    showToast: false,
+    component: "LoginPage",
+  });
 
   const handleSubmit = async (data: LoginFormValues) => {
     try {
@@ -26,9 +29,9 @@ const LoginPage = () => {
       if (!user) {
         throw new Error("No user data received");
       }
-      navigate("/", { replace: true });
+      navigate("/dashboard", { replace: true });
     } catch (error) {
-      const err = handleError({ error, action: "login", showsToast: false });
+      const err = handleError({ error, action: "login" });
       setError(err.message);
     } finally {
       setIsLoading(false);

@@ -17,6 +17,7 @@ body {
   height: 100vh;
   overflow: auto;
 }
+
 body {
   line-height: 1.5;
   background-color: $color-gray-50;
@@ -58,7 +59,7 @@ main {
 }
 
 .flex-content {
-  @include flex(column, flex-start, start, $spacing-4);
+  @include flex(column, flex-start, center, $spacing-4);
   @include responsive(md) {
     flex-direction: row;
   }
@@ -335,8 +336,6 @@ button {
   color: #000;
   transition: all 0.3s ease;
   text-align: center;
-  max-width: 290px;
-  min-width: 180px;
 
   &:hover:not(.btn-disabled, .btn-text) {
     transform: translateY(-2px);
@@ -354,8 +353,8 @@ button {
   }
 
   &-primary {
-    min-width: 150px;
-
+    max-width: 290px;
+    min-width: 180px;
     background-color: $color-primary;
     color: $color-white;
 
@@ -365,7 +364,7 @@ button {
       box-shadow: 0 4px 12px rgba($color-primary, 0.3);
     }
   }
-  &:disabled {
+  &:disabled:not(.btn-text) {
     background-color: $color-gray-300;
     cursor: not-allowed;
     color: $color-gray-400;
@@ -373,6 +372,8 @@ button {
     box-shadow: none;
   }
   &-secondary {
+    max-width: 290px;
+    min-width: 180px;
     background-color: $color-secondary;
     color: $color-white;
     &:hover {
@@ -383,15 +384,26 @@ button {
   }
 
   &-tertiary {
+    max-width: 290px;
+    min-width: 180px;
     background-color: $color-white;
     box-shadow: 0 1px 5px #00000030;
     &:hover {
       opacity: 0.7;
     }
   }
-  &-elavated:hover {
-    box-shadow: 0 0 20px rgba($color-primary, 0.4);
+  &-special {
+    max-width: 290px;
+    min-width: 180px;
+    background-color: $color-primary;
+    color: #fff;
+    box-shadow: 0 1px 5px #00000030;
+    &:hover {
+      background-color: #6b61ff;
+      box-shadow: 0 4px 12px $color-primary;
+    }
   }
+
   &-text {
     color: #000;
     transition: 0.2s;
@@ -401,6 +413,8 @@ button {
   }
 
   &-warning {
+    max-width: 290px;
+    min-width: 180px;
     background-color: $color-orange;
     color: $color-white;
 
@@ -413,24 +427,14 @@ button {
   &-danger {
     background-color: $color-red;
     color: $color-white;
+    max-width: 290px;
+    min-width: 180px;
 
     &:hover {
       background-color: $color-red-200;
       color: $color-red;
       box-shadow: 0 4px 12px rgba($color-red, 0.4);
     }
-  }
-
-  &:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 6px rgba($color-secondary, 0.2);
-  }
-
-  &:disabled {
-    background-color: $color-gray-400;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
   }
 }
 
@@ -449,7 +453,7 @@ button {
   @include card;
   padding: $spacing-6;
   min-width: 350px;
-
+  text-align: left;
   .section-header {
     @include flex(row, space-between, center);
     padding-bottom: $spacing-3;

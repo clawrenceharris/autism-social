@@ -7,8 +7,12 @@ const RootHeader = () => {
   return (
     <header>
       <nav className="nav">
-        <Link to="/" className="nav-brand">
-          <img className="logo" src={assets.logo} alt="Logo" />
+        <Link to="/dashboard" className="nav-brand">
+          <img
+            className="logo"
+            src={assets.logo_primary}
+            alt="Chatterbrain Logo"
+          />
         </Link>
 
         <div className="nav-links">

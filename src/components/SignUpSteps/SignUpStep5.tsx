@@ -1,6 +1,5 @@
 import type { UseFormRegister, FieldErrors } from "react-hook-form";
 import type { SignUpFormValues } from "../../types";
-import { CheckCircle, Shield, Users, Zap } from "lucide-react";
 import "./SignUpStep.scss";
 
 interface SignUpStep5Props {
@@ -12,39 +11,18 @@ const SignUpStep6 = ({ register, errors }: SignUpStep5Props) => {
   return (
     <div className="signup-final-step">
       <div className="welcome-section">
-        <div className="welcome-icon">
-          <Zap size={48} />
-        </div>
         <h2>You're Almost Ready!</h2>
         <p className="welcome-text">
-          Complete this last step and dive into a world of immersive social
-          learning.
+          Complete this last step before you go on to start chatting!
         </p>
-      </div>
-
-      <div className="features-preview">
-        <div className="feature-item">
-          <CheckCircle className="feature-icon" size={20} />
-          <span>Practice real-world conversations</span>
-        </div>
-        <div className="feature-item">
-          <Shield className="feature-icon" size={20} />
-          <span>Safe, judgment-free environment</span>
-        </div>
-        <div className="feature-item">
-          <Users className="feature-icon" size={20} />
-          <span>Personalized scenarios based on your goals</span>
-        </div>
       </div>
 
       <div className="terms-section">
         <div className="terms-content">
-          <h3>Ready to Begin?</h3>
           <p>
             By creating an account, you're joining a supportive community
-            dedicated to building social confidence. We're committed to
-            providing a safe, private, and personalized learning experience
-            tailored to your needs.
+            dedicated to fostering social growth. We're committed to providing a
+            safe, private, and personalized experience tailored to your needs.
           </p>
 
           <div className="checkbox-wrapper">

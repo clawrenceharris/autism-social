@@ -19,7 +19,7 @@ export interface UpdateUserProfileData {
  * @returns Promise with created user profile
  * @throws Error if creation fails
  */
-export async function createUser(
+export async function createUserProfile(
   data: CreateUserProfileData
 ): Promise<UserProfile> {
   const result = await DatabaseService.create<UserProfile>(
@@ -104,7 +104,7 @@ export async function getUserInterests(userId: string): Promise<Interest[]> {
  * @returns Promise with updated user profile
  * @throws Error if update fails
  */
-export async function updateUser(
+export async function updateUserProfile(
   userId: string,
   updates: UpdateUserProfileData
 ): Promise<UserProfile> {
@@ -127,7 +127,7 @@ export async function updateUser(
  * @param userId - The user ID to delete profile for
  * @throws Error if deletion fails
  */
-export async function deleteUser(userId: string): Promise<void> {
+export async function deleteUserProfile(userId: string): Promise<void> {
   const result = await DatabaseService.deleteBy(
     "user_profiles",
     "user_id",
