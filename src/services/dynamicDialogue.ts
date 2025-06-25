@@ -221,11 +221,11 @@ export class DialogueService {
       
       // Force phase transitions based on message count if AI didn't suggest one
       if (nextPhase === context.currentPhase || !nextPhase) {
-        if (this.messageCount >= 3 && context.currentPhase === "introduction") {
+        if (this.messageCount >= 2 && context.currentPhase === "introduction") {
           nextPhase = "main_topic";
-        } else if (this.messageCount >= 6 && context.currentPhase === "main_topic") {
+        } else if (this.messageCount >= 3 && context.currentPhase === "main_topic") {
           nextPhase = "wrap_up";
-        } else if (this.messageCount >= 8 && context.currentPhase === "wrap_up") {
+        } else if (this.messageCount >= 2 && context.currentPhase === "wrap_up") {
           nextPhase = "completed";
         }
       }
