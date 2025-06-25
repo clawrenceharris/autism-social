@@ -246,6 +246,16 @@ export function createDialogueMachine(
         invoke: {
           id: "checkPhaseTransition",
           src: fromPromise(async ({ input }) => {
+            // Check if the AI suggested a phase transition
+            if (input.currentActorResponse?.nextPhase && 
+                input.currentActorResponse.nextPhase !== input.currentPhase) {
+              return {
+                shouldTransition: true,
+                nextPhase: input.currentActorResponse.nextPhase
+              };
+            }
+            
+            // Otherwise, use the service to determine if we should transition
             return services.shouldTransitionPhase(input);
           }),
           input: ({ context }) => context,
