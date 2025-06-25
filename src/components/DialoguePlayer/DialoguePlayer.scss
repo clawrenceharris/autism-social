@@ -60,7 +60,7 @@
         animation: messageSlideIn 0.5s ease-out;
         font-family: $font-family-secondary;
 
-        &.npc {
+        &.actor {
           .message-bubble {
             background: linear-gradient(
               135deg,

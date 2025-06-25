@@ -6,14 +6,12 @@ import {
   type HybridDialogueServices,
 } from "../xstate/createDialogueMachine";
 import {
-  DynamicDialogueService,
+  DialogueService,
   type ActorResponse,
   type ConversationMessage,
   type DialoguePhase,
   type UserResponseAnalysis,
 } from "../services/dynamicDialogue";
-import { usePicaContext } from "./usePicaContext";
-import { useGemini } from "./useGemini";
 import type {
   Actor,
   Dialogue,
@@ -21,7 +19,7 @@ import type {
   ScoreSummary,
   UserProfile,
 } from "../types";
-import type { PicaContextResponse } from "../services/pica";
+import useOpenAI from "./useOpenAI";
 
 interface UseDialogueOptions {
   scenario: Scenario;
@@ -41,7 +39,6 @@ interface UseDialogueReturn {
   // Actions
   startDialogue: () => void;
   submitUserInput: (input: string) => void;
-  selectSuggestedResponse: (responseId: string) => void;
   endDialogue: () => void;
   retry: () => void;
 
@@ -55,9 +52,6 @@ interface UseDialogueReturn {
   conversationHistory: ConversationMessage[];
   currentPhase: DialoguePhase;
   totalScores: ScoreSummary;
-
-  // Context management
-  updateContext: (newContext: PicaContextResponse) => void;
 }
 
 /**
@@ -66,43 +60,23 @@ interface UseDialogueReturn {
 export const useDynamicDialogue = (
   options: UseDialogueOptions
 ): UseDialogueReturn => {
-  const {
-    scenario,
-    dialogue,
-    actor,
-    user,
-    userFields,
-    // onDialogueComplete,
-    onError,
-  } = options;
+  const { dialogue, actor, user, userFields, onDialogueComplete, onError } =
+    options;
 
   // Initialize AI services
-  const gemini = useGemini({
-    temperature: 0.7,
-    maxOutputTokens: 500,
-  });
-
-  const picaContext = usePicaContext({
-    cacheResults: true,
-    cacheTTL: 5 * 60 * 1000, // 5 minutes
-  });
+  const openai = useOpenAI();
 
   // Create dynamic dialogue service
   const dynamicDialogueService = useMemo(() => {
-    return new DynamicDialogueService(gemini);
-  }, [gemini]);
+    return new DialogueService(openai);
+  }, [openai]);
 
   // Define services for the XState machine
   const services: HybridDialogueServices = useMemo(
     () => ({
-      fetchPicaContext: async (scenario: Scenario, dialogue: Dialogue) => {
-        return await picaContext.getDialogueContext(
-          scenario,
-          dialogue,
-          "Computer Science"
-        );
+      initializeDialogue: async (context) => {
+        return await dynamicDialogueService.initializeDialogue(context);
       },
-
       generateActorResponse: async (context) => {
         return await dynamicDialogueService.generateActorResponse(context);
       },
@@ -112,36 +86,38 @@ export const useDynamicDialogue = (
       },
 
       shouldTransitionPhase: async (context) => {
-        return await dynamicDialogueService.shouldTransitionPhase(context);
+        return {
+          shouldTransition: true,
+          nextPhase:
+            context.currentActorResponse?.nextPhase || context.currentPhase,
+        };
       },
     }),
-    []
+    [dynamicDialogueService]
   );
 
   // Create the machine
   const machineRef = useRef(
-    createDialogueMachine(scenario, dialogue, actor, userFields, services, user)
+    createDialogueMachine(dialogue, actor, userFields, services, user)
   );
 
   // Use the machine
   const [state, send] = useMachine(machineRef.current);
 
   // Handle dialogue completion
-  // useEffect(() => {
-  //   if (state.status === "done" && onDialogueComplete) {
-  //     onDialogueComplete({
-  //       totalScores: state.context.totalScores,
-  //       maxPossibleScores: state.context.maxPossibleScores,
-  //       conversationHistory: state.context.conversationHistory,
-  //     });
-  //   }
-  // }, [
-  //   state.status,
-  //   onDialogueComplete,
-  //   state.context.totalScores,
-  //   state.context.maxPossibleScores,
-  //   state.context.conversationHistory,
-  // ]);
+  useEffect(() => {
+    if (state.status === "done" && onDialogueComplete) {
+      onDialogueComplete({
+        totalScores: state.context.totalScores,
+        conversationHistory: state.context.conversationHistory,
+      });
+    }
+  }, [
+    onDialogueComplete,
+    state.context.conversationHistory,
+    state.context.totalScores,
+    state.status,
+  ]);
 
   // Handle errors
   useEffect(() => {
@@ -157,14 +133,7 @@ export const useDynamicDialogue = (
 
   const submitUserInput = useCallback(
     (input: string) => {
-      send({ type: "SUBMIT_USER_INPUT", input });
-    },
-    [send]
-  );
-
-  const selectSuggestedResponse = useCallback(
-    (responseId: string) => {
-      send({ type: "SELECT_SUGGESTED_RESPONSE", responseId });
+      send({ type: "SUBMIT_USER_RESPONSE", input });
     },
     [send]
   );
@@ -177,23 +146,6 @@ export const useDynamicDialogue = (
     send({ type: "RETRY" });
   }, [send]);
 
-  const updateContext = useCallback(
-    (newContext: PicaContextResponse) => {
-      send({ type: "CONTEXT_UPDATED", context: newContext });
-    },
-    [send]
-  );
-  useEffect(() => {
-    // if (state.context.currentPhase && picaContext.getDialogueContext) {
-    //   picaContext
-    //     .getDialogueContext(scenario, dialogue, state.context.currentPhase)
-    //     .then(updateContext);
-    // }
-    console.log("Hello");
-    console.log(
-      picaContext.getDialogueContext(scenario, dialogue, "Computer Science")
-    );
-  }, []);
   // Computed state
   const isLoading =
     state.matches("generatingActorResponse") ||
@@ -209,11 +161,9 @@ export const useDynamicDialogue = (
     // Machine state
     state,
     context: state.context,
-
     // Actions
     startDialogue,
     submitUserInput,
-    selectSuggestedResponse,
     endDialogue,
     retry,
 
@@ -227,9 +177,6 @@ export const useDynamicDialogue = (
     conversationHistory: state.context.conversationHistory,
     currentPhase: state.context.currentPhase,
     totalScores: state.context.totalScores,
-
-    // Context management
-    updateContext,
   };
 };
 

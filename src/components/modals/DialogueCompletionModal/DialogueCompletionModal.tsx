@@ -86,61 +86,13 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
     actorMessage: string,
     userMessage: string,
     scoring: ScoreCategory[]
-  ) => {
-    setLoadingBetterResponse(true);
-
-    const response =
-      await generateText(`You are an AI coach helping a user improve their communication skills in real-life social situations.
-                        Here is the dialogue context:
-                        ${
-                          actor
-                            ? `- Speaker the user is responding to:  ${actor.role}`
-                            : ""
-                        }
-                        - Scenario: ${dialogue.title}
-                        - Prompt: "${actorMessage}"
-                        - User Response: "${userMessage}"
-                        
-                      The user’s response is scored on the following categories: ${scoring
-                        .join(", ")
-                        .replace("_", " ")}
-                        Task:
-                        Write a better example of what the user could say in this situation. Make sure the new response would likely score well in the listed categories.
-
-                        Keep the tone appropriate for the social situation.
-
-                        Only output the improved response — no extra explanation.`);
-    setLoadingBetterResponse(false);
-    setBetterResponse(response);
-  };
+  ) => {};
 
   const generateFeedback = async (
     actorMessage: string,
     userMessage: string,
     scoring: ScoreCategory[]
-  ) => {
-    setLoadingFeedback(true);
-
-    const response =
-      await generateText(`You are an AI coach helping a user improve their communication skills in real-life social situations.
-                          Here is the dialogue context:
-                          ${
-                            actor
-                              ? `- Speaker the user is responding to:  ${actor.role}`
-                              : ""
-                          }
-                          - Scenario: ${dialogue.title}
-                          - Prompt: "${actorMessage}"
-                          - User Response: "${userMessage}"
-                          The user’s response is scored on the following categories: ${scoring
-                            .join(", ")
-                            .replace("_", " ")}.
-                          Task:
-                          Give a short (2-3 sentence) helpful comment about how the user did on this response. Focus on the categories. If possible, suggest one small improvement.
-                          Be friendly, supportive, and brief.`);
-    setLoadingFeedback(false);
-    setFeedback(response);
-  };
+  ) => {};
 
   const toggleStepExpansion = (index: number) => {
     setExpandedStepIndex(expandedStepIndex === index ? null : index);

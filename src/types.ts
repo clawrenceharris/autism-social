@@ -100,12 +100,14 @@ export interface Scenario {
 }
 
 export interface Dialogue {
+  context: string;
   id: string;
+  tags: string[];
+  setting: string;
   max_scoring: ScoreSummary;
   actor_id: string;
   scenario_id: string;
   title: string;
-  persona_tags: string[];
   introduction: string;
   placeholders: string[];
   steps: DialogueStep[];
@@ -157,7 +159,6 @@ export interface CreateDialogueData {
   scenario_id: string;
   title: string;
   actor_id: string;
-  persona_tags: string[];
   placeholders: string[];
   steps: DialogueStep[];
   difficulty: Difficulty;
@@ -182,6 +183,7 @@ export interface DialogueOption {
 
 export interface Actor {
   id: string;
+  persona_tags: string[];
   first_name: string;
   last_name: string;
   voice_id: string;

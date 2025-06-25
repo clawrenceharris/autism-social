@@ -1,42 +1,35 @@
-import { assign, createMachine, type ActorRefFrom, fromPromise } from "xstate";
+import { assign, createMachine, fromPromise } from "xstate";
 import type {
   ConversationMessage,
   DialoguePhase,
   ActorResponse,
   UserResponseAnalysis,
 } from "../services/dynamicDialogue";
-import type {
-  Actor,
-  Dialogue,
-  Scenario,
-  ScoreSummary,
-  UserProfile,
-} from "../types";
-import type { PicaContextResponse } from "../services/pica";
+import type { Actor, Dialogue, ScoreSummary, UserProfile } from "../types";
+import type { Category } from "../services/scoring_categories";
+import type { ResponseOutputItem } from "openai/resources/responses/responses.mjs";
 
 // Machine context
 export interface DialogueContext {
   // Core dialogue info
-  scenario: Scenario;
   dialogue: Dialogue;
   actor: Actor;
   userFields: { [key: string]: string };
   // User info
-  user?: UserProfile;
-
+  user: UserProfile;
+  responses: ResponseOutputItem[];
   // Conversation state
+
   conversationHistory: ConversationMessage[];
   currentPhase: DialoguePhase;
-
+  scoringCategories: Category[];
   // Current interaction
   currentActorResponse?: ActorResponse;
   currentUserInput?: string;
   currentUserAnalysis?: UserResponseAnalysis;
 
   // Context and scoring
-  picaContext?: PicaContextResponse;
   totalScores: ScoreSummary;
-  maxPossibleScores: ScoreSummary;
 
   // Error handling
   error?: string;
@@ -45,12 +38,8 @@ export interface DialogueContext {
 // Machine events
 export type DialogueEvent =
   | { type: "START_DIALOGUE" }
-  | { type: "SUBMIT_USER_INPUT"; input: string }
-  | { type: "SELECT_SUGGESTED_RESPONSE"; responseId: string }
+  | { type: "SUBMIT_USER_RESPONSE"; input: string }
   | { type: "ACTOR_RESPONSE_READY"; response: ActorResponse }
-  | { type: "USER_ANALYSIS_READY"; analysis: UserResponseAnalysis }
-  | { type: "CONTEXT_UPDATED"; context: PicaContextResponse }
-  | { type: "TRANSITION_PHASE"; nextPhase: DialoguePhase }
   | { type: "END_DIALOGUE" }
   | { type: "RETRY" }
   | { type: "ERROR"; error: string };
@@ -62,304 +51,166 @@ export interface HybridDialogueServices {
     input: string,
     context: DialogueContext
   ) => Promise<UserResponseAnalysis>;
-  fetchPicaContext: (
-    scenario: Scenario,
-    dialogue: Dialogue
-  ) => Promise<PicaContextResponse>;
   shouldTransitionPhase: (context: DialogueContext) => Promise<{
     shouldTransition: boolean;
     nextPhase?: DialoguePhase;
-    reason?: string;
   }>;
+  initializeDialogue: (context: DialogueContext) => Promise<ActorResponse>;
 }
 
 /**
  * Create a hybrid dialogue machine that combines XState flow control with AI-generated responses
  */
 export function createDialogueMachine(
-  scenario: Scenario,
   dialogue: Dialogue,
   actor: Actor,
   userFields: { [key: string]: string },
   services: HybridDialogueServices,
   user: UserProfile
 ) {
-  return createMachine(
-    {
-      types: {
-        context: {} as DialogueContext,
-        events: {} as DialogueEvent,
-      },
+  return createMachine({
+    types: {
+      context: {} as DialogueContext,
+      events: {} as DialogueEvent,
+    },
 
-      id: "hybridDialogue",
+    id: dialogue.id,
 
-      initial: "initializing",
+    initial: "waitingForStart",
 
-      context: {
-        userFields,
-        scenario,
-        dialogue,
-        actor,
-        user,
-        conversationHistory: [],
-        currentPhase: "introduction",
-        totalScores: {
-          clarity: 0,
-          empathy: 0,
-          assertiveness: 0,
-          social_awareness: 0,
-          self_advocacy: 0,
-        },
-        maxPossibleScores: {
-          clarity: 0,
-          empathy: 0,
-          assertiveness: 0,
-          social_awareness: 0,
-          self_advocacy: 0,
+    context: {
+      userFields,
+      responses: [],
+      dialogue,
+      actor,
+      scoringCategories: [],
+      user,
+      conversationHistory: [],
+      currentPhase: "introduction",
+      totalScores: {},
+    },
+
+    states: {
+      waitingForStart: {
+        on: {
+          START_DIALOGUE: {
+            target: "initializingDialogue",
+          },
         },
       },
-
-      states: {
-        initializing: {
-          invoke: {
-            id: "fetchInitialContext",
-            src: "fetchPicaContext",
-            input: ({ context }) => ({
-              scenario: context.scenario,
-              dialogue: context.dialogue,
-              user: context.user,
-              actor: context.actor,
-            }),
-            onDone: {
-              target: "waitingForStart",
-              actions: assign({
-                picaContext: ({ event }) => event.output,
-              }),
-            },
-            onError: {
-              target: "waitingForStart",
-              actions: assign({
-                error: ({ event }) => `Failed to fetch context: ${event.error}`,
-              }),
-            },
-          },
-        },
-
-        waitingForStart: {
-          on: {
-            START_DIALOGUE: {
-              target: "generatingActorResponse",
-            },
-          },
-        },
-
-        generatingActorResponse: {
-          invoke: {
-            id: "generateActorResponse",
-            src: "generateActorResponse",
-            input: ({ context }): DialogueContext => ({
-              scenario: context.scenario,
-              dialogue: context.dialogue,
-              actor: context.actor,
-              conversationHistory: context.conversationHistory,
-              currentPhase: context.currentPhase,
-              user: context.user,
-              userFields: context.userFields,
-              picaContext: context.picaContext,
-              totalScores: context.totalScores,
-              maxPossibleScores: context.maxPossibleScores,
-            }),
-            onDone: {
-              target: "waitingForUserInput",
-              actions: [
-                assign({
-                  currentActorResponse: ({ event }) => event.output,
-                  error: undefined,
-                }),
-                // Add actor message to conversation history
-                assign({
-                  conversationHistory: ({ context, event }) => [
-                    ...context.conversationHistory,
-                    {
-                      id: crypto.randomUUID(),
-                      speaker: "actor" as const,
-                      content: event.output.content,
-                      timestamp: new Date(),
-                      phase: context.currentPhase,
-                    },
-                  ],
-                }),
-              ],
-            },
-            onError: {
-              target: "error",
-              actions: assign({
-                error: ({ event }) =>
-                  `Failed to generate actor response: ${event.error}`,
-              }),
-            },
-          },
-        },
-
-        waitingForUserInput: {
-          on: {
-            SUBMIT_USER_INPUT: {
-              target: "analyzingUserResponse",
-              actions: assign({
-                currentUserInput: ({ event }) => event.input,
-              }),
-            },
-
-            SELECT_SUGGESTED_RESPONSE: {
-              target: "processingSelectedResponse",
-              actions: assign({
-                currentUserInput: ({ context, event }) => {
-                  const response =
-                    context.currentActorResponse?.suggestedUserResponses.find(
-                      (r) => r.id === event.responseId
-                    );
-                  return response?.content || "";
-                },
-              }),
-            },
-
-            CONTEXT_UPDATED: {
-              actions: assign({
-                picaContext: ({ event }) => event.context,
-              }),
-            },
-
-            END_DIALOGUE: {
-              target: "completed",
-            },
-          },
-        },
-
-        analyzingUserResponse: {
-          invoke: {
-            id: "analyzeUserResponse",
-            src: "analyzeUserResponse",
-            input: ({ context }) => ({
-              input: context.currentUserInput!,
-              dialogueContext: {
-                scenario: context.scenario,
-                dialogue: context.dialogue,
-                actor: context.actor,
-                conversationHistory: context.conversationHistory,
-                currentPhase: context.currentPhase,
-                user: context.user,
-                picaContext: context.picaContext,
-              } as DialogueContext,
-            }),
-            onDone: {
-              target: "checkingPhaseTransition",
-              actions: [
-                assign({
-                  currentUserAnalysis: ({ event }) => event.output,
-                }),
-                // Add user message to conversation history with scores
-                assign({
-                  conversationHistory: ({ context, event }) => [
-                    ...context.conversationHistory,
-                    {
-                      id: crypto.randomUUID(),
-                      speaker: "user" as const,
-                      content: context.currentUserInput!,
-                      timestamp: new Date(),
-                      scores: event.output.scores,
-                      phase: context.currentPhase,
-                    },
-                  ],
-                }),
-                // Update total scores
-                assign({
-                  totalScores: ({ context, event }) => {
-                    const newScores = event.output.scores;
-                    return {
-                      clarity:
-                        (context.totalScores.clarity || 0) +
-                        (newScores.clarity || 0),
-                      empathy:
-                        (context.totalScores.empathy || 0) +
-                        (newScores.empathy || 0),
-                      assertiveness:
-                        (context.totalScores.assertiveness || 0) +
-                        (newScores.assertiveness || 0),
-                      social_awareness:
-                        (context.totalScores.social_awareness || 0) +
-                        (newScores.social_awareness || 0),
-                      self_advocacy:
-                        (context.totalScores.self_advocacy || 0) +
-                        (newScores.self_advocacy || 0),
-                    };
-                  },
-                  maxPossibleScores: ({ context }) => {
-                    return {
-                      clarity: (context.maxPossibleScores.clarity || 0) + 10,
-                      empathy: (context.maxPossibleScores.empathy || 0) + 10,
-                      assertiveness:
-                        (context.maxPossibleScores.assertiveness || 0) + 10,
-                      social_awareness:
-                        (context.maxPossibleScores.social_awareness || 0) + 10,
-                      self_advocacy:
-                        (context.maxPossibleScores.self_advocacy || 0) + 10,
-                    };
-                  },
-                }),
-              ],
-            },
-            onError: {
-              target: "error",
-              actions: assign({
-                error: ({ event }) =>
-                  `Failed to analyze user response: ${event.error}`,
-              }),
-            },
-          },
-        },
-
-        processingSelectedResponse: {
-          entry: assign({
-            currentUserAnalysis: ({ context }) => {
-              const response =
-                context.currentActorResponse?.suggestedUserResponses.find(
-                  (r) => r.content === context.currentUserInput
-                );
-
-              if (response) {
-                return {
-                  scores: response.scores,
-                  feedback: response.reasoning,
-                  strengths: ["Used suggested response effectively"],
-                  improvements: [],
-                };
-              }
-
-              return undefined;
-            },
+      initializingDialogue: {
+        invoke: {
+          id: "initializeDialogue",
+          src: fromPromise(async ({ input }) => {
+            return services.initializeDialogue(input);
           }),
+          input: ({ context }) => context,
+          onDone: {
+            target: "generatingActorResponse",
+            actions: assign({
+              currentActorResponse: ({ event }) => event.output,
+              error: undefined,
+            }),
+          },
+          onError: {
+            target: "error",
+            actions: assign({
+              error: ({ event }) =>
+                `Failed to initialize dialogue: ${event.error}`,
+            }),
+          },
+        },
+      },
 
-          always: {
+      generatingActorResponse: {
+        invoke: {
+          id: "generateActorResponse",
+          src: fromPromise(async ({ input }) => {
+            return services.generateActorResponse(input);
+          }),
+          input: ({ context }) => context,
+          onDone: {
+            target: "waitingForUserInput",
+            actions: [
+              assign({
+                currentActorResponse: ({ event }) => event.output,
+                error: undefined,
+              }),
+              // Add actor message to conversation history
+              assign({
+                conversationHistory: ({ context, event }) => [
+                  ...context.conversationHistory,
+                  {
+                    id: crypto.randomUUID(),
+                    content: event.output.content,
+                    speaker: "actor" as const,
+                    phase: context.currentPhase,
+                  } as ConversationMessage,
+                ],
+              }),
+            ],
+          },
+          onError: {
+            target: "error",
+            actions: assign({
+              error: ({ event }) =>
+                `Failed to generate actor response: ${event.error}`,
+            }),
+          },
+        },
+      },
+
+      waitingForUserInput: {
+        on: {
+          SUBMIT_USER_RESPONSE: {
+            target: "analyzingUserResponse",
+            actions: assign({
+              currentUserInput: ({ event }) => event.input,
+            }),
+          },
+
+          END_DIALOGUE: {
+            target: "completed",
+          },
+        },
+      },
+
+      analyzingUserResponse: {
+        invoke: {
+          src: fromPromise(async ({ input }) => {
+            const { context, userInput } = input;
+            return services.analyzeUserResponse(userInput, context);
+          }),
+          input: ({ context }) => ({
+            userInput: context.currentUserInput,
+            context,
+          }),
+          onDone: {
             target: "checkingPhaseTransition",
             actions: [
-              // Add user message to conversation history
               assign({
-                conversationHistory: ({ context }) => [
+                currentUserAnalysis: ({ event }) => event.output,
+              }),
+              // Add user message to conversation history with scores
+              assign({
+                conversationHistory: ({ context, event }) => [
                   ...context.conversationHistory,
+
                   {
                     id: crypto.randomUUID(),
                     speaker: "user" as const,
                     content: context.currentUserInput!,
-                    timestamp: new Date(),
-                    scores: context.currentUserAnalysis?.scores,
+
+                    scores: event.output.scores,
                     phase: context.currentPhase,
                   },
                 ],
               }),
+
               // Update total scores
               assign({
-                totalScores: ({ context }) => {
-                  const newScores = context.currentUserAnalysis?.scores || {};
+                totalScores: ({ context, event }) => {
+                  const newScores = event.output.scores;
                   return {
                     clarity:
                       (context.totalScores.clarity || 0) +
@@ -378,127 +229,77 @@ export function createDialogueMachine(
                       (newScores.self_advocacy || 0),
                   };
                 },
-                maxPossibleScores: ({ context }) => {
-                  return {
-                    clarity: (context.maxPossibleScores.clarity || 0) + 10,
-                    empathy: (context.maxPossibleScores.empathy || 0) + 10,
-                    assertiveness:
-                      (context.maxPossibleScores.assertiveness || 0) + 10,
-                    social_awareness:
-                      (context.maxPossibleScores.social_awareness || 0) + 10,
-                    self_advocacy:
-                      (context.maxPossibleScores.self_advocacy || 0) + 10,
-                  };
-                },
               }),
             ],
           },
-        },
-
-        checkingPhaseTransition: {
-          invoke: {
-            id: "checkPhaseTransition",
-            src: "shouldTransitionPhase",
-            input: ({ context }): DialogueContext => ({
-              scenario: context.scenario,
-              dialogue: context.dialogue,
-              actor: context.actor,
-              userFields: context.userFields,
-              conversationHistory: context.conversationHistory,
-              currentPhase: context.currentPhase,
-              user: context.user,
-              picaContext: context.picaContext,
-              totalScores: context.totalScores,
-              maxPossibleScores: context.maxPossibleScores,
+          onError: {
+            target: "error",
+            actions: assign({
+              error: ({ event }) =>
+                `Failed to analyze user response: ${event.error}`,
             }),
-            onDone: [
-              {
-                guard: ({ event }) =>
-                  event.output.shouldTransition &&
-                  event.output.nextPhase === "completed",
-                target: "completed",
-              },
-              {
-                guard: ({ event }) => event.output.shouldTransition,
-                target: "generatingActorResponse",
-                actions: assign({
-                  currentPhase: ({ event }) => event.output.nextPhase!,
-                }),
-              },
-              {
-                target: "generatingActorResponse",
-              },
-            ],
-            onError: {
-              target: "generatingActorResponse",
-              actions: assign({
-                error: ({ event }) =>
-                  `Phase transition check failed: ${event.error}`,
-              }),
-            },
           },
         },
+      },
 
-        completed: {
-          type: "final",
-          entry: assign({
-            currentPhase: "completed" as const,
+      checkingPhaseTransition: {
+        invoke: {
+          id: "checkPhaseTransition",
+          src: fromPromise(async ({ input }) => {
+            return services.shouldTransitionPhase(input);
           }),
-        },
-
-        error: {
-          on: {
-            RETRY: {
-              target: "generatingActorResponse",
-              actions: assign({
-                error: undefined,
-              }),
-            },
-
-            END_DIALOGUE: {
+          input: ({ context }) => context,
+          onDone: [
+            {
+              guard: ({ event }) =>
+                event.output.shouldTransition &&
+                event.output.nextPhase === "completed",
               target: "completed",
             },
+            {
+              guard: ({ event }) => event.output.shouldTransition,
+              target: "generatingActorResponse",
+              actions: assign({
+                currentPhase: ({ event }) => event.output.nextPhase!,
+              }),
+            },
+            {
+              target: "generatingActorResponse",
+            },
+          ],
+          onError: {
+            target: "generatingActorResponse",
+            actions: assign({
+              error: ({ event }) =>
+                `Phase transition check failed: ${event.error}`,
+            }),
+          },
+        },
+      },
+
+      completed: {
+        type: "final",
+        entry: assign({
+          currentPhase: "completed" as const,
+        }),
+      },
+
+      error: {
+        on: {
+          RETRY: {
+            target: "generatingActorResponse",
+            actions: assign({
+              error: undefined,
+            }),
+          },
+
+          END_DIALOGUE: {
+            target: "completed",
           },
         },
       },
     },
-    {
-      actors: {
-        fetchPicaContext: fromPromise(
-          async ({
-            input,
-          }: {
-            input: { scenario: Scenario; dialogue: Dialogue };
-          }) => {
-            return services.fetchPicaContext(input.scenario, input.dialogue);
-          }
-        ),
-        generateActorResponse: fromPromise(
-          async ({ input }: { input: DialogueContext }) => {
-            return services.generateActorResponse(input);
-          }
-        ),
-        analyzeUserResponse: fromPromise(
-          async ({
-            input,
-          }: {
-            input: { input: string; dialogueContext: DialogueContext };
-          }) => {
-            return services.analyzeUserResponse(
-              input.input,
-              input.dialogueContext
-            );
-          }
-        ),
-        shouldTransitionPhase: fromPromise(
-          async ({ input }: { input: DialogueContext }) => {
-            return services.shouldTransitionPhase(input);
-          }
-        ),
-      },
-    }
-  );
+  });
 }
 
 export type DialogueMachine = ReturnType<typeof createDialogueMachine>;
-export type DialogueActor = ActorRefFrom<DialogueMachine>;

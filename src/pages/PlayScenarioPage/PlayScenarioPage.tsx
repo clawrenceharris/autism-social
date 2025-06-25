@@ -21,7 +21,7 @@ import { useDialogueStore } from "../../store/useDialogueStore";
 import { usePlayScenarioStore } from "../../store/usePlayScenarioStore";
 import { useActorStore } from "../../store/useActorStore";
 
-const EnhancedPlayScenarioPage = () => {
+const PlayScenarioPage = () => {
   const { dialogueId, scenarioId } = useParams<{
     dialogueId: string;
     scenarioId: string;
@@ -61,7 +61,10 @@ const EnhancedPlayScenarioPage = () => {
       // Open modal so we can enter the user fields
       openModal(
         <FormLayout<{ [key: string]: string }>
-          onSubmit={(data) => setUserFields(data)}
+          onSubmit={(data) => {
+            setUserFields(data);
+            closeModal();
+          }}
           submitText="Start Dialogue"
           showsCancelButton={true}
           cancelText="Cancel"
@@ -76,36 +79,6 @@ const EnhancedPlayScenarioPage = () => {
           />
         </FormLayout>,
         "Start Dialogue"
-      );
-    }
-    if (dialogueId && !selectedActor) {
-      openModal(
-        <FormLayout<{ actorId: string }>
-          onSubmit={({ actorId }: { actorId: string }) => {
-            setActor(actors[actorId]);
-            closeModal();
-          }}
-        >
-          {({ register, formState: { errors } }) => (
-            <div className="form-group">
-              <label>Select Your Actor</label>
-              <select
-                className="form-input"
-                {...register("actorId", {
-                  required: "Actor is required.",
-                })}
-              >
-                {Object.values(actors).map((actor) => (
-                  <option key={actor.id} value={actor.id}>
-                    {actor.first_name} {actor.last_name} - {actor.role}
-                  </option>
-                ))}
-              </select>
-              {errors.actorId && <p>{errors.actorId.message}</p>}
-            </div>
-          )}
-        </FormLayout>,
-        "Select Actor"
       );
     }
   }, [
@@ -209,12 +182,12 @@ const EnhancedPlayScenarioPage = () => {
   }
 
   // Only render EnhancedDialoguePlayer when we have user fields (or confirmed no placeholders needed)
-  if (selectedActor && (userFields || dialogue.placeholders.length === 0)) {
+  if (userFields || dialogue.placeholders.length === 0) {
     return (
       <div key={key} className="play-scenario-container">
         <DialoguePlayer
           userFields={userFields || {}}
-          actor={selectedActor}
+          actor={actors[dialogue.actor_id]}
           onDialogueExit={handleExit}
           user={user}
           scenario={scenario}
@@ -233,4 +206,4 @@ const EnhancedPlayScenarioPage = () => {
   );
 };
 
-export default EnhancedPlayScenarioPage;
+export default PlayScenarioPage;

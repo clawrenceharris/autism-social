@@ -13,6 +13,11 @@ import {
 } from "./pages";
 
 function App() {
+  console.log({ pica_secret_ket: import.meta.env.PICA_SECRET_KEY });
+  console.log({
+    pica_secret_ket: import.meta.env.PICA_FIRECRAWL_CONNECTION_KEY,
+  });
+
   return (
     <Router>
       <Routes>

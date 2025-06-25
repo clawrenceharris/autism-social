@@ -18,10 +18,9 @@ import { useVoiceStore } from "../../store/useVoiceStore";
 import {
   useDialogueCompletion,
   useDynamicDialogue,
-  // useErrorHandler,
+  useErrorHandler,
 } from "../../hooks";
 import { useProgressStore } from "../../store/useProgressStore";
-import type { SuggestedResponse } from "../../services/dynamicDialogue";
 
 interface DialoguePlayerProps {
   scenario: Scenario;
@@ -42,15 +41,15 @@ const DialoguePlayer = ({
   onReplay,
   actor,
 }: DialoguePlayerProps) => {
-  const { fetchProgress } = useProgressStore();
+  const { fetchProgress, progress } = useProgressStore();
 
   const [customInput, setCustomInput] = useState("");
   const [isVolumeOn, setIsVolumeOn] = useState<boolean>(false);
   const [audioCache, setAudioCache] = useState<Map<string, string>>(new Map());
   const [isGeneratingAudio, setIsGeneratingAudio] = useState<boolean>(false);
   const {
-    // updateDialogueProgress,
-    // addDialogueProgress,
+    updateDialogueProgress,
+    addDialogueProgress,
     error,
     isLoading: isSaving,
   } = useDialogueCompletion();
@@ -58,13 +57,13 @@ const DialoguePlayer = ({
   const { fetchVoices, getAudioUrl } = useVoiceStore();
   const messageWindowRef = useRef<HTMLDivElement>(null);
   const { showToast } = useToast();
-  // const { handleError } = useErrorHandler();
+  const { handleError } = useErrorHandler();
   const { openModal } = useModal();
 
   const {
     submitUserInput,
-    selectSuggestedResponse,
     retry,
+    startDialogue,
     isLoading,
     isCompleted,
     currentActorResponse,
@@ -76,10 +75,12 @@ const DialoguePlayer = ({
     actor,
     userFields,
     user,
-    // onError: (error) => handleError({ error }),
-    // onDialogueComplete: () => handleDialogueComplete(),
+    onError: (error) => handleError({ error }),
+    onDialogueComplete: () => handleDialogueComplete(),
   });
-
+  useEffect(() => {
+    startDialogue();
+  }, [startDialogue]);
   useEffect(() => {
     fetchVoices();
     fetchProgress(user.user_id);
@@ -96,34 +97,6 @@ const DialoguePlayer = ({
     scrollToBottom();
   }, [conversationHistory.length]);
 
-  const getVoiceSettings = useCallback(() => {
-    const personaTags = dialogue.persona_tags || [];
-
-    // Base voice settings
-    const settings = {
-      stability: 0.5,
-      style: 0.5,
-      use_speaker_boost: true,
-    };
-
-    // Adjust based on persona tags
-    if (personaTags.includes("confident")) {
-      settings.stability = 0.7;
-      settings.style = 0.8;
-    } else if (personaTags.includes("shy")) {
-      settings.stability = 0.3;
-      settings.style = 0.2;
-    } else if (personaTags.includes("excited")) {
-      settings.stability = 0.4;
-      settings.style = 0.9;
-    } else if (personaTags.includes("nervous")) {
-      settings.stability = 0.2;
-      settings.style = 0.3;
-    }
-
-    return settings;
-  }, [dialogue.persona_tags]);
-
   const playAudio = useCallback(
     async (text: string) => {
       if (!isVolumeOn || isGeneratingAudio) return;
@@ -139,10 +112,8 @@ const DialoguePlayer = ({
 
         setIsGeneratingAudio(true);
 
-        const voiceSettings = getVoiceSettings();
         const audioUrl = await getAudioUrl(actor?.voice_id || "default", {
           text,
-          voice_settings: voiceSettings,
         });
 
         // Cache the audio URL
@@ -163,7 +134,6 @@ const DialoguePlayer = ({
       isVolumeOn,
       isGeneratingAudio,
       audioCache,
-      getVoiceSettings,
       getAudioUrl,
       actor?.voice_id,
       showToast,
@@ -185,8 +155,8 @@ const DialoguePlayer = ({
     };
   }, [audioCache]);
 
-  const handleOptionClick = async (res: SuggestedResponse) => {
-    selectSuggestedResponse(res.id);
+  const handleOptionClick = async (response: string) => {
+    submitUserInput(response);
   };
 
   const handleCustomSubmit = async (e: React.FormEvent) => {
@@ -196,31 +166,31 @@ const DialoguePlayer = ({
     submitUserInput(customInput);
   };
 
-  // const handleDialogueComplete = useCallback(() => {
-  //   if (progress?.map((p) => p.dialogue_id).includes(dialogue.id)) {
-  //     updateDialogueProgress(
-  //       user.user_id,
-  //       dialogue.id,
-  //       context.totalScores,
-  //       dialogue.max_scoring
-  //     );
-  //   } else {
-  //     addDialogueProgress(
-  //       user.user_id,
-  //       dialogue.id,
-  //       context.totalScores,
-  //       dialogue.max_scoring
-  //     );
-  //   }
-  // }, [
-  //   addDialogueProgress,
-  //   context.totalScores,
-  //   dialogue.id,
-  //   dialogue.max_scoring,
-  //   progress,
-  //   updateDialogueProgress,
-  //   user.user_id,
-  // ]);
+  const handleDialogueComplete = useCallback(() => {
+    if (progress?.map((p) => p.dialogue_id).includes(dialogue.id)) {
+      updateDialogueProgress(
+        user.user_id,
+        dialogue.id,
+        context.totalScores,
+        dialogue.max_scoring
+      );
+    } else {
+      addDialogueProgress(
+        user.user_id,
+        dialogue.id,
+        context.totalScores,
+        dialogue.max_scoring
+      );
+    }
+  }, [
+    addDialogueProgress,
+    context.totalScores,
+    dialogue.id,
+    dialogue.max_scoring,
+    progress,
+    updateDialogueProgress,
+    user.user_id,
+  ]);
   const handleResultsClick = () => {
     openModal(
       <DialogueCompletionModal
@@ -315,15 +285,15 @@ const DialoguePlayer = ({
         {!isCompleted ? (
           <div className="response-section">
             <div className="response-options">
-              {currentActorResponse?.suggestedUserResponses.map(
-                (res, index) => (
+              {currentActorResponse?.userResponseOptions.map(
+                (response, index) => (
                   <button
                     key={index}
-                    onClick={() => handleOptionClick(res)}
+                    onClick={() => handleOptionClick(response)}
                     disabled={isLoading}
                     className={`response-option ${isLoading ? "disabled" : ""}`}
                   >
-                    <p className="option-text">{res.content}</p>
+                    <p className="option-text">{response}</p>
                   </button>
                 )
               )}
