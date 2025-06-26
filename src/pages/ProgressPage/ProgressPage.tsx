@@ -4,12 +4,11 @@ import {
   Award,
   BarChart2,
   Brain,
-  Calendar,
   CheckCircle,
   Clock,
+  Flame,
   Frown,
   HelpCircle,
-  Percent,
   Play,
 } from "lucide-react";
 import "./ProgressPage.scss";
@@ -20,6 +19,7 @@ import { Link } from "react-router-dom";
 import { useScoreCategoryStore } from "../../store/useScoreCategoryStore";
 import useAchievements from "../../hooks/useAchievements";
 import { formatCategoryName, getCategoryIcon } from "../../utils/categoryUtils";
+import useStreakStore from "../../store/useStreakStore";
 
 const ProgressPage = () => {
   const { user } = useOutletContext<AuthContextType>();
@@ -28,13 +28,12 @@ const ProgressPage = () => {
     loading: progressLoading,
     error: progressError,
     fetchProgress,
-    calcAverageScore,
-    averageScore,
     totalPoints: totalPoints,
     calcCategoryScores,
     calcTotalPoints,
     categoryScores,
   } = useProgressStore();
+  const { streakData, fetchStreak } = useStreakStore();
   const {
     categories,
     fetchCategories,
@@ -42,19 +41,14 @@ const ProgressPage = () => {
   } = useScoreCategoryStore();
   const { achievements } = useAchievements();
   useEffect(() => {
-    fetchProgress(user.id);
     fetchCategories();
     calcTotalPoints();
     calcCategoryScores();
-    calcAverageScore();
-  }, [
-    fetchCategories,
-    calcTotalPoints,
-    fetchProgress,
-    user.id,
-    calcAverageScore,
-    calcCategoryScores,
-  ]);
+  }, [fetchCategories, calcTotalPoints, calcCategoryScores]);
+  useEffect(() => {
+    fetchProgress(user.id);
+    fetchStreak(user.id);
+  }, [fetchProgress, fetchStreak, user.id]);
 
   const getScoreLevel = (score: number): "poor" | "good" | "excellent" => {
     if (score >= 80) return "excellent";
@@ -149,7 +143,7 @@ const ProgressPage = () => {
             We couldn't find any progress data for your account. Start
             practicing with some scenarios to build your progress!
           </p>
-          <Link to="/explore" className="btn btn-primary">
+          <Link to="/scenarios" className="btn btn-primary">
             <Play size={20} />
             Explore Scenarios
           </Link>
@@ -188,10 +182,12 @@ const ProgressPage = () => {
               </div>
               <div className="stat-card">
                 <div className="stat-icon">
-                  <Percent size={20} />
+                  <Flame size={20} />
                 </div>
-                <div className="stat-value">{averageScore}%</div>
-                <div className="stat-label">Average Score</div>
+                <div className="stat-value">
+                  {streakData?.currentStreak || 0}
+                </div>
+                <div className="stat-label">Streak</div>
               </div>
               <div className="stat-card">
                 <div className="stat-icon">
@@ -298,25 +294,6 @@ const ProgressPage = () => {
           </div>
         </section>
       </div>
-
-      <section className="cta-section">
-        <h2 className="cta-message">Ready to improve your social skills?</h2>
-        <p className="cta-description">
-          Continue practicing with more scenarios to build your skills and earn
-          achievements. The more you practice, the more confident you'll become
-          in social situations.
-        </p>
-        <div className="cta-buttons">
-          <Link to="/explore" className="btn btn-primary">
-            <Play size={20} />
-            Practice Scenarios
-          </Link>
-          <Link to="/daily-challenges" className="btn btn-secondary">
-            <Calendar size={20} />
-            Daily Challenges
-          </Link>
-        </div>
-      </section>
     </div>
   );
 };

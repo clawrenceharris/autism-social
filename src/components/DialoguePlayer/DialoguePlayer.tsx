@@ -167,12 +167,7 @@ const DialoguePlayer = ({
   };
 
   const handleDialogueComplete = useCallback(() => {
-    addDialogueProgress(
-      user.user_id,
-      dialogue.id,
-      context.totalScores,
-      dialogue.max_scoring
-    );
+    addDialogueProgress(user.user_id, dialogue.id, context.totalScores);
   }, [addDialogueProgress, context.totalScores, dialogue, user.user_id]);
   const handleResultsClick = () => {
     openModal(

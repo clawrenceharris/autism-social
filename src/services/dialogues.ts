@@ -89,12 +89,10 @@ export async function upsertDialogueProgress({
   userId,
   dialogueId,
   scoring,
-  maxScoring,
 }: {
   userId: string;
   dialogueId: string;
   scoring: ScoreSummary;
-  maxScoring: ScoreSummary;
 }) {
   const { data, error } = await DatabaseService.upsertBy<UserProgress>(
     "user_progress",
@@ -102,7 +100,6 @@ export async function upsertDialogueProgress({
       user_id: userId,
       dialogue_id: dialogueId,
       scoring,
-      max_scoring: maxScoring,
     },
     "user_id",
     userId
@@ -114,12 +111,10 @@ export async function updateDialogueProgress({
   userId,
   dialogueId,
   scoring,
-  maxScoring,
 }: {
   userId: string;
   dialogueId: string;
   scoring: ScoreSummary;
-  maxScoring: ScoreSummary;
 }) {
   const { data, error } = await DatabaseService.updateBy<UserProgress>(
     "user_progress",
@@ -129,7 +124,6 @@ export async function updateDialogueProgress({
       user_id: userId,
       dialogue_id: dialogueId,
       scoring,
-      max_scoring: maxScoring,
     }
   );
   if (error) throw error;

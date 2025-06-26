@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { Calendar, CheckCircle, Clock, Lock, Play, Target, X } from "lucide-react";
+import {
+  Calendar,
+  CheckCircle,
+  Clock,
+  Lock,
+  Play,
+  Target,
+  X,
+} from "lucide-react";
 import "./DailyChallengesPage.scss";
 import { useDailyChallengeStore } from "../../store/useDailyChallengeStore";
 import { DialogueItem, ProgressIndicator } from "../../components";
@@ -77,7 +85,8 @@ const DailyChallengesPage = () => {
     setSelectedDay(null);
   };
 
-  const selectedChallenge = selectedDay !== null ? getDayChallenge(selectedDay) : null;
+  const selectedChallenge =
+    selectedDay !== null ? getDayChallenge(selectedDay) : null;
   const weekRange = getWeekDateRange();
   const completedCount = challenges.filter(
     (_, index) => getNodeStatus(index) === "completed"
@@ -117,15 +126,17 @@ const DailyChallengesPage = () => {
       <div className="challenges-header">
         <h1>Daily Challenges</h1>
         <p className="description">
-          Complete one dialogue challenge each day to increase your Social Score
-          and maintain your practice streak. Complete all dialogues to win a
-          prize at the end of the week!
+          Complete one dialogue challenge each day to increase your points and
+          maintain your practice streak. Complete all dialogues to win a prize
+          at the end of the week!
         </p>
       </div>
 
       <div className="challenges-content">
         {/* Timeline Section */}
-        <div className={`timeline-section ${showChallengeDetail ? 'hidden' : ''}`}>
+        <div
+          className={`timeline-section ${showChallengeDetail ? "hidden" : ""}`}
+        >
           <div className="week-progress">
             <div className="week-info">
               <div className="week-dates">
@@ -184,12 +195,16 @@ const DailyChallengesPage = () => {
         </div>
 
         {/* Challenge Detail Section */}
-        <div className={`challenge-detail-section ${showChallengeDetail ? 'visible' : ''}`}>
+        <div
+          className={`challenge-detail-section ${
+            showChallengeDetail ? "visible" : ""
+          }`}
+        >
           <div className="challenge-detail-header">
             <h2>
-              {selectedDay !== null ? DAYS_OF_WEEK[selectedDay] : ''} Challenge
+              {selectedDay !== null ? DAYS_OF_WEEK[selectedDay] : ""} Challenge
             </h2>
-            <button 
+            <button
               className="close-button"
               onClick={handleCloseChallengeDetail}
               aria-label="Close challenge details"
@@ -197,7 +212,7 @@ const DailyChallengesPage = () => {
               <X size={24} />
             </button>
           </div>
-          
+
           <div className="challenge-detail-content">
             {selectedChallenge ? (
               <div className="selected-challenge">

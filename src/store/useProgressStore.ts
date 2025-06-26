@@ -8,7 +8,6 @@ interface ProgressStore {
   progressByDialogueId: Record<string, UserProgress[]>;
   categoryScores: ScoreSummary;
   averageCategoryScores: ScoreSummary;
-  averageScore: number;
   totalPoints: number;
   loading: boolean;
   rankReceived: boolean;
@@ -17,7 +16,6 @@ interface ProgressStore {
   calcCategoryScores: () => void;
   calcTotalPoints: () => void;
   fetchProgress: (userId: string) => Promise<void>;
-  calcAverageScore: () => void;
   calcAverageCategoryScore: () => void;
 
   resetProgress: () => void;
@@ -31,7 +29,6 @@ export const useProgressStore = create<ProgressStore>()(
       rankReceived: false,
       categoryScores: {},
       totalPoints: 0,
-      averageScore: 0,
       loading: false,
       error: null,
       calcAverageCategoryScore: () => {
@@ -52,22 +49,21 @@ export const useProgressStore = create<ProgressStore>()(
           self_advocacy: 0,
           social_awareness: 0,
         };
-        const totalPossible: Record<ScoreCategory, number> = {
+        const total: Record<ScoreCategory, number> = {
           clarity: 0,
           empathy: 0,
           assertiveness: 0,
           self_advocacy: 0,
           social_awareness: 0,
         };
+
         for (const entry of progress) {
           for (const cat of categories) {
             const earned = entry.scoring[cat];
-            const possible = entry.max_scoring[cat];
 
-            if (earned && possible) {
-              totalPossible[cat] += possible;
-
+            if (earned) {
               totalEarned[cat] += earned;
+              total[cat]++;
             }
           }
         }
@@ -78,7 +74,7 @@ export const useProgressStore = create<ProgressStore>()(
 
             Math.round(
               ((totalEarned[cat as ScoreCategory] || 0) /
-                (totalPossible[cat as ScoreCategory] || 1)) *
+                (total[cat as ScoreCategory] || 1)) *
                 100
             ),
           ])
@@ -132,43 +128,7 @@ export const useProgressStore = create<ProgressStore>()(
 
         set({ categoryScores });
       },
-      calcAverageScore: () => {
-        const progress = get().progress;
-        if (!progress) {
-          return 0;
-        }
-        const categories = [
-          "assertiveness",
-          "clarity",
-          "empathy",
-          "social_awareness",
-          "self_advocacy",
-        ] as const;
 
-        let totalEarned = 0;
-        let totalPossible = 0;
-
-        for (const entry of progress) {
-          for (const cat of categories) {
-            const earned = entry.scoring[cat];
-            const possible = entry.max_scoring[cat]; //total possible score that can be given for this category
-
-            if (earned && possible) {
-              totalEarned += earned;
-              totalPossible += possible;
-              console.log({ earned, possible });
-            }
-          }
-        }
-        const averageScore =
-          totalPossible !== 0
-            ? Math.round((totalEarned / totalPossible) * 100)
-            : 0;
-
-        set({
-          averageScore,
-        });
-      },
       fetchProgress: async (userId: string) => {
         try {
           set({ loading: true, error: null });
@@ -188,7 +148,6 @@ export const useProgressStore = create<ProgressStore>()(
               return acc;
             }, {}),
           });
-          get().calcAverageScore();
           get().calcTotalPoints();
           get().calcAverageCategoryScore();
         } catch {
@@ -221,7 +180,6 @@ export const useProgressStore = create<ProgressStore>()(
         progress: state.progress,
         categoryScores: state.categoryScores,
         totalPoints: state.totalPoints,
-        averageScore: state.averageScore,
       }),
     }
   )

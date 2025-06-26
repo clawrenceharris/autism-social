@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from "react-router-dom";
 import { useModal } from "../../context";
 import { X, Home } from "lucide-react";
 import "../PlayScenarioPage/PlayScenarioPage.scss";
@@ -22,7 +27,10 @@ const PlayScenarioPage = () => {
   const { loading: scenariosLoading, error: scenarioError } =
     useScenarioStore();
   const { setDialogue, scenario, dialogue } = usePlayScenarioStore();
-
+  const { dialogueId } = useParams<{
+    dialogueId: string;
+    scenarioId: string;
+  }>();
   const {
     loading: dialoguesLoading,
     dialoguesByScenario,
@@ -38,13 +46,17 @@ const PlayScenarioPage = () => {
   }, [fetchActors]);
 
   useEffect(() => {
-    if (scenario && dialogue && !userFields) {
+    if (dialogueId && scenario && dialogue && !userFields) {
       // Open modal so we can enter the user fields
       openModal(
         <FormLayout<{ [key: string]: string }>
           onSubmit={(data) => {
             setUserFields(data);
             closeModal();
+          }}
+          onCancel={() => {
+            closeModal();
+            navigate(`/scenario/${scenario.id}`);
           }}
           descriptionStyle={{
             background: "#e3f3fe",
@@ -55,11 +67,7 @@ const PlayScenarioPage = () => {
           description={dialogue.description}
           submitText="Start Dialogue"
           showsCancelButton={true}
-          cancelText="Leave"
-          onCancel={() => {
-            closeModal();
-            navigate(`/scenario/${scenario.id}`);
-          }}
+          cancelText="Cancel"
         >
           <StartDialogueModal
             dialogue={dialogue}
@@ -69,7 +77,15 @@ const PlayScenarioPage = () => {
         "Start Dialogue"
       );
     }
-  }, [closeModal, dialogue, navigate, openModal, scenario, userFields]);
+  }, [
+    closeModal,
+    dialogueId,
+    dialogue,
+    navigate,
+    openModal,
+    scenario,
+    userFields,
+  ]);
 
   const handleReplay = () => {
     setKey((prev) => prev + 1);
@@ -121,7 +137,7 @@ const PlayScenarioPage = () => {
     );
   }
 
-  if (!dialogue) {
+  if (!dialogueId) {
     return (
       <div className="play-scenario-container">
         <div className="game-header">
@@ -161,7 +177,7 @@ const PlayScenarioPage = () => {
   }
 
   // Only render EnhancedDialoguePlayer when we have user fields (or confirmed no placeholders needed)
-  if (userFields || dialogue.placeholders.length === 0) {
+  if (dialogueId && dialogue && userFields) {
     return (
       <div key={key} className="play-scenario-container">
         <DialoguePlayer

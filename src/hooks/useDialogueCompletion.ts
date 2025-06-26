@@ -18,12 +18,7 @@ export const useDialogueCompletion = (
   const { incrementStreak } = useStreakStore();
 
   const addDialogueProgress = useCallback(
-    async (
-      userId: string,
-      dialogueId: string,
-      scoring: ScoreSummary,
-      maxScoring: ScoreSummary
-    ) => {
+    async (userId: string, dialogueId: string, scoring: ScoreSummary) => {
       setIsLoading(true);
       setError(null);
 
@@ -32,7 +27,6 @@ export const useDialogueCompletion = (
           userId,
           dialogueId,
           scoring,
-          maxScoring,
         });
 
         // Update streak when dialogue is completed

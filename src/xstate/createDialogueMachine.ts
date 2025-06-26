@@ -37,10 +37,7 @@ export interface DialogueContext {
 export type DialogueEvent =
   | { type: "START_DIALOGUE" }
   | { type: "SUBMIT_USER_RESPONSE"; input: string }
-  | { type: "ACTOR_RESPONSE_READY"; response: ActorResponse }
-  | { type: "END_DIALOGUE" }
-  | { type: "RETRY" }
-  | { type: "ERROR"; error: string };
+  | { type: "END_DIALOGUE" };
 
 // Services interface for dependency injection
 export interface HybridDialogueServices {
@@ -139,6 +136,15 @@ export function createDialogueMachine(
           SUBMIT_USER_RESPONSE: {
             target: "analyzingUserResponse",
             actions: assign({
+              conversationHistory: ({ event, context }) => [
+                ...context.conversationHistory,
+                {
+                  id: crypto.randomUUID(),
+                  speaker: "user" as const,
+                  content: event.input,
+                  phase: context.currentPhase,
+                } as ConversationMessage,
+              ],
               currentUserInput: ({ event }) => event.input,
             }),
           },
@@ -167,16 +173,15 @@ export function createDialogueMachine(
                 currentUserAnalysis: ({ event }) => event.output,
               }),
               assign({
-                conversationHistory: ({ context, event }) => [
-                  ...context.conversationHistory,
-                  {
-                    id: crypto.randomUUID(),
-                    speaker: "user" as const,
-                    content: context.currentUserInput!,
-                    analysis: event.output, // ✅ Use event.output directly
-                    phase: context.currentPhase,
-                  } as ConversationMessage,
-                ],
+                conversationHistory: ({
+                  context: { conversationHistory },
+                  event,
+                }) => {
+                  //set the analysis for the most recent message
+                  conversationHistory[conversationHistory.length - 1].analysis =
+                    event.output;
+                  return conversationHistory;
+                },
               }),
 
               // Update total scores
@@ -185,20 +190,25 @@ export function createDialogueMachine(
                   const newScores = event.output.scores;
                   return {
                     clarity:
-                      (context.totalScores.clarity || 0) +
-                      (newScores.clarity || 0),
+                      context.totalScores.clarity ??
+                      context.totalScores.clarity + newScores.clarity,
+
                     empathy:
-                      (context.totalScores.empathy || 0) +
-                      (newScores.empathy || 0),
+                      context.totalScores.empathy ??
+                      context.totalScores.empathy + newScores.empathy,
                     assertiveness:
-                      (context.totalScores.assertiveness || 0) +
-                      (newScores.assertiveness || 0),
+                      context.totalScores.assertiveness ??
+                      context.totalScores.assertiveness +
+                        newScores.assertiveness,
+
                     social_awareness:
-                      (context.totalScores.social_awareness || 0) +
-                      (newScores.social_awareness || 0),
+                      context.totalScores.social_awareness ??
+                      context.totalScores.social_awareness +
+                        newScores.social_awareness,
                     self_advocacy:
-                      (context.totalScores.self_advocacy || 0) +
-                      (newScores.self_advocacy || 0),
+                      context.totalScores.self_advocacy ??
+                      context.totalScores.self_advocacy +
+                        newScores.self_advocacy,
                   };
                 },
               }),

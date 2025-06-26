@@ -16,7 +16,7 @@ const RootHeader = () => {
         </Link>
 
         <div className="nav-links">
-          <NavLink to="/" className="nav-link">
+          <NavLink to="/dashboard" className="nav-link">
             {({ isActive }) => (
               <div className={`nav-link ${isActive ? "active" : ""}`}>
                 <Home />

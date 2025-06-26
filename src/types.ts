@@ -56,7 +56,6 @@ export interface UserProgress {
   user_id: string;
   dialogue_id: string;
   scoring: ScoreSummary;
-  max_scoring: ScoreSummary;
 }
 
 export interface Goal {
@@ -105,7 +104,6 @@ export interface Dialogue {
   id: string;
   tags: string[];
   setting: string;
-  max_scoring: ScoreSummary;
   actor_id: string;
   scenario_id: string;
   title: string;
@@ -177,7 +175,6 @@ export interface DialogueStep {
 export interface DialogueOption {
   label: string;
   event: string;
-  maxScoring: Record<ScoreCategory, number>;
   scoring: Record<ScoreCategory, number>;
   next: string;
 }

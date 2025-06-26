@@ -205,12 +205,14 @@ export class DialogueService {
             - Context: ${dialogue.context}
             - Current Phase: ${currentPhase}
             - Dialogue: User responded "${currentUserInput}" to "${currentActorResponse}"
-            SCORING CRITERIA: ${dialogue.scoring_categories.join(",")}
+            SCORING CRITERIA: ${dialogue.scoring_categories.join("(0-1), ")}
 
             RESPONSE FORMAT (JSON):
             {
               "scores": {
-                "category_name": 4,
+                "category_name": 1,
+                "category_name": 0,
+
               },
               "betterResponse": "A possible response that could be better or just as good as the user's current response.",
 
