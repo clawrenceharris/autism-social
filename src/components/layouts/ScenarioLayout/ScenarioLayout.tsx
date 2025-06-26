@@ -10,42 +10,27 @@ const ScenarioLayout = () => {
     dialogueId: string;
   }>();
 
-  const {
-    scenarios,
-    loading: scenariosLoading,
-    fetchScenarios,
-  } = useScenarioStore();
-  const {
-    dialogues,
-    loading: dialoguesLoading,
-    fetchDialogues,
-    fetchDialoguesByScenario,
-  } = useDialogueStore();
+  const { scenarios, fetchScenarios } = useScenarioStore();
+  const { dialogues, fetchDialogues, fetchDialoguesByScenario } =
+    useDialogueStore();
   const { setScenario, setDialogue } = usePlayScenarioStore();
-
   useEffect(() => {
-    if (scenarioId && !scenariosLoading) {
+    if (scenarioId) {
+      fetchDialoguesByScenario(scenarioId);
+    }
+  }, [fetchDialoguesByScenario, scenarioId]);
+  useEffect(() => {
+    if (scenarioId) {
       setScenario(scenarios[scenarioId]);
-      // fetchDialoguesByScenario(scenarioId);
     } else {
       setScenario(null);
     }
-    if (dialogueId && !dialoguesLoading) {
+    if (dialogueId) {
       setDialogue(dialogues[dialogueId]);
     } else {
       setDialogue(null);
     }
-  }, [
-    dialogueId,
-    dialogues,
-    dialoguesLoading,
-    fetchDialoguesByScenario,
-    scenarioId,
-    scenarios,
-    scenariosLoading,
-    setDialogue,
-    setScenario,
-  ]);
+  }, [dialogueId, dialogues, scenarioId, scenarios, setDialogue, setScenario]);
   useEffect(() => {
     fetchDialogues();
     fetchScenarios();

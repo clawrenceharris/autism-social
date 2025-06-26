@@ -1,6 +1,45 @@
 @use "../../styles/variables";
 @use "../../styles/mixins";
+.rank-badge {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background: $color-white;
+  box-shadow: 0 8px 30px rgba(var(--rank-color), 0.5);
+  position: relative;
+  transition: all 0.3s ease;
+  background: $color-white;
 
+  &::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    filter: blur(10px);
+
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    background: #ffffff50;
+    z-index: -1;
+    animation: rotate 3s linear infinite;
+    opacity: 0.7;
+  }
+
+  .rank-icon {
+    font-size: inherit;
+    line-height: 1;
+    width: 100px;
+    height: 100px;
+    padding: $spacing-2;
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+}
 .rank-display {
   display: flex;
   flex-direction: column;
@@ -53,44 +92,6 @@
 
     .rank-level {
       font-size: 1.25rem;
-    }
-  }
-
-  .rank-badge {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    background: $color-white;
-    box-shadow: 0 8px 30px rgba(var(--rank-color), 0.5);
-    position: relative;
-    transition: all 0.3s ease;
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: -5px;
-      filter: blur(10px);
-
-      left: -5px;
-      right: -5px;
-      bottom: -5px;
-      border-radius: 50%;
-      background: #ffffff50;
-      z-index: -1;
-      animation: rotate 3s linear infinite;
-      opacity: 0.7;
-    }
-
-    .rank-icon {
-      font-size: inherit;
-      line-height: 1;
-      padding: $spacing-2;
-
-      img {
-        width: 100%;
-        height: 100%;
-      }
     }
   }
 
@@ -248,7 +249,7 @@
       justify-content: center;
       align-items: center;
       border-radius: 50%;
-      background: red;
+
       box-shadow: 0 8px 30px rgba(var(--rank-color, $color-primary), 0.3);
       position: relative;
       font-size: 3rem;
@@ -291,25 +292,6 @@
       font-size: 1.1rem;
       color: $color-gray-600;
       margin-bottom: $spacing-6;
-    }
-
-    .rank-details {
-      background: $color-gray-50;
-      border-radius: $border-radius-lg;
-      padding: $spacing-4;
-      margin-bottom: $spacing-6;
-
-      .new-rank {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--rank-color, $color-primary);
-        margin-bottom: $spacing-2;
-      }
-
-      .rank-perks {
-        font-size: 0.95rem;
-        color: $color-gray-700;
-      }
     }
 
     .celebration-actions {
@@ -408,14 +390,6 @@
 
       .celebration-message {
         font-size: 1rem;
-      }
-
-      .rank-details {
-        padding: $spacing-3;
-
-        .new-rank {
-          font-size: 1.25rem;
-        }
       }
     }
   }

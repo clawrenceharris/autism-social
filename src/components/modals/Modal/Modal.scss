@@ -5,7 +5,7 @@
   &-overlay {
     position: fixed;
     inset: 0;
-    z-index: 99;
+    z-index: 999;
     overflow-y: auto;
     background: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(4px);

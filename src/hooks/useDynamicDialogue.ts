@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { useMachine } from "@xstate/react";
 import {
   createDialogueMachine,
@@ -27,7 +27,7 @@ interface UseDialogueOptions {
   actor: Actor;
   userFields: { [key: string]: string };
   user: UserProfile;
-  onDialogueComplete?: (finalScores: object) => void;
+  onDialogueComplete?: (context: DialogueContext) => Promise<void> | void;
   onError?: (error: string) => void;
 }
 
@@ -60,8 +60,7 @@ interface UseDialogueReturn {
 export const useDynamicDialogue = (
   options: UseDialogueOptions
 ): UseDialogueReturn => {
-  const { dialogue, actor, user, userFields, onDialogueComplete, onError } =
-    options;
+  const { dialogue, actor, user, userFields, onDialogueComplete } = options;
 
   // Initialize AI services
   const openai = useOpenAI();
@@ -74,9 +73,6 @@ export const useDynamicDialogue = (
   // Define services for the XState machine
   const services: HybridDialogueServices = useMemo(
     () => ({
-      initializeDialogue: async (context) => {
-        return await dynamicDialogueService.initializeDialogue(context);
-      },
       generateActorResponse: async (context) => {
         return await dynamicDialogueService.generateActorResponse(context);
       },
@@ -92,8 +88,11 @@ export const useDynamicDialogue = (
             context.currentActorResponse?.nextPhase || context.currentPhase,
         };
       },
+      onDialogueComplete: async (context) => {
+        if (onDialogueComplete) return await onDialogueComplete(context);
+      },
     }),
-    [dynamicDialogueService]
+    [dynamicDialogueService, onDialogueComplete]
   );
 
   // Create the machine
@@ -103,28 +102,6 @@ export const useDynamicDialogue = (
 
   // Use the machine
   const [state, send] = useMachine(machineRef.current);
-
-  // Handle dialogue completion
-  useEffect(() => {
-    if (state.status === "done" && onDialogueComplete) {
-      onDialogueComplete({
-        totalScores: state.context.totalScores,
-        conversationHistory: state.context.conversationHistory,
-      });
-    }
-  }, [
-    onDialogueComplete,
-    state.context.conversationHistory,
-    state.context.totalScores,
-    state.status,
-  ]);
-
-  // Handle errors
-  useEffect(() => {
-    if (state.status === "error" && state.context.error && onError) {
-      onError(state.context.error);
-    }
-  }, [state.status, onError, state.context.error]);
 
   // Action creators
   const startDialogue = useCallback(() => {
@@ -154,7 +131,7 @@ export const useDynamicDialogue = (
     state.matches("initializing");
 
   const isWaitingForUser = state.matches("waitingForUserInput");
-  const isCompleted = state.matches("completed");
+  const isCompleted = useMemo(() => state.status === "done", [state.status]);
   const hasError = state.matches("error");
 
   return {

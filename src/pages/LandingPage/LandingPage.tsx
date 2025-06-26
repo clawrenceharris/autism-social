@@ -39,7 +39,10 @@ const LandingPage = () => {
             className="logo"
           />
         </Link>
-        <div className="">
+        <div className="content-row">
+          <Link to="/login" className="btn btn-tertiary">
+            Log In
+          </Link>
           <Link to="/signup" className="btn btn-special">
             Get Started
           </Link>
@@ -150,6 +153,7 @@ const LandingPage = () => {
                     <span>Track your progress over time</span>
                   </div>
                 </div>
+
                 <Link to="/signup" className="btn btn-special">
                   <Sparkles size={20} />
                   Get Started Free
@@ -170,7 +174,7 @@ const LandingPage = () => {
             <button style={{ color: "#fff" }}>Chatterbrain</button>
           </div>
           <div className="footer-links">
-            <Link to="/">Home</Link>
+            <Link to="/dashboard">Home</Link>
             <Link to="/about">About</Link>
             <Link to="/privacy">Privacy</Link>
             <Link to="/terms">Terms</Link>

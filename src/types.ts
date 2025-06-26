@@ -100,6 +100,7 @@ export interface Scenario {
 }
 
 export interface Dialogue {
+  form_helper: string;
   context: string;
   id: string;
   tags: string[];
@@ -108,7 +109,7 @@ export interface Dialogue {
   actor_id: string;
   scenario_id: string;
   title: string;
-  introduction: string;
+  description: string;
   placeholders: string[];
   steps: DialogueStep[];
   difficulty: Difficulty;

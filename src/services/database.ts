@@ -179,6 +179,29 @@ export class DatabaseService {
   }
 
   /**
+   * Upsert a record
+   * @param table - The table name
+   * @param id - The record ID if given
+   * @param data - The data to upsert
+   * @returns Promise with upserted record or error
+   */
+  static async upsert<T>(
+    table: Table,
+    data: Partial<T>,
+
+    id?: string
+  ): Promise<DatabaseResult<T>> {
+    const { data: result, error } = await supabase
+      .from(table)
+      .upsert(data)
+      .eq("id", id)
+      .select()
+      .single();
+
+    return { data: result as T, error };
+  }
+
+  /**
    * Update records by custom column
    * @param table - The table name
    * @param column - The column to filter by
@@ -196,6 +219,30 @@ export class DatabaseService {
       .from(table)
       .update(data)
       .eq(column, value)
+      .select()
+      .single();
+
+    return { data: result as T, error };
+  }
+  /**
+   * Upsert records by custom column
+   * @param table - The table name
+   * @param column - The column to filter by
+   * @param value - The value to match
+   * @param data - The data to upsert
+   * @returns Promise with upserted records or error
+   */
+  static async upsertBy<T extends object>(
+    table: Table,
+    data: Partial<T>,
+
+    column?: string,
+    value?: string | number
+  ): Promise<DatabaseResult<T>> {
+    const { data: result, error } = await supabase
+      .from(table)
+      .upsert(data)
+      .eq(column || "id", value)
       .select()
       .single();
 

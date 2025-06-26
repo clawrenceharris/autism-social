@@ -28,7 +28,7 @@ export const useDialogueCompletion = (
       setError(null);
 
       try {
-        const result = await dialogueService.addDialogueProgress({
+        const result = await dialogueService.upsertDialogueProgress({
           userId,
           dialogueId,
           scoring,
@@ -71,70 +71,8 @@ export const useDialogueCompletion = (
     [options, showToast, incrementStreak]
   );
 
-  const updateDialogueProgress = useCallback(
-    async (
-      userId: string,
-      dialogueId: string,
-      scoring: ScoreSummary,
-      maxScoring: ScoreSummary
-    ) => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const result = await dialogueService.updateDialogueProgress({
-          userId,
-          dialogueId,
-          maxScoring,
-          scoring,
-        });
-
-        // Update streak when dialogue is completed
-        const streakResult = await incrementStreak(userId);
-
-        // Show streak notification if streak was incremented
-        if (streakResult.streakIncremented) {
-          showToast(
-            `🔥 Streak increased to ${streakResult.streakData.currentStreak} days!`,
-            {
-              type: "success",
-            }
-          );
-        }
-
-        if (options.onSuccess && result) {
-          options.onSuccess(result, streakResult);
-        }
-
-        showToast("Dialogue completed successfully! 🎉", { type: "success" });
-        return result;
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : "Failed to complete dialogue";
-        setError(errorMessage);
-
-        if (options.onError) {
-          options.onError(errorMessage);
-        }
-
-        showToast(errorMessage, { type: "error" });
-        throw err;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [options, showToast, incrementStreak]
-  );
-
-  const reset = useCallback(() => {
-    setError(null);
-    setIsLoading(false);
-  }, []);
-
   return {
     addDialogueProgress,
-    updateDialogueProgress,
-    reset,
     isLoading,
     error,
   };

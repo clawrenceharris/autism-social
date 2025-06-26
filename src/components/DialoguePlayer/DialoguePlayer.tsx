@@ -41,14 +41,13 @@ const DialoguePlayer = ({
   onReplay,
   actor,
 }: DialoguePlayerProps) => {
-  const { fetchProgress, progress } = useProgressStore();
+  const { fetchProgress } = useProgressStore();
 
   const [customInput, setCustomInput] = useState("");
   const [isVolumeOn, setIsVolumeOn] = useState<boolean>(false);
   const [audioCache, setAudioCache] = useState<Map<string, string>>(new Map());
   const [isGeneratingAudio, setIsGeneratingAudio] = useState<boolean>(false);
   const {
-    updateDialogueProgress,
     addDialogueProgress,
     error,
     isLoading: isSaving,
@@ -164,33 +163,17 @@ const DialoguePlayer = ({
     if (!customInput.trim()) return;
 
     submitUserInput(customInput);
+    setCustomInput("");
   };
 
   const handleDialogueComplete = useCallback(() => {
-    if (progress?.map((p) => p.dialogue_id).includes(dialogue.id)) {
-      updateDialogueProgress(
-        user.user_id,
-        dialogue.id,
-        context.totalScores,
-        dialogue.max_scoring
-      );
-    } else {
-      addDialogueProgress(
-        user.user_id,
-        dialogue.id,
-        context.totalScores,
-        dialogue.max_scoring
-      );
-    }
-  }, [
-    addDialogueProgress,
-    context.totalScores,
-    dialogue.id,
-    dialogue.max_scoring,
-    progress,
-    updateDialogueProgress,
-    user.user_id,
-  ]);
+    addDialogueProgress(
+      user.user_id,
+      dialogue.id,
+      context.totalScores,
+      dialogue.max_scoring
+    );
+  }, [addDialogueProgress, context.totalScores, dialogue, user.user_id]);
   const handleResultsClick = () => {
     openModal(
       <DialogueCompletionModal
