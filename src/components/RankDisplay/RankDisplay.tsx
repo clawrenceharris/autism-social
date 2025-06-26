@@ -80,15 +80,6 @@ const RankUpCelebration: React.FC<RankUpCelebrationProps> = ({
           new rank!
         </p>
 
-        <div className="rank-details">
-          <div className="new-rank" style={{ color: newRank.color }}>
-            {newRank.icon} {newRank.title} (Rank {newRank.level})
-          </div>
-          <p className="rank-perks">
-            Keep practicing to unlock more advanced scenarios and achievements!
-          </p>
-        </div>
-
         <div className="celebration-actions">
           <button onClick={onClose} className="btn btn-primary">
             Continue

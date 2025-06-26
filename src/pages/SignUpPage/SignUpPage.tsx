@@ -51,7 +51,7 @@ const SignUpPage = () => {
       }
 
       showToast("Sign up was successful!", { type: "success" });
-      navigate("/", { replace: true });
+      navigate("/dashboard", { replace: true });
     } catch (error) {
       const err = handleError({ error, action: "sign up" });
       setError(err.message);

@@ -18,7 +18,7 @@ const StartDialogueModal = ({
   return (
     <div>
       <p className="description">
-        {dialogue.introduction ||
+        {dialogue.form_helper ||
           "Fill out the fields below so the dialogue engine can provide a realistic and personalized experience for you."}
       </p>
 

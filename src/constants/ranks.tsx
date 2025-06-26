@@ -16,7 +16,7 @@ export const RANKS: UserRank[] = [
     minPoints: 10,
     maxPoints: 49,
     icon: <img src={assets.badge2} alt="Level 2 Badge" />,
-    color: "#F9B200",
+    color: "lightgreen",
   },
   {
     level: 2,
@@ -24,7 +24,7 @@ export const RANKS: UserRank[] = [
     minPoints: 50,
     maxPoints: 79,
     icon: <img src={assets.badge3} alt="Level 3 Badge" />,
-    color: "#22c55e",
+    color: "lightgreen",
   },
   {
     level: 4,
@@ -32,7 +32,7 @@ export const RANKS: UserRank[] = [
     minPoints: 120,
     maxPoints: 199,
     icon: <img src={assets.badge4} alt="Level 4 Badge" />,
-    color: "#54cbe2",
+    color: "gold",
   },
   {
     level: 5,

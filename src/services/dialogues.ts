@@ -85,7 +85,7 @@ export async function getDialogueById(id: string) {
   return data;
 }
 
-export async function addDialogueProgress({
+export async function upsertDialogueProgress({
   userId,
   dialogueId,
   scoring,
@@ -96,14 +96,16 @@ export async function addDialogueProgress({
   scoring: ScoreSummary;
   maxScoring: ScoreSummary;
 }) {
-  const { data, error } = await DatabaseService.create<UserProgress>(
+  const { data, error } = await DatabaseService.upsertBy<UserProgress>(
     "user_progress",
     {
       user_id: userId,
       dialogue_id: dialogueId,
       scoring,
       max_scoring: maxScoring,
-    }
+    },
+    "user_id",
+    userId
   );
   if (error) throw error;
   return data;

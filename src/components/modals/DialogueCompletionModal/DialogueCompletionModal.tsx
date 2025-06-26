@@ -14,13 +14,13 @@ import type {
   Dialogue,
   Actor,
 } from "../../../types";
-import { useGemini } from "../../../hooks";
 import {
   formatCategoryName,
   getCategoryIcon,
 } from "../../../utils/categoryUtils";
 import type { ConversationMessage } from "../../../services/dynamicDialogue";
 import type { DialogueContext } from "../../../xstate/createDialogueMachine";
+import { useScoreCategoryStore } from "../../../store/useScoreCategoryStore";
 
 interface DialogueCompletionModalProps {
   userMessages: ConversationMessage[];
@@ -33,69 +33,50 @@ interface DialogueCompletionModalProps {
 interface StepAnalysis {
   userResponse: string;
   actorMessage: string;
-  pointsEarned: ScoreSummary;
+  scores: ScoreSummary;
   betterResponse?: string;
   feedback?: string;
-  scoring: ScoreCategory[];
 }
-
 const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
   dialogueContext,
-  actor,
   userMessages,
   actorMessages,
-  dialogue,
 }) => {
   const [analysisMode, setAnalysisMode] = useState(false);
   const [expandedStepIndex, setExpandedStepIndex] = useState<number | null>(
     null
   );
-  const [feedback, setFeedback] = useState<string>();
-  const [betterResponse, setBetterResponse] = useState<string>();
+  const [showFeedback, setShowFeedback] = useState<number | null>(null);
+  const [showBetterResponse, setShowBetterResponse] = useState<number | null>(
+    null
+  );
 
-  const [loadingBetterResponse, setLoadingBetterResponse] =
-    useState<boolean>(false);
-  const [loadingFeedback, setLoadingFeedback] = useState<boolean>(false);
-  const { generateText } = useGemini();
-  const categories: ScoreCategory[] = [
-    "clarity",
-    "empathy",
-    "assertiveness",
-    "social_awareness",
-    "self_advocacy",
-  ];
+  const { categories } = useScoreCategoryStore();
 
   // Mock step analysis data - in real app this would come from the dialogue completion
-  const stepAnalyses: StepAnalysis[] = dialogueContext.conversationHistory
+  const stepAnalyses: StepAnalysis[] = userMessages
     //ignore the last step
 
-    .map((opt, index) => ({
-      userResponse: userMessages[index]?.content || "",
-      actorMessage: actorMessages[index]?.content || "",
-      scoring: Object.keys(opt.scores || {}) as ScoreCategory[],
-      pointsEarned: {
-        clarity: opt.scores?.clarity,
-        empathy: opt.scores?.empathy,
-        assertiveness: opt.scores?.assertiveness,
-        social_awareness: opt.scores?.social_awareness,
-        self_advocacy: opt.scores?.self_advocacy,
-      },
+    .map((userMessage, index) => ({
+      userResponse: userMessage.content,
+      actorMessage: actorMessages[index].content,
+      feedback: userMessage.analysis?.feedback,
+      betterResponse: userMessage.analysis?.betterResponse,
+
+      scores: userMessage.analysis?.scores || {},
     }));
+  const generateBetterResponse = (index: number) => {
+    setShowBetterResponse(index);
+  };
 
-  const generateBetterResponse = async (
-    actorMessage: string,
-    userMessage: string,
-    scoring: ScoreCategory[]
-  ) => {};
-
-  const generateFeedback = async (
-    actorMessage: string,
-    userMessage: string,
-    scoring: ScoreCategory[]
-  ) => {};
+  const generateFeedback = async (index: number) => {
+    setShowFeedback(index);
+  };
 
   const toggleStepExpansion = (index: number) => {
     setExpandedStepIndex(expandedStepIndex === index ? null : index);
+    setShowBetterResponse(null);
+    setShowFeedback(null);
   };
 
   const totalPointsEarned = Object.values(dialogueContext.totalScores).reduce(
@@ -149,17 +130,20 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
           <h3 className="section-title">Your Performance Breakdown</h3>
           <div className="progress-categories">
             {categories.map((category, index) => {
-              const pointsEarned = dialogueContext.totalScores[category];
+              const pointsEarned =
+                dialogueContext.totalScores[
+                  category.name.toLowerCase().replace(" ", "_") as ScoreCategory
+                ];
               if (pointsEarned)
                 return (
                   <div key={index} className="progress-item">
                     <div className="progress-header">
                       <div className="category-info">
                         <div className="category-icon">
-                          {getCategoryIcon(category)}
+                          {getCategoryIcon(category.name)}
                         </div>
                         <span className="category-name">
-                          {formatCategoryName(category)}
+                          {formatCategoryName(category.name)}
                         </span>
                       </div>
                       <div className="score-display">
@@ -168,7 +152,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                     </div>
 
                     <p className="description">
-                      <em>{getCategoryDescription(category)}</em>
+                      <em>{category.description}</em>
                     </p>
                   </div>
                 );
@@ -192,7 +176,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                   <div className="step-info">
                     <span className="step-number">Step {index + 1}</span>
                     <div className="step-points">
-                      {Object.entries(analysis.pointsEarned).map(
+                      {Object.entries(analysis.scores).map(
                         ([cat, points]) =>
                           points > 0 && (
                             <span key={cat} className="point-badge">
@@ -222,28 +206,22 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                         <div className="message-bubble">
                           <p className="message-text">
                             {analysis.actorMessage}
-                            {betterResponse && (
+                            {showBetterResponse === index && (
                               <span className="description better-response">
-                                {betterResponse}
+                                {analysis.betterResponse ||
+                                  "Better response is not available."}
                               </span>
                             )}
                           </p>
                         </div>
                         <button
                           onClick={() =>
-                            generateBetterResponse(
-                              analysis.actorMessage,
-                              analysis.userResponse,
-                              analysis.scoring
-                            )
+                            generateBetterResponse(expandedStepIndex)
                           }
                           className="analysis-btn better-response"
-                          disabled={loadingBetterResponse}
                         >
                           <Lightbulb size={16} />
-                          {loadingBetterResponse
-                            ? "Generating..."
-                            : "Better Response"}
+                          Better Response
                         </button>
                       </div>
 
@@ -252,26 +230,20 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                         <div className="message-bubble">
                           <p className="message-text">
                             {analysis.userResponse}
-                            {feedback && (
+                            {showFeedback === index && (
                               <span className="description feedback">
-                                {feedback}
+                                {analysis.feedback ||
+                                  "Feedback is not available for this response."}
                               </span>
                             )}
                           </p>
                         </div>
                         <button
-                          onClick={() =>
-                            generateFeedback(
-                              analysis.actorMessage,
-                              analysis.userResponse,
-                              analysis.scoring
-                            )
-                          }
+                          onClick={() => generateFeedback(expandedStepIndex)}
                           className="analysis-btn feedback"
-                          disabled={loadingFeedback}
                         >
                           <MessageSquare size={16} />
-                          {loadingFeedback ? "Analyzing..." : "Get Feedback"}
+                          Feedback
                         </button>
                       </div>
                     </div>
@@ -280,7 +252,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                     <div className="points-breakdown">
                       <h4>Points Earned This Step:</h4>
                       <div className="points-grid">
-                        {Object.entries(analysis.pointsEarned).map(
+                        {Object.entries(analysis.scores).map(
                           ([category, points]) =>
                             points !== undefined ? (
                               <div
@@ -312,23 +284,5 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
     </>
   );
 };
-
-// Helper function for category descriptions
-function getCategoryDescription(category: ScoreCategory): string {
-  switch (category) {
-    case "clarity":
-      return "How clearly you communicated your thoughts and intentions";
-    case "empathy":
-      return "Your ability to understand and respond to others' emotions";
-    case "assertiveness":
-      return "How well you expressed your needs while respecting others";
-    case "social_awareness":
-      return "Your understanding of social cues and appropriate responses";
-    case "self_advocacy":
-      return "How effectively you stood up for yourself and your needs";
-    default:
-      return "";
-  }
-}
 
 export default DialogueCompletionModal;

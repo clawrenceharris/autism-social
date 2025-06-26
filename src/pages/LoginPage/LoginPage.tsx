@@ -4,6 +4,7 @@ import { useState } from "react";
 import { signIn } from "../../services/auth";
 import "./LoginPage.scss";
 import { useErrorHandler } from "../../hooks/useErrorHandler";
+import { useUserStore } from "../../store/useUserStore";
 
 interface LoginFormValues {
   email: string;
@@ -18,16 +19,21 @@ const LoginPage = () => {
     showToast: false,
     component: "LoginPage",
   });
-
-  const handleSubmit = async (data: LoginFormValues) => {
+  const { user: existingUser, logout } = useUserStore();
+  const handleSubmit = async (data?: LoginFormValues) => {
     try {
+      if (existingUser) {
+        return navigate("/dashboard");
+      }
       setIsLoading(true);
       setError(null);
-
+      if (!data) {
+        throw new Error("Please fill out all fields.");
+      }
       const user = await signIn(data.email, data.password);
 
       if (!user) {
-        throw new Error("No user data received");
+        throw new Error("Unable to load your account");
       }
       navigate("/dashboard", { replace: true });
     } catch (error) {
@@ -37,7 +43,35 @@ const LoginPage = () => {
       setIsLoading(false);
     }
   };
+  if (existingUser) {
+    return (
+      <div className="login-container">
+        <div className="login-card">
+          <div className="login-header">
+            <h1>Log in</h1>
+          </div>
+          <p className="auth-status-box">
+            Looks like you're already logged in!
+          </p>
+          <div className="flex-content">
+            <button onClick={logout} className="btn btn-tertiary">
+              Log Out
+            </button>
 
+            <button onClick={() => handleSubmit()} className="btn btn-primary">
+              Go to Dashboard
+            </button>
+          </div>
+
+          <div className="login-footer">
+            <p>
+              Or <Link to="/signup">Sign up</Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="login-container">
       <div className="login-card">

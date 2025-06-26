@@ -6,7 +6,6 @@ import type {
   UserResponseAnalysis,
 } from "../services/dynamicDialogue";
 import type { Actor, Dialogue, ScoreSummary, UserProfile } from "../types";
-import type { Category } from "../services/scoring_categories";
 import type { ResponseOutputItem } from "openai/resources/responses/responses.mjs";
 
 // Machine context
@@ -22,7 +21,6 @@ export interface DialogueContext {
 
   conversationHistory: ConversationMessage[];
   currentPhase: DialoguePhase;
-  scoringCategories: Category[];
   // Current interaction
   currentActorResponse?: ActorResponse;
   currentUserInput?: string;
@@ -55,7 +53,7 @@ export interface HybridDialogueServices {
     shouldTransition: boolean;
     nextPhase?: DialoguePhase;
   }>;
-  initializeDialogue: (context: DialogueContext) => Promise<ActorResponse>;
+  onDialogueComplete: (context: DialogueContext) => Promise<void> | void;
 }
 
 /**
@@ -83,7 +81,6 @@ export function createDialogueMachine(
       responses: [],
       dialogue,
       actor,
-      scoringCategories: [],
       user,
       conversationHistory: [],
       currentPhase: "introduction",
@@ -94,30 +91,7 @@ export function createDialogueMachine(
       waitingForStart: {
         on: {
           START_DIALOGUE: {
-            target: "initializingDialogue",
-          },
-        },
-      },
-      initializingDialogue: {
-        invoke: {
-          id: "initializeDialogue",
-          src: fromPromise(async ({ input }) => {
-            return services.initializeDialogue(input);
-          }),
-          input: ({ context }) => context,
-          onDone: {
             target: "generatingActorResponse",
-            actions: assign({
-              currentActorResponse: ({ event }) => event.output,
-              error: undefined,
-            }),
-          },
-          onError: {
-            target: "error",
-            actions: assign({
-              error: ({ event }) =>
-                `Failed to initialize dialogue: ${event.error}`,
-            }),
           },
         },
       },
@@ -145,7 +119,7 @@ export function createDialogueMachine(
                     content: event.output.content,
                     speaker: "actor" as const,
                     phase: context.currentPhase,
-                  } as ConversationMessage,
+                  },
                 ],
               }),
             ],
@@ -179,6 +153,7 @@ export function createDialogueMachine(
         invoke: {
           src: fromPromise(async ({ input }) => {
             const { context, userInput } = input;
+
             return services.analyzeUserResponse(userInput, context);
           }),
           input: ({ context }) => ({
@@ -191,19 +166,16 @@ export function createDialogueMachine(
               assign({
                 currentUserAnalysis: ({ event }) => event.output,
               }),
-              // Add user message to conversation history with scores
               assign({
                 conversationHistory: ({ context, event }) => [
                   ...context.conversationHistory,
-
                   {
                     id: crypto.randomUUID(),
                     speaker: "user" as const,
                     content: context.currentUserInput!,
-
-                    scores: event.output.scores,
+                    analysis: event.output, // ✅ Use event.output directly
                     phase: context.currentPhase,
-                  },
+                  } as ConversationMessage,
                 ],
               }),
 
@@ -247,14 +219,16 @@ export function createDialogueMachine(
           id: "checkPhaseTransition",
           src: fromPromise(async ({ input }) => {
             // Check if the AI suggested a phase transition
-            if (input.currentActorResponse?.nextPhase && 
-                input.currentActorResponse.nextPhase !== input.currentPhase) {
+            if (
+              input.currentActorResponse?.nextPhase &&
+              input.currentActorResponse.nextPhase !== input.currentPhase
+            ) {
               return {
                 shouldTransition: true,
-                nextPhase: input.currentActorResponse.nextPhase
+                nextPhase: input.currentActorResponse.nextPhase,
               };
             }
-            
+
             // Otherwise, use the service to determine if we should transition
             return services.shouldTransitionPhase(input);
           }),
@@ -289,6 +263,14 @@ export function createDialogueMachine(
 
       completed: {
         type: "final",
+
+        invoke: {
+          id: "completeDialogue",
+          src: fromPromise(async ({ input }) => {
+            if (services.onDialogueComplete) services.onDialogueComplete(input);
+          }),
+          input: ({ context }) => context,
+        },
         entry: assign({
           currentPhase: "completed" as const,
         }),
@@ -296,13 +278,6 @@ export function createDialogueMachine(
 
       error: {
         on: {
-          RETRY: {
-            target: "generatingActorResponse",
-            actions: assign({
-              error: undefined,
-            }),
-          },
-
           END_DIALOGUE: {
             target: "completed",
           },

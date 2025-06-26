@@ -1,10 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Link,
-  useNavigate,
-  useOutletContext,
-  useParams,
-} from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { useModal } from "../../context";
 import { X, Home } from "lucide-react";
 import "../PlayScenarioPage/PlayScenarioPage.scss";
@@ -22,10 +17,6 @@ import { usePlayScenarioStore } from "../../store/usePlayScenarioStore";
 import { useActorStore } from "../../store/useActorStore";
 
 const PlayScenarioPage = () => {
-  const { dialogueId, scenarioId } = useParams<{
-    dialogueId: string;
-    scenarioId: string;
-  }>();
   const [userFields, setUserFields] = useState<{ [key: string]: string }>();
   const navigate = useNavigate();
   const { loading: scenariosLoading, error: scenarioError } =
@@ -35,29 +26,19 @@ const PlayScenarioPage = () => {
   const {
     loading: dialoguesLoading,
     dialoguesByScenario,
-    fetchDialoguesByScenario,
     error: dialogueError,
   } = useDialogueStore();
-  const {
-    error: actorError,
-    selectedActor,
-    actors,
-    fetchActors,
-    setActor,
-  } = useActorStore();
+  const { error: actorError, actors, fetchActors } = useActorStore();
   const [key, setKey] = useState<number>(0);
   const { openModal, closeModal } = useModal();
   const { profile: user } = useOutletContext<AuthContextType>();
 
   useEffect(() => {
-    if (scenarioId) {
-      fetchDialoguesByScenario(scenarioId);
-      fetchActors();
-    }
-  }, [fetchActors, fetchDialoguesByScenario, scenarioId]);
+    fetchActors();
+  }, [fetchActors]);
 
   useEffect(() => {
-    if (dialogue && dialogue.placeholders.length > 0) {
+    if (scenario && dialogue && !userFields) {
       // Open modal so we can enter the user fields
       openModal(
         <FormLayout<{ [key: string]: string }>
@@ -65,12 +46,19 @@ const PlayScenarioPage = () => {
             setUserFields(data);
             closeModal();
           }}
+          descriptionStyle={{
+            background: "#e3f3fe",
+            padding: 30,
+            borderRadius: 20,
+            color: "#54cbe2",
+          }}
+          description={dialogue.description}
           submitText="Start Dialogue"
           showsCancelButton={true}
-          cancelText="Cancel"
+          cancelText="Leave"
           onCancel={() => {
             closeModal();
-            navigate("/");
+            navigate(`/scenario/${scenario.id}`);
           }}
         >
           <StartDialogueModal
@@ -81,16 +69,7 @@ const PlayScenarioPage = () => {
         "Start Dialogue"
       );
     }
-  }, [
-    actors,
-    closeModal,
-    dialogue,
-    dialogueId,
-    navigate,
-    openModal,
-    selectedActor,
-    setActor,
-  ]);
+  }, [closeModal, dialogue, navigate, openModal, scenario, userFields]);
 
   const handleReplay = () => {
     setKey((prev) => prev + 1);
@@ -115,7 +94,7 @@ const PlayScenarioPage = () => {
         <div className="error-state">
           <h1>Oops! Something went wrong</h1>
           <p>{scenarioError || dialogueError || actorError}</p>
-          <Link to={"/"} className="btn btn-primary">
+          <Link to={"/dashboard"} className="btn btn-primary">
             <Home size={20} />
             Return to Dashboard
           </Link>
@@ -133,7 +112,7 @@ const PlayScenarioPage = () => {
             <p>The requested scenario could not be found.</p>
           </div>
 
-          <Link to={"/"} className="btn btn-primary">
+          <Link to={"/dashboard"} className="btn btn-primary">
             <Home size={20} />
             Return to Dashboard
           </Link>
@@ -156,7 +135,7 @@ const PlayScenarioPage = () => {
               </h1>
             </div>
             <div className="game-controls">
-              <Link to={"/"} className="control-btn btn-danger">
+              <Link to={"/dashboard"} className="control-btn btn-danger">
                 <X size={20} />
               </Link>
             </div>

@@ -9,24 +9,18 @@ import { supabase } from "../lib/supabase";
 import type { User } from "@supabase/supabase-js";
 import { useUserStore } from "../store/useUserStore";
 import type { UserProfile } from "../types";
-
-const AuthContext = createContext<
-  | {
-      user: User | null;
-      loading: boolean;
-      error: string | null;
-      isAdmin: boolean;
-      profile: UserProfile | null;
-    }
-  | undefined
->(undefined);
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+  profile: UserProfile | null;
+}
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
 
-  const { fetchUserData, user, setUser, loading, profile } = useUserStore();
-
+  const { fetchUserData, setUser, user, loading, profile } = useUserStore();
   useEffect(() => {
     if (user) fetchUserData(user.id);
   }, [fetchUserData, user]);
@@ -36,7 +30,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       try {
         if (event === "SIGNED_OUT" || !session?.user) {
-          setIsAdmin(false);
           setError(null);
         } else if (session?.user) {
           setUser(session.user);
@@ -53,7 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [setUser]);
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, error, isAdmin }}>
+    <AuthContext.Provider value={{ user, profile, loading, error }}>
       {children}
     </AuthContext.Provider>
   );

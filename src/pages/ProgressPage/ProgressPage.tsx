@@ -9,6 +9,7 @@ import {
   Clock,
   Frown,
   HelpCircle,
+  Percent,
   Play,
 } from "lucide-react";
 import "./ProgressPage.scss";
@@ -187,7 +188,7 @@ const ProgressPage = () => {
               </div>
               <div className="stat-card">
                 <div className="stat-icon">
-                  <Award size={20} />
+                  <Percent size={20} />
                 </div>
                 <div className="stat-value">{averageScore}%</div>
                 <div className="stat-label">Average Score</div>
