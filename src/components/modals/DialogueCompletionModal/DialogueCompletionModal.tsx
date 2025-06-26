@@ -25,7 +25,7 @@ import { useScoreCategoryStore } from "../../../store/useScoreCategoryStore";
 interface DialogueCompletionModalProps {
   userMessages: ConversationMessage[];
   actorMessages: ConversationMessage[];
-  dialogueContext: DialogueContext;
+  context: DialogueContext;
   dialogue: Dialogue;
   actor: Actor | null;
 }
@@ -38,7 +38,7 @@ interface StepAnalysis {
   feedback?: string;
 }
 const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
-  dialogueContext,
+  context,
   userMessages,
   actorMessages,
 }) => {
@@ -79,7 +79,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
     setShowFeedback(null);
   };
 
-  const totalPointsEarned = Object.values(dialogueContext.totalScores).reduce(
+  const totalPointsEarned = Object.values(context.totalScores).reduce(
     (sum, score) => sum + score,
     0
   );
@@ -131,7 +131,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
           <div className="progress-categories">
             {categories.map((category, index) => {
               const pointsEarned =
-                dialogueContext.totalScores[
+                context.totalScores[
                   category.name.toLowerCase().replace(" ", "_") as ScoreCategory
                 ];
               if (pointsEarned)

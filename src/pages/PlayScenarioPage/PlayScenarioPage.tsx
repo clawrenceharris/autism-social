@@ -26,7 +26,7 @@ const PlayScenarioPage = () => {
   const navigate = useNavigate();
   const { loading: scenariosLoading, error: scenarioError } =
     useScenarioStore();
-  const { setDialogue, scenario, dialogue } = usePlayScenarioStore();
+  const { setDialogue, scenario } = usePlayScenarioStore();
   const { dialogueId } = useParams<{
     dialogueId: string;
     scenarioId: string;
@@ -47,7 +47,7 @@ const PlayScenarioPage = () => {
   }, [fetchActors]);
 
   useEffect(() => {
-    if (dialogueId && scenario && dialogue && !userFields) {
+    if (dialogueId && scenario && !userFields) {
       // Open modal so we can enter the user fields
       openModal(
         <FormLayout<{ [key: string]: string }>
@@ -65,14 +65,14 @@ const PlayScenarioPage = () => {
             borderRadius: 20,
             color: "#54cbe2",
           }}
-          description={dialogue.description}
+          description={dialogues[dialogueId].description}
           submitText="Start Dialogue"
           showsCancelButton={true}
           cancelText="Cancel"
         >
           <StartDialogueModal
-            dialogue={dialogue}
-            placeholders={dialogue.placeholders}
+            dialogue={dialogues[dialogueId]}
+            placeholders={dialogues[dialogueId].placeholders}
           />
         </FormLayout>,
         "Start Dialogue"
@@ -81,10 +81,10 @@ const PlayScenarioPage = () => {
   }, [
     closeModal,
     dialogueId,
-    dialogue,
     navigate,
     openModal,
     scenario,
+    dialogues,
     userFields,
   ]);
 

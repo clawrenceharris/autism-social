@@ -199,7 +199,7 @@ const DialoguePlayer = ({
       <DialogueCompletionModal
         actor={actor}
         dialogue={dialogue}
-        dialogueContext={context}
+        context={context}
         userMessages={conversationHistory.filter(
           (item) => item.speaker === "user"
         )}
