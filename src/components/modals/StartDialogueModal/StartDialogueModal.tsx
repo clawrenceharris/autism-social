@@ -17,10 +17,9 @@ const StartDialogueModal = ({
 
   return (
     <div>
-      <p className="description">
-        {dialogue.form_helper ||
-          "Fill out the fields below so the dialogue engine can provide a realistic and personalized experience for you."}
-      </p>
+      {dialogue.form_helper && (
+        <p className="description">{dialogue.form_helper}</p>
+      )}
 
       <div className="form-content">
         {placeholders.map((placeholder, index) => {

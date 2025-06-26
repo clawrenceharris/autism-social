@@ -151,12 +151,13 @@ export class DialogueService {
       ? "Consider transitioning to main_topic phase as the introduction is complete."
       : "Maintain the current phase unless the conversation naturally progresses.";
 
-    const prompt = `You are ${actor.first_name} ${actor.last_name}. 
+    const prompt = `You are ${actor.first_name} ${
+      actor.last_name
+    }, ${renderTemplate(dialogue.context)}. 
         
         - Your role: ${actor.role}
         - Your persona: ${actor.persona_tags.join(", ")}
-        - Topic: ${dialogue.title}         
-        - Context: ${renderTemplate(dialogue.context)}
+        - Dialogue title: ${dialogue.title}         
         - Current phase: ${currentPhase}
         - Message count: ${this.messageCount}
         - User Info: ${Object.entries(context.userFields).map(

@@ -98,10 +98,9 @@
   }
 
   .dialogue-selection {
-    margin-top: 50px;
-    .dialogue-options {
-      padding: $spacing-8 0;
-      overflow-y: scroll;
+    .dialogue-list {
+      @include grid-layout-auto(500px);
+      margin-top: 50px;
     }
   }
 }

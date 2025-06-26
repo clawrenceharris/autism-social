@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { Actor, Dialogue, Scenario, UserProfile } from "../../types";
 
 import "./DialoguePlayer.scss";
@@ -157,7 +163,26 @@ const DialoguePlayer = ({
   const handleOptionClick = async (response: string) => {
     submitUserInput(response);
   };
+  const shuffledOptions = useMemo(() => {
+    const options = currentActorResponse?.userResponseOptions || [];
+    let currentIndex = options.length;
+    let randomIndex;
 
+    // While there remain elements to shuffle.
+    while (currentIndex > 0) {
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+
+      // And swap it with the current element.
+      [options[currentIndex], options[randomIndex]] = [
+        options[randomIndex],
+        options[currentIndex],
+      ];
+    }
+
+    return options;
+  }, [currentActorResponse?.userResponseOptions]);
   const handleCustomSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!customInput.trim()) return;
@@ -263,18 +288,16 @@ const DialoguePlayer = ({
         {!isCompleted ? (
           <div className="response-section">
             <div className="response-options">
-              {currentActorResponse?.userResponseOptions.map(
-                (response, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleOptionClick(response)}
-                    disabled={isLoading}
-                    className={`response-option ${isLoading ? "disabled" : ""}`}
-                  >
-                    <p className="option-text">{response}</p>
-                  </button>
-                )
-              )}
+              {shuffledOptions.map((response, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleOptionClick(response)}
+                  disabled={isLoading}
+                  className={`response-option ${isLoading ? "disabled" : ""}`}
+                >
+                  <p className="option-text">{response}</p>
+                </button>
+              ))}
             </div>
 
             <div className="custom-response">

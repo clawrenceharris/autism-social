@@ -7,12 +7,7 @@ import { useScoreCategoryStore } from "../../store/useScoreCategoryStore";
 import { formatCategoryName, getCategoryIcon } from "../../utils/categoryUtils";
 
 const ProgressDisplay = ({ userId }: { userId: string }) => {
-  const {
-    fetchProgress,
-    loading,
-    averageCategoryScores: scores,
-    error,
-  } = useProgressStore();
+  const { fetchProgress, loading, categoryScores, error } = useProgressStore();
   const { categories } = useScoreCategoryStore();
   useEffect(() => {
     fetchProgress(userId);
@@ -42,21 +37,6 @@ const ProgressDisplay = ({ userId }: { userId: string }) => {
         ) : (
           <div className="progress-categories">
             {categories.map((category) => (
-              //  <div key={progress.dialogue_id} className="activity-item">
-              //           <div className="activity-icon">
-              //             <IconComponent size={16} />
-              //           </div>
-              //           <div className="activity-details">
-              //             <div className="activity-text">
-              //               Completed dialogue
-              //             </div>
-              //             <div className="activity-time">
-              //               {new Date(
-              //                 progress.created_at || Date.now()
-              //               ).toLocaleDateString()}
-              //             </div>
-              //           </div>
-              //         </div>
               <Link
                 to={"/progress"}
                 key={category.id}
@@ -71,9 +51,9 @@ const ProgressDisplay = ({ userId }: { userId: string }) => {
                   </span>
                 </div>
                 <div className="category-details">
-                  <span className="category-text">
-                    {scores[category.name]}%
-                  </span>
+                  <p className="category-text">
+                    {categoryScores[category.name]} <span>pts</span>
+                  </p>
                 </div>
               </Link>
             ))}

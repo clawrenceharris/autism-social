@@ -25,8 +25,7 @@ const DashboardPage = () => {
     recommendedDialogues: recommendations = [],
     loading: recommendationsLoading,
   } = useRecommendationsStore();
-  const { progress, fetchProgress, totalPoints, averageScore } =
-    useProgressStore();
+  const { progress, fetchProgress, totalPoints } = useProgressStore();
   const {
     loading: challengesLoading,
     fetchDailyChallenges,
@@ -90,11 +89,6 @@ const DashboardPage = () => {
             </div>
             <div className="stat-label">Daily Streak</div>
           </Link>
-
-          <Link to="/progress" className="stat-item">
-            <div className="stat-number">{averageScore}%</div>
-            <div className="stat-label">Average Score</div>
-          </Link>
         </div>
       </div>
 
@@ -104,7 +98,7 @@ const DashboardPage = () => {
           <div className="card-section rank-section">
             <div className="section-header">
               <h2>
-                <Award size={20} style={{ marginRight: "0.5rem" }} />
+                <Award className="section-icon" size={20} />
                 Your Rank
               </h2>
               <Link to="/progress" className="section-action">
@@ -120,7 +114,11 @@ const DashboardPage = () => {
           <div className="card-section challenge-section">
             <div className="section-header">
               <h2>
-                <Calendar size={20} style={{ marginRight: "0.5rem" }} />
+                <Calendar
+                  className="section-icon"
+                  size={20}
+                  style={{ marginRight: "0.5rem" }}
+                />
                 Today's Challenge
               </h2>
               <Link to="/daily-challenges" className="section-action">
@@ -176,7 +174,11 @@ const DashboardPage = () => {
           <div className="card-section">
             <div className="section-header">
               <h2>
-                <Zap size={20} style={{ marginRight: "0.5rem" }} />
+                <Zap
+                  className="section-icon"
+                  size={20}
+                  style={{ marginRight: "0.5rem" }}
+                />
                 Recommended for You
               </h2>
               <Link to="/explore" className="section-action">

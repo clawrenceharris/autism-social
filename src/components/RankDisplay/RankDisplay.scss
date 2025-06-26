@@ -1,99 +1,37 @@
 @use "../../styles/variables";
 @use "../../styles/mixins";
+
 .rank-badge {
+  width: 120px;
+  height: 120px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 50%;
-  background: $color-white;
-  box-shadow: 0 8px 30px rgba(var(--rank-color), 0.5);
+  border-radius: $border-radius-full;
+  background-color: white;
+  box-shadow: 0 8px 30px var(--rank-color, $color-primary);
   position: relative;
-  transition: all 0.3s ease;
-  background: $color-white;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: -5px;
-    filter: blur(10px);
-
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border-radius: 50%;
-    background: #ffffff50;
-    z-index: -1;
-    animation: rotate 3s linear infinite;
-    opacity: 0.7;
-  }
+  font-size: 3rem;
+  animation: pulse 2s infinite;
 
   .rank-icon {
     font-size: inherit;
     line-height: 1;
-    width: 100px;
-    height: 100px;
-    padding: $spacing-2;
 
+    padding: $spacing-4;
     img {
       width: 100%;
       height: auto;
     }
   }
 }
+
 .rank-display {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: $spacing-4;
   width: 100%;
-
-  &.small {
-    .rank-badge {
-      width: 60px;
-      height: 60px;
-      font-size: 1.5rem;
-    }
-
-    .rank-title {
-      font-size: 1rem;
-    }
-
-    .rank-level {
-      font-size: 0.875rem;
-    }
-  }
-
-  &.medium {
-    .rank-badge {
-      width: 80px;
-      height: 80px;
-      font-size: 2rem;
-    }
-
-    .rank-title {
-      font-size: 1.25rem;
-    }
-
-    .rank-level {
-      font-size: 1rem;
-    }
-  }
-
-  &.large {
-    .rank-badge {
-      width: 120px;
-      height: 120px;
-      font-size: 3rem;
-    }
-
-    .rank-title {
-      font-size: 1.5rem;
-    }
-
-    .rank-level {
-      font-size: 1.25rem;
-    }
-  }
 
   .rank-info {
     display: flex;
@@ -189,7 +127,6 @@
       font-size: 0.75rem;
       font-weight: 600;
       color: $color-gray-800;
-      text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
     }
   }
 
@@ -239,39 +176,6 @@
       top: 0;
       left: 0;
       pointer-events: none;
-    }
-
-    .rank-badge {
-      width: 120px;
-      height: 120px;
-      margin: 0 auto $spacing-6;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 50%;
-
-      box-shadow: 0 8px 30px rgba(var(--rank-color, $color-primary), 0.3);
-      position: relative;
-      font-size: 3rem;
-      animation: pulse 2s infinite;
-
-      &::before {
-        content: "";
-        position: absolute;
-        top: -8px;
-        left: -8px;
-        right: -8px;
-        bottom: -8px;
-        border-radius: 50%;
-        background: conic-gradient(
-          from 0deg,
-          var(--rank-color, $color-primary),
-          var(--rank-color, $color-primary),
-          var(--rank-color, $color-primary)
-        );
-        z-index: -1;
-        animation: rotate 3s linear infinite;
-      }
     }
 
     .celebration-title {

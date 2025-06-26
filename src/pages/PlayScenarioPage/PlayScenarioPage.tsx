@@ -35,6 +35,7 @@ const PlayScenarioPage = () => {
     loading: dialoguesLoading,
     dialoguesByScenario,
     error: dialogueError,
+    dialogues,
   } = useDialogueStore();
   const { error: actorError, actors, fetchActors } = useActorStore();
   const [key, setKey] = useState<number>(0);
@@ -151,7 +152,7 @@ const PlayScenarioPage = () => {
               </h1>
             </div>
             <div className="game-controls">
-              <Link to={"/dashboard"} className="control-btn btn-danger">
+              <Link to={"/dashboard"} className="control-btn">
                 <X size={20} />
               </Link>
             </div>
@@ -165,7 +166,7 @@ const PlayScenarioPage = () => {
               <p>Select a dialogue to begin your social interaction practice</p>
             </div>
 
-            <div className="dialogue-options">
+            <div className="dialogue-list">
               {dialoguesByScenario[scenario.id]?.map((dialogue) => (
                 <DialogueItem key={dialogue.id} dialogue={dialogue} />
               ))}
@@ -177,17 +178,17 @@ const PlayScenarioPage = () => {
   }
 
   // Only render EnhancedDialoguePlayer when we have user fields (or confirmed no placeholders needed)
-  if (dialogueId && dialogue && userFields) {
+  if (dialogueId && userFields) {
     return (
       <div key={key} className="play-scenario-container">
         <DialoguePlayer
           userFields={userFields || {}}
-          actor={actors[dialogue.actor_id]}
+          actor={actors[dialogues[dialogueId].actor_id]}
           onDialogueExit={handleExit}
           user={user}
           scenario={scenario}
           onReplay={handleReplay}
-          dialogue={dialogue}
+          dialogue={dialogues[dialogueId]}
         />
       </div>
     );

@@ -56,44 +56,6 @@ const ProgressPage = () => {
     return "poor";
   };
 
-  const getImprovementTip = (category: string, score: number): string => {
-    if (score >= 80) {
-      return "You're doing great! Keep practicing to maintain your skills.";
-    }
-
-    if (score >= 60) {
-      switch (category) {
-        case "clarity":
-          return "Try to be more specific and concise in your responses.";
-        case "empathy":
-          return "Practice recognizing others' emotions and responding appropriately.";
-        case "assertiveness":
-          return "Work on expressing your needs while respecting others.";
-        case "social_awareness":
-          return "Pay attention to social cues and context in conversations.";
-        case "self_advocacy":
-          return "Continue practicing how to stand up for yourself respectfully.";
-        default:
-          return "Keep practicing to improve your skills further.";
-      }
-    }
-
-    switch (category) {
-      case "clarity":
-        return "Focus on organizing your thoughts before speaking and use clear language.";
-      case "empathy":
-        return "Try to understand others' perspectives and validate their feelings.";
-      case "assertiveness":
-        return "Practice expressing your opinions and needs without being aggressive or passive.";
-      case "social_awareness":
-        return "Work on recognizing social norms and reading non-verbal cues.";
-      case "self_advocacy":
-        return "Learn to identify your needs and communicate them effectively.";
-      default:
-        return "Regular practice will help you improve in this area.";
-    }
-  };
-
   const earnedAchievements = useMemo(
     () => achievements.filter((a) => a.earned).length,
     [achievements]
@@ -241,16 +203,6 @@ const ProgressPage = () => {
                 </div>
 
                 <p className="description">{category.description}</p>
-
-                <div className="improvement-tips">
-                  <h4 className="tips-title">Improvement Tips</h4>
-                  <p className="tips-content">
-                    {getImprovementTip(
-                      category.name,
-                      categoryScores[category.name] || 0
-                    )}
-                  </p>
-                </div>
               </div>
             ))}
           </div>

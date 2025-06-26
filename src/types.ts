@@ -99,7 +99,7 @@ export interface Scenario {
 }
 
 export interface Dialogue {
-  form_helper: string;
+  form_helper?: string;
   context: string;
   id: string;
   tags: string[];
