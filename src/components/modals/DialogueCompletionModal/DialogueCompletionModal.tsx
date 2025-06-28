@@ -192,7 +192,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
                   <div className="step-details">
                     <div className="conversation-flow">
                       {/* NPC Message */}
-                      <div className="message-analysis npc">
+                      <div className="message-analysis actor">
                         <div className="message-bubble">
                           <p className="message-text">
                             {analysis.actorMessage}
