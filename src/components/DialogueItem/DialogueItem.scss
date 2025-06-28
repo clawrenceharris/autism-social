@@ -7,7 +7,8 @@
   background: $color-gray-50;
   border-radius: $border-radius-md;
   @include transition(all);
-  min-width: 450px;
+  min-width: 0; // Allow container to shrink
+  max-width: 100%; // Prevent overflow
   cursor: pointer;
   color: black;
   &:hover {
@@ -29,6 +30,10 @@
     }
   }
   .dialogue-details {
+    flex: 1;
+    min-width: 0; // Allow container to shrink
+    overflow: hidden; // Prevent text overflow
+    
     .dialogue-header {
       text-align: left;
       .header-top {
@@ -53,17 +58,59 @@
         border: 1px solid currentColor;
       }
     }
+    
+    h3 {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: $spacing-2;
+    }
+    
+    .description {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: $color-gray-600;
+      font-size: 0.9rem;
+    }
   }
 
   .dialogue-actions {
     @include transition(background);
     @include flex(row, center, center);
+    flex-shrink: 0; // Prevent buttons from shrinking
+    margin-left: $spacing-2;
+    
     .squircle-btn {
       background-color: $color-white;
       border: 2px solid $color-primary-200;
       box-shadow: 0 1px 4px $color-primary-200;
       &:hover {
         background-color: $color-white;
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@include responsive(sm) {
+  .dialogue-item {
+    padding: $spacing-3;
+    
+    .dialogue-details {
+      h3 {
+        font-size: 1rem;
+      }
+      
+      .description {
+        font-size: 0.8rem;
+      }
+    }
+    
+    .dialogue-actions {
+      .squircle-btn {
+        width: 36px;
+        height: 36px;
       }
     }
   }

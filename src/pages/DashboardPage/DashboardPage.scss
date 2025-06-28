@@ -165,9 +165,17 @@
   }
 
   .dialogue-list {
-    @include grid-layout-auto($min: 400px);
-
-    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-4;
+    width: 100%;
+    overflow: hidden;
+    
+    @include responsive(md) {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
   }
 }
 
