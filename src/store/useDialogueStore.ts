@@ -17,8 +17,6 @@ export const useDialogueStore = create<DialogueStore>()(
   persist(
     (set) => ({
       dialogues: {},
-      completedDialogues: {},
-      selectedDialogue: null,
       dialoguesByScenario: {},
       dialogueIds: [],
       loading: false,
