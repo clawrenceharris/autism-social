@@ -6,24 +6,6 @@ import type {
 } from "../types";
 import { DatabaseService } from "./database";
 
-export interface DialoguePossibleScores {
-  clarity?: number;
-  empathy?: number;
-  assertiveness?: number;
-  socialAwareness?: number;
-  selfAdvocacy?: number;
-}
-
-export interface ProgressPercentages {
-  clarity: number;
-  empathy: number;
-  assertiveness: number;
-  social_awareness: number;
-  self_advocacy: number;
-  overall: number;
-  user_completed_dialogues: number;
-  total_dialogues: number;
-}
 
 export async function deleteDialogue(id: string) {
   const result = await DatabaseService.delete("dialogues", id);
