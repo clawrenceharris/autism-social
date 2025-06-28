@@ -52,7 +52,7 @@ const ProgressDisplay = ({ userId }: { userId: string }) => {
                 </div>
                 <div className="category-details">
                   <p className="category-text">
-                    {categoryScores[category.name]} <span>pts</span>
+                    {categoryScores[category.name] || 0} <span>pts</span>
                   </p>
                 </div>
               </Link>

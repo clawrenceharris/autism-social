@@ -1,7 +1,32 @@
 import { DatabaseService } from "./database";
-import type { UserStreak, StreakData } from "../types";
 import { supabase } from "../lib/supabase";
 
+// Streak tracking types
+export interface UserStreak {
+  id: string;
+  user_id: string;
+  current_streak: number;
+  longest_streak: number;
+  last_completion_date: string | null; // ISO date string (YYYY-MM-DD)
+  last_completion_timezone: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface StreakData {
+  currentStreak: number;
+  longestStreak: number;
+  lastCompletionDate: string | null; // ISO date string (YYYY-MM-DD)
+  lastCompletionTimezone: string;
+}
+
+export interface StreakUpdateResult {
+  success: boolean;
+  streakData: StreakData;
+  streakIncremented: boolean;
+  streakReset: boolean;
+  message?: string;
+}
 /**
  * Get user streak data by user ID
  * @param userId - The user ID to get streak data for

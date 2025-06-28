@@ -11,18 +11,7 @@ interface VoiceStore {
   fetchVoices: () => void;
   error: string | null;
   loading: boolean;
-  getAudioUrl: (
-    id: string,
-    request: {
-      text: string;
-      voice_settings?: {
-        stability?: number;
-        similarity_boost?: number;
-        style?: number;
-        use_speaker_boost?: boolean;
-      };
-    }
-  ) => Promise<string>;
+  getAudioUrl: (id: string, text: string) => Promise<string>;
 }
 
 export const useVoiceStore = create<VoiceStore>()(
@@ -52,18 +41,7 @@ export const useVoiceStore = create<VoiceStore>()(
         set({ selectedVoice: voice });
       },
 
-      getAudioUrl: async (
-        voiceId: string,
-        request: {
-          text: string;
-          voice_settings?: {
-            stability?: number;
-            similarity_boost?: number;
-            style?: number;
-            use_speaker_boost?: boolean;
-          };
-        }
-      ): Promise<string> => {
+      getAudioUrl: async (voiceId: string, text: string): Promise<string> => {
         try {
           set({ loading: true });
 
@@ -76,14 +54,9 @@ export const useVoiceStore = create<VoiceStore>()(
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                text: request.text,
+                text,
                 model_id: "eleven_multilingual_v2",
-                voice_settings: request.voice_settings || {
-                  stability: 0.5,
-                  similarity_boost: 0.75,
-                  style: 0.5,
-                  use_speaker_boost: true,
-                },
+
                 seed: 42,
               }),
             }

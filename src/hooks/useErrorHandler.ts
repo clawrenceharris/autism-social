@@ -38,9 +38,9 @@ interface ErrorHandlerResult {
 /**
  * Custom hook for consistent error handling across components
  */
-export function useErrorHandler(
+const useErrorHandler = (
   options: UseErrorHandlerOptions = {}
-): ErrorHandlerResult {
+): ErrorHandlerResult => {
   const { showToast } = useToast();
   const {
     component,
@@ -107,4 +107,5 @@ export function useErrorHandler(
     handleError: handleErrorCallback,
     handleAsyncError,
   };
-}
+};
+export default useErrorHandler;

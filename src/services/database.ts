@@ -186,14 +186,13 @@ export class DatabaseService {
    */
   static async upsert<T>(
     table: Table,
-    data: Partial<T>,
 
-    id?: string
+    data: Partial<T>,
+    onConflict: string
   ): Promise<DatabaseResult<T>> {
     const { data: result, error } = await supabase
       .from(table)
-      .upsert(data)
-      .eq("id", id)
+      .upsert(data, { onConflict })
       .select()
       .single();
 
@@ -218,30 +217,6 @@ export class DatabaseService {
       .from(table)
       .update(data)
       .eq(column, value)
-      .select()
-      .single();
-
-    return { data: result as T, error };
-  }
-  /**
-   * Upsert records by custom column
-   * @param table - The table name
-   * @param column - The column to filter by
-   * @param value - The value to match
-   * @param data - The data to upsert
-   * @returns Promise with upserted records or error
-   */
-  static async upsertBy<T extends object>(
-    table: Table,
-    data: Partial<T>,
-
-    column?: string,
-    value?: string | number
-  ): Promise<DatabaseResult<T>> {
-    const { data: result, error } = await supabase
-      .from(table)
-      .upsert(data)
-      .eq(column || "id", value)
       .select()
       .single();
 

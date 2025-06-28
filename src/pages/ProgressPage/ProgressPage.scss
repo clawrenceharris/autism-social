@@ -400,15 +400,8 @@
       padding: $spacing-4 $spacing-8;
 
       .hero-content {
-        .social-score {
-          .score-circle {
-            width: 140px;
-            height: 140px;
-
-            .score-value {
-              font-size: 2.5rem;
-            }
-          }
+        .rank {
+          width: 100%;
         }
 
         .quick-stats {

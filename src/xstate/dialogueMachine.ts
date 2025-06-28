@@ -18,7 +18,6 @@ export interface DialogueContext {
   user: UserProfile;
   responses: ResponseOutputItem[];
   // Conversation state
-
   conversationHistory: ConversationMessage[];
   currentPhase: DialoguePhase;
   // Current interaction
@@ -40,7 +39,7 @@ export type DialogueEvent =
   | { type: "END_DIALOGUE" };
 
 // Services interface for dependency injection
-export interface HybridDialogueServices {
+export interface DialogueServices {
   generateActorResponse: (context: DialogueContext) => Promise<ActorResponse>;
   analyzeUserResponse: (
     input: string,
@@ -50,17 +49,16 @@ export interface HybridDialogueServices {
     shouldTransition: boolean;
     nextPhase?: DialoguePhase;
   }>;
-  onDialogueComplete: (context: DialogueContext) => Promise<void> | void;
 }
 
 /**
  * Create a hybrid dialogue machine that combines XState flow control with AI-generated responses
  */
-export function createDialogueMachine(
+export function dialogueMachine(
   dialogue: Dialogue,
   actor: Actor,
   userFields: { [key: string]: string },
-  services: HybridDialogueServices,
+  services: DialogueServices,
   user: UserProfile
 ) {
   return createMachine({
@@ -189,26 +187,26 @@ export function createDialogueMachine(
                 totalScores: ({ context, event }) => {
                   const newScores = event.output.scores;
                   return {
-                    clarity:
-                      context.totalScores.clarity ??
-                      context.totalScores.clarity + newScores.clarity,
+                    clarity: context.totalScores.clarity
+                      ? context.totalScores.clarity + newScores.clarity
+                      : newScores.clarity,
 
-                    empathy:
-                      context.totalScores.empathy ??
-                      context.totalScores.empathy + newScores.empathy,
-                    assertiveness:
-                      context.totalScores.assertiveness ??
-                      context.totalScores.assertiveness +
-                        newScores.assertiveness,
+                    empathy: context.totalScores.empathy
+                      ? context.totalScores.empathy + newScores.empathy
+                      : newScores.empathy,
+                    assertiveness: context.totalScores.assertiveness
+                      ? context.totalScores.assertiveness +
+                        newScores.assertiveness
+                      : newScores.assertiveness,
 
-                    social_awareness:
-                      context.totalScores.social_awareness ??
-                      context.totalScores.social_awareness +
-                        newScores.social_awareness,
-                    self_advocacy:
-                      context.totalScores.self_advocacy ??
-                      context.totalScores.self_advocacy +
-                        newScores.self_advocacy,
+                    social_awareness: context.totalScores.social_awareness
+                      ? context.totalScores.social_awareness +
+                        newScores.social_awareness
+                      : newScores.social_awareness,
+                    self_advocacy: context.totalScores.self_advocacy
+                      ? context.totalScores.self_advocacy +
+                        newScores.self_advocacy
+                      : newScores.self_advocacy,
                   };
                 },
               }),
@@ -274,13 +272,6 @@ export function createDialogueMachine(
       completed: {
         type: "final",
 
-        invoke: {
-          id: "completeDialogue",
-          src: fromPromise(async ({ input }) => {
-            if (services.onDialogueComplete) services.onDialogueComplete(input);
-          }),
-          input: ({ context }) => context,
-        },
         entry: assign({
           currentPhase: "completed" as const,
         }),
@@ -297,4 +288,4 @@ export function createDialogueMachine(
   });
 }
 
-export type DialogueMachine = ReturnType<typeof createDialogueMachine>;
+export type DialogueMachine = ReturnType<typeof dialogueMachine>;

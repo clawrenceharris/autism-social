@@ -1,7 +1,7 @@
 import type { Response } from "openai/resources/responses/responses.mjs";
 import type useOpenAI from "../hooks/useOpenAI";
 import type { ScoreSummary } from "../types";
-import type { DialogueContext } from "../xstate/createDialogueMachine";
+import type { DialogueContext } from "../xstate/dialogueMachine";
 
 export interface ConversationMessage {
   id: string;
@@ -38,7 +38,7 @@ export class DialogueService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private history: any[] = [];
   private messageCount = 0;
-  private mockMode: boolean = false;
+  private mockMode: boolean = true;
 
   constructor(openai: ReturnType<typeof useOpenAI>) {
     this.openai = openai;
@@ -151,18 +151,17 @@ export class DialogueService {
       ? "Consider transitioning to main_topic phase as the introduction is complete."
       : "Maintain the current phase unless the conversation naturally progresses.";
 
-    const prompt = `You are ${actor.first_name} ${
-      actor.last_name
-    }, ${renderTemplate(dialogue.context)}. 
+    const prompt = `This is a social interaction for user to practice various social situations. You must stay in character. 
+    You are ${actor.first_name} ${actor.last_name}, ${renderTemplate(
+      dialogue.context
+    )}. 
         
         - Your role: ${actor.role}
         - Your persona: ${actor.persona_tags.join(", ")}
         - Dialogue title: ${dialogue.title}         
         - Current phase: ${currentPhase}
         - Message count: ${this.messageCount}
-        - User Info: ${Object.entries(context.userFields).map(
-          ([key, value]) => `${key.replace("_", " ")}: ${value}`
-        )}
+        
         PHASE GUIDANCE: ${phaseGuidance}
         
         INSTRUCTIONS:

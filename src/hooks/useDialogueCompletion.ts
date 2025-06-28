@@ -1,68 +1,49 @@
 import { useState, useCallback } from "react";
 import { useToast } from "../context";
-import type { ScoreSummary, UserProgress, StreakUpdateResult } from "../types";
 import * as dialogueService from "../services/dialogues";
 import { useStreakStore } from "../store/useStreakStore";
+import type { DialogueContext } from "../xstate/dialogueMachine";
+import useErrorHandler from "./useErrorHandler";
 
-interface UseDialogueCompletionOptions {
-  onSuccess?: (result: UserProgress, streakResult?: StreakUpdateResult) => void;
-  onError?: (error: string) => void;
-}
-
-export const useDialogueCompletion = (
-  options: UseDialogueCompletionOptions = {}
-) => {
+export const useDialogueCompletion = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { showToast } = useToast();
   const { incrementStreak } = useStreakStore();
-
+  const { handleError } = useErrorHandler();
   const addDialogueProgress = useCallback(
-    async (userId: string, dialogueId: string, scoring: ScoreSummary) => {
+    async (context: DialogueContext) => {
       setIsLoading(true);
       setError(null);
 
       try {
         const result = await dialogueService.upsertDialogueProgress({
-          userId,
-          dialogueId,
-          scoring,
+          dialogueId: context.dialogue.id,
+          scoring: context.totalScores,
         });
 
         // Update streak when dialogue is completed
-        const streakResult = await incrementStreak(userId);
+        const streakResult = await incrementStreak(context.user.user_id);
 
         // Show streak notification if streak was incremented
         if (streakResult.streakIncremented) {
           showToast(
-            `🔥Daily Streak increased to ${streakResult.streakData.currentStreak}!`,
+            `Daily Streak increased to ${streakResult.streakData.currentStreak}!`,
             {
               type: "success",
             }
           );
         }
 
-        if (options.onSuccess && result) {
-          options.onSuccess(result, streakResult);
-        }
-
         return result;
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : "Failed to complete dialogue";
-        setError(errorMessage);
-
-        if (options.onError) {
-          options.onError(errorMessage);
-        }
-
-        showToast(errorMessage, { type: "error" });
-        throw err;
+      } catch (error) {
+        const err = handleError({ error, action: "complete dialogue" });
+        setError(err.message);
       } finally {
         setIsLoading(false);
       }
     },
-    [options, showToast, incrementStreak]
+    [incrementStreak, showToast, handleError]
   );
 
   return {

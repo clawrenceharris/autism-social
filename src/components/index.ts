@@ -4,7 +4,7 @@ export { default as Skeleton } from "./Skeleton";
 export { default as RootLayout } from "./layouts/RootLayout";
 export { default as FormLayout } from "./layouts/FormLayout";
 
-export { default as UserRoute } from "./routes/UserRoute";
+export { UserRoute } from "./routes";
 export { default as ProgressIndicator } from "./ProgressIndicator";
 export { default as DialoguePlayer } from "./DialoguePlayer";
 export { default as Modal } from "./modals/Modal";

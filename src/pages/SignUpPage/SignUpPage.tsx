@@ -8,7 +8,7 @@ import { useSignUp } from "../../hooks/";
 import { useToast } from "../../context/ToastContext";
 import { createUserProfile, updateUserGoals } from "../../services/user";
 
-import { useErrorHandler } from "../../hooks/useErrorHandler";
+import { useErrorHandler } from "../../hooks";
 
 const NUM_STEPS = 5;
 
