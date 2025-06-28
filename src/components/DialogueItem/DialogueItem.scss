@@ -40,7 +40,7 @@
         color: $color-gray-800;
       }
 
-      .match-badge {
+      .badge {
         max-width: 100px;
         margin-bottom: $spacing-3;
         @include flex(row, center, center, 0.25rem);

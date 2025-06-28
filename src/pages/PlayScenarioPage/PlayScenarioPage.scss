@@ -99,8 +99,15 @@
 
   .dialogue-selection {
     .dialogue-list {
-      @include grid-layout-auto(500px);
+      @include grid-layout(1);
       margin-top: 50px;
+
+      @include responsive(sm) {
+        @include grid-layout(2);
+      }
+      @include responsive(lg) {
+        @include grid-layout(3);
+      }
     }
   }
 }

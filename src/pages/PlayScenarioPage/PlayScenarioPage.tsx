@@ -16,18 +16,18 @@ import {
   StartDialogueModal,
 } from "../../components";
 import { useScenarioStore } from "../../store/useScenarioStore";
-import type { AuthContextType } from "../../types";
 import { useDialogueStore } from "../../store/useDialogueStore";
 import { usePlayScenarioStore } from "../../store/usePlayScenarioStore";
 import { useActorStore } from "../../store/useActorStore";
+import type { AuthContextType } from "../../components/routes";
 
 const PlayScenarioPage = () => {
-  const [userFields, setUserFields] = useState<{ [key: string]: string }>();
   const navigate = useNavigate();
   const { loading: scenariosLoading, error: scenarioError } =
     useScenarioStore();
-  const { setDialogue, scenario } = usePlayScenarioStore();
-  const { dialogueId } = useParams<{
+  const { setDialogue, scenario, setUserFields, userFields } =
+    usePlayScenarioStore();
+  const { dialogueId, scenarioId } = useParams<{
     dialogueId: string;
     scenarioId: string;
   }>();
@@ -47,7 +47,7 @@ const PlayScenarioPage = () => {
   }, [fetchActors]);
 
   useEffect(() => {
-    if (dialogueId && scenario && !userFields) {
+    if (dialogueId && scenarioId && !userFields) {
       // Open modal so we can enter the user fields
       openModal(
         <FormLayout<{ [key: string]: string }>
@@ -57,7 +57,7 @@ const PlayScenarioPage = () => {
           }}
           onCancel={() => {
             closeModal();
-            navigate(`/scenario/${scenario.id}`);
+            navigate(`/scenario/${scenarioId}`);
           }}
           descriptionStyle={{
             background: "#e3f3fe",
@@ -81,10 +81,12 @@ const PlayScenarioPage = () => {
   }, [
     closeModal,
     dialogueId,
+    dialogues,
     navigate,
     openModal,
     scenario,
-    dialogues,
+    scenarioId,
+    setUserFields,
     userFields,
   ]);
 
@@ -95,6 +97,7 @@ const PlayScenarioPage = () => {
   const handleExit = () => {
     if (scenario) navigate(`/scenario/${scenario.id}`);
     setDialogue(null);
+    setUserFields(null);
   };
 
   if (scenariosLoading || dialoguesLoading) {
@@ -177,7 +180,7 @@ const PlayScenarioPage = () => {
     );
   }
 
-  // Only render EnhancedDialoguePlayer when we have user fields (or confirmed no placeholders needed)
+  // Only render DialoguePlayer when we have user fields and dialogue id
   if (dialogueId && userFields) {
     return (
       <div key={key} className="play-scenario-container">

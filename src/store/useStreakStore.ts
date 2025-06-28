@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { StreakData, StreakUpdateResult } from "../types";
 import {
   upsertUserStreak,
   resetUserStreak,
@@ -8,6 +7,8 @@ import {
   areConsecutiveDays,
   isToday,
   daysBetween,
+  type StreakUpdateResult,
+  type StreakData,
 } from "../services/streaks";
 
 interface StreakStore {

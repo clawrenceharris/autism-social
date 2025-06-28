@@ -1,6 +1,6 @@
 import { Outlet, useOutletContext } from "react-router-dom";
 import { RootHeader } from "../..";
-import type { AuthContextType } from "../../../types";
+import type { AuthContextType } from "../../routes";
 
 const RootLayout = () => {
   const context = useOutletContext<AuthContextType>();

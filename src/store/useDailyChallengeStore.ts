@@ -1,7 +1,17 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { DailyChallenge } from "../types";
 import { getDailyChallenges } from "../services/dailyChallenges";
+import type { Dialogue } from "../types";
+
+export interface DailyChallenge {
+  id: string;
+  day_of_week: number;
+  dialogue_id: string;
+  week_start_date: string;
+  is_active: boolean;
+  created_at?: string;
+  dialogue?: Dialogue;
+}
 
 interface DailyChallengeStore {
   challenges: DailyChallenge[];

@@ -1,1 +1,1 @@
-export { default as UserRoute } from "./UserRoute";
+export { UserRoute, type AuthContextType } from "./UserRoute/UserRoute";

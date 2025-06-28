@@ -56,17 +56,6 @@ export async function getDialogues() {
   return data;
 }
 
-export async function getCompletedDialogues(userId: string) {
-  const { data, error } = await DatabaseService.get<Dialogue>(
-    "user_completed_dialogues",
-    {
-      foreignKey: "user_id",
-      foreignValue: userId,
-    }
-  );
-  if (error) throw error;
-  return data;
-}
 export async function getDialoguesByScenarioId(scenarioId: string) {
   const result = await DatabaseService.get<Dialogue>("dialogues", {
     foreignKey: "scenario_id",
@@ -86,23 +75,19 @@ export async function getDialogueById(id: string) {
 }
 
 export async function upsertDialogueProgress({
-  userId,
   dialogueId,
   scoring,
 }: {
-  userId: string;
   dialogueId: string;
   scoring: ScoreSummary;
 }) {
-  const { data, error } = await DatabaseService.upsertBy<UserProgress>(
+  const { data, error } = await DatabaseService.upsert<UserProgress>(
     "user_progress",
     {
-      user_id: userId,
       dialogue_id: dialogueId,
       scoring,
     },
-    "user_id",
-    userId
+    "dialogue_id"
   );
   if (error) throw error;
   return data;

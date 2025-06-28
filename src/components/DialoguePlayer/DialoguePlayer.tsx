@@ -12,6 +12,8 @@ import { DialogueCompletionModal, ProgressIndicator } from "../";
 import {
   AlertCircle,
   Eye,
+  Mic,
+  MicOff,
   RotateCcw,
   Send,
   Settings,
@@ -21,12 +23,9 @@ import {
 } from "lucide-react";
 import { useModal, useToast } from "../../context";
 import { useVoiceStore } from "../../store/useVoiceStore";
-import {
-  useDialogueCompletion,
-  useDynamicDialogue,
-  useErrorHandler,
-} from "../../hooks";
+import { useDynamicDialogue, useErrorHandler } from "../../hooks";
 import { useProgressStore } from "../../store/useProgressStore";
+import { elevenlabs } from "../../lib/elevenlabs";
 
 interface DialoguePlayerProps {
   scenario: Scenario;
@@ -49,15 +48,14 @@ const DialoguePlayer = ({
 }: DialoguePlayerProps) => {
   const { fetchProgress } = useProgressStore();
 
-  const [customInput, setCustomInput] = useState("");
+  const [input, setInput] = useState("");
   const [isVolumeOn, setIsVolumeOn] = useState<boolean>(false);
   const [audioCache, setAudioCache] = useState<Map<string, string>>(new Map());
   const [isGeneratingAudio, setIsGeneratingAudio] = useState<boolean>(false);
-  const {
-    addDialogueProgress,
-    error,
-    isLoading: isSaving,
-  } = useDialogueCompletion();
+  const [isListening, setIsListening] = useState<boolean>(false);
+  const [isProcessingSpeech, setIsProcessingSpeech] = useState<boolean>(false);
+  
+ 
 
   const { fetchVoices, getAudioUrl } = useVoiceStore();
   const messageWindowRef = useRef<HTMLDivElement>(null);
@@ -67,13 +65,13 @@ const DialoguePlayer = ({
 
   const {
     submitUserInput,
-    retry,
     startDialogue,
     isLoading,
     isCompleted,
     currentActorResponse,
     conversationHistory,
     context,
+    isSaving,
   } = useDynamicDialogue({
     scenario,
     dialogue,
@@ -81,7 +79,6 @@ const DialoguePlayer = ({
     userFields,
     user,
     onError: (error) => handleError({ error }),
-    onDialogueComplete: () => handleDialogueComplete(),
   });
   useEffect(() => {
     startDialogue();
@@ -90,6 +87,7 @@ const DialoguePlayer = ({
     fetchVoices();
     fetchProgress(user.user_id);
   }, [fetchProgress, fetchVoices, user.user_id]);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Auto-scroll to bottom of messages
   const scrollToBottom = () => {
@@ -100,7 +98,7 @@ const DialoguePlayer = ({
 
   useEffect(() => {
     scrollToBottom();
-  }, [conversationHistory.length]);
+  }, [conversationHistory.length, isLoading]);
 
   const playAudio = useCallback(
     async (text: string) => {
@@ -117,17 +115,19 @@ const DialoguePlayer = ({
 
         setIsGeneratingAudio(true);
 
-        const audioUrl = await getAudioUrl(actor?.voice_id || "default", {
-          text,
-        });
+        const audioUrl = await getAudioUrl(actor.voice_id || "default", text);
 
         // Cache the audio URL
         setAudioCache((prev) => new Map(prev).set(text, audioUrl));
-
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current = null;
+        }
         const audio = new Audio(audioUrl);
-        await audio.play();
-      } catch (err) {
-        console.log("Audio playback error:", err);
+        audio.volume = 0.5;
+        audioRef.current = audio;
+        audio.play();
+      } catch {
         showToast("Could not play audio. Please try again another time.", {
           type: "warning",
         });
@@ -140,16 +140,15 @@ const DialoguePlayer = ({
       isGeneratingAudio,
       audioCache,
       getAudioUrl,
-      actor?.voice_id,
+      actor.voice_id,
       showToast,
     ]
   );
 
+  //play text to speech audio after each response
   useEffect(() => {
-    if (currentActorResponse?.content && isVolumeOn) {
-      playAudio(currentActorResponse.content);
-    }
-  }, [currentActorResponse, isVolumeOn, playAudio]);
+    if (currentActorResponse?.content) playAudio(currentActorResponse.content);
+  }, [currentActorResponse?.content, playAudio]);
 
   // Cleanup audio URLs on unmount
   useEffect(() => {
@@ -161,7 +160,7 @@ const DialoguePlayer = ({
   }, [audioCache]);
 
   const handleOptionClick = async (response: string) => {
-    submitUserInput(response);
+    setInput(response);
   };
   const shuffledOptions = useMemo(() => {
     const options = currentActorResponse?.userResponseOptions || [];
@@ -183,17 +182,14 @@ const DialoguePlayer = ({
 
     return options;
   }, [currentActorResponse?.userResponseOptions]);
-  const handleCustomSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customInput.trim()) return;
+    if (!input.trim()) return;
 
-    submitUserInput(customInput);
-    setCustomInput("");
+    submitUserInput(input);
+    setInput("");
   };
 
-  const handleDialogueComplete = useCallback(() => {
-    addDialogueProgress(user.user_id, dialogue.id, context.totalScores);
-  }, [addDialogueProgress, context.totalScores, dialogue, user.user_id]);
   const handleResultsClick = () => {
     openModal(
       <DialogueCompletionModal
@@ -210,6 +206,79 @@ const DialoguePlayer = ({
     );
   };
 
+  // Speech to text functionality
+  const toggleListening = async () => {
+    if (isListening) {
+      setIsListening(false);
+    } else {
+      try {
+        setIsListening(true);
+        setIsProcessingSpeech(true);
+        
+        // Request microphone permission
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        
+        // Create a MediaRecorder instance
+        const mediaRecorder = new MediaRecorder(stream);
+        const audioChunks: BlobPart[] = [];
+        
+        mediaRecorder.addEventListener("dataavailable", (event) => {
+          audioChunks.push(event.data);
+        });
+        
+        mediaRecorder.addEventListener("stop", async () => {
+          try {
+            // Create audio blob from recorded chunks
+            const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+            
+            // Convert speech to text using ElevenLabs
+            const formData = new FormData();
+            formData.append("audio", audioBlob);
+            
+            // Use ElevenLabs speech-to-text API
+            const response = await elevenlabs.speechToText.convert({
+              audio: audioBlob,
+              model_id: "eleven_multilingual_v2"
+            });
+            
+            // Set the transcribed text as input
+            setCustomInput(response.text);
+            
+            // Stop all tracks in the stream
+            stream.getTracks().forEach(track => track.stop());
+          } catch (error) {
+            console.error("Speech to text error:", error);
+            showToast("Could not convert speech to text. Please try again or type your response.", {
+              type: "error",
+            });
+          } finally {
+            setIsListening(false);
+            setIsProcessingSpeech(false);
+          }
+        });
+        
+        // Start recording
+        mediaRecorder.start();
+        
+        // Record for 5 seconds then stop
+        setTimeout(() => {
+          if (mediaRecorder.state !== "inactive") {
+            mediaRecorder.stop();
+          }
+        }, 5000);
+        
+        showToast("Listening... (5 seconds)", { type: "info" });
+      } catch (error) {
+        console.error("Microphone access error:", error);
+        showToast("Could not access microphone. Please check your browser permissions.", {
+          type: "error",
+        });
+        setIsListening(false);
+        setIsProcessingSpeech(false);
+      }
+    }
+  };
+
   return (
     <>
       <div className="game-content">
@@ -217,9 +286,8 @@ const DialoguePlayer = ({
           <div className="chat-window">
             <div className="game-header">
               <div className="header-content">
-                <div className="scenario-info">
-                  <h1 className="scenario-title">{scenario.title}</h1>
-                  <div className="scenario-badge">{dialogue.title}</div>
+                <div>
+                  <h1>{dialogue.title}</h1>
                 </div>
                 <div className="game-controls">
                   <button
@@ -233,16 +301,11 @@ const DialoguePlayer = ({
                       <VolumeXIcon size={20} />
                     )}
                   </button>
-                  <button className="control-btn">
-                    <Settings size={20} />
-                  </button>
+
                   <button onClick={onReplay} className="control-btn">
                     <RotateCcw size={20} />
                   </button>
-                  <button
-                    onClick={onDialogueExit}
-                    className="control-btn btn-danger"
-                  >
+                  <button onClick={onDialogueExit} className="control-btn">
                     <X size={20} />
                   </button>
                 </div>
@@ -301,18 +364,27 @@ const DialoguePlayer = ({
             </div>
 
             <div className="custom-response">
-              <form onSubmit={handleCustomSubmit} className="input-container">
+              <form onSubmit={handleSubmit} className="input-container">
                 <input
                   type="text"
-                  value={customInput}
-                  onChange={(e) => setCustomInput(e.target.value)}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
                   placeholder="Or type your own response..."
-                  disabled={isLoading}
+                  disabled={isLoading || isProcessingSpeech}
                   className="form-input"
                 />
                 <button
+                  type="button"
+                  onClick={toggleListening}
+                  disabled={isLoading || isProcessingSpeech}
+                  className={`mic-btn ${isListening ? 'active' : ''}`}
+                  title={isListening ? "Stop listening" : "Speak your response"}
+                >
+                  {isListening ? <MicOff size={20} /> : <Mic size={20} />}
+                </button>
+                <button
                   type="submit"
-                  disabled={!customInput.trim() || isLoading}
+                  disabled={!customInput.trim() || isLoading || isProcessingSpeech}
                   className="send-btn"
                 >
                   <Send size={20} />
@@ -327,16 +399,7 @@ const DialoguePlayer = ({
             <p className="loading-text">Saving...</p>
           </div>
         )}
-        {error && (
-          <div className="error-state">
-            <AlertCircle className="error-icon" />
-            <h3 className="error-title">Completion Failed</h3>
-            <p className="error-message">{error}</p>
-            <button onClick={retry} className="btn btn-danger">
-              Try Again
-            </button>
-          </div>
-        )}
+
         {isCompleted && (
           <div className="dialogue-actions">
             <button onClick={handleResultsClick} className="btn btn-primary">

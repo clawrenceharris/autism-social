@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import "./DialogueCompletionModal.scss";
-import {
-  Lightbulb,
-  MessageSquare,
-  ChevronDown,
-  ChevronUp,
-  Sparkles,
-} from "lucide-react";
+import { Lightbulb, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
 
 import type {
   ScoreSummary,
@@ -19,7 +13,7 @@ import {
   getCategoryIcon,
 } from "../../../utils/categoryUtils";
 import type { ConversationMessage } from "../../../services/dynamicDialogue";
-import type { DialogueContext } from "../../../xstate/createDialogueMachine";
+import type { DialogueContext } from "../../../xstate/dialogueMachine";
 import { useScoreCategoryStore } from "../../../store/useScoreCategoryStore";
 
 interface DialogueCompletionModalProps {
@@ -80,7 +74,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
   };
 
   const totalPointsEarned = Object.values(context.totalScores).reduce(
-    (sum, score) => sum + score,
+    (sum, score) => sum + (score || 0),
     0
   );
 
@@ -89,13 +83,9 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
       {/* Header Section */}
       <div className="completion-header">
         <div className="success-celebration">
-          <div className="success-icon">
-            <Sparkles size={48} />
-          </div>
           <h2 className="completion-title">Dialogue Complete!</h2>
           <p className="completion-subtitle">
-            Great job! You've successfully completed this social interaction
-            scenario.
+            Great job! You've successfully completed this Dialogue.
           </p>
         </div>
 

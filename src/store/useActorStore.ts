@@ -29,12 +29,8 @@ export const useActorStore = create<ActorStore>((set) => ({
           return acc;
         }, {}),
       });
-    } catch (err) {
-      console.log(
-        "Error fetching actors: " +
-          (err instanceof Error ? err.message : String(err))
-      );
-      set({ error: "Failed to load actors" });
+    } catch {
+      set({ error: "Unable to load actors" });
     } finally {
       set({ loading: false });
     }
