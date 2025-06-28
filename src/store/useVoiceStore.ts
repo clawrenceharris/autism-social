@@ -55,6 +55,9 @@ export const useVoiceStore = create<VoiceStore>()(
               },
               body: JSON.stringify({
                 text,
+                voice_settings: {
+                  use_speaker_boost: true,
+                },
                 model_id: "eleven_multilingual_v2",
 
                 seed: 42,

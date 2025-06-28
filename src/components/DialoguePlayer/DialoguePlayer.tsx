@@ -10,13 +10,14 @@ import type { Actor, Dialogue, Scenario, UserProfile } from "../../types";
 import "./DialoguePlayer.scss";
 import { DialogueCompletionModal, ProgressIndicator } from "../";
 import {
-  AlertCircle,
   Eye,
   Mic,
   MicOff,
   RotateCcw,
   Send,
-  Settings,
+  Square,
+  StopCircle,
+  StopCircleIcon,
   Volume2,
   VolumeXIcon,
   X,
@@ -54,8 +55,6 @@ const DialoguePlayer = ({
   const [isGeneratingAudio, setIsGeneratingAudio] = useState<boolean>(false);
   const [isListening, setIsListening] = useState<boolean>(false);
   const [isProcessingSpeech, setIsProcessingSpeech] = useState<boolean>(false);
-  
- 
 
   const { fetchVoices, getAudioUrl } = useVoiceStore();
   const messageWindowRef = useRef<HTMLDivElement>(null);
@@ -88,7 +87,6 @@ const DialoguePlayer = ({
     fetchProgress(user.user_id);
   }, [fetchProgress, fetchVoices, user.user_id]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-
   // Auto-scroll to bottom of messages
   const scrollToBottom = () => {
     messageWindowRef.current?.scrollTo({
@@ -116,7 +114,7 @@ const DialoguePlayer = ({
         setIsGeneratingAudio(true);
 
         const audioUrl = await getAudioUrl(actor.voice_id || "default", text);
-
+        console.log(actor.voice_id);
         // Cache the audio URL
         setAudioCache((prev) => new Map(prev).set(text, audioUrl));
         if (audioRef.current) {
@@ -214,65 +212,64 @@ const DialoguePlayer = ({
       try {
         setIsListening(true);
         setIsProcessingSpeech(true);
-        
+
         // Request microphone permission
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+
         // Create a MediaRecorder instance
         const mediaRecorder = new MediaRecorder(stream);
         const audioChunks: BlobPart[] = [];
-        
+
         mediaRecorder.addEventListener("dataavailable", (event) => {
           audioChunks.push(event.data);
         });
-        
+
         mediaRecorder.addEventListener("stop", async () => {
           try {
             // Create audio blob from recorded chunks
             const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
-            
+
             // Convert speech to text using ElevenLabs
             const formData = new FormData();
             formData.append("audio", audioBlob);
-            
+
             // Use ElevenLabs speech-to-text API
             const response = await elevenlabs.speechToText.convert({
-              audio: audioBlob,
-              model_id: "eleven_multilingual_v2"
+              file: audioBlob,
+              modelId: "scribe_v1",
             });
-            
+
             // Set the transcribed text as input
-            setCustomInput(response.text);
-            
+            setInput(input + " " + response.text);
+
             // Stop all tracks in the stream
-            stream.getTracks().forEach(track => track.stop());
+            stream.getTracks().forEach((track) => track.stop());
           } catch (error) {
             console.error("Speech to text error:", error);
-            showToast("Could not convert speech to text. Please try again or type your response.", {
-              type: "error",
-            });
+            showToast(
+              "Could not convert speech to text. Please try again or type your response.",
+              {
+                type: "error",
+              }
+            );
           } finally {
             setIsListening(false);
             setIsProcessingSpeech(false);
           }
         });
-        
+
         // Start recording
         mediaRecorder.start();
-        
-        // Record for 5 seconds then stop
-        setTimeout(() => {
-          if (mediaRecorder.state !== "inactive") {
-            mediaRecorder.stop();
-          }
-        }, 5000);
-        
-        showToast("Listening... (5 seconds)", { type: "info" });
       } catch (error) {
         console.error("Microphone access error:", error);
-        showToast("Could not access microphone. Please check your browser permissions.", {
-          type: "error",
-        });
+        showToast(
+          "Could not access microphone. Please check your browser permissions.",
+          {
+            type: "error",
+          }
+        );
         setIsListening(false);
         setIsProcessingSpeech(false);
       }
@@ -376,15 +373,15 @@ const DialoguePlayer = ({
                 <button
                   type="button"
                   onClick={toggleListening}
-                  disabled={isLoading || isProcessingSpeech}
-                  className={`mic-btn ${isListening ? 'active' : ''}`}
+                  disabled={isLoading}
+                  className={`mic-btn ${isListening ? "active" : ""}`}
                   title={isListening ? "Stop listening" : "Speak your response"}
                 >
-                  {isListening ? <MicOff size={20} /> : <Mic size={20} />}
+                  {isListening ? <Square size={20} /> : <Mic size={20} />}
                 </button>
                 <button
                   type="submit"
-                  disabled={!customInput.trim() || isLoading || isProcessingSpeech}
+                  disabled={!input.trim() || isLoading || isProcessingSpeech}
                   className="send-btn"
                 >
                   <Send size={20} />
