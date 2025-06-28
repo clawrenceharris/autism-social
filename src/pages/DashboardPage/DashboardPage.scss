@@ -165,8 +165,9 @@
   }
 
   .dialogue-list {
-    @include grid-layout-auto($min: 400px);
-
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: $spacing-4;
     justify-content: center;
   }
 }

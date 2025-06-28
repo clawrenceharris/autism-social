@@ -68,3 +68,39 @@
     }
   }
 }
+
+// Add responsive styles for smaller screens
+@include responsive(sm) {
+  .dialogue-item {
+    min-width: 100%;
+    padding: $spacing-3;
+    
+    .dialogue-details {
+      .dialogue-header {
+        .header-top {
+          gap: $spacing-2;
+        }
+        
+        .scenario-title {
+          font-size: 0.9rem;
+        }
+        
+        .badge {
+          font-size: 0.7rem;
+          padding: 0.2rem 0.4rem;
+        }
+      }
+      
+      .description {
+        font-size: 0.85rem;
+      }
+    }
+    
+    .dialogue-actions {
+      .squircle-btn {
+        width: 36px;
+        height: 36px;
+      }
+    }
+  }
+}
