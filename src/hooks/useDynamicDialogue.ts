@@ -28,7 +28,6 @@ interface UseDialogueOptions {
   actor: Actor;
   userFields: { [key: string]: string };
   user: UserProfile;
-  onDialogueComplete?: (context: DialogueContext) => Promise<void> | void;
   onError?: (error: string) => void;
 }
 
@@ -128,9 +127,8 @@ export const useDynamicDialogue = (
   const hasError = state.matches("error");
 
   useEffect(() => {
-    if (state.context.isCompleted) {
+    if (isCompleted) {
       addDialogueProgress(state.context);
-      console.log("COMPLETED");
     }
   }, [isCompleted, state.context, addDialogueProgress]);
   return {

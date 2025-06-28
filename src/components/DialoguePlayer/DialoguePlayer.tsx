@@ -12,12 +12,9 @@ import { DialogueCompletionModal, ProgressIndicator } from "../";
 import {
   Eye,
   Mic,
-  MicOff,
   RotateCcw,
   Send,
   Square,
-  StopCircle,
-  StopCircleIcon,
   Volume2,
   VolumeXIcon,
   X,
