@@ -39,7 +39,7 @@ const LandingPage = () => {
             className="logo"
           />
         </Link>
-        <div className="content-row">
+        <div className="flex-content">
           <Link to="/login" className="btn btn-tertiary">
             Log In
           </Link>
