@@ -161,7 +161,7 @@ const DialogueCompletionModal: React.FC<DialogueCompletionModalProps> = ({
 
           <div className="steps-analysis">
             {stepAnalyses.map((analysis, index) => (
-              <div key={index} className="step-analysis">
+              <div onClick={() =>toggleStepExpansion(index)} key={index} className="step-analysis">
                 <div className="step-header">
                   <div className="step-info">
                     <span className="step-number">Step {index + 1}</span>
