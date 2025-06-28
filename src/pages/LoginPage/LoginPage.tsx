@@ -3,7 +3,7 @@ import { FormLayout } from "../../components";
 import { useState } from "react";
 import { signIn } from "../../services/auth";
 import "./LoginPage.scss";
-import { useErrorHandler } from "../../hooks/useErrorHandler";
+import { useErrorHandler } from "../../hooks";
 import { useUserStore } from "../../store/useUserStore";
 
 interface LoginFormValues {

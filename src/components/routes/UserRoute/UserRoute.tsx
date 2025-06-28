@@ -1,8 +1,13 @@
 import { Navigate, useLocation, Outlet } from "react-router-dom";
 import { ProgressIndicator } from "../../";
-import type { AuthContextType } from "../../../types";
 import { useAuth } from "../../../context";
+import type { UserProfile } from "../../../types";
+import type { User } from "@supabase/supabase-js";
 
+interface AuthContextType {
+  profile: UserProfile;
+  user: User;
+}
 const UserRoute = () => {
   const { profile, user, loading } = useAuth();
   const location = useLocation();
@@ -33,4 +38,4 @@ const UserRoute = () => {
   }
 };
 
-export default UserRoute;
+export { UserRoute, type AuthContextType };

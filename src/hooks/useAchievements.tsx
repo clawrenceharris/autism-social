@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { Achievement } from "../types";
 import {
   Award,
@@ -103,8 +103,13 @@ export const useAchievements = () => {
       },
     ]);
   }, [categoryScores, progress.length, streakData?.longestStreak]);
+  const earnedAchievements = useMemo(
+    () => achievements.filter((a) => a.earned),
+    [achievements]
+  );
   return {
     achievements,
+    earnedAchievements,
   };
 };
 

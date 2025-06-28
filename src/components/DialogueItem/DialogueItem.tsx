@@ -39,12 +39,12 @@ const DialogueItem = ({
   }
 
   return (
-    <div key={dialogue.id} className="dialogue-item recommended">
+    <div key={dialogue.id} className="dialogue-item">
       <div className="dialogue-details">
         <div className="dialogue-header">
           <div className="header-top">
             {badgeTitle && (
-              <div className="match-badge">
+              <div className="badge">
                 {badgeIcon && badgeIcon}
                 {badgeTitle}
               </div>

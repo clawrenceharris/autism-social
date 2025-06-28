@@ -6,10 +6,10 @@ import { ConfirmationModal, EditProfile } from "../../components/";
 import { User, Palette, LogOut, History, Trash, Hammer } from "lucide-react";
 import "./SettingsPage.scss";
 import { useToast } from "../../context";
-import type { AuthContextType } from "../../types";
 import { useErrorHandler } from "../../hooks";
 import { deleteUserProfile } from "../../services/user";
 import EditAccount from "../../components/EditAccount";
+import type { AuthContextType } from "../../components/routes";
 
 type ColorScheme = "light" | "dark" | "auto";
 

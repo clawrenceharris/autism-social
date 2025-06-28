@@ -1,27 +1,5 @@
-import type { User } from "@supabase/supabase-js";
 import type { ReactElement } from "react";
 import type { FieldValues } from "react-hook-form";
-
-export interface UserPreferences {
-  goalIds: string[];
-  interestIds: string[];
-  goals: Array<{ id: string; goal: string }>;
-  interests: Array<{ id: string; name: string }>;
-}
-
-export interface ScenarioLinkage {
-  scenario: Scenario;
-  goalIds: string[];
-  interestIds: string[];
-  goalNames: string[];
-  interestNames: string[];
-}
-
-export interface RecommendationOptions {
-  limit?: number;
-  excludeCompletedIds?: string[];
-  minMatchScore?: number;
-}
 
 export interface SignUpFormValues extends FieldValues {
   first_name: string;
@@ -34,15 +12,11 @@ export interface SignUpFormValues extends FieldValues {
   age: number | null;
 }
 
-export interface AuthContextType {
-  profile: UserProfile;
-  user: User;
-}
-
 export interface Interest {
   id: string;
   name: string;
 }
+
 export interface ScenarioWithDialogues extends Scenario {
   isCompleted: boolean;
   isTrending: boolean;
@@ -73,24 +47,6 @@ export interface UserProfile {
   bio: string;
 }
 
-export interface DailyChallenge {
-  id: string;
-  day_of_week: number;
-  dialogue_id: string;
-  week_start_date: string;
-  is_active: boolean;
-  created_at?: string;
-  dialogue?: Dialogue;
-}
-
-export interface Option {
-  responseLabel: string;
-  eventType: string;
-  isBest: boolean;
-  nextStepId: string;
-  scoring: { [key: string]: number };
-}
-
 export interface Scenario {
   id: string;
   title: string;
@@ -109,17 +65,10 @@ export interface Dialogue {
   title: string;
   description: string;
   placeholders: string[];
-  steps: DialogueStep[];
   difficulty: Difficulty;
   scoring_categories: string[];
   created_at?: string;
   lastPlayed?: string;
-}
-
-export interface DialogueStep {
-  id: string;
-  npc: string;
-  options: DialogueOption[];
 }
 
 export type ScoreCategory =
@@ -127,7 +76,8 @@ export type ScoreCategory =
   | "empathy"
   | "assertiveness"
   | "social_awareness"
-  | "self_advocacy";
+  | "self_advocacy"
+  | "engagement";
 
 export type Difficulty = "easy" | "medium" | "hard" | "extra hard";
 
@@ -152,6 +102,7 @@ export interface ScoreSummary {
   assertiveness?: number;
   social_awareness?: number;
   self_advocacy?: number;
+  engagement?: number;
 }
 
 export interface CreateDialogueData {
@@ -159,24 +110,8 @@ export interface CreateDialogueData {
   title: string;
   actor_id: string;
   placeholders: string[];
-  steps: DialogueStep[];
   difficulty: Difficulty;
   scoring_categories: string[];
-}
-
-export type DialogueEvent = { type: string };
-
-export interface DialogueStep {
-  id: string;
-  npc: string;
-  options: DialogueOption[];
-}
-
-export interface DialogueOption {
-  label: string;
-  event: string;
-  scoring: Record<ScoreCategory, number>;
-  next: string;
 }
 
 export interface Actor {
@@ -187,42 +122,6 @@ export interface Actor {
   voice_id: string;
   bio: string;
   role: string;
-}
-export interface Message {
-  id: string;
-  speaker: "npc" | "user";
-  text: string;
-}
-
-export interface UserMessage extends Message {
-  scoring: Record<ScoreCategory, number>;
-}
-
-// Streak tracking types
-export interface UserStreak {
-  id: string;
-  user_id: string;
-  current_streak: number;
-  longest_streak: number;
-  last_completion_date: string | null; // ISO date string (YYYY-MM-DD)
-  last_completion_timezone: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface StreakData {
-  currentStreak: number;
-  longestStreak: number;
-  lastCompletionDate: string | null; // ISO date string (YYYY-MM-DD)
-  lastCompletionTimezone: string;
-}
-
-export interface StreakUpdateResult {
-  success: boolean;
-  streakData: StreakData;
-  streakIncremented: boolean;
-  streakReset: boolean;
-  message?: string;
 }
 
 // User Ranking System

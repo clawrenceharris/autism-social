@@ -1,5 +1,5 @@
+import type { DailyChallenge } from "../store/useDailyChallengeStore";
 import { DatabaseService } from "./database";
-import type { DailyChallenge } from "../types";
 
 /**
  * Get daily challenges for the current week

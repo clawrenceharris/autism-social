@@ -10,16 +10,25 @@ import {
   Star,
 } from "lucide-react";
 import "./DashboardPage.scss";
-import { ProgressDisplay, DialogueItem, RankDisplay } from "../../components";
-import type { AuthContextType } from "../../types";
+import {
+  ProgressDisplay,
+  DialogueItem,
+  RankDisplay,
+  ProgressIndicator,
+} from "../../components";
 import { useDailyChallengeStore } from "../../store/useDailyChallengeStore";
 import { useEffect } from "react";
 import { useRecommendationsStore } from "../../store";
 import { useProgressStore } from "../../store/useProgressStore";
 import { useStreakStore } from "../../store/useStreakStore";
+import type { AuthContextType } from "../../components/routes";
+import { useAchievements } from "../../hooks";
 
 const DashboardPage = () => {
   const { user, profile } = useOutletContext<AuthContextType>();
+
+  const { earnedAchievements } = useAchievements();
+
   const {
     fetchRecommendedDialogues,
     recommendedDialogues: recommendations = [],
@@ -79,15 +88,29 @@ const DashboardPage = () => {
           </Link>
           <Link to="/progress" className="stat-item">
             <div className="stat-number">
-              {streakLoading ? "..." : totalPoints}
+              {streakLoading ? <ProgressIndicator /> : totalPoints}
             </div>
             <div className="stat-label">Total Points</div>
           </Link>
           <Link to="/progress" className="stat-item">
             <div className="stat-number">
-              {streakLoading ? "..." : streakData?.currentStreak || 0}
+              {streakLoading ? (
+                <ProgressIndicator />
+              ) : (
+                streakData?.currentStreak || 0
+              )}
             </div>
             <div className="stat-label">Daily Streak</div>
+          </Link>
+          <Link to="/progress" className="stat-item">
+            <div className="stat-number">
+              {streakLoading ? (
+                <ProgressIndicator />
+              ) : (
+                earnedAchievements.length
+              )}
+            </div>
+            <div className="stat-label">Achievements</div>
           </Link>
         </div>
       </div>

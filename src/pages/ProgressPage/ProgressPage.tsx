@@ -12,17 +12,18 @@ import {
   Play,
 } from "lucide-react";
 import "./ProgressPage.scss";
-import type { AuthContextType } from "../../types";
 import { useProgressStore } from "../../store/useProgressStore";
 import { ProgressIndicator, RankDisplay } from "../../components";
 import { Link } from "react-router-dom";
 import { useScoreCategoryStore } from "../../store/useScoreCategoryStore";
-import useAchievements from "../../hooks/useAchievements";
+import { useAchievements } from "../../hooks";
 import { formatCategoryName, getCategoryIcon } from "../../utils/categoryUtils";
 import useStreakStore from "../../store/useStreakStore";
+import type { AuthContextType } from "../../components/routes/";
 
 const ProgressPage = () => {
   const { user } = useOutletContext<AuthContextType>();
+
   const {
     progress,
     loading: progressLoading,
@@ -33,33 +34,27 @@ const ProgressPage = () => {
     calcTotalPoints,
     categoryScores,
   } = useProgressStore();
+
   const { streakData, fetchStreak } = useStreakStore();
+
   const {
     categories,
     fetchCategories,
     loading: categoriesLoading,
   } = useScoreCategoryStore();
-  const { achievements } = useAchievements();
+  const { achievements, earnedAchievements } = useAchievements();
+
   useEffect(() => {
     fetchCategories();
     calcTotalPoints();
     calcCategoryScores();
   }, [fetchCategories, calcTotalPoints, calcCategoryScores]);
+
   useEffect(() => {
     fetchProgress(user.id);
     fetchStreak(user.id);
   }, [fetchProgress, fetchStreak, user.id]);
 
-  const getScoreLevel = (score: number): "poor" | "good" | "excellent" => {
-    if (score >= 80) return "excellent";
-    if (score >= 60) return "good";
-    return "poor";
-  };
-
-  const earnedAchievements = useMemo(
-    () => achievements.filter((a) => a.earned).length,
-    [achievements]
-  );
   const completedScenarios = useMemo(
     () => progress?.filter((p) => p.user_id === user.id).length,
     [progress, user.id]
@@ -124,14 +119,13 @@ const ProgressPage = () => {
       </div>
       <section className="hero-section">
         <div className="hero-content">
-          <div className="social-score">
+          <div className="card-section rank">
             <RankDisplay
               totalPoints={totalPoints}
               previousPoints={2}
               size="large"
             />
           </div>
-
           <div className="quick-stats">
             <h3 className="stats-title">Your Progress at a Glance</h3>
             <div className="stats-grid">
@@ -163,7 +157,7 @@ const ProgressPage = () => {
                 <div className="stat-icon">
                   <Award size={20} />
                 </div>
-                <div className="stat-value">{earnedAchievements}</div>
+                <div className="stat-value">{earnedAchievements.length}</div>
                 <div className="stat-label">Achievements</div>
               </div>
             </div>
@@ -192,11 +186,7 @@ const ProgressPage = () => {
                       {formatCategoryName(category.name)}
                     </h3>
                   </div>
-                  <div
-                    className={`skill-score ${getScoreLevel(
-                      categoryScores[category.name] || 0
-                    )}`}
-                  >
+                  <div className={`skill-score`}>
                     {categoryScores[category.name] || 0}
                     <span>pts</span>
                   </div>

@@ -1,10 +1,10 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useMachine } from "@xstate/react";
 import {
-  createDialogueMachine,
+  dialogueMachine,
   type DialogueContext,
-  type HybridDialogueServices,
-} from "../xstate/createDialogueMachine";
+  type DialogueServices,
+} from "../xstate/dialogueMachine";
 import {
   DialogueService,
   type ActorResponse,
@@ -20,6 +20,7 @@ import type {
   UserProfile,
 } from "../types";
 import useOpenAI from "./useOpenAI";
+import useDialogueCompletion from "./useDialogueCompletion";
 
 interface UseDialogueOptions {
   scenario: Scenario;
@@ -35,12 +36,10 @@ interface UseDialogueReturn {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: any; // Machine state
   context: DialogueContext;
-
   // Actions
   startDialogue: () => void;
   submitUserInput: (input: string) => void;
   endDialogue: () => void;
-  retry: () => void;
 
   // Computed state
   isLoading: boolean;
@@ -52,6 +51,7 @@ interface UseDialogueReturn {
   conversationHistory: ConversationMessage[];
   currentPhase: DialoguePhase;
   totalScores: ScoreSummary;
+  isSaving: boolean;
 }
 
 /**
@@ -60,8 +60,8 @@ interface UseDialogueReturn {
 export const useDynamicDialogue = (
   options: UseDialogueOptions
 ): UseDialogueReturn => {
-  const { dialogue, actor, user, userFields, onDialogueComplete } = options;
-
+  const { dialogue, actor, user, userFields } = options;
+  const { addDialogueProgress, isLoading: isSaving } = useDialogueCompletion();
   // Initialize AI services
   const openai = useOpenAI();
 
@@ -71,7 +71,7 @@ export const useDynamicDialogue = (
   }, [openai]);
 
   // Define services for the XState machine
-  const services: HybridDialogueServices = useMemo(
+  const services: DialogueServices = useMemo(
     () => ({
       generateActorResponse: async (context) => {
         return await dynamicDialogueService.generateActorResponse(context);
@@ -88,16 +88,13 @@ export const useDynamicDialogue = (
             context.currentActorResponse?.nextPhase || context.currentPhase,
         };
       },
-      onDialogueComplete: async (context) => {
-        if (onDialogueComplete) return await onDialogueComplete(context);
-      },
     }),
-    [dynamicDialogueService, onDialogueComplete]
+    [dynamicDialogueService]
   );
 
   // Create the machine
   const machineRef = useRef(
-    createDialogueMachine(dialogue, actor, userFields, services, user)
+    dialogueMachine(dialogue, actor, userFields, services, user)
   );
 
   // Use the machine
@@ -119,10 +116,6 @@ export const useDynamicDialogue = (
     send({ type: "END_DIALOGUE" });
   }, [send]);
 
-  const retry = useCallback(() => {
-    send({ type: "RETRY" });
-  }, [send]);
-
   // Computed state
   const isLoading =
     state.matches("generatingActorResponse") ||
@@ -131,9 +124,15 @@ export const useDynamicDialogue = (
     state.matches("initializing");
 
   const isWaitingForUser = state.matches("waitingForUserInput");
-  const isCompleted = useMemo(() => state.status === "done", [state.status]);
+  const isCompleted = state.matches("completed");
   const hasError = state.matches("error");
 
+  useEffect(() => {
+    if (state.context.isCompleted) {
+      addDialogueProgress(state.context);
+      console.log("COMPLETED");
+    }
+  }, [isCompleted, state.context, addDialogueProgress]);
   return {
     // Machine state
     state,
@@ -142,13 +141,13 @@ export const useDynamicDialogue = (
     startDialogue,
     submitUserInput,
     endDialogue,
-    retry,
 
     // Computed state
     isLoading,
     isWaitingForUser,
     isCompleted,
     hasError,
+    isSaving,
     currentActorResponse: state.context.currentActorResponse,
     currentUserAnalysis: state.context.currentUserAnalysis,
     conversationHistory: state.context.conversationHistory,

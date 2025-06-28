@@ -90,7 +90,6 @@ export const usePreferencesStore = create<PreferencesStore>((set) => ({
         getUserInterests(userId),
         getUserGoals(userId),
       ]);
-      console.log(userGoals);
       set({
         userInterests,
         userGoals,
