@@ -13,7 +13,6 @@ export type Table =
   | "user_roles"
   | "dialogue_goals"
   | "dialogue_interests"
-  | "user_completed_dialogues"
   | "actors"
   | "daily_challenges"
   | "scoring_categories"
