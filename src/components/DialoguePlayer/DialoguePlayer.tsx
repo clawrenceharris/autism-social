@@ -12,6 +12,8 @@ import { DialogueCompletionModal, ProgressIndicator } from "../";
 import {
   AlertCircle,
   Eye,
+  Mic,
+  MicOff,
   RotateCcw,
   Send,
   Settings,
@@ -27,6 +29,7 @@ import {
   useErrorHandler,
 } from "../../hooks";
 import { useProgressStore } from "../../store/useProgressStore";
+import { elevenlabs } from "../../lib/elevenlabs";
 
 interface DialoguePlayerProps {
   scenario: Scenario;
@@ -53,6 +56,9 @@ const DialoguePlayer = ({
   const [isVolumeOn, setIsVolumeOn] = useState<boolean>(false);
   const [audioCache, setAudioCache] = useState<Map<string, string>>(new Map());
   const [isGeneratingAudio, setIsGeneratingAudio] = useState<boolean>(false);
+  const [isListening, setIsListening] = useState<boolean>(false);
+  const [isProcessingSpeech, setIsProcessingSpeech] = useState<boolean>(false);
+  
   const {
     addDialogueProgress,
     error,
@@ -210,6 +216,79 @@ const DialoguePlayer = ({
     );
   };
 
+  // Speech to text functionality
+  const toggleListening = async () => {
+    if (isListening) {
+      setIsListening(false);
+    } else {
+      try {
+        setIsListening(true);
+        setIsProcessingSpeech(true);
+        
+        // Request microphone permission
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        
+        // Create a MediaRecorder instance
+        const mediaRecorder = new MediaRecorder(stream);
+        const audioChunks: BlobPart[] = [];
+        
+        mediaRecorder.addEventListener("dataavailable", (event) => {
+          audioChunks.push(event.data);
+        });
+        
+        mediaRecorder.addEventListener("stop", async () => {
+          try {
+            // Create audio blob from recorded chunks
+            const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+            
+            // Convert speech to text using ElevenLabs
+            const formData = new FormData();
+            formData.append("audio", audioBlob);
+            
+            // Use ElevenLabs speech-to-text API
+            const response = await elevenlabs.speechToText.convert({
+              audio: audioBlob,
+              model_id: "eleven_multilingual_v2"
+            });
+            
+            // Set the transcribed text as input
+            setCustomInput(response.text);
+            
+            // Stop all tracks in the stream
+            stream.getTracks().forEach(track => track.stop());
+          } catch (error) {
+            console.error("Speech to text error:", error);
+            showToast("Could not convert speech to text. Please try again or type your response.", {
+              type: "error",
+            });
+          } finally {
+            setIsListening(false);
+            setIsProcessingSpeech(false);
+          }
+        });
+        
+        // Start recording
+        mediaRecorder.start();
+        
+        // Record for 5 seconds then stop
+        setTimeout(() => {
+          if (mediaRecorder.state !== "inactive") {
+            mediaRecorder.stop();
+          }
+        }, 5000);
+        
+        showToast("Listening... (5 seconds)", { type: "info" });
+      } catch (error) {
+        console.error("Microphone access error:", error);
+        showToast("Could not access microphone. Please check your browser permissions.", {
+          type: "error",
+        });
+        setIsListening(false);
+        setIsProcessingSpeech(false);
+      }
+    }
+  };
+
   return (
     <>
       <div className="game-content">
@@ -307,12 +386,21 @@ const DialoguePlayer = ({
                   value={customInput}
                   onChange={(e) => setCustomInput(e.target.value)}
                   placeholder="Or type your own response..."
-                  disabled={isLoading}
+                  disabled={isLoading || isProcessingSpeech}
                   className="form-input"
                 />
                 <button
+                  type="button"
+                  onClick={toggleListening}
+                  disabled={isLoading || isProcessingSpeech}
+                  className={`mic-btn ${isListening ? 'active' : ''}`}
+                  title={isListening ? "Stop listening" : "Speak your response"}
+                >
+                  {isListening ? <MicOff size={20} /> : <Mic size={20} />}
+                </button>
+                <button
                   type="submit"
-                  disabled={!customInput.trim() || isLoading}
+                  disabled={!customInput.trim() || isLoading || isProcessingSpeech}
                   className="send-btn"
                 >
                   <Send size={20} />

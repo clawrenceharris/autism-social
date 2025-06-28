@@ -187,7 +187,9 @@
       box-shadow: 0 3px 4px 1px rgba(#000, 0.08);
       text-align: left;
       border-color: $color-primary;
+      max-width: 280px;
       min-width: 250px;
+      max-height: 100px;
       background: rgba($color-primary, 0.2);
       padding: $spacing-3 $spacing-6;
       cursor: pointer;
@@ -235,6 +237,35 @@
       .form-input {
         border-radius: $border-radius-full;
         background: rgba(255, 255, 255, 0.9);
+        flex: 1;
+      }
+
+      .mic-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: $border-radius-full;
+        background: #f6f7f8;
+        color: $color-gray-600;
+        border: none;
+        cursor: pointer;
+        @include flex(row, center, center);
+        transition: all 0.3s ease;
+
+        &:hover:not(:disabled) {
+          background: $color-gray-200;
+          color: $color-gray-800;
+        }
+
+        &.active {
+          background: $color-secondary;
+          color: white;
+          animation: pulse 2s infinite;
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
       }
 
       .send-btn {
@@ -260,5 +291,16 @@
         }
       }
     }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba($color-secondary, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba($color-secondary, 0.6);
   }
 }
