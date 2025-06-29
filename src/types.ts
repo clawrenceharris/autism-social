@@ -30,6 +30,7 @@ export interface UserProgress {
   user_id: string;
   dialogue_id: string;
   scoring: ScoreSummary;
+  completed_at?: string;
 }
 
 export interface Goal {

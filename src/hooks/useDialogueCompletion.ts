@@ -17,7 +17,7 @@ export const useDialogueCompletion = () => {
       setError(null);
 
       try {
-        const result = await dialogueService.upsertDialogueProgress({
+        const result = await dialogueService.recordDialogueCompletion({
           dialogueId: context.dialogue.id,
           scoring: context.totalScores,
         });

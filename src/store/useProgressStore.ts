@@ -15,7 +15,6 @@ interface ProgressStore {
   calcCategoryScores: () => void;
   calcTotalPoints: () => void;
   fetchProgress: (userId: string) => Promise<void>;
-
   resetProgress: () => void;
 }
 export const useProgressStore = create<ProgressStore>()(
@@ -52,6 +51,7 @@ export const useProgressStore = create<ProgressStore>()(
 
         set({ totalPoints });
       },
+      
       calcCategoryScores: () => {
         const progress = get().progress;
 
@@ -97,27 +97,24 @@ export const useProgressStore = create<ProgressStore>()(
             }, {}),
           });
           get().calcTotalPoints();
-        } catch {
+          get().calcCategoryScores();
+        } catch (error) {
+          console.error("Failed to load progress:", error);
           set({ error: "Failed to load progress", loading: false });
         }
       },
+      
       setRankReceived: (rankReceived: boolean) => {
         set({ rankReceived });
       },
+      
       resetProgress: () => {
-        const current = get().progress;
-        if (!current) return;
-
-        const reset = {
-          ...current,
-          clarity: 0,
-          empathy: 0,
-          assertiveness: 0,
-          social_awareness: 0,
-          self_advocacy: 0,
-        };
-
-        set({ progress: reset });
+        set({ 
+          progress: [],
+          progressByDialogueId: {},
+          categoryScores: {},
+          totalPoints: 0
+        });
       },
     }),
     {
