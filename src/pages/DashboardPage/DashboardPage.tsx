@@ -1,13 +1,5 @@
 import { Link, useOutletContext } from "react-router-dom";
-import {
-  BookOpen,
-  Award,
-  Play,
-  ChevronRight,
-  Calendar,
-  Flame,
-  Star,
-} from "lucide-react";
+import { Award, Play, ChevronRight, Calendar, Flame, Star } from "lucide-react";
 import "./DashboardPage.scss";
 import {
   ProgressDisplay,

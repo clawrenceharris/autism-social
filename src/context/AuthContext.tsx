@@ -35,10 +35,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         error,
       } = await supabase.auth.getSession();
 
-      if (error || !session?.user) {
+      if (error) {
         setUser(null);
         const err = handleError({ error, action: "loading user session" });
         setError(err.message);
+        return;
+      }
+      if (!session?.user) {
+        setUser(null);
         return;
       }
       setLoadingUser(false);
