@@ -156,6 +156,10 @@
     .dialogue-sample {
       opacity: 0;
       animation: fadeIn 0.5s ease-out forwards;
+      min-height: 300px; // Add minimum height to prevent layout shifts
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
 
       &.left {
         transform: translateX(-20px);

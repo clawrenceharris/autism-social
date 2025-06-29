@@ -8,27 +8,87 @@ import {
   Users,
 } from "lucide-react";
 import "./LandingPage.scss";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 
+// Expanded dialogue samples with more options
 const dialogueSamples = [
   {
-    npc: "So, what's does your perfect date look like?",
+    id: 1,
+    npc: "So, what does your perfect date look like?",
     options: [
       "I don't know, maybe a movie or something?",
       "I prefer to keep it simple...",
       "Being with someone I care about is enough for me.",
+      "Something outdoors where we can talk and connect."
     ],
   },
   {
+    id: 2,
     npc: "Your friend seems upset but hasn't said anything. What might you say?",
     options: [
       "I've noticed you seem quiet today. Is everything okay?",
       "I'm here if you want to talk about anything.",
       "Sometimes it helps to share what's bothering you.",
+      "Would you like to talk about what's on your mind?"
     ],
   },
+  {
+    id: 3,
+    npc: "Why do you want to work here?",
+    options: [
+      "I just really need a job right now.",
+      "Your company mission resonates with me.",
+      "I've always admired the work your team does.",
+      "My skills align perfectly with what you're looking for."
+    ],
+  },
+  {
+    id: 4,
+    npc: "I'm sorry, but we can't accept returns without a receipt.",
+    options: [
+      "But I just bought it yesterday!",
+      "I understand. Is there any other way to verify my purchase?",
+      "Can I speak to your manager please?",
+      "That's fine, I'll try to find the receipt at home."
+    ],
+  },
+  {
+    id: 5,
+    npc: "Would you like to join us for dinner this weekend?",
+    options: [
+      "I'll have to check my schedule first.",
+      "Yes, I'd love to! What time should I come?",
+      "That sounds nice, but I'm not sure if I can make it.",
+      "Thank you for the invitation. I'll let you know tomorrow."
+    ],
+  }
 ];
 
 const LandingPage = () => {
+  const [currentDialogueIndex, setCurrentDialogueIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    // Change dialogue every 8 seconds
+    const intervalId = setInterval(() => {
+      setIsVisible(false);
+      
+      // After exit animation completes, change to next dialogue
+      setTimeout(() => {
+        setCurrentDialogueIndex((prevIndex) => 
+          (prevIndex + 1) % dialogueSamples.length
+        );
+        setIsVisible(true);
+      }, 500); // Match this with exit animation duration
+      
+    }, 8000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const currentDialogue = dialogueSamples[currentDialogueIndex];
+
   return (
     <div className="landing-page ">
       <header className="landing-header">
@@ -65,31 +125,51 @@ const LandingPage = () => {
                 </span>
               </h1>
             </div>
-            {dialogueSamples.map((dialogue, index) => (
-              <div
-                key={index}
-                className={`dialogue-sample ${
-                  index % 2 === 0 ? "left" : "right"
-                }`}
-              >
-                <div className="message npc">
-                  <div className="message-content">
-                    <div className="message-bubble">{dialogue.npc}</div>
-                  </div>
-                </div>
-                <div className="response-options">
-                  {dialogue.options.map((option, optIndex) => (
-                    <div key={optIndex} className="response-option">
-                      <p className="option-text">{option}</p>
+            
+            <AnimatePresence mode="wait">
+              {isVisible && (
+                <motion.div
+                  key={currentDialogue.id}
+                  className="dialogue-sample"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <motion.div 
+                    className="message npc"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                  >
+                    <div className="message-content">
+                      <div className="message-bubble">{currentDialogue.npc}</div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+                  </motion.div>
+                  <div className="response-options">
+                    {currentDialogue.options.map((option, optIndex) => (
+                      <motion.div 
+                        key={optIndex} 
+                        className="response-option"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ 
+                          duration: 0.5, 
+                          delay: 0.4 + (optIndex * 0.1) // Stagger the animations
+                        }}
+                      >
+                        <p className="option-text">{option}</p>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            
             <img
               className="hero-image"
               src={assets.hero_bubbles}
-              alt="A 3D illustration of two large chat bubbles overlapping "
+              alt="A 3D illustration of two large chat bubbles overlapping"
             />
           </div>
         </div>
