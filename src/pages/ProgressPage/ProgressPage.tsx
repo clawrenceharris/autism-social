@@ -10,16 +10,18 @@ import {
   Frown,
   HelpCircle,
   Play,
+  Users,
 } from "lucide-react";
 import "./ProgressPage.scss";
 import { useProgressStore } from "../../store/useProgressStore";
-import { ProgressIndicator, RankDisplay } from "../../components";
+import { ProgressIndicator, RankDisplay, Tabs } from "../../components";
 import { Link } from "react-router-dom";
 import { useScoreCategoryStore } from "../../store/useScoreCategoryStore";
 import { useAchievements } from "../../hooks";
 import { formatCategoryName, getCategoryIcon } from "../../utils/categoryUtils";
 import useStreakStore from "../../store/useStreakStore";
 import type { AuthContextType } from "../../components/routes/";
+import type { Tab } from "../../components/Tabs";
 
 const ProgressPage = () => {
   const { user } = useOutletContext<AuthContextType>();
@@ -59,6 +61,91 @@ const ProgressPage = () => {
     () => progress?.filter((p) => p.user_id === user.id).length,
     [progress, user.id]
   );
+
+  const progressTabs: Tab[] = [
+    {
+      id: "skills",
+      label: "Skills",
+      icon: <Brain size={16} />,
+      content: (
+        <section className="skills-section card-section">
+          <div className="section-header">
+            <h2>
+              <Brain className="section-icon" size={24} />
+              Skill Categories
+            </h2>
+          </div>
+
+          <div className="skills-grid">
+            {categories.map((category) => (
+              <div className="skill-card" key={category.id}>
+                <div className="skill-header">
+                  <div className="skill-info">
+                    <div className="skill-icon">
+                      {getCategoryIcon(category.name)}
+                    </div>
+                    <h3 className="skill-name">
+                      {formatCategoryName(category.name)}
+                    </h3>
+                  </div>
+                  <div className={`skill-score`}>
+                    {categoryScores[category.name] || 0}
+                    <span>pts</span>
+                  </div>
+                </div>
+
+                <p className="description">{category.description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      ),
+    },
+    {
+      id: "achievements",
+      label: "Achievements",
+      icon: <Award size={16} />,
+      content: (
+        <section className="achievements-section card-section">
+          <div className="section-header">
+            <h2>
+              <Award className="section-icon" size={24} />
+              Achievements
+            </h2>
+          </div>
+
+          <div className="achievements-grid">
+            {achievements.map((achievement) => (
+              <div
+                key={achievement.id}
+                className={`achievement-card ${
+                  !achievement.earned ? "locked" : ""
+                }`}
+              >
+                <div className="achievement-icon">{achievement.icon}</div>
+                <div className="achievement-content">
+                  <h3 className="achievement-name">{achievement.name}</h3>
+                  <p className="description">{achievement.description}</p>
+                  <div className="achievement-meta">
+                    <span className={`category-badge ${achievement.category}`}>
+                      {achievement.category.charAt(0).toUpperCase() +
+                        achievement.category.slice(1)}
+                    </span>
+                    {achievement.earned && achievement.earnedDate && (
+                      <span className="earned-date">
+                        <Clock size={12} style={{ marginRight: "4px" }} />
+                        {achievement.earnedDate}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      ),
+    },
+  ];
 
   if (progressLoading || categoriesLoading) {
     return (
@@ -117,124 +204,52 @@ const ProgressPage = () => {
           Track your social skills development and achievements
         </p>
       </div>
-      <section className="hero-section">
-        <div className="hero-content">
-          <div className="card-section rank">
-            <RankDisplay
-              totalPoints={totalPoints}
-              previousPoints={2}
-              size="large"
-            />
-          </div>
-          <div className="quick-stats">
-            <h3 className="stats-title">Your Progress at a Glance</h3>
-            <div className="stats-grid">
-              <div className="stat-card">
-                <div className="stat-icon">
-                  <BarChart2 size={20} />
-                </div>
-                <div className="stat-value">{totalPoints}</div>
-                <div className="stat-label">Total Points</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-icon">
-                  <Flame size={20} />
-                </div>
-                <div className="stat-value">
-                  {streakData?.currentStreak || 0}
-                </div>
-                <div className="stat-label">Streak</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-icon">
-                  <CheckCircle size={20} />
-                </div>
-                <div className="stat-value">{completedScenarios}</div>
-                <div className="stat-label">Scenarios Completed</div>
-              </div>
-
-              <div className="stat-card">
-                <div className="stat-icon">
-                  <Award size={20} />
-                </div>
-                <div className="stat-value">{earnedAchievements.length}</div>
-                <div className="stat-label">Achievements</div>
-              </div>
+      
+      <section className="rank-display-section">
+        <div className="rank-card">
+          <RankDisplay
+            totalPoints={totalPoints}
+            previousPoints={2}
+            size="large"
+          />
+        </div>
+        
+        <div className="quick-stats">
+          <div className="stat-card">
+            <div className="stat-icon">
+              <BarChart2 size={20} />
             </div>
+            <div className="stat-value">{totalPoints}</div>
+            <div className="stat-label">Total Points</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-icon">
+              <Flame size={20} />
+            </div>
+            <div className="stat-value">
+              {streakData?.currentStreak || 0}
+            </div>
+            <div className="stat-label">Streak</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-icon">
+              <CheckCircle size={20} />
+            </div>
+            <div className="stat-value">{completedScenarios}</div>
+            <div className="stat-label">Scenarios Completed</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-icon">
+              <Users size={20} />
+            </div>
+            <div className="stat-value">{earnedAchievements.length}</div>
+            <div className="stat-label">Achievements</div>
           </div>
         </div>
       </section>
 
-      <div className="progress-grid">
-        <section className="skills-section card-section">
-          <div className="section-header">
-            <h2>
-              <Brain className="section-icon" size={24} />
-              Skill Categories
-            </h2>
-          </div>
-
-          <div className="skills-grid">
-            {categories.map((category) => (
-              <div className="skill-card">
-                <div className="skill-header">
-                  <div className="skill-info">
-                    <div className="skill-icon">
-                      {getCategoryIcon(category.name)}
-                    </div>
-                    <h3 className="skill-name">
-                      {formatCategoryName(category.name)}
-                    </h3>
-                  </div>
-                  <div className={`skill-score`}>
-                    {categoryScores[category.name] || 0}
-                    <span>pts</span>
-                  </div>
-                </div>
-
-                <p className="description">{category.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="achievements-section card-section">
-          <div className="section-header">
-            <h2>
-              <Award className="section-icon" size={24} />
-              Achievements
-            </h2>
-          </div>
-
-          <div className="achievements-grid">
-            {achievements.map((achievement) => (
-              <div
-                key={achievement.id}
-                className={`achievement-card ${
-                  !achievement.earned ? "locked" : ""
-                }`}
-              >
-                <div className="achievement-icon">{achievement.icon}</div>
-                <div className="achievement-content">
-                  <h3 className="achievement-name">{achievement.name}</h3>
-                  <p className="description">{achievement.description}</p>
-                  <div className="achievement-meta">
-                    <span className={`category-badge ${achievement.category}`}>
-                      {achievement.category.charAt(0).toUpperCase() +
-                        achievement.category.slice(1)}
-                    </span>
-                    {achievement.earned && achievement.earnedDate && (
-                      <span className="earned-date">
-                        <Clock size={12} style={{ marginRight: "4px" }} />
-                        {achievement.earnedDate}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+      <div className="progress-tabs">
+        <Tabs tabs={progressTabs} defaultTabId="skills" />
       </div>
     </div>
   );
