@@ -17,7 +17,8 @@ export const useDialogueCompletion = () => {
       setError(null);
 
       try {
-        const result = await dialogueService.recordDialogueCompletion({
+        const result = await dialogueService.completeDialogue({
+          userId: context.user.user_id,
           dialogueId: context.dialogue.id,
           scoring: context.totalScores,
         });
