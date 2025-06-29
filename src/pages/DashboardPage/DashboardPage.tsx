@@ -1,11 +1,12 @@
 import { Link, useOutletContext } from "react-router-dom";
-import { Award, Play, ChevronRight, Calendar, Flame, Star } from "lucide-react";
+import { Award, Play, ChevronRight, Calendar, Flame, Star, Home, TrendingUp } from "lucide-react";
 import "./DashboardPage.scss";
 import {
   ProgressDisplay,
   DialogueItem,
   RankDisplay,
   ProgressIndicator,
+  Tabs,
 } from "../../components";
 import { useDailyChallengeStore } from "../../store/useDailyChallengeStore";
 import { useEffect } from "react";
@@ -14,6 +15,7 @@ import { useProgressStore } from "../../store/useProgressStore";
 import { useStreakStore } from "../../store/useStreakStore";
 import type { AuthContextType } from "../../components/routes";
 import { useAchievements } from "../../hooks";
+import type { Tab } from "../../components/Tabs";
 
 const DashboardPage = () => {
   const { user, profile } = useOutletContext<AuthContextType>();
@@ -37,9 +39,11 @@ const DashboardPage = () => {
     checkAndUpdateStreak,
     loading: streakLoading,
   } = useStreakStore();
+  
   useEffect(() => {
     fetchDailyChallenges();
   }, [fetchDailyChallenges]);
+  
   useEffect(() => {
     if (user.id) {
       fetchRecommendedDialogues(user.id);
@@ -61,54 +65,14 @@ const DashboardPage = () => {
   // Get today's challenge
   const todayChallenge = getDayChallenge(new Date().getDay());
 
-  return (
-    <div className="dashboard-container">
-      <div className="dashboard-header">
-        <div className="welcome-section">
-          <h1 className="welcome-message">Hi, {profile.first_name}! 👋</h1>
-          <p className="description">
-            Ready to continue building your social confidence? Let's practice
-            some conversations today.
-          </p>
-        </div>
-
-        <div className="quick-stats">
-          <Link to="/progress" className="stat-item">
-            <div className="stat-number">{progress.length}</div>
-            <div className="stat-label">Scenarios Completed</div>
-          </Link>
-          <Link to="/progress" className="stat-item">
-            <div className="stat-number">
-              {streakLoading ? <ProgressIndicator /> : totalPoints}
-            </div>
-            <div className="stat-label">Total Points</div>
-          </Link>
-          <Link to="/progress" className="stat-item">
-            <div className="stat-number">
-              {streakLoading ? (
-                <ProgressIndicator />
-              ) : (
-                streakData?.currentStreak || 0
-              )}
-            </div>
-            <div className="stat-label">Daily Streak</div>
-          </Link>
-          <Link to="/progress" className="stat-item">
-            <div className="stat-number">
-              {streakLoading ? (
-                <ProgressIndicator />
-              ) : (
-                earnedAchievements.length
-              )}
-            </div>
-            <div className="stat-label">Achievements</div>
-          </Link>
-        </div>
-      </div>
-
-      <div className="dashboard-grid">
-        <div className="main-content">
-          {/* User Rank Display */}
+  // Define tabs for the dashboard
+  const dashboardTabs: Tab[] = [
+    {
+      id: "overview",
+      label: "Overview",
+      icon: <Home size={16} />,
+      content: (
+        <>
           <div className="card-section rank-section">
             <div className="section-header">
               <h2>
@@ -124,7 +88,6 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          {/* Daily Challenge*/}
           <div className="card-section challenge-section">
             <div className="section-header">
               <h2>
@@ -179,65 +142,121 @@ const DashboardPage = () => {
               )}
             </div>
           </div>
+        </>
+      ),
+    },
+    {
+      id: "recommended",
+      label: "Recommended",
+      icon: <Star size={16} />,
+      content: (
+        <div className="card-section">
+          <div className="section-header">
+            <h2>
+              <Star className="section-icon" />
+              Recommended for You
+            </h2>
+            <Link to="/explore" className="section-action">
+              View All <ChevronRight size={16} />
+            </Link>
+          </div>
+          <div className="section-content">
+            {recommendationsLoading ? (
+              <div className="loading-state">
+                <p>Loading personalized recommendations...</p>
+              </div>
+            ) : recommendations.length > 0 ? (
+              <div className="dialogue-list">
+                {recommendations.map((dialogue) => (
+                  <DialogueItem
+                    badgeIcon={<Star size={14} />}
+                    badgeTitle="Suggested"
+                    key={dialogue.id}
+                    dialogue={dialogue}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="empty-state">
+                <div className="empty-message">
+                  No personalized recommendations yet
+                </div>
+                <div className="empty-description">
+                  Complete your profile to get personalized scenario
+                  recommendations
+                </div>
+                <Link
+                  to="/settings"
+                  className="btn btn-primary"
+                  style={{ marginTop: "1rem" }}
+                >
+                  Complete Profile
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: "progress",
+      label: "Progress",
+      icon: <TrendingUp size={16} />,
+      content: (
+        <div className="card-section progress-overview">
+          <ProgressDisplay userId={user.id} />
+        </div>
+      ),
+    },
+  ];
 
-          {/* Recommended Scenarios */}
-          <div className="card-section">
-            <div className="section-header">
-              <h2>
-                <Star className="section-icon" />
-                Recommended for You
-              </h2>
-              <Link to="/explore" className="section-action">
-                View All <ChevronRight size={16} />
-              </Link>
+  return (
+    <div className="dashboard-container">
+      <div className="dashboard-header">
+        <div className="welcome-section">
+          <h1 className="welcome-message">Hi, {profile.first_name}! 👋</h1>
+          <p className="welcome-subtitle">
+            Ready to continue building your social confidence? Let's practice
+            some conversations today.
+          </p>
+        </div>
+
+        <div className="quick-stats">
+          <Link to="/progress" className="stat-item">
+            <div className="stat-number">{progress.length}</div>
+            <div className="stat-label">Scenarios Completed</div>
+          </Link>
+          <Link to="/progress" className="stat-item">
+            <div className="stat-number">
+              {streakLoading ? <ProgressIndicator /> : totalPoints}
             </div>
-            <div className="section-content">
-              {recommendationsLoading ? (
-                <div className="loading-state">
-                  <p>Loading personalized recommendations...</p>
-                </div>
-              ) : recommendations.length > 0 ? (
-                <div className="dialogue-list">
-                  {recommendations.map((dialogue, index) => {
-                    if (index < 2)
-                      return (
-                        <DialogueItem
-                          badgeIcon={<Star size={14} />}
-                          badgeTitle="Suggested"
-                          key={dialogue.id}
-                          dialogue={dialogue}
-                        />
-                      );
-                  })}
-                </div>
+            <div className="stat-label">Total Points</div>
+          </Link>
+          <Link to="/progress" className="stat-item">
+            <div className="stat-number">
+              {streakLoading ? (
+                <ProgressIndicator />
               ) : (
-                <div className="empty-state">
-                  <div className="empty-message">
-                    No personalized recommendations yet
-                  </div>
-                  <div className="empty-description">
-                    Complete your profile to get personalized scenario
-                    recommendations
-                  </div>
-                  <Link
-                    to="/settings"
-                    className="btn btn-primary"
-                    style={{ marginTop: "1rem" }}
-                  >
-                    Complete Profile
-                  </Link>
-                </div>
+                streakData?.currentStreak || 0
               )}
             </div>
-          </div>
+            <div className="stat-label">Daily Streak</div>
+          </Link>
+          <Link to="/progress" className="stat-item">
+            <div className="stat-number">
+              {streakLoading ? (
+                <ProgressIndicator />
+              ) : (
+                earnedAchievements.length
+              )}
+            </div>
+            <div className="stat-label">Achievements</div>
+          </Link>
         </div>
+      </div>
 
-        <div className="sidebar-content">
-          {/* Progress Overview */}
-          <div className="card-section progress-overview">
-            <ProgressDisplay userId={user.id} />
-          </div>
-        </div>
+      <div className="dashboard-tabs">
+        <Tabs tabs={dashboardTabs} defaultTabId="overview" />
       </div>
     </div>
   );

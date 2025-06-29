@@ -20,3 +20,5 @@ export { default as ToastContainer } from "./ToastContainer";
 export { default as EditProfile } from "./EditProfile";
 export { default as StreakDisplay } from "./StreakDisplay";
 export { default as RankDisplay } from "./RankDisplay";
+export { default as SideNav } from "./SideNav";
+export { default as Tabs } from "./Tabs";

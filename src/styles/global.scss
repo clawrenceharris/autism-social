@@ -24,10 +24,18 @@ body {
 }
 .layout-container {
   height: 100%;
+  display: flex;
 }
 
 main {
   height: 100%;
+  flex: 1;
+}
+
+.main-content {
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  transition: all 0.3s ease;
 }
 
 // Layout
@@ -43,35 +51,35 @@ main {
   gap: $spacing-6;
   grid-template-columns: 1fr;
 
-  @include mixins.responsive(md) {
+  @include responsive(md) {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @include mixins.responsive(lg) {
+  @include responsive(lg) {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 // Flexbox Utilities
 .flex-column {
-  @include mixins.flex(column, flex-start, stretch, $spacing-4);
+  @include flex(column, flex-start, stretch, $spacing-4);
 }
 
 .flex-content {
-  @include mixins.flex(column, flex-start, center, $spacing-4);
-  @include mixins.responsive(md) {
+  @include flex(column, flex-start, center, $spacing-4);
+  @include responsive(md) {
     flex-direction: row;
   }
 }
 
 .content-row {
-  @include mixins.flex(row, flex-start, center, $spacing-4);
+  @include flex(row, flex-start, center, $spacing-4);
 }
 .center-absolute {
-  @include mixins.center-absolute;
+  @include center-absolute;
 }
 .content-centered {
-  @include mixins.center-content;
+  @include center-content;
 }
 .justify-between {
   justify-content: space-between;
@@ -137,7 +145,7 @@ a {
   }
 }
 .error-state {
-  @include mixins.flex(column, center, center, $spacing-4);
+  @include flex(column, center, center, $spacing-4);
   min-height: 50vh;
   padding: $spacing-8;
   text-align: center;
@@ -164,7 +172,7 @@ a {
   }
 }
 .loading-state {
-  @include mixins.center-absolute();
+  @include center-absolute();
   text-align: center;
   flex-direction: column;
   padding: $spacing-12;
@@ -208,7 +216,7 @@ a {
   background-color: $color-gray-100;
   border: 2px solid $color-gray-200;
   border-radius: $border-radius-md;
-  @include mixins.transition(all);
+  @include transition(all);
   font-family: $font-family-primary;
 
   &:focus {
@@ -280,11 +288,11 @@ a {
 
 // Buttons
 button {
-  @include mixins.button-base;
+  @include button-base;
   font-family: $font-family-tertiary;
 }
 .squircle-btn {
-  @include mixins.flex(row, center, center, $spacing-2);
+  @include flex(row, center, center, $spacing-2);
   padding: $spacing-2;
   width: 40px;
   height: 40px;
@@ -326,7 +334,7 @@ button {
   }
 }
 .btn {
-  @include mixins.flex(row, center, center, 0.8rem);
+  @include flex(row, center, center, 0.8rem);
   padding: 0.2rem 1.5rem;
   font-size: 1.8rem;
   border-radius: $border-radius-full;
@@ -450,18 +458,25 @@ button {
 }
 
 .card-section {
-  @include mixins.card;
+  @include card;
   padding: $spacing-6;
   min-width: 350px;
   text-align: left;
+  border: 1px solid $color-gray-200;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: $color-gray-300;
+  }
+  
   .section-header {
-    @include mixins.flex(row, space-between, center);
+    @include flex(row, space-between, center);
     padding-bottom: $spacing-3;
     margin-bottom: $spacing-6;
     border-bottom: 2px solid $color-gray-100;
 
     h2 {
-      @include mixins.flex(row, flex-start, center);
+      @include flex(row, flex-start, center);
       color: $color-gray-800;
     }
 
@@ -470,7 +485,7 @@ button {
       text-decoration: none;
       font-weight: 500;
       font-size: 0.9rem;
-      @include mixins.transition(color);
+      @include transition(color);
 
       &:hover {
         color: $color-primary-200;
@@ -479,6 +494,29 @@ button {
   }
 
   .section-content {
-    @include mixins.stack-layout($spacing-4);
+    @include stack-layout($spacing-4);
+  }
+}
+
+// Responsive styles for side navigation layout
+@include responsive(sm) {
+  .main-content {
+    margin-left: 70px;
+    width: calc(100% - 70px);
+  }
+  
+  .container {
+    padding: $spacing-4 $spacing-4;
+  }
+}
+
+@include responsive(md) {
+  .main-content {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+  }
+  
+  .container {
+    padding: $spacing-6 $spacing-6;
   }
 }

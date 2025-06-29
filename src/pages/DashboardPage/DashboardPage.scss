@@ -3,7 +3,7 @@
 
 .dashboard-container {
   .dashboard-header {
-    margin-bottom: $spacing-12;
+    margin-bottom: $spacing-8;
     text-align: center;
     position: relative;
 
@@ -12,64 +12,64 @@
       margin-bottom: $spacing-8;
 
       .welcome-message {
-        font-size: 3rem;
+        font-size: 2.5rem;
         color: $color-gray-900;
         margin-bottom: $spacing-3;
         font-weight: 700;
 
         @include responsive(sm) {
-          font-size: 2.5rem;
+          font-size: 2rem;
         }
       }
 
       .welcome-subtitle {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         color: $color-gray-600;
         max-width: 700px;
         margin: 0 auto;
 
         @include responsive(sm) {
-          font-size: 1.1rem;
+          font-size: 1rem;
         }
       }
     }
 
     .quick-stats {
-      @include flex(row, center, center, $spacing-8);
+      @include flex(row, center, center, $spacing-4);
       flex-wrap: wrap;
-      margin-top: $spacing-8;
+      margin-top: $spacing-6;
 
       @include responsive(sm) {
-        gap: $spacing-4;
+        gap: $spacing-3;
       }
 
       .stat-item {
         @include flex(column, center, center, $spacing-2);
-        padding: $spacing-6 $spacing-4;
-        background: linear-gradient(135deg, $color-white, $color-primary-100);
-        border-radius: $border-radius-2xl;
-        box-shadow: 0 8px 22px rgba($color-primary, 0.15);
+        padding: $spacing-4 $spacing-3;
+        background: $color-white;
+        border-radius: $border-radius-xl;
+        border: 1px solid $color-gray-200;
         min-width: 140px;
-        border: 2px solid rgba($color-primary, 0.2);
         transition: all 0.3s ease;
 
         &:hover {
           transform: translateY(-4px);
-          box-shadow: 0 12px 40px rgba($color-primary, 0.25);
+          border-color: $color-primary;
+          background-color: $color-primary-100;
         }
 
         @include responsive(sm) {
-          padding: $spacing-4 $spacing-3;
+          padding: $spacing-3 $spacing-2;
           min-width: 120px;
         }
 
         .stat-number {
-          font-size: 2.5rem;
-          font-weight: 800;
+          font-size: 2.2rem;
+          font-weight: 700;
           color: $color-primary;
 
           @include responsive(sm) {
-            font-size: 2rem;
+            font-size: 1.8rem;
           }
         }
 
@@ -83,32 +83,22 @@
     }
   }
 
-  .dashboard-grid {
-    @include grid-layout(1);
-    @include responsive(lg) {
-      @include grid-layout(2);
-      gap: $spacing-6;
-    }
-  }
-
-  .main-content {
-    @include stack-layout($spacing-8);
-    min-width: 0; // Prevent overflow
-  }
-
-  .sidebar-content {
-    @include stack-layout($spacing-6);
-    min-width: 0; // Prevent overflow
-
-    @include responsive(lg) {
-      position: sticky;
-      top: $spacing-20;
-      height: fit-content;
-    }
+  .dashboard-tabs {
+    margin-bottom: $spacing-8;
   }
 
   .rank-section {
-    margin-bottom: $spacing-8;
+    margin-bottom: $spacing-6;
+    border: 1px solid $color-gray-200;
+    border-radius: $border-radius-xl;
+    padding: $spacing-6;
+    background: linear-gradient(135deg, $color-white, $color-primary-100);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      border-color: $color-primary;
+      box-shadow: 0 4px 20px rgba($color-primary, 0.1);
+    }
 
     .rank-display-container {
       display: flex;
@@ -118,11 +108,19 @@
   }
 
   .challenge-section {
-    margin-bottom: $spacing-8;
+    margin-bottom: $spacing-6;
     display: flex;
     flex-direction: column;
-    border-radius: $border-radius-2xl;
+    border-radius: $border-radius-xl;
     position: relative;
+    border: 1px solid $color-gray-200;
+    padding: $spacing-6;
+    background-color: $color-white;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      border-color: $color-secondary;
+    }
 
     .scenario-info {
       @include stack-layout($spacing-4);
@@ -134,7 +132,7 @@
         .progress-bar {
           flex: 1;
           height: 10px;
-          background: rgba($color-white, 0.7);
+          background: $color-gray-100;
           border-radius: $border-radius-full;
           overflow: hidden;
 
@@ -175,30 +173,30 @@
 // Improved responsive design
 @include responsive(sm) {
   .dashboard-container {
-    padding: $spacing-4 $spacing-2;
+    padding: $spacing-2;
 
     .dashboard-header {
-      margin-bottom: $spacing-8;
+      margin-bottom: $spacing-6;
 
       .welcome-section {
         .welcome-message {
-          font-size: 2.5rem;
+          font-size: 1.8rem;
         }
 
         .welcome-subtitle {
-          font-size: 1.1rem;
+          font-size: 1rem;
         }
       }
 
       .quick-stats {
-        gap: $spacing-4;
+        gap: $spacing-2;
 
         .stat-item {
-          padding: $spacing-4 $spacing-3;
-          min-width: 110px;
+          padding: $spacing-3 $spacing-2;
+          min-width: 100px;
 
           .stat-number {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
           }
 
           .stat-label {
@@ -207,31 +205,13 @@
         }
       }
     }
-
-    .dashboard-grid {
-      gap: $spacing-6;
-    }
   }
 }
 
 @include responsive(md) {
   .dashboard-container {
     .dashboard-grid {
-      gap: $spacing-8;
-    }
-  }
-}
-
-@include responsive(lg) {
-  .dashboard-container {
-    .dashboard-grid {
-      grid-template-columns: 2fr 1fr;
-      gap: $spacing-12;
-      align-items: start; // Align items to top
-    }
-
-    .sidebar-content {
-      max-width: 400px; // Prevent sidebar from getting too wide
+      gap: $spacing-6;
     }
   }
 }
