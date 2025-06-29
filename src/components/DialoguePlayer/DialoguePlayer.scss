@@ -51,7 +51,7 @@
       .message {
         @include flex(row, flex-start, flex-end, $spacing-3);
         animation: messageSlideIn 0.5s ease-out;
-        font-family: $font-family-secondary;
+        font-family: $font-family-tertiary;
 
         &.actor {
           .message-bubble {
@@ -206,7 +206,7 @@
 
       .option-text {
         font-size: 1.6rem;
-        font-family: $font-family-secondary;
+        font-family: $font-family-tertiary;
         color: $color-white;
         transition: color 0.3s ease;
       }

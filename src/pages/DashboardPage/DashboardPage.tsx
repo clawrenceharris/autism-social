@@ -4,7 +4,6 @@ import {
   Award,
   Play,
   ChevronRight,
-  Zap,
   Calendar,
   Flame,
   Star,
@@ -137,11 +136,7 @@ const DashboardPage = () => {
           <div className="card-section challenge-section">
             <div className="section-header">
               <h2>
-                <Calendar
-                  className="section-icon"
-                  size={20}
-                  style={{ marginRight: "0.5rem" }}
-                />
+                <Calendar className="section-icon" size={20} />
                 Today's Challenge
               </h2>
               <Link to="/daily-challenges" className="section-action">
@@ -197,11 +192,7 @@ const DashboardPage = () => {
           <div className="card-section">
             <div className="section-header">
               <h2>
-                <Zap
-                  className="section-icon"
-                  size={20}
-                  style={{ marginRight: "0.5rem" }}
-                />
+                <Star className="section-icon" />
                 Recommended for You
               </h2>
               <Link to="/explore" className="section-action">
@@ -229,7 +220,6 @@ const DashboardPage = () => {
                 </div>
               ) : (
                 <div className="empty-state">
-                  <BookOpen className="empty-icon" />
                   <div className="empty-message">
                     No personalized recommendations yet
                   </div>

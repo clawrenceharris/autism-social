@@ -10,7 +10,7 @@ import {
 } from "../components/SignUpSteps";
 import type { FormLayoutProps } from "../components/layouts/FormLayout/FormLayout";
 import { usePreferencesStore } from "../store/usePreferencesStore";
-import { useUserStore } from "../store/useUserStore";
+import { useProfileStore } from "../store/useUserStore";
 
 interface UseSignUpProps {
   userId?: string;
@@ -36,7 +36,7 @@ const useSignUp = ({
 }: UseSignUpProps) => {
   const [step, setStep] = useState(stepStart || 1);
   const { userGoalIds, userInterestIds } = usePreferencesStore();
-  const { user, profile } = useUserStore();
+  const { user, profile } = useProfileStore();
   const { fetchUserPreferences, fetchGoals, fetchInterests } =
     usePreferencesStore();
 

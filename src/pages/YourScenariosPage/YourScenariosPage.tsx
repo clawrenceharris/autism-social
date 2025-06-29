@@ -248,7 +248,7 @@ const YourScenariosPage = () => {
         {filteredScenarios.length > 0 ? (
           <div className="scenarios-grid">
             {filteredScenarios.map((scenario) => (
-              <ScenarioCard scenario={scenario} />
+              <ScenarioCard key={scenario.id} scenario={scenario} />
             ))}
           </div>
         ) : (

@@ -6,9 +6,10 @@ import {
   type ReactNode,
 } from "react";
 import { supabase } from "../lib/supabase";
-import type { User } from "@supabase/supabase-js";
-import { useUserStore } from "../store/useUserStore";
+import type { AuthChangeEvent, Session, User } from "@supabase/supabase-js";
+import { useProfileStore } from "../store/useUserStore";
 import type { UserProfile } from "../types";
+import { useErrorHandler } from "../hooks";
 interface AuthContextType {
   user: User | null;
   loading: boolean;
@@ -19,34 +20,55 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const {
+    fetchUserProfile,
+    loading: loadingProfile,
+    profile,
+  } = useProfileStore();
+  const [loadingUser, setLoadingUser] = useState(true);
+  const { handleError } = useErrorHandler();
+  useEffect(() => {
+    const loadSession = async () => {
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
 
-  const { fetchUserData, setUser, user, loading, profile } = useUserStore();
-  useEffect(() => {
-    if (user) fetchUserData(user.id);
-  }, [fetchUserData, user]);
-  useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      try {
-        if (event === "SIGNED_OUT" || !session?.user) {
-          setError(null);
-        } else if (session?.user) {
-          setUser(session.user);
-        }
-      } catch (err) {
-        console.error("Auth state change error:", err);
-        setError("Authentication error occurred");
+      if (error || !session?.user) {
+        setUser(null);
+        const err = handleError({ error, action: "loading user session" });
+        setError(err.message);
+        return;
       }
-    });
+      setLoadingUser(false);
+
+      setUser(session.user);
+    };
+
+    loadSession();
+
+    const { data: subscription } = supabase.auth.onAuthStateChange(
+      async (_: AuthChangeEvent, session: Session | null) => {
+        if (session?.user) {
+          setUser(session.user);
+        } else {
+          setUser(null);
+        }
+      }
+    );
 
     return () => {
-      subscription.unsubscribe();
+      subscription?.subscription?.unsubscribe();
     };
-  }, [setUser]);
-
+  }, []);
+  useEffect(() => {
+    if (user) fetchUserProfile(user.id);
+  }, [fetchUserProfile, user]);
   return (
-    <AuthContext.Provider value={{ user, profile, loading, error }}>
+    <AuthContext.Provider
+      value={{ user, profile, loading: loadingProfile || loadingUser, error }}
+    >
       {children}
     </AuthContext.Provider>
   );

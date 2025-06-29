@@ -11,10 +11,12 @@ import badge7 from "../assets/images/Badge_07.png";
 import badge8 from "../assets/images/Badge_08.png";
 import badge9 from "../assets/images/Badge_09.png";
 import hero_bubbles from "../assets/images/hero_bubbles.png";
+import bolt_badge from "../assets/images/bolt_badge.png";
 
 export const assets = {
   logo_primary,
   logo_secondary,
+  bolt_badge,
   hero_bubbles,
   badge1,
   badge2,

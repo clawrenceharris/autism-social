@@ -1,37 +1,32 @@
-import type { User } from "@supabase/supabase-js";
 import { persist } from "zustand/middleware";
 import type { Goal, Interest, UserProfile } from "../types";
 import { create } from "zustand";
 import * as userService from "../services/user";
 import { signOut } from "../services/auth";
 
-interface UserStore {
-  user: User | null;
+interface ProfileStore {
   profile: UserProfile | null;
   loading: boolean;
   goals: Goal[];
   interests: Interest[];
-  setUser: (user: User) => void;
   setProfile: (profile: UserProfile) => void;
-  fetchUserData: (userId: string) => Promise<void>;
+  fetchUserProfile: (userId: string) => Promise<void>;
   logout: () => Promise<void>;
   error: string | null;
 }
 
-export const useUserStore = create<UserStore>()(
+export const useProfileStore = create<ProfileStore>()(
   persist(
     (set) => ({
-      user: null,
       profile: null,
       goals: [],
       interests: [],
-      loading: true,
+      loading: false,
       error: null,
 
-      setUser: (user) => set({ user }),
-      setProfile: (profile) => set({ profile }),
+      setProfile: (profile) => set({ profile, loading: false }),
 
-      fetchUserData: async (userId: string) => {
+      fetchUserProfile: async (userId: string) => {
         try {
           set({ loading: true, error: null });
 
@@ -46,27 +41,24 @@ export const useUserStore = create<UserStore>()(
             );
           }
 
-          set({ profile });
+          set({ profile, loading: false });
         } catch (err) {
           const errorMessage =
             err instanceof Error
               ? err.message
-              : "Unknown error while loading user data";
+              : String(err) || "Unknown error while loading user data";
 
-          set({ error: errorMessage });
-        } finally {
-          set({ loading: false });
+          set({ error: errorMessage, loading: false });
         }
       },
 
       logout: async () => {
         try {
-          set({ user: null, profile: null, loading: true, error: null });
+          set({ profile: null, loading: true, error: null });
 
           await signOut();
 
           set({
-            user: null,
             profile: null,
             goals: [],
             interests: [],
@@ -87,7 +79,6 @@ export const useUserStore = create<UserStore>()(
     {
       name: "user-storage", // key for localStorage
       partialize: (state) => ({
-        user: state.user,
         profile: state.profile,
       }),
     }

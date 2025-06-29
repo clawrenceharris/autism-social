@@ -37,7 +37,6 @@ const ScenarioCard = ({ scenario }: ScenarioCardProps) => {
   }
   return (
     <div
-      key={scenario.id}
       className={`scenario-card ${isComplete ? "completed" : ""} ${
         isTrending ? "trending" : ""
       }`}

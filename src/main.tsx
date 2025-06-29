@@ -9,14 +9,14 @@ import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary.tsx";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ErrorBoundary>
-      <AuthProvider>
-        <ToastProvider>
+      <ToastProvider>
+        <AuthProvider>
           <ModalProvider>
             <App />
             <ToastContainer />
           </ModalProvider>
-        </ToastProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </ToastProvider>
     </ErrorBoundary>
   </StrictMode>
 );
