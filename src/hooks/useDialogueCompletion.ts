@@ -20,7 +20,7 @@ export const useDialogueCompletion = () => {
         const result = await dialogueService.completeDialogue({
           userId: context.user.user_id,
           dialogueId: context.dialogue.id,
-          scoring: context.totalScores,
+          scores: context.totalScores,
         });
 
         // Update streak when dialogue is completed

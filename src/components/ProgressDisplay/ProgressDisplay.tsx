@@ -3,16 +3,22 @@ import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import "./ProgressDisplay.scss";
 import { useProgressStore } from "../../store/useProgressStore";
-import { useScoreCategoryStore } from "../../store/useScoreCategoryStore";
 import { formatCategoryName, getCategoryIcon } from "../../utils/categoryUtils";
+import type { Category } from "../../services/scoring_categories";
 
 const ProgressDisplay = ({ userId }: { userId: string }) => {
   const { fetchProgress, loading, categoryScores, error } = useProgressStore();
-  const { categories } = useScoreCategoryStore();
+  const categories: Category[] = [
+    { name: "clarity" },
+    { name: "empathy" },
+    { name: "engagement" },
+    { name: "social_awareness" },
+    { name: "self_advocacy" },
+  ];
   useEffect(() => {
     fetchProgress(userId);
   }, [fetchProgress, userId]);
-
+  console.log({ categories });
   if (error) {
     return (
       <div className="center-absolute">
@@ -36,12 +42,8 @@ const ProgressDisplay = ({ userId }: { userId: string }) => {
           </div>
         ) : (
           <div className="progress-categories">
-            {categories.map((category) => (
-              <Link
-                to={"/progress"}
-                key={category.id}
-                className="category-item"
-              >
+            {categories.map((category, index) => (
+              <Link to={"/progress"} key={index} className="category-item">
                 <div className="category-header">
                   <div className="category-icon">
                     {getCategoryIcon(category.name)}

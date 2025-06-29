@@ -1,9 +1,5 @@
-import type {
-  UserProgress,
-  CreateDialogueData,
-  Dialogue,
-  ScoreSummary,
-} from "../types";
+import { supabase } from "../lib/supabase";
+import type { CreateDialogueData, Dialogue, ScoreSummary } from "../types";
 import { DatabaseService } from "./database";
 
 export interface DialoguePossibleScores {
@@ -76,19 +72,18 @@ export async function getDialogueById(id: string) {
 
 export async function completeDialogue({
   dialogueId,
-  scoring,
-  userId
+  scores,
+  userId,
 }: {
   userId: string;
   dialogueId: string;
-  scoring: ScoreSummary;
+  scores: ScoreSummary;
 }) {
-  const { data, error } = await supabase.rpc(
-    "complete_dialogue",
-      userId,
-      dialogueId,
-      scoring
-  );
+  const { data, error } = await supabase.rpc("complete_dialogue", {
+    p_user_id: userId,
+    p_dialogue_id: dialogueId,
+    p_scores: scores,
+  });
   if (error) throw error;
   return data;
 }

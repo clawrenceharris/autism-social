@@ -51,7 +51,7 @@ export const useProgressStore = create<ProgressStore>()(
 
         set({ totalPoints });
       },
-      
+
       calcCategoryScores: () => {
         const progress = get().progress;
 
@@ -61,6 +61,7 @@ export const useProgressStore = create<ProgressStore>()(
           "empathy",
           "social_awareness",
           "self_advocacy",
+          "engagement",
         ] as const;
 
         const categoryScores = categories.reduce<ScoreSummary>(
@@ -103,17 +104,17 @@ export const useProgressStore = create<ProgressStore>()(
           set({ error: "Failed to load progress", loading: false });
         }
       },
-      
+
       setRankReceived: (rankReceived: boolean) => {
         set({ rankReceived });
       },
-      
+
       resetProgress: () => {
-        set({ 
+        set({
           progress: [],
           progressByDialogueId: {},
           categoryScores: {},
-          totalPoints: 0
+          totalPoints: 0,
         });
       },
     }),

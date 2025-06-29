@@ -5,7 +5,6 @@ export type Table =
   | "scenarios"
   | "dialogues"
   | "goals"
-  | "user_progress"
   | "interests"
   | "user_interests"
   | "user_goals"
@@ -17,6 +16,7 @@ export type Table =
   | "daily_challenges"
   | "scoring_categories"
   | "dialogue_scoring_events"
+  | "user_completed_dialogues"
   | "user_streaks";
 
 export interface DatabaseResult<T> {
