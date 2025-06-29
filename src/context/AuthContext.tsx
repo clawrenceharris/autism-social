@@ -45,7 +45,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(null);
         return;
       }
-      setLoadingUser(false);
 
       setUser(session.user);
     };
@@ -59,6 +58,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           setUser(null);
         }
+              setLoadingUser(false);
+
+        
       }
     );
 
