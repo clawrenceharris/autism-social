@@ -2,7 +2,7 @@
 @use "../../styles/mixins";
 
 .side-nav {
-  width: 240px;
+  width: 280px;
   height: 100%;
   position: fixed;
   left: 0;
@@ -11,6 +11,8 @@
   border-right: 1px solid $color-gray-200;
   z-index: 40;
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
   
   .nav-content {
     display: flex;
@@ -35,6 +37,7 @@
     display: flex;
     flex-direction: column;
     gap: $spacing-2;
+    flex: 1;
   }
 
   .nav-link {
@@ -81,6 +84,50 @@
       }
     }
   }
+  
+  .profile-box {
+    margin-top: auto;
+    padding: $spacing-4;
+    border-top: 1px solid $color-gray-200;
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    
+    .profile-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: $color-primary-100;
+      color: $color-primary;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    
+    .profile-info {
+      overflow: hidden;
+      
+      .profile-name {
+        font-weight: 600;
+        color: $color-gray-800;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      
+      .profile-email {
+        color: $color-gray-500;
+        font-size: 0.75rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
 }
 
 // Responsive styles
@@ -107,12 +154,21 @@
         }
       }
     }
+    
+    .profile-box {
+      padding: $spacing-2;
+      justify-content: center;
+      
+      .profile-info {
+        display: none;
+      }
+    }
   }
 }
 
 @include responsive(md) {
   .side-nav {
-    width: 240px;
+    width: 280px;
     
     .nav-brand {
       justify-content: flex-start;
@@ -130,6 +186,15 @@
         span {
           display: inline;
         }
+      }
+    }
+    
+    .profile-box {
+      padding: $spacing-4;
+      justify-content: flex-start;
+      
+      .profile-info {
+        display: block;
       }
     }
   }
