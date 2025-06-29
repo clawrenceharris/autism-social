@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signUp } from "../../services/auth";
-import { updateUserInterests } from "../../services/interests";
 import "./SignUpPage.scss";
 import type { SignUpFormValues } from "../../types";
 import { useSignUp } from "../../hooks/";
 import { useToast } from "../../context/ToastContext";
-import { createUserProfile, updateUserGoals } from "../../services/user";
+import { createUserProfile } from "../../services/user";
 
 import { useErrorHandler } from "../../hooks";
+import {
+  updateUserGoals,
+  updateUserInterests,
+} from "../../services/preferences";
 
 const NUM_STEPS = 5;
 

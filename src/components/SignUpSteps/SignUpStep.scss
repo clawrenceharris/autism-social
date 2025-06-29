@@ -202,8 +202,7 @@
   }
 }
 
-.goals-grid,
-.interests-grid {
+.selection-list {
   @include grid-layout(1, 0.5rem);
   margin: $spacing-3;
   overflow: scroll;

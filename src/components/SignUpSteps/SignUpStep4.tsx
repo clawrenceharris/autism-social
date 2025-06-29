@@ -1,43 +1,61 @@
-import { ProgressIndicator } from "../../components";
-import { usePreferencesStore } from "../../store/usePreferencesStore";
-import type { SignUpFormValues } from "../../types";
+import { ProgressIndicator } from "../";
 import "./SignUpStep.scss";
+import type { SignUpFormValues } from "../../types";
+import { useFormContext } from "react-hook-form";
+import { usePreferencesStore } from "../../store/usePreferencesStore";
 
-interface SignUpStep3Props {
-  toggleSelection: (type: "goals" | "interests", value: string) => void;
-  formData: Pick<SignUpFormValues, "interests">;
-}
+export const SignUpStep4 = () => {
+  const { interests, loading, error } = usePreferencesStore();
+  const {
+    setValue,
+    watch,
+    formState: { errors },
+  } = useFormContext<SignUpFormValues>();
+  const selectedInterestIds = watch("interests") || [];
 
-const SignUpStep4 = ({ formData, toggleSelection }: SignUpStep3Props) => {
-  const { interests, error, loading } = usePreferencesStore();
-
-  if (loading)
+  const toggleGoal = (goalId: string) => {
+    const updatedInterests = selectedInterestIds.includes(goalId)
+      ? selectedInterestIds.filter((id) => id !== goalId)
+      : [...selectedInterestIds, goalId];
+    setValue("interests", updatedInterests, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  };
+  if (loading) {
+    return <ProgressIndicator />;
+  }
+  if (error) {
     return (
-      <div className="center-absolute">
-        <ProgressIndicator />
+      <div className="content-centered-absolute">
+        <p>
+          Unable to load interests. You can skip this step and try again later.
+        </p>
       </div>
     );
-  if (error) return <div className="error">{error}</div>;
-
+  }
   return (
     <div>
-      <label>What are your interests?</label>
+      <label>What kind of stuff captures your interests</label>
       <p className="form-helper">
         <small>Select all that apply</small>
       </p>
-      <div className="interests-grid">
-        {interests.map((interest) => (
-          <div
-            key={interest.id}
-            className={`checkbox-item ${
-              formData.interests.includes(interest.id) ? "selected" : ""
-            }`}
-            onClick={() => toggleSelection("interests", interest.id)}
-          >
-            <span>{interest.name}</span>
-          </div>
-        ))}
+      <div className="selection-list">
+        {interests.map((interest) => {
+          return (
+            <div
+              key={interest.id}
+              className={`checkbox-item ${
+                selectedInterestIds.includes(interest.id) ? "selected" : ""
+              }`}
+              onClick={() => toggleGoal(interest.id)}
+            >
+              <span>{interest.name}</span>
+            </div>
+          );
+        })}
       </div>
+      {errors.interests && <p className="danger">{errors.interests.message}</p>}
     </div>
   );
 };

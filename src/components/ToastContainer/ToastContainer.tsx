@@ -18,7 +18,6 @@ const ToastContainer = () => {
         return <Info size={20} />;
     }
   };
-  console.log({ toasts });
   return (
     <div className="toast-container">
       {toasts.map((toast) => (

@@ -1,19 +1,19 @@
-import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import type { SignUpFormValues } from "../../types";
 import "./SignUpStep.scss";
 
-interface SignUpStep1Props {
-  register: UseFormRegister<SignUpFormValues>;
-  errors: FieldErrors<SignUpFormValues>;
-}
-
-const SignUpStep2 = ({ register, errors }: SignUpStep1Props) => {
+const SignUpStep2 = () => {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<SignUpFormValues>();
   return (
     <>
       <div className="form-group">
-        <label>First name</label>
+        <label htmlFor="first-name">First name</label>
         <input
           type="text"
+          id="first-name"
           className={`form-input ${errors.name ? "error" : ""}`}
           {...register("first_name", {
             required: "First name is required",
@@ -28,8 +28,9 @@ const SignUpStep2 = ({ register, errors }: SignUpStep1Props) => {
         )}
       </div>
       <div className="form-group">
-        <label>Last name</label>
+        <label htmlFor="last-name">Last name</label>
         <input
+          id="last-name"
           type="text"
           className={`form-input ${errors.name ? "error" : ""}`}
           {...register("last_name", {
@@ -45,8 +46,9 @@ const SignUpStep2 = ({ register, errors }: SignUpStep1Props) => {
         )}
       </div>
       <div className="form-group">
-        <label>Age</label>
+        <label htmlFor="age">Age</label>
         <input
+          id="age"
           type="number"
           className={`form-input ${errors.email ? "error" : ""}`}
           {...register("age", {

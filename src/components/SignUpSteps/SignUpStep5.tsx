@@ -1,13 +1,12 @@
-import type { UseFormRegister, FieldErrors } from "react-hook-form";
-import type { SignUpFormValues } from "../../types";
+import { useFormContext } from "react-hook-form";
 import "./SignUpStep.scss";
+import type { SignUpFormValues } from "../../types";
 
-interface SignUpStep5Props {
-  register: UseFormRegister<SignUpFormValues>;
-  errors: FieldErrors<SignUpFormValues>;
-}
-
-const SignUpStep6 = ({ register, errors }: SignUpStep5Props) => {
+const SignUpStep6 = () => {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<SignUpFormValues>();
   return (
     <div className="signup-final-step">
       <div className="welcome-section">

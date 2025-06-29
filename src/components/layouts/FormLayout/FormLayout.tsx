@@ -51,11 +51,16 @@ function FormLayout<T extends FieldValues>({
   ...formProps
 }: FormLayoutProps<T>) {
   const methods = useForm<T>({
+    ...formProps,
     mode,
     defaultValues,
-    ...formProps,
   });
 
+  useEffect(() => {
+    if (defaultValues) {
+      methods.reset(defaultValues);
+    }
+  }, [defaultValues, methods]);
   useEffect(() => {
     if (!enableBeforeUnloadProtection || !isOpen) return;
 

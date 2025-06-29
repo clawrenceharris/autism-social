@@ -7,7 +7,7 @@ import {
 } from "react";
 import { supabase } from "../lib/supabase";
 import type { AuthChangeEvent, Session, User } from "@supabase/supabase-js";
-import { useProfileStore } from "../store/useUserStore";
+import { useProfileStore } from "../store/useProfileStore";
 import type { UserProfile } from "../types";
 import { useErrorHandler } from "../hooks";
 interface AuthContextType {
@@ -58,9 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           setUser(null);
         }
-              setLoadingUser(false);
-
-        
+        setLoadingUser(false);
       }
     );
 

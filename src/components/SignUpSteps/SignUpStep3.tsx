@@ -1,48 +1,59 @@
 import { ProgressIndicator } from "../";
 import "./SignUpStep.scss";
-import { usePreferencesStore } from "../../store/usePreferencesStore";
 import type { SignUpFormValues } from "../../types";
+import { useFormContext } from "react-hook-form";
+import { usePreferencesStore } from "../../store/usePreferencesStore";
 
-interface SignUpStep2Props {
-  toggleSelection: (type: "goals" | "interests", value: string) => void;
-  formData: Pick<SignUpFormValues, "goals">;
-}
+export const SignUpStep3 = () => {
+  const { goals, loading, error } = usePreferencesStore();
+  const {
+    setValue,
+    watch,
+    formState: { errors },
+  } = useFormContext<SignUpFormValues>();
+  const selectedGoalIds = watch("goals") || [];
 
-export const SignUpStep3 = ({
-  formData,
-  toggleSelection,
-}: SignUpStep2Props) => {
-  const { goals, error, loading } = usePreferencesStore();
-
-  if (loading)
+  const toggleGoal = (goalId: string) => {
+    const updatedGoals = selectedGoalIds.includes(goalId)
+      ? selectedGoalIds.filter((id) => id !== goalId)
+      : [...selectedGoalIds, goalId];
+    setValue("goals", updatedGoals, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  };
+  if (loading) {
+    return <ProgressIndicator />;
+  }
+  if (error) {
     return (
-      <>
-        <ProgressIndicator />
-      </>
+      <div className="content-centered-absolute">
+        <p>Unable to load goals. You can skip this step and try again later.</p>
+      </div>
     );
-  if (error) return <div className="error">{error}</div>;
-
+  }
   return (
     <div>
       <label>What are your goals for using Chatterbrain?</label>
       <p className="form-helper">
         <small>Select all that apply</small>
       </p>
-      <div className="goals-grid">
-        {goals.map((goal) => (
-          <div
-            key={goal.id}
-            className={`checkbox-item ${
-              formData.goals.includes(goal.id) ? "selected" : ""
-            }`}
-            onClick={() => {
-              toggleSelection("goals", goal.id);
-            }}
-          >
-            <span>{goal.goal}</span>
-          </div>
-        ))}
+      <div className="selection-list">
+        {goals.map((goal) => {
+          return (
+            <div
+              key={goal.id}
+              className={`checkbox-item ${
+                selectedGoalIds.includes(goal.id) ? "selected" : ""
+              }`}
+              onClick={() => toggleGoal(goal.id)}
+            >
+              <span>{goal.goal}</span>
+            </div>
+          );
+        })}
       </div>
+      {errors.goals && <p className="danger">{errors.goals.message}</p>}
     </div>
   );
 };

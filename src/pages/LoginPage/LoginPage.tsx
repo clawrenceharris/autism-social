@@ -4,7 +4,7 @@ import { useState } from "react";
 import { signIn } from "../../services/auth";
 import "./LoginPage.scss";
 import { useErrorHandler } from "../../hooks";
-import { useProfileStore } from "../../store/useUserStore";
+import { useProfileStore } from "../../store/useProfileStore";
 
 interface LoginFormValues {
   email: string;

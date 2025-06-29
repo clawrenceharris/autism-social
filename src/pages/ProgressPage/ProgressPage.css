@@ -29,7 +29,16 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: radial-gradient(circle at 20% 80%, rgba(84, 203, 226, 0.2) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(193, 230, 255, 0.3) 0%, transparent 50%);
+  background-image: radial-gradient(
+      circle at 20% 80%,
+      rgba(84, 203, 226, 0.2) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(193, 230, 255, 0.3) 0%,
+      transparent 50%
+    );
   animation: float 20s ease-in-out infinite;
   pointer-events: none;
 }
@@ -90,14 +99,24 @@
   border-color: #54cbe2 transparent #54cbe2 transparent;
   animation: spin 3s linear infinite;
 }
-.progress-page .hero-section .hero-content .social-score .score-circle .score-value {
+.progress-page
+  .hero-section
+  .hero-content
+  .social-score
+  .score-circle
+  .score-value {
   font-size: 3.5rem;
   font-weight: 800;
   color: #54cbe2;
   position: relative;
   z-index: 1;
 }
-.progress-page .hero-section .hero-content .social-score .score-circle .score-label {
+.progress-page
+  .hero-section
+  .hero-content
+  .social-score
+  .score-circle
+  .score-label {
   font-size: 1rem;
   color: #4b5563;
   position: relative;
@@ -143,7 +162,7 @@
 .progress-page .hero-section .hero-content .quick-stats .stat-card {
   background: rgba(255, 255, 255, 0.3137254902);
   -webkit-backdrop-filter: blur(10px);
-          backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   border-radius: 1rem;
   padding: 1rem;
   display: flex;
@@ -208,13 +227,13 @@
   padding-bottom: 1rem;
   border-bottom: 2px solid #f6f7f8;
 }
-.progress-page .skills-section .skills-grid {
+.progress-page .skills-section .skills-list {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
 }
 @media (min-width: 860px) {
-  .progress-page .skills-section .skills-grid {
+  .progress-page .skills-section .skills-list {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -249,7 +268,12 @@
   align-items: center;
   gap: 0.75rem;
 }
-.progress-page .skills-section .skill-card .skill-header .skill-info .skill-icon {
+.progress-page
+  .skills-section
+  .skill-card
+  .skill-header
+  .skill-info
+  .skill-icon {
   width: 40px;
   height: 40px;
   border-radius: 0.5rem;
@@ -261,7 +285,12 @@
   background: #e3f3fe;
   color: #54cbe2;
 }
-.progress-page .skills-section .skill-card .skill-header .skill-info .skill-name {
+.progress-page
+  .skills-section
+  .skill-card
+  .skill-header
+  .skill-info
+  .skill-name {
   font-size: 1.25rem;
   font-weight: 600;
   color: #1f2937;
@@ -294,7 +323,12 @@
   align-items: center;
   gap: 0.5rem;
 }
-.progress-page .skills-section .skill-card .improvement-tips .tips-title .tips-icon {
+.progress-page
+  .skills-section
+  .skill-card
+  .improvement-tips
+  .tips-title
+  .tips-icon {
   color: #54cbe2;
 }
 .progress-page .skills-section .skill-card .improvement-tips .tips-content {
@@ -348,7 +382,10 @@
   opacity: 0.6;
   background: #fbfdff;
 }
-.progress-page .achievements-section .achievement-card.locked .achievement-icon {
+.progress-page
+  .achievements-section
+  .achievement-card.locked
+  .achievement-icon {
   background: #edeff1;
   color: #6b7280;
 }
@@ -369,12 +406,20 @@
 .progress-page .achievements-section .achievement-card .achievement-content {
   flex: 1;
 }
-.progress-page .achievements-section .achievement-card .achievement-content .achievement-name {
+.progress-page
+  .achievements-section
+  .achievement-card
+  .achievement-content
+  .achievement-name {
   font-weight: 600;
   color: #1f2937;
   margin-bottom: 0.25rem;
 }
-.progress-page .achievements-section .achievement-card .achievement-content .achievement-meta {
+.progress-page
+  .achievements-section
+  .achievement-card
+  .achievement-content
+  .achievement-meta {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -382,30 +427,60 @@
   gap: 0.75rem;
   font-size: 0.75rem;
 }
-.progress-page .achievements-section .achievement-card .achievement-content .achievement-meta .category-badge {
+.progress-page
+  .achievements-section
+  .achievement-card
+  .achievement-content
+  .achievement-meta
+  .category-badge {
   background: #f6f7f8;
   color: #4b5563;
   padding: 0.2rem 0.5rem;
   border-radius: 9999px;
   font-weight: 500;
 }
-.progress-page .achievements-section .achievement-card .achievement-content .achievement-meta .category-badge.milestone {
+.progress-page
+  .achievements-section
+  .achievement-card
+  .achievement-content
+  .achievement-meta
+  .category-badge.milestone {
   background: #e3f3fe;
   color: #54cbe2;
 }
-.progress-page .achievements-section .achievement-card .achievement-content .achievement-meta .category-badge.skill {
+.progress-page
+  .achievements-section
+  .achievement-card
+  .achievement-content
+  .achievement-meta
+  .category-badge.skill {
   background: #f3e8ff;
   color: #8d54e2;
 }
-.progress-page .achievements-section .achievement-card .achievement-content .achievement-meta .category-badge.streak {
+.progress-page
+  .achievements-section
+  .achievement-card
+  .achievement-content
+  .achievement-meta
+  .category-badge.streak {
   background: #fef3c7;
   color: #d97706;
 }
-.progress-page .achievements-section .achievement-card .achievement-content .achievement-meta .category-badge.mastery {
+.progress-page
+  .achievements-section
+  .achievement-card
+  .achievement-content
+  .achievement-meta
+  .category-badge.mastery {
   background: #dcfce7;
   color: #16a34a;
 }
-.progress-page .achievements-section .achievement-card .achievement-content .achievement-meta .earned-date {
+.progress-page
+  .achievements-section
+  .achievement-card
+  .achievement-content
+  .achievement-meta
+  .earned-date {
   color: #6b7280;
 }
 .progress-page .cta-section {
@@ -434,7 +509,8 @@
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) rotate(0deg);
   }
   33% {
@@ -463,7 +539,12 @@
     width: 140px;
     height: 140px;
   }
-  .progress-page .hero-section .hero-content .social-score .score-circle .score-value {
+  .progress-page
+    .hero-section
+    .hero-content
+    .social-score
+    .score-circle
+    .score-value {
     font-size: 2.5rem;
   }
   .progress-page .hero-section .hero-content .quick-stats .stats-grid {
@@ -472,17 +553,27 @@
   .progress-page .hero-section .hero-content .quick-stats .stat-card {
     padding: 0.75rem;
   }
-  .progress-page .hero-section .hero-content .quick-stats .stat-card .stat-icon {
+  .progress-page
+    .hero-section
+    .hero-content
+    .quick-stats
+    .stat-card
+    .stat-icon {
     width: 30px;
     height: 30px;
   }
-  .progress-page .hero-section .hero-content .quick-stats .stat-card .stat-value {
+  .progress-page
+    .hero-section
+    .hero-content
+    .quick-stats
+    .stat-card
+    .stat-value {
     font-size: 1.5rem;
   }
-  .progress-page .skills-section .skills-grid {
+  .progress-page .skills-section .skills-list {
     grid-template-columns: 1fr;
   }
   .progress-page .achievements-section .achievements-grid {
     grid-template-columns: 1fr;
   }
-}/*# sourceMappingURL=ProgressPage.css.map */
+} /*# sourceMappingURL=ProgressPage.css.map */

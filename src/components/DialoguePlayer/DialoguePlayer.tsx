@@ -111,7 +111,6 @@ const DialoguePlayer = ({
         setIsGeneratingAudio(true);
 
         const audioUrl = await getAudioUrl(actor.voice_id || "default", text);
-        console.log(actor.voice_id);
         // Cache the audio URL
         setAudioCache((prev) => new Map(prev).set(text, audioUrl));
         if (audioRef.current) {

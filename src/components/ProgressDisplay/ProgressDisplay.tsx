@@ -18,7 +18,6 @@ const ProgressDisplay = ({ userId }: { userId: string }) => {
   useEffect(() => {
     fetchProgress(userId);
   }, [fetchProgress, userId]);
-  console.log({ categories });
   if (error) {
     return (
       <div className="center-absolute">

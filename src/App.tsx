@@ -3,7 +3,7 @@ import { ScenarioLayout, RootLayout, UserRoute } from "./components";
 import {
   LoginPage,
   DashboardPage,
-  YourScenariosPage,
+  ScenariosPage,
   ProgressPage,
   SignUpPage,
   SettingsPage,
@@ -25,7 +25,7 @@ function App() {
         <Route element={<RootLayout />}>
           <Route element={<UserRoute />}>
             <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/scenarios" element={<YourScenariosPage />} />
+            <Route path="/scenarios" element={<ScenariosPage />} />
             <Route path="/progress" element={<ProgressPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/daily-challenges" element={<DailyChallengesPage />} />

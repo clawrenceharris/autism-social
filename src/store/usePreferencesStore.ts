@@ -1,12 +1,14 @@
 import { create } from "zustand";
-import { getInterests, updateUserInterests } from "../services/interests";
+
+import { getGoals } from "../services/goals";
+import type { Goal, Interest } from "../types";
 import {
+  getInterests,
   getUserGoals,
   getUserInterests,
   updateUserGoals,
-} from "../services/user";
-import { getGoals } from "../services/goals";
-import type { Goal, Interest } from "../types";
+  updateUserInterests,
+} from "../services/preferences";
 
 interface PreferencesStore {
   userGoals: Goal[];
@@ -110,9 +112,9 @@ export const usePreferencesStore = create<PreferencesStore>((set) => ({
         userId,
         newInterests.map((i) => i.id)
       );
-      set({ 
+      set({
         userInterests: updatedInterests,
-        userInterestIds: updatedInterests.map((i) => i.id)
+        userInterestIds: updatedInterests.map((i) => i.id),
       });
     } catch (err) {
       console.error("Error updating interests:", err);

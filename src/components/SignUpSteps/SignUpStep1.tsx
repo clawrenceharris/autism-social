@@ -1,13 +1,12 @@
-import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import type { SignUpFormValues } from "../../types";
 import "./SignUpStep.scss";
 
-interface SignUpStep1Props {
-  register: UseFormRegister<SignUpFormValues>;
-  errors: FieldErrors<SignUpFormValues>;
-}
-
-const SignUpStep1 = ({ register, errors }: SignUpStep1Props) => {
+const SignUpStep1 = () => {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<SignUpFormValues>();
   return (
     <>
       <div className="form-group">

@@ -10,17 +10,18 @@ import {
   Users,
   Award,
 } from "lucide-react";
-import "./YourScenariosPage.scss";
+import "./ScenariosPage.scss";
 import { useScenarioStore } from "../../store/useScenarioStore";
-import { ProgressIndicator } from "../../components";
-import ScenarioCard from "../../components/ScenarioCard/ScenarioCard";
-import { useDialogueStore } from "../../store/useDialogueStore";
-import { useRecommendationsStore } from "../../store";
-import { useProgressStore } from "../../store/useProgressStore";
+import { ProgressIndicator, ScenarioCard } from "../../components";
+import {
+  useRecommendationsStore,
+  useProgressStore,
+  useDialogueStore,
+} from "../../store";
 
 type FilterType = "all" | "completed" | "trending" | "recommended";
 
-const YourScenariosPage = () => {
+const ScenariosPage = () => {
   const {
     scenarios,
 
@@ -30,12 +31,15 @@ const YourScenariosPage = () => {
   const { fetchDialogues, loading: dialoguesLoading } = useDialogueStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+
+  const { progress } = useProgressStore();
+  const { recommendedDialogues } = useRecommendationsStore();
+
   useEffect(() => {
     fetchScenarios();
     fetchDialogues();
   }, [fetchScenarios, fetchDialogues]);
-  const { progress } = useProgressStore();
-  const { recommendedDialogues } = useRecommendationsStore();
+
   // Filter scenarios based on search and active filter
   const filteredScenarios = useMemo(() => {
     let filtered = Object.values(scenarios).filter(Boolean);
@@ -53,15 +57,15 @@ const YourScenariosPage = () => {
     // Apply category filter
     if (activeFilter === "all") {
       filtered = filtered.filter(() => true);
-    }
-    if (activeFilter === "completed") {
-      filtered = filtered.filter((scenario) =>
-        scenario.dialogues.every((d) =>
-          progress.map((p) => p.dialogue_id).includes(d.id)
-        )
+    } else if (activeFilter === "completed") {
+      filtered = filtered.filter(
+        (scenario) =>
+          scenario.dialogues.length &&
+          scenario.dialogues.every((d) =>
+            progress.map((p) => p.dialogue_id).includes(d.id)
+          )
       );
-    }
-    if (activeFilter === "recommended") {
+    } else if (activeFilter === "recommended") {
       filtered = filtered.filter((scenario) =>
         recommendedDialogues.map((d) => d.scenario_id).includes(scenario.id)
       );
@@ -186,7 +190,7 @@ const YourScenariosPage = () => {
     <div className="scenarios-container">
       <div className="page-header">
         <div>
-          <h1>Your Scenarios</h1>
+          <h1>Scenarios</h1>
           <p className="description">
             Explore, practice, and track your progress through interactive
             social scenarios
@@ -259,4 +263,4 @@ const YourScenariosPage = () => {
   );
 };
 
-export default YourScenariosPage;
+export default ScenariosPage;

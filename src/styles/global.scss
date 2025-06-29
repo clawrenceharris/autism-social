@@ -40,7 +40,7 @@ main {
 
 // Layout
 .container {
-  max-width: 1200px;
+  max-width: 990px;
   margin: 0 auto;
   padding: $spacing-6 $spacing-8;
   min-height: 100vh;
@@ -464,11 +464,11 @@ button {
   text-align: left;
   border: 1px solid $color-gray-200;
   transition: all 0.3s ease;
-  
+
   &:hover {
     border-color: $color-gray-300;
   }
-  
+
   .section-header {
     @include flex(row, space-between, center);
     padding-bottom: $spacing-3;
@@ -501,10 +501,10 @@ button {
 // Responsive styles for side navigation layout
 @include responsive(sm) {
   .main-content {
-    margin-left: 70px;
-    width: calc(100% - 70px);
+    margin-left: 120px;
+    width: calc(100% - 120px);
   }
-  
+
   .container {
     padding: $spacing-4 $spacing-4;
   }
@@ -515,7 +515,7 @@ button {
     margin-left: 280px;
     width: calc(100% - 280px);
   }
-  
+
   .container {
     padding: $spacing-6 $spacing-6;
   }

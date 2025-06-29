@@ -8,12 +8,12 @@ import {
   SignUpStep4,
   SignUpStep5,
 } from "../components/SignUpSteps";
-import type { FormLayoutProps } from "../components/layouts/FormLayout/FormLayout";
 import { usePreferencesStore } from "../store/usePreferencesStore";
-import { useProfileStore } from "../store/useUserStore";
+import { useProfileStore } from "../store/useProfileStore";
+import { useAuth } from "../context";
+import type { FormLayoutProps } from "../components/layouts/FormLayout/FormLayout";
 
 interface UseSignUpProps {
-  userId?: string;
   handleSubmit: (data: SignUpFormValues) => void;
   onNext?: () => void;
   onPrev?: () => void;
@@ -27,7 +27,6 @@ interface UseSignUpProps {
 const useSignUp = ({
   onNext,
   onPrev,
-  userId,
   isLoading,
   stepStart,
   stepEnd = 5,
@@ -36,27 +35,32 @@ const useSignUp = ({
 }: UseSignUpProps) => {
   const [step, setStep] = useState(stepStart || 1);
   const { userGoalIds, userInterestIds } = usePreferencesStore();
-  const { user, profile } = useProfileStore();
+  const { profile } = useProfileStore();
+  const { user } = useAuth();
   const { fetchUserPreferences, fetchGoals, fetchInterests } =
     usePreferencesStore();
 
   const [formData, setFormData] = useState<SignUpFormValues>({
     agreement: false,
     password: "",
-    email: user?.email || "",
-    first_name: profile?.first_name || "",
-    last_name: profile?.last_name || "",
-    goals: userGoalIds || [],
+    email: "",
+    first_name: "",
+    last_name: "",
+    goals: [],
     age: null,
-    interests: userInterestIds || [],
+    interests: [],
   });
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
-      goals: userGoalIds,
-      interests: userInterestIds,
+      email: user?.email || "",
+      first_name: profile?.first_name || "",
+      last_name: profile?.last_name || "",
+      goals: userGoalIds || [],
+      age: profile?.age || 0,
+      interests: userInterestIds || [],
     }));
-  }, [userGoalIds, userInterestIds]);
+  }, [profile, user, userGoalIds, userInterestIds]);
 
   useEffect(() => {
     fetchInterests();
@@ -64,10 +68,10 @@ const useSignUp = ({
   }, [fetchGoals, fetchInterests]);
 
   useEffect(() => {
-    if (userId) {
-      fetchUserPreferences(userId);
+    if (user) {
+      fetchUserPreferences(user.id);
     }
-  }, [fetchUserPreferences, userId]);
+  }, [fetchUserPreferences, user]);
   const nextStep = () => {
     if (step === stepEnd) {
       return;
@@ -83,17 +87,10 @@ const useSignUp = ({
       onPrev();
     }
   };
-  const toggleSelection = (type: "goals" | "interests", value: string) => {
-    setFormData((prev) => {
-      const currentArray = prev[type] || [];
-      const newArray = currentArray.includes(value)
-        ? currentArray.filter((item) => item !== value)
-        : [...currentArray, value];
-      return { ...prev, [type]: newArray };
-    });
-  };
+
   const handleSubmit = (data: SignUpFormValues) => {
     const updatedData = { ...formData, ...data };
+    console.log({ updatedData });
     setFormData(updatedData);
     props.handleSubmit(updatedData);
     nextStep();
@@ -103,16 +100,14 @@ const useSignUp = ({
       case 1:
         return (
           <FormLayout<SignUpFormValues>
+            {...props}
             onSubmit={handleSubmit}
             submitText={step === stepEnd ? "Complete" : "Next"}
             isLoading={isLoading}
             defaultValues={formData}
             error={error}
-            {...props}
           >
-            {({ register, formState: { errors } }) => (
-              <SignUpStep1 register={register} errors={errors} />
-            )}
+            <SignUpStep1 />
           </FormLayout>
         );
 
@@ -124,70 +119,61 @@ const useSignUp = ({
             showsCancelButton={step != stepStart}
             isLoading={isLoading}
             cancelText="Back"
+            defaultValues={formData}
             onCancel={prevStep}
             error={error}
-            {...props}
           >
-            {({ register, formState: { errors } }) => (
-              <SignUpStep2 register={register} errors={errors} />
-            )}
+            <SignUpStep2 />
           </FormLayout>
         );
 
       case 3:
         return (
           <FormLayout
-            onSubmit={() => {
-              handleSubmit(formData);
-            }}
+            {...props}
+            onSubmit={handleSubmit}
             submitText={step === stepEnd ? "Complete" : "Next"}
             showsCancelButton={step != stepStart}
             onCancel={prevStep}
             isLoading={isLoading}
+            defaultValues={formData}
             error={error}
             cancelText="Back"
-            {...props}
           >
-            <SignUpStep3
-              formData={{ goals: formData.goals || [] }}
-              toggleSelection={toggleSelection}
-            />
+            <SignUpStep3 />
           </FormLayout>
         );
 
       case 4:
         return (
           <FormLayout<SignUpFormValues>
+            {...props}
             onSubmit={handleSubmit}
             submitText={step === stepEnd ? "Complete" : "Next"}
             cancelText="Back"
             showsCancelButton={step != stepStart}
             onCancel={prevStep}
+            defaultValues={formData}
             isLoading={isLoading}
             error={error}
-            {...props}
           >
-            <SignUpStep4
-              formData={{ interests: formData.interests || [] }}
-              toggleSelection={toggleSelection}
-            />
+            <SignUpStep4 />
           </FormLayout>
         );
       case 5:
         return (
           <FormLayout<SignUpFormValues>
+            {...props}
             onSubmit={handleSubmit}
             submitText={step === stepEnd ? "Complete" : "Next"}
             cancelText="Back"
             showsCancelButton={step != stepStart}
             onCancel={prevStep}
             isLoading={isLoading}
+            defaultValues={formData}
             error={error}
-            {...props}
           >
-            {({ register, formState: { errors } }) => (
-              <SignUpStep5 register={register} errors={errors} />
-            )}
+            <SignUpStep5 />
           </FormLayout>
         );
     }

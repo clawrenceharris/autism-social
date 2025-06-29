@@ -2,14 +2,12 @@ import { useMemo } from "react";
 import type { ScenarioWithDialogues } from "../../types";
 import { Link } from "react-router-dom";
 import { Award, Play } from "lucide-react";
-import { useDialogueStore } from "../../store/useDialogueStore";
-import { useProgressStore } from "../../store/useProgressStore";
-
+import { useProgressStore } from "../../store";
+import "./ScenarioCard.scss";
 interface ScenarioCardProps {
   scenario: ScenarioWithDialogues;
 }
 const ScenarioCard = ({ scenario }: ScenarioCardProps) => {
-  const { dialoguesByScenario } = useDialogueStore();
   const { progress } = useProgressStore();
   const isTrending = false;
   const completedDialogues = useMemo(
@@ -27,10 +25,6 @@ const ScenarioCard = ({ scenario }: ScenarioCardProps) => {
     );
   }, [completedDialogues.length, scenario.dialogues.length]);
 
-  const totalDialogues = useMemo(
-    () => Object.keys(dialoguesByScenario).length,
-    [dialoguesByScenario]
-  );
   const isComplete = completionProgress === 100;
   if (!scenario) {
     return null;
@@ -55,7 +49,7 @@ const ScenarioCard = ({ scenario }: ScenarioCardProps) => {
 
       <div className="scenario-meta">
         <div className="meta-item">
-          <span className="meta-value">{totalDialogues}</span>
+          <span className="meta-value">{scenario.dialogues.length}</span>
           <span className="meta-label">Dialogues</span>
         </div>
         <div className="meta-item">

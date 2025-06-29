@@ -11,7 +11,7 @@ interface RecommendationsStore {
   fetchRecommendedDialogues: (userId: string) => void;
 }
 
-const useRecommendationsStore = create<RecommendationsStore>()(
+export const useRecommendationsStore = create<RecommendationsStore>()(
   persist(
     (set) => ({
       recommendedDialogues: [],
@@ -40,5 +40,3 @@ const useRecommendationsStore = create<RecommendationsStore>()(
     }
   )
 );
-
-export default useRecommendationsStore;

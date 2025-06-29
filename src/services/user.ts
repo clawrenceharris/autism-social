@@ -1,5 +1,4 @@
-import { supabase } from "../lib/supabase";
-import type { Goal, Interest, UserProfile } from "../types";
+import type { UserProfile } from "../types";
 import { DatabaseService } from "./database";
 
 export interface CreateUserProfileData {
@@ -11,6 +10,7 @@ export interface CreateUserProfileData {
 export interface UpdateUserProfileData {
   first_name?: string;
   last_name?: string;
+  age?: number | null;
 }
 
 /**
@@ -55,49 +55,6 @@ export async function getUserById(userId: string): Promise<UserProfile | null> {
 }
 
 /**
- * Get all user goals
- * @returns Promise with array of the user's goals
- * @throws Error if database query fails
- */
-export async function getUserGoals(userId: string): Promise<Goal[]> {
-  const result = await DatabaseService.get<{ goals: Goal }>("user_goals", {
-    select: "goals(*)",
-    foreignKey: "user_id",
-    foreignValue: userId,
-  });
-
-  if (result.error) {
-    throw result.error;
-  }
-  const goals: Goal[] = result.data?.map((row) => row.goals) || [];
-
-  return goals;
-}
-
-/**
- * Get all user interests
- * @returns Promise with array of the user's interests
- * @throws Error if database query fails
- */
-export async function getUserInterests(userId: string): Promise<Interest[]> {
-  const result = await DatabaseService.get<{ interests: Interest }>(
-    "user_interests",
-    {
-      select: "interests(*)",
-      foreignKey: "user_id",
-      foreignValue: userId,
-    }
-  );
-
-  if (result.error) {
-    throw result.error;
-  }
-  const interests: Interest[] = result.data?.map((row) => row.interests) || [];
-
-  return interests;
-}
-
-/**
  * Update user profile
  * @param userId - The user ID to update
  * @param updates - Partial user profile data to update
@@ -137,22 +94,4 @@ export async function deleteUserProfile(userId: string): Promise<void> {
   if (result.error) {
     throw result.error;
   }
-}
-
-/**
- * Update user interests (replace existing with new ones)
- * @param userId - The user ID
- * @param interestIds - Array of interest IDs to set
- * @throws Error if operation fails
- */
-export async function updateUserGoals(
-  userId: string,
-  new_goals: string[]
-): Promise<void> {
-  const { data, error } = await supabase.rpc("update_user_goals", {
-    user_uuid: userId,
-    new_goals,
-  });
-  if (error) throw error;
-  return data;
 }

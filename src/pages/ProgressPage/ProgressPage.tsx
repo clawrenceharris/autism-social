@@ -76,7 +76,7 @@ const ProgressPage = () => {
             </h2>
           </div>
 
-          <div className="skills-grid">
+          <div className="skills-list">
             {categories.map((category) => (
               <div className="skill-card" key={category.id}>
                 <div className="skill-header">
@@ -204,7 +204,7 @@ const ProgressPage = () => {
           Track your social skills development and achievements
         </p>
       </div>
-      
+
       <section className="rank-display-section">
         <div className="rank-card">
           <RankDisplay
@@ -213,7 +213,7 @@ const ProgressPage = () => {
             size="large"
           />
         </div>
-        
+
         <div className="quick-stats">
           <div className="stat-card">
             <div className="stat-icon">
@@ -226,9 +226,7 @@ const ProgressPage = () => {
             <div className="stat-icon">
               <Flame size={20} />
             </div>
-            <div className="stat-value">
-              {streakData?.currentStreak || 0}
-            </div>
+            <div className="stat-value">{streakData?.currentStreak || 0}</div>
             <div className="stat-label">Streak</div>
           </div>
           <div className="stat-card">
