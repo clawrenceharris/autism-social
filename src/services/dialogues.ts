@@ -74,19 +74,20 @@ export async function getDialogueById(id: string) {
   return data;
 }
 
-export async function recordDialogueCompletion({
+export async function completeDialogue({
   dialogueId,
   scoring,
+  userId
 }: {
+  userId: string;
   dialogueId: string;
   scoring: ScoreSummary;
 }) {
-  const { data, error } = await DatabaseService.create<UserProgress>(
-    "user_completed_dialogues",
-    {
-      dialogue_id: dialogueId,
-      scoring,
-    }
+  const { data, error } = await supabase.rpc(
+    "complete_dialogue",
+      userId,
+      dialogueId,
+      scoring
   );
   if (error) throw error;
   return data;
