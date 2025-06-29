@@ -106,11 +106,14 @@ export const usePreferencesStore = create<PreferencesStore>((set) => ({
   },
   setUserInterests: async (userId: string, newInterests: Interest[]) => {
     try {
-      await updateUserInterests(
+      const updatedInterests = await updateUserInterests(
         userId,
-        newInterests.map((i) => i.name)
+        newInterests.map((i) => i.id)
       );
-      set({ userInterests: newInterests });
+      set({ 
+        userInterests: updatedInterests,
+        userInterestIds: updatedInterests.map((i) => i.id)
+      });
     } catch (err) {
       console.error("Error updating interests:", err);
       set({ error: "Could not update interests" });

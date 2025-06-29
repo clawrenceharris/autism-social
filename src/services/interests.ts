@@ -1,4 +1,5 @@
 import { DatabaseService } from "./database";
+import { supabase } from "../lib/supabase";
 import type { Interest } from "../types";
 
 /**
@@ -27,13 +28,23 @@ export async function getInterests(): Promise<Interest[]> {
  */
 export async function updateUserInterests(
   userId: string,
-  new_interests: string[]
-): Promise<string[]> {
-  const { data, error } = await DatabaseService.upsert<string[]>(
-    "user_interests",
-    new_interests,
-    userId
-  );
-  if (error) throw error;
-  return data || [];
+  interestIds: string[]
+): Promise<Interest[]> {
+  const { data, error } = await supabase.rpc('update_user_interests', {
+    user_uuid: userId,
+    new_interest_ids: interestIds
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  // Transform the RPC result to Interest objects
+  const interests: Interest[] = (data || []).map((item: any) => ({
+    id: item.interest_id,
+    name: item.interest_name,
+    created_at: item.created_at
+  }));
+
+  return interests;
 }
