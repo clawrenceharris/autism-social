@@ -158,7 +158,8 @@ export class DialogueService {
         
         - Your role: ${actor.role}
         - Your persona: ${actor.persona_tags.join(", ")}
-        - Dialogue title: ${dialogue.title}         
+        - Dialogue title: ${dialogue.title}     
+        - Difficulty: ${dialogue.difficulty}    
         - Current phase: ${currentPhase}
         - Message count: ${this.messageCount}
         
