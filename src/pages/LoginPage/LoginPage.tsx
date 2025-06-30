@@ -5,6 +5,7 @@ import { signIn } from "../../services/auth";
 import "./LoginPage.scss";
 import { useErrorHandler } from "../../hooks";
 import { useProfileStore } from "../../store/useProfileStore";
+import { useAuth } from "../../context";
 
 interface LoginFormValues {
   email: string;
@@ -19,7 +20,8 @@ const LoginPage = () => {
     showToast: false,
     component: "LoginPage",
   });
-  const { user: existingUser, logout } = useProfileStore();
+  const { logout } = useProfileStore();
+  const { user: existingUser } = useAuth();
   const handleSubmit = async (data?: LoginFormValues) => {
     try {
       if (existingUser) {
