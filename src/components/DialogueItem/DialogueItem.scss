@@ -10,21 +10,78 @@
   min-width: 290px;
   cursor: pointer;
   color: black;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  
   &:hover {
     background: $color-primary-100;
-    transform: translateY(-1px);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 15px rgba($color-primary, 0.15);
+    border-color: $color-primary-200;
   }
-  &:hover {
-    border-color: $color-primary;
-    background: linear-gradient(135deg, $color-primary-100, $color-primary-200);
+  
+  &.recommended {
+    border: 2px solid $color-primary-200;
+    background: linear-gradient(135deg, $color-white, $color-primary-100);
+    
+    &:hover {
+      border-color: $color-primary;
+      background: linear-gradient(135deg, $color-primary-100, $color-primary-200);
+    }
   }
+  
+  &.unpublished {
+    opacity: 0.8;
+    background: linear-gradient(135deg, $color-gray-100, $color-gray-200);
+    border: 2px dashed $color-gray-300;
+    
+    &:hover {
+      background: linear-gradient(135deg, $color-gray-100, $color-gray-300);
+      border-color: $color-gray-400;
+    }
+    
+    .unpublished-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba($color-gray-100, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      backdrop-filter: blur(2px);
+      
+      .unpublished-message {
+        background: $color-white;
+        padding: $spacing-2 $spacing-4;
+        border-radius: $border-radius-md;
+        font-weight: 600;
+        color: $color-gray-700;
+        display: flex;
+        align-items: center;
+        gap: $spacing-2;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        
+        .lock-icon {
+          color: $color-gray-500;
+        }
+      }
+    }
+  }
+  
   .dialogue-details {
     .dialogue-header {
       text-align: left;
+      
       .header-top {
         @include flex(row, space-between, center);
         margin-bottom: $spacing-3;
       }
+      
       .scenario-title {
         font-weight: 500;
         color: $color-gray-800;
@@ -41,6 +98,12 @@
         background: rgba(255, 255, 255, 0.8);
         border-radius: $border-radius-full;
         border: 1px solid currentColor;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background: $color-white;
+          transform: translateY(-1px);
+        }
       }
     }
   }
@@ -48,12 +111,18 @@
   .dialogue-actions {
     @include transition(background);
     @include flex(row, center, center);
+    
     .squircle-btn {
       background-color: $color-white;
       border: 2px solid $color-primary-200;
       box-shadow: 0 1px 4px $color-primary-200;
+      transition: all 0.2s ease;
+      
       &:hover {
-        background-color: $color-white;
+        background-color: $color-primary;
+        color: $color-white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba($color-primary, 0.3);
       }
     }
   }

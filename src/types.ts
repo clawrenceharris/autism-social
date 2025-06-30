@@ -70,6 +70,7 @@ export interface Dialogue {
   scoring_categories: string[];
   created_at?: string;
   lastPlayed?: string;
+  published?: boolean;
 }
 
 export type ScoreCategory =
