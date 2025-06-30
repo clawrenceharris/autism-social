@@ -9,7 +9,7 @@
   align-items: center;
   border-radius: $border-radius-full;
   background-color: white;
-  box-shadow: 0 8px 30px var(--rank-color, $color-primary);
+  box-shadow: 0 8px 30px $color-primary;
   position: relative;
   font-size: 3rem;
   animation: pulse 2s infinite;
@@ -43,7 +43,7 @@
 
   .rank-title {
     font-weight: 700;
-    color: var(--rank-color, $color-primary);
+    color: $color-primary;
   }
 
   .rank-level {
@@ -75,7 +75,7 @@
       font-size: 0.9rem;
 
       .highlight {
-        color: var(--rank-color, $color-primary);
+        color: $color-secondary;
         font-weight: 600;
       }
     }
@@ -94,11 +94,7 @@
       height: 100%;
       width: 0%; // Will be set via JS
       border-radius: $border-radius-full;
-      background: linear-gradient(
-        90deg,
-        var(--rank-color, $color-primary),
-        var(--rank-color, $color-primary)
-      );
+      background: linear-gradient(90deg, $color-primary, $color-secondary);
       position: relative;
       transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -182,11 +178,7 @@
       font-size: 2rem;
       font-weight: 800;
       margin-bottom: $spacing-2;
-      background: linear-gradient(
-        135deg,
-        var(--rank-color, $color-primary),
-        var(--rank-color, $color-primary)
-      );
+      background: linear-gradient(135deg, $color-primary, $color-secondary);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -228,11 +220,11 @@
   0%,
   100% {
     transform: scale(1);
-    box-shadow: 0 8px 30px rgba(var(--rank-color, $color-primary), 0.3);
+    box-shadow: 0 8px 30px rgba($color-primary, 0.3);
   }
   50% {
     transform: scale(1.05);
-    box-shadow: 0 12px 40px rgba(var(--rank-color, $color-primary), 0.4);
+    box-shadow: 0 12px 40px rgba($color-primary, 0.4);
   }
 }
 

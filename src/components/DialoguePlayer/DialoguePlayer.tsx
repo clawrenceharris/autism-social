@@ -22,7 +22,6 @@ import {
 import { useModal, useToast } from "../../context";
 import { useVoiceStore } from "../../store/useVoiceStore";
 import { useDynamicDialogue, useErrorHandler } from "../../hooks";
-import { useProgressStore } from "../../store/useProgressStore";
 import { elevenlabs } from "../../lib/elevenlabs";
 
 interface DialoguePlayerProps {
@@ -44,8 +43,6 @@ const DialoguePlayer = ({
   onReplay,
   actor,
 }: DialoguePlayerProps) => {
-  const { fetchProgress } = useProgressStore();
-
   const [input, setInput] = useState("");
   const [isVolumeOn, setIsVolumeOn] = useState<boolean>(false);
   const [audioCache, setAudioCache] = useState<Map<string, string>>(new Map());
@@ -53,11 +50,12 @@ const DialoguePlayer = ({
   const [isListening, setIsListening] = useState<boolean>(false);
   const [isProcessingSpeech, setIsProcessingSpeech] = useState<boolean>(false);
 
-  const { fetchVoices, getAudioUrl } = useVoiceStore();
+  const { getAudioUrl } = useVoiceStore();
   const messageWindowRef = useRef<HTMLDivElement>(null);
   const { showToast } = useToast();
   const { handleError } = useErrorHandler();
   const { openModal } = useModal();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const {
     submitUserInput,
@@ -76,23 +74,16 @@ const DialoguePlayer = ({
     user,
     onError: (error) => handleError({ error }),
   });
+
   useEffect(() => {
     startDialogue();
   }, [startDialogue]);
-  useEffect(() => {
-    fetchVoices();
-    fetchProgress(user.user_id);
-  }, [fetchProgress, fetchVoices, user.user_id]);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   // Auto-scroll to bottom of messages
-  const scrollToBottom = () => {
+  useEffect(() => {
     messageWindowRef.current?.scrollTo({
       top: messageWindowRef.current.scrollHeight,
     });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
   }, [conversationHistory.length, isLoading]);
 
   const playAudio = useCallback(
@@ -237,8 +228,7 @@ const DialoguePlayer = ({
               modelId: "scribe_v1",
             });
 
-            // Set the transcribed text as input
-            setInput(input + " " + response.text);
+            submitUserInput(response.text);
 
             // Stop all tracks in the stream
             stream.getTracks().forEach((track) => track.stop());
@@ -255,9 +245,11 @@ const DialoguePlayer = ({
             setIsProcessingSpeech(false);
           }
         });
-
         // Start recording
         mediaRecorder.start();
+        setTimeout(() => {
+          mediaRecorder.stop();
+        }, 25000);
       } catch (error) {
         console.error("Microphone access error:", error);
         showToast(

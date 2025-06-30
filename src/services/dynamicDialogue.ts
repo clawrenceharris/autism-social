@@ -38,7 +38,7 @@ export class DialogueService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private history: any[] = [];
   private messageCount = 0;
-  private mockMode: boolean = true;
+  private mockMode: boolean = false;
 
   constructor(openai: ReturnType<typeof useOpenAI>) {
     this.openai = openai;

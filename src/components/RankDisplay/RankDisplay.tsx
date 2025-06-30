@@ -149,26 +149,14 @@ const RankDisplay: React.FC<RankDisplayProps> = ({
   return (
     <>
       <div className={`rank-display ${size} ${className}`}>
-        <div
-          className="rank-badge"
-          style={
-            {
-              "--rank-color": progress.currentRank.color,
-            } as React.CSSProperties
-          }
-        >
+        <div className="rank-badge">
           <div className="rank-icon">{progress.currentRank.icon}</div>
         </div>
 
         <div className="rank-info">
           <p className="description">Level {progress.currentRank.level}</p>
 
-          <div
-            className="rank-title"
-            style={{ color: progress.currentRank.color }}
-          >
-            {progress.currentRank.title}
-          </div>
+          <div className="rank-title">{progress.currentRank.title}</div>
         </div>
 
         {showProgress && progress.nextRank && (
@@ -179,12 +167,7 @@ const RankDisplay: React.FC<RankDisplayProps> = ({
               </div>
               <div className="next-rank">
                 Next:{" "}
-                <span
-                  className="highlight"
-                  style={{ color: progress.nextRank.color }}
-                >
-                  {progress.nextRank.title}
-                </span>
+                <span className="highlight">{progress.nextRank.title}</span>
               </div>
             </div>
 
@@ -194,7 +177,6 @@ const RankDisplay: React.FC<RankDisplayProps> = ({
                 className="progress-bar"
                 style={
                   {
-                    "--rank-color": progress.currentRank.color,
                     width: `${progress.percentToNextRank}%`,
                   } as React.CSSProperties
                 }

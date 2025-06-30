@@ -19,7 +19,7 @@ export const RANKS: UserRank[] = [
     color: "lightgreen",
   },
   {
-    level: 2,
+    level: 3,
     title: "Apprentice",
     minPoints: 50,
     maxPoints: 79,
@@ -29,7 +29,7 @@ export const RANKS: UserRank[] = [
   {
     level: 4,
     title: "Adept",
-    minPoints: 120,
+    minPoints: 80,
     maxPoints: 199,
     icon: <img src={assets.badge4} alt="Level 4 Badge" />,
     color: "gold",

@@ -22,7 +22,8 @@
 
   .card-section {
     .setting-item {
-      @include flex(column, space-between, start);
+      @include flex(column, flex-start, start, $spacing-4);
+
       padding: $spacing-4 0;
       gap: $spacing-8;
       border: 1px solid $color-white;
@@ -30,12 +31,12 @@
       transition: all 0.2s ease;
 
       border-radius: $border-radius-xl;
-      @include responsive(sm) {
-        @include flex(row, space-between, center);
-
-        gap: $spacing-18;
+      @include responsive(md) {
+        flex-direction: row;
       }
-
+      .btn {
+        margin: 0;
+      }
       &:hover {
         background-color: $color-gray-50;
         border: 1px solid $color-primary-300;
