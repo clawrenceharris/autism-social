@@ -46,8 +46,8 @@ const SignUpPage = () => {
       }
       const { first_name, last_name } = data;
       await createUserProfile({ user_id: user.id, first_name, last_name });
-      if (data.goals?.length) {
-        await updateUserInterests(user.id, data.goals);
+      if (data.interests?.length) {
+        await updateUserInterests(user.id, data.interests);
       }
       if (data.goals?.length) {
         await updateUserGoals(user.id, data.goals);
