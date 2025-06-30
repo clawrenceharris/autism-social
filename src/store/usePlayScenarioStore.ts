@@ -32,8 +32,6 @@ export const usePlayScenarioStore = create<PlayScenarioStore>()(
     {
       name: "play-storage",
       partialize: (state) => ({
-        dialogue: state.dialogue,
-        scenario: state.scenario,
         userFields: state.userFields,
       }),
     }

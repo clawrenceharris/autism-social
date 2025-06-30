@@ -56,7 +56,6 @@ const DialoguePlayer = ({
   const { handleError } = useErrorHandler();
   const { openModal } = useModal();
   const audioRef = useRef<HTMLAudioElement | null>(null);
-
   const {
     submitUserInput,
     startDialogue,
@@ -249,7 +248,7 @@ const DialoguePlayer = ({
         mediaRecorder.start();
         setTimeout(() => {
           mediaRecorder.stop();
-        }, 25000);
+        }, 15000);
       } catch (error) {
         console.error("Microphone access error:", error);
         showToast(
@@ -358,15 +357,23 @@ const DialoguePlayer = ({
                   disabled={isLoading || isProcessingSpeech}
                   className="form-input"
                 />
+
                 <button
                   type="button"
                   onClick={toggleListening}
-                  disabled={isLoading}
+                  disabled={(isProcessingSpeech && !isListening) || isLoading}
                   className={`mic-btn ${isListening ? "active" : ""}`}
                   title={isListening ? "Stop listening" : "Speak your response"}
                 >
-                  {isListening ? <Square size={20} /> : <Mic size={20} />}
+                  {isListening && isProcessingSpeech ? (
+                    <Square size={20} />
+                  ) : !isListening && !isProcessingSpeech ? (
+                    <Mic size={20} />
+                  ) : (
+                    <ProgressIndicator size={30} />
+                  )}
                 </button>
+
                 <button
                   type="submit"
                   disabled={!input.trim() || isLoading || isProcessingSpeech}

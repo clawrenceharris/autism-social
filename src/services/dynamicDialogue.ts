@@ -143,7 +143,7 @@ export class DialogueService {
     const suggestPhaseTransition =
       this.messageCount >= 2 && currentPhase === "introduction";
     const suggestWrapUp =
-      this.messageCount >= 4 && currentPhase === "main_topic";
+      this.messageCount >= 5 && currentPhase === "main_topic";
 
     const phaseGuidance = suggestWrapUp
       ? "Consider transitioning to wrap_up phase as the conversation has progressed significantly."
@@ -168,7 +168,7 @@ export class DialogueService {
 
               1. Respond as ${actor.first_name}.
               2. Keep responses natural and conversational and short (2-3 sentences)
-              4. Provide 3–4 example user responses (1 sentence):
+              4. Provide 3 example user responses (1 sentence):
                 - One should demonstrate an ideal response (clear, empathetic, assertive, socially aware, and self-advocating).
                 - The others should each reflect a one or more weaknesses (e.g. lack of social awareness, empathy, clarity, assertiveness, and/or self-advocacy).
               5. Decide what phase should be next based on conversation progress:
@@ -205,7 +205,9 @@ export class DialogueService {
             - Context: ${dialogue.context}
             - Current Phase: ${currentPhase}
             - Dialogue: User responded "${currentUserInput}" to "${currentActorResponse}"
-            SCORING CRITERIA: ${dialogue.scoring_categories.join("(0-1), ")}
+            SCORING CRITERIA: ${dialogue.scoring_categories.join(
+              "(either 0 or 1), "
+            )}
 
             RESPONSE FORMAT (JSON):
             {
@@ -216,7 +218,7 @@ export class DialogueService {
               },
               "betterResponse": "A possible response that could be better or just as good as the user's current response.",
 
-              "feedback": "Overall feedback about the response, breifly touching on strengths and improvemens, if any",
+              "feedback": "Overall feedback about the response, breifly touching on strengths and improvemens.",
             }`;
   }
 

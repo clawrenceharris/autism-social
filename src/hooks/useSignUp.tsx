@@ -57,7 +57,7 @@ const useSignUp = ({
       first_name: profile?.first_name || "",
       last_name: profile?.last_name || "",
       goals: userGoalIds || [],
-      age: profile?.age || 0,
+      age: profile?.age || null,
       interests: userInterestIds || [],
     }));
   }, [profile, user, userGoalIds, userInterestIds]);

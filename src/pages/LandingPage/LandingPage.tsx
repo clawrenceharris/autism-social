@@ -10,7 +10,6 @@ import {
 import "./LandingPage.scss";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { Footer } from "../../components";
 
 const dialogueSamples1 = [
   {
@@ -133,10 +132,10 @@ const LandingPage = () => {
           <img
             src={assets.logo_secondary}
             alt="Chatterbrain Logo"
-            className="logo"
+            className="logo small"
           />
         </Link>
-        <div className="content-row">
+        <div className="flex-content">
           <Link to="/login" className="btn btn-tertiary">
             Log In
           </Link>
@@ -315,7 +314,27 @@ const LandingPage = () => {
           </div>
         </div>
       </div>
-      <Footer />
+      <footer className="landing-footer">
+        <div className="footer-content">
+          <div className="brand">
+            <Link to={"/"}>
+              <img
+                src={assets.logo_primary}
+                alt="Chatterbrain Logo"
+                className="logo"
+              />
+            </Link>
+
+            <Link to={"https://bolt.new"}>
+              <img className="logo" src={assets.bolt_badge} />
+            </Link>
+          </div>
+
+          <div className="footer-copyright">
+            © {new Date().getFullYear()} Chatterbrain. All rights reserved.
+          </div>
+        </div>
+      </footer>
       <div className="animated-background">
         <div className="gradient-blob blob-1"></div>
         <div className="gradient-blob blob-2"></div>

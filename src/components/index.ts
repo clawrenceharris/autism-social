@@ -11,7 +11,6 @@ export { default as Modal } from "./modals/Modal";
 export { default as ConfirmationModal } from "./modals/ConfirmationModal";
 export { default as StartDialogueModal } from "./modals/StartDialogueModal";
 export { default as DialogueCompletionModal } from "./modals/DialogueCompletionModal";
-export { default as Footer } from "./Footer";
 export { default as ScenarioCard } from "./ScenarioCard";
 
 export { default as DialogueItem } from "./DialogueItem";

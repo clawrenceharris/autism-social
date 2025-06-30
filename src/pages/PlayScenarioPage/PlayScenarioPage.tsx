@@ -25,7 +25,7 @@ const PlayScenarioPage = () => {
   const navigate = useNavigate();
   const { loading: scenariosLoading, error: scenarioError } =
     useScenarioStore();
-  const { setDialogue, scenario, setUserFields, userFields } =
+  const { setDialogue, scenario, setScenario, setUserFields, userFields } =
     usePlayScenarioStore();
   const { dialogueId, scenarioId } = useParams<{
     dialogueId: string;
@@ -52,7 +52,7 @@ const PlayScenarioPage = () => {
       openModal(
         <FormLayout<{ [key: string]: string }>
           onSubmit={(data) => {
-            setUserFields(data);
+            setUserFields({ ...data, user_name: user.first_name });
             closeModal();
           }}
           onCancel={() => {
@@ -87,6 +87,7 @@ const PlayScenarioPage = () => {
     scenario,
     scenarioId,
     setUserFields,
+    user.first_name,
     userFields,
   ]);
 
@@ -97,6 +98,7 @@ const PlayScenarioPage = () => {
   const handleExit = () => {
     if (scenario) navigate(`/scenario/${scenario.id}`);
     setDialogue(null);
+    setScenario(null);
     setUserFields(null);
   };
 
@@ -185,7 +187,7 @@ const PlayScenarioPage = () => {
     return (
       <div key={key} className="play-scenario-container">
         <DialoguePlayer
-          userFields={userFields || {}}
+          userFields={userFields}
           actor={actors[dialogues[dialogueId].actor_id]}
           onDialogueExit={handleExit}
           user={user}

@@ -98,11 +98,6 @@
 
     z-index: 10;
 
-    .logo {
-      width: 40px;
-      height: auto;
-    }
-
     .header-actions {
       .btn-text {
         color: $color-primary;
@@ -389,21 +384,6 @@
         align-items: center;
       }
 
-      .footer-brand {
-        display: flex;
-        align-items: center;
-        gap: $spacing-2;
-
-        .footer-logo {
-          width: 32px;
-          height: auto;
-        }
-
-        span {
-          font-weight: 600;
-        }
-      }
-
       .footer-links {
         display: flex;
         gap: $spacing-4;
@@ -424,6 +404,23 @@
       .footer-copyright {
         opacity: 0.6;
       }
+    }
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+
+    .logo {
+      width: 90px;
+      height: auto;
+
+      &.small {
+        width: 50px;
+      }
+    }
+    span {
+      font-weight: 600;
     }
   }
 }
