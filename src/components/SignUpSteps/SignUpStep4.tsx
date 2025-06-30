@@ -13,10 +13,10 @@ export const SignUpStep4 = () => {
   } = useFormContext<SignUpFormValues>();
   const selectedInterestIds = watch("interests") || [];
 
-  const toggleGoal = (goalId: string) => {
-    const updatedInterests = selectedInterestIds.includes(goalId)
-      ? selectedInterestIds.filter((id) => id !== goalId)
-      : [...selectedInterestIds, goalId];
+  const toggleInterest = (interestId: string) => {
+    const updatedInterests = selectedInterestIds.includes(interestId)
+      ? selectedInterestIds.filter((id) => id !== interestId)
+      : [...selectedInterestIds, interestId];
     setValue("interests", updatedInterests, {
       shouldDirty: true,
       shouldValidate: true,
@@ -48,7 +48,7 @@ export const SignUpStep4 = () => {
               className={`checkbox-item ${
                 selectedInterestIds.includes(interest.id) ? "selected" : ""
               }`}
-              onClick={() => toggleGoal(interest.id)}
+              onClick={() => toggleInterest(interest.id)}
             >
               <span>{interest.name}</span>
             </div>
